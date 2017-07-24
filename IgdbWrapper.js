@@ -14,14 +14,18 @@ class IgdbWrapper {
 			// Register currents elements
 			this.currentGame = game;
 			this.currentCallback = callback;
-			this._formatImages();
+
+			this._basicFormatting();
 			this._findCompanyById(game.developers[0], cbw._addDeveloperCallback.bind(this));
 		});
 	}
 
-	_formatImages() {
-		this.currentGame.cover = this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
+	_basicFormatting() {
+		let rating = this.currentGame.total_rating;
+		this.currentGame.rating = Math.round(rating);
+		delete this.currentGame['total_rating'];
 
+		this.currentGame.cover = this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
 		this.currentGame.screenshots.forEach((element, key) => {
 			this.currentGame.screenshots[key] = element.url.replace('t_thumb', 't_screenshot_med');
 		});
@@ -70,6 +74,18 @@ class IgdbWrapper {
 			ids: ids
 		}, ['name']).then(function(response) {
 			callback(response.body[0]);
+		}).catch(function(err) {
+			throw err;
+		});
+	}
+
+	_findGenreById(id, callback) {
+		let ids = (Array.isArray(id)) ? (id) : ([id]);
+
+		this.client.genres({
+			ids: ids
+		}, ['name']).then(function(response) {
+			callback(response.body);
 		}).catch(function(err) {
 			throw err;
 		});
