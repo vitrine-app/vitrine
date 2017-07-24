@@ -1,21 +1,23 @@
 {
   "name": "vitrine",
   "version": "0.2.0",
-  "description": "",
+  "description": "A modern game library using Electron, NodeJS and IGDB.",
   "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 0"
-  },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "bootstrap-sass": "^3.3.7",
     "form-to-object": "^5.0.0",
     "igdb-api-node": "^3.0.0",
     "jquery": "^3.2.1"
   },
   "devDependencies": {
-    "electron": "^1.6.11"
+    "electron": "^1.6.11",
+    "node-sass-chokidar": "0.0.3"
+  },
+  "scripts": {
+    "build-css": "node-sass-chokidar client/sass/app.scss client/app.css --output-style compressed",
+    "start": "npm run build-css && electron .",
+    "test": "echo \"Error: no test specified\" && exit 0"
   }
 }

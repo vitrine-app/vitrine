@@ -1,10 +1,10 @@
-const { ipcMain } = require('electron');
+const IgdbWrapper = require('./api/IgdbWrapper');
 
-const Igdb = require('./api/IgdbWrapper');
-
-ipcMain.on('client.get-game', (event, args) => {
-	let wrapper = new Igdb();
-	wrapper.getGame(args, function(doc) {
-		event.sender.send('server.send-game', doc);
-	});
-});
+module.exports = events = {
+	'client.get-game': (event, args) => {
+		let wrapper = new IgdbWrapper();
+		wrapper.getGame(args, function(doc) {
+			event.sender.send('server.send-game', doc);
+		});
+	}
+};

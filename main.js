@@ -1,5 +1,7 @@
-/* Init windows */
-require('./server/server');
+const Vitrine = require('./server/Vitrine');
+const events = require('./server/events');
 
-/* Listen for client events */
-require('./server/events');
+vitrineApp = new Vitrine();
+vitrineApp.registerEvents(events);
+
+vitrineApp.run();

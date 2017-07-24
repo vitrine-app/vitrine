@@ -2,7 +2,7 @@
 window.jQuery = window.$ = require('jquery');
 
 /* Bootstrap JS */
-require('bootstrap');
+require('bootstrap-sass');
 
 /* DOM events */
 require('./dom');
