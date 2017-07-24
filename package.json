@@ -1,0 +1,14 @@
+{
+	"name": "vitrine",
+	"version": "0.1.0",
+	"description": "",
+	"main": "vitrine.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"igdb-api-node": "^3.0.0"
+	}
+}
