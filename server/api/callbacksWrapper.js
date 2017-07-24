@@ -29,5 +29,6 @@ module.exports = {
 
 		this.currentCallback(this.currentGame);
 		this.currentGame = this.currentCallback = null;
+		this.operating = false;
 	}
 };

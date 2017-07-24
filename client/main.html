@@ -2,12 +2,21 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Hello World!</title>
+	<title>Vitrine</title>
+	<link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>Welcome to Vitrine.</h1>
-We are using node <script>document.write(process.versions.node)</script>,
-Chrome <script>document.write(process.versions.chrome)</script>,
-and Electron <script>document.write(process.versions.electron)</script>.
+<div class="container">
+	<h1 id="game-title">Welcome to Vitrine!</h1>
+	<form id="game-name-form" class="form-inline">
+		<div class="form-group">
+			<input name="name" class="form-control" placeholder="Game name">
+		</div>
+		<button class="btn btn-primary">Get game</button>
+	</form>
+</div>
+<script>
+	require('./js/client');
+</script>
 </body>
 </html>

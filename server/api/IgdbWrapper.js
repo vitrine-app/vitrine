@@ -5,11 +5,14 @@ class IgdbWrapper {
 	constructor() {
 		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
 		this.client = igdb(this.apiKey);
+		this.operating = false;
 
 		this.currentGame = this.currentCallback = null;
 	}
 
 	getGame(name, callback) {
+		this.operating = true;
+
 		this._findGameByName(name, (game) => {
 			// Register currents elements
 			this.currentGame = game;
@@ -25,9 +28,9 @@ class IgdbWrapper {
 		this.currentGame.rating = Math.round(rating);
 		delete this.currentGame['total_rating'];
 
-		this.currentGame.cover = this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
+		this.currentGame.cover = 'https:' + this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
 		this.currentGame.screenshots.forEach((element, key) => {
-			this.currentGame.screenshots[key] = element.url.replace('t_thumb', 't_screenshot_med');
+			this.currentGame.screenshots[key] = 'https:' + element.url.replace('t_thumb', 't_screenshot_med');
 		});
 	}
 
