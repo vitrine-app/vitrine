@@ -1,0 +1,43 @@
+[
+	{
+		"id": 0,
+		"name": "ZSNES",
+		"command": "%p -m %g",
+		"consoles": [
+			1
+		]
+	},
+	{
+		"id": 1,
+		"name": "Project64",
+		"command": "%p %g",
+		"consoles": [
+			2
+		]
+	},
+	{
+		"id": 2,
+		"name": "Dolphin",
+		"command": "%p --batch --exec=%g",
+		"consoles": [
+			3,
+			4
+		]
+	},
+	{
+		"id": 3,
+		"name": "Cemu",
+		"command": "%p -g %g -f",
+		"consoles": [
+			5
+		]
+	},
+	{
+		"id": 1,
+		"name": "ePSXe",
+		"command": "%p -nogui -loadiso %g",
+		"consoles": [
+			6
+		]
+	}
+]
