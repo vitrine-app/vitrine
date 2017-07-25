@@ -1,6 +1,9 @@
 const { ipcRenderer } = require('electron');
 const toObject = require('form-to-object');
 
+/* Debug */
+ipcRenderer.send('client.get-game', 'The Witcher');
+
 $(document.body).on('submit', '#game-name-form', function(event) {
 	event.preventDefault();
 
@@ -10,3 +13,21 @@ $(document.body).on('submit', '#game-name-form', function(event) {
 		ipcRenderer.send('client.get-game', form.name);
 	}
 });
+
+$(document.body).on({
+	mouseenter() {
+		$('#game-cover-image').addClass('cover-hovered');
+	},
+	mouseleave() {
+		$('#game-cover-image').removeClass('cover-hovered');
+	}
+}, '#game-cover-image');
+
+$(document.body).on({
+	mouseenter() {
+		$('#game-cover-image').addClass('cover-hovered');
+	},
+	mouseleave() {
+		$('#game-cover-image').removeClass('cover-hovered');
+	}
+}, '#cover-play-btn');

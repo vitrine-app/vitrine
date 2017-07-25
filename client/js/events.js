@@ -4,6 +4,7 @@ const { beforeCss } = require('./helpers');
 ipcRenderer.on('server.send-game', (event, game) => {
 	console.log(game);
 	$('#game-title').html(game.name);
+	$('#game-desc').addClass('game-desc').html(game.summary);
 	$('#game-cover-image').css({
 		'background-image': 'url(' + game.cover + ')',
 		'background-repeat': 'no-repeat',
