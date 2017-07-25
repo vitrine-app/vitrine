@@ -5,7 +5,7 @@ const { app, BrowserWindow, ipcMain } = electron;
 class Vitrine {
 	constructor() {
 		this.windowsList = {};
-		this.mainEntryPoint = path.join('file://', __dirname, '..', 'client', 'main.html');
+		this.mainEntryPoint = path.join('file://', __dirname, '..', 'public', 'main.html');
 		this.devTools = false;
 	}
 

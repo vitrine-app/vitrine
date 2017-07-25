@@ -4,7 +4,7 @@ window.jQuery = window.$ = require('jquery');
 /* Bootstrap JS */
 require('bootstrap-sass');
 
-/* Init client page */
+/* Init public page */
 require('./init');
 
 /* Handle server events */
