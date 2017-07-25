@@ -1,7 +1,7 @@
 const { ipcRenderer } = require('electron');
 const toObject = require('form-to-object');
 
-$('#game-name-form').submit(function(event) {
+$(document.body).on('submit', '#game-name-form', function(event) {
 	event.preventDefault();
 
 	let form = toObject(this);

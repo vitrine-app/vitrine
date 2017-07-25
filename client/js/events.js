@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const { beforeCss } = require('./helpers');
 
 ipcRenderer.on('server.send-game', (event, game) => {
 	console.log(game);
@@ -8,6 +9,11 @@ ipcRenderer.on('server.send-game', (event, game) => {
 		'background-repeat': 'no-repeat',
 		'background-size': '100% 100%',
 	});
+	if (game.screenshots.length) {
+		beforeCss('#game-background', {
+			'background-image': 'url(' + game.screenshots[0] + ')'
+		});
+	}
 });
 
 ipcRenderer.on('server.send-game-error', (event, error) => {

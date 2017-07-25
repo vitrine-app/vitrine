@@ -6,9 +6,12 @@ class Vitrine {
 	constructor() {
 		this.windowsList = {};
 		this.mainEntryPoint = path.join('file://', __dirname, '..', 'client', 'main.html');
+		this.devTools = false;
 	}
 
-	run() {
+	run(devTools) {
+		if (devTools)
+			this.devTools = devTools;
 		app.on('ready', this._createMainWindow.bind(this));
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin') {
@@ -34,12 +37,15 @@ class Vitrine {
 	_createMainWindow() {
 		this.windowsList.mainWindow = new BrowserWindow({
 			width: 800,
-			height: 600
+			height: 600,
+			minWidth: 800,
+			minHeight: 500
 		});
 		this.windowsList.mainWindow.setMenu(null);
-		this.windowsList.mainWindow.webContents.openDevTools();
 		this.windowsList.mainWindow.maximize();
 		this.windowsList.mainWindow.loadURL(this.mainEntryPoint);
+		if (this.devTools)
+			this.windowsList.mainWindow.webContents.openDevTools();
 
 		this.windowsList.mainWindow.on('closed', () => {
 			delete this.windowsList.mainWindow;

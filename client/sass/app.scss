@@ -1,5 +1,10 @@
 /* Bootstrap */
 @import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+@import 'navbar';
+
+.full-height {
+	height: 100%;
+}
 
 /* Game cover component */
 #game-cover-component {
@@ -17,10 +22,26 @@
 		background-position: center;
 
 		&:hover {
-			-webkit-filter: blur(3px);
 			filter: blur(3px);
 			transition: 50ms filter linear;
-			-webkit-transition: 50ms -webkit-filter linear;
 		}
 	}
+}
+
+#scroller-container {
+	background-color: #505050;
+	height: 100%;
+}
+
+#game-background:before {
+	content: '';
+	position: fixed;
+	transform: scale(1.02);
+	right: 0;
+	z-index: -1;
+	filter: blur(5px);
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-size: cover;
 }

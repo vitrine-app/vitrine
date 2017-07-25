@@ -28,9 +28,11 @@ class IgdbWrapper {
 	}
 
 	_basicFormatting() {
-		let rating = this.currentGame.total_rating;
-		this.currentGame.rating = Math.round(rating);
-		delete this.currentGame['total_rating'];
+		if (this.currentGame.total_rating) {
+			let rating = this.currentGame.total_rating;
+			this.currentGame.rating = Math.round(rating);
+			delete this.currentGame['total_rating'];
+		}
 
 		this.currentGame.cover = 'https:' + this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
 		if (this.currentGame.screenshots) {
