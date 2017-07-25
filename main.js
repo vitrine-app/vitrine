@@ -4,4 +4,4 @@ const events = require('./server/events');
 vitrineApp = new Vitrine();
 vitrineApp.registerEvents(events);
 
-vitrineApp.run();
+vitrineApp.run(true);
