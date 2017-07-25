@@ -1,5 +1,6 @@
 const glob = require('glob');
 const path = require('path');
+const pythonShell = require('python-shell');
 const steamConfig = require('../config/steam.json');
 
 steamConfig.gamesFolders.forEach(function(folder) {
@@ -18,3 +19,7 @@ function globCallback(err, files) {
 		console.log(appManifest);
 	});
 }
+
+pythonShell.run('scripts/script.py', function(err) {
+	console.log('finished');
+});
