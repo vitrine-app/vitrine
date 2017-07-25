@@ -14,10 +14,11 @@
   },
   "devDependencies": {
     "electron": "^1.7.5",
-    "node-sass-chokidar": "0.0.3"
+    "node-sass-chokidar": "0.0.3",
+    "typescript-compiler": "^1.4.1-2"
   },
   "scripts": {
-    "build-css": "node-sass-chokidar client/sass/app.scss client/app.css --output-style compressed",
+    "build-css": "node-sass-chokidar assets/sass/app.scss public/app.css --output-style compressed",
     "start": "npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0"
   }
