@@ -1,1 +1,26 @@
+/* Bootstrap */
 @import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+
+/* Game cover component */
+#game-cover-component {
+	height: 30em;
+	width: 21em;
+	margin: 20px;
+	overflow: hidden;
+	position: relative;
+
+	#game-cover-image {
+		height: 100%;
+		width: 100%;
+		transform: scale(1.01);
+		position: absolute;
+		background-position: center;
+
+		&:hover {
+			-webkit-filter: blur(3px);
+			filter: blur(3px);
+			transition: 50ms filter linear;
+			-webkit-transition: 50ms -webkit-filter linear;
+		}
+	}
+}

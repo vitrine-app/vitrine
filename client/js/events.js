@@ -1,10 +1,16 @@
 const { ipcRenderer } = require('electron');
 
-ipcRenderer.on('server.send-game', (event, args) => {
-	console.log(args);
-	$('#game-title').html(args.name);
-	$('body').css({
-		'background': 'url(' + args.screenshots[0] + ') no-repeat',
-		'background-size': '100%',
+ipcRenderer.on('server.send-game', (event, game) => {
+	console.log(game);
+	$('#game-title').html(game.name);
+	$('#game-cover-image').css({
+		'background-image': 'url(' + game.cover + ')',
+		'background-repeat': 'no-repeat',
+		'background-size': '100% 100%',
 	});
+});
+
+ipcRenderer.on('server.send-game-error', (event, error) => {
+	$('#game-title').html(error);
+	throw new Error(error);
 });

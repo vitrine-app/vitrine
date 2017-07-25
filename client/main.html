@@ -8,12 +8,17 @@
 <body>
 <div class="container">
 	<h1 id="game-title">Welcome to Vitrine!</h1>
-	<form id="game-name-form" class="form-inline">
-		<div class="form-group">
-			<input name="name" class="form-control" placeholder="Game name">
+	<div class="row">
+		<div class="col-md-8">
+			<form id="game-name-form" class="form-inline">
+				<div class="form-group">
+					<input name="name" class="form-control" placeholder="Game name">
+				</div>
+				<button class="btn btn-primary">Get game</button>
+			</form>
 		</div>
-		<button class="btn btn-primary">Get game</button>
-	</form>
+		<div class="col-md-4" id="game-cover-container"></div>
+	</div>
 </div>
 <script>
 	require('./js/client');

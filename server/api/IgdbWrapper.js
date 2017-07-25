@@ -10,10 +10,14 @@ class IgdbWrapper {
 		this.currentGame = this.currentCallback = null;
 	}
 
-	getGame(name, callback) {
+	getGame(name, callback, errorCallback) {
 		this.operating = true;
 
 		this._findGameByName(name, (game) => {
+			if (game === undefined) {
+				console.log('entering callback');
+				errorCallback(name + ' not found.');
+			}
 			// Register currents elements
 			this.currentGame = game;
 			this.currentCallback = callback;
@@ -29,16 +33,20 @@ class IgdbWrapper {
 		delete this.currentGame['total_rating'];
 
 		this.currentGame.cover = 'https:' + this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
-		this.currentGame.screenshots.forEach((element, key) => {
-			this.currentGame.screenshots[key] = 'https:' + element.url.replace('t_thumb', 't_screenshot_med');
-		});
+		if (this.currentGame.screenshots) {
+			this.currentGame.screenshots.forEach((element, key) => {
+				this.currentGame.screenshots[key] = 'https:' + element.url.replace('t_thumb', 't_screenshot_med');
+			});
+		}
+		else
+			this.currentGame.screenshots = [];
 	}
 
 	_findGameByName(name, callback) {
 		this.client.games({
-			search: name,
+			limit: 1,
 			filters: {
-				'name.eq': name
+				'name-eq': name
 			}
 		}, [
 			'name',

@@ -36,9 +36,10 @@ class Vitrine {
 			width: 800,
 			height: 600
 		});
+		this.windowsList.mainWindow.setMenu(null);
+		this.windowsList.mainWindow.webContents.openDevTools();
 		this.windowsList.mainWindow.maximize();
 		this.windowsList.mainWindow.loadURL(this.mainEntryPoint);
-		this.windowsList.mainWindow.setMenu(null);
 
 		this.windowsList.mainWindow.on('closed', () => {
 			delete this.windowsList.mainWindow;
