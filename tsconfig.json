@@ -1,0 +1,31 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./public",
+    "sourceMap": true,
+    "target": "es5",
+    "module": "commonjs",
+    "allowJs": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "baseUrl": "./",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": ["node", "electron"],
+    "paths": {
+      "assets/ts/": ["assets/ts/"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "public"
+  ]
+}

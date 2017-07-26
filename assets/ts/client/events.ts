@@ -1,5 +1,5 @@
-const { ipcRenderer } = require('electron');
-const { beforeCss } = require('./helpers');
+import { ipcRenderer } from 'electron';
+import { beforeCss } from './helpers';
 
 ipcRenderer.on('server.send-game', (event, game) => {
 	console.log(game);

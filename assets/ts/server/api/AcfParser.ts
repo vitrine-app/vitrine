@@ -1,12 +1,15 @@
-const fs = require('fs');
+import * as fs from 'fs';
 
-class AcfParser {
+export class AcfParser {
+	private acfFd: string;
+	private c: number;
+
 	constructor(filename) {
 		this.acfFd = fs.readFileSync(filename).toString();
 		this.c = 0;
 	}
 
-	createTree() {
+	public createTree() {
 		let tree = {};
 		while (this.c < this.acfFd.length) {
 			this.deleteSpaces();
@@ -28,7 +31,7 @@ class AcfParser {
 		return tree;
 	}
 
-	readField() {
+	private readField() {
 		if (this.acfFd[this.c] !== '"')
 			return null;
 		this.c++;
@@ -41,11 +44,9 @@ class AcfParser {
 		return name;
 	}
 
-	deleteSpaces() {
+	private deleteSpaces() {
 		while (this.acfFd[this.c] === '\t' || this.acfFd[this.c] === ' '
 		|| this.acfFd[this.c] === '\r' || this.acfFd[this.c] === '\n')
 			this.c++;
 	}
 }
-
-module.exports = AcfParser;
