@@ -1,33 +1,37 @@
-const igdb = require('igdb-api-node').default;
-const cbw = require('./callbacksWrapper');
+import * as igdb from 'igdb-api-node';
 
-class IgdbWrapper {
+export class IgdbWrapper {
+	private apiKey: string;
+	private client: any;
+	private operating: boolean;
+	private currentCallback: any;
+	private currentGame: any;
+
 	constructor() {
 		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
-		this.client = igdb(this.apiKey);
+		this.client = igdb.default(this.apiKey);
 		this.operating = false;
 
 		this.currentGame = this.currentCallback = null;
 	}
 
-	getGame(name, callback, errorCallback) {
+	public getGame(name, callback, errorCallback) {
 		this.operating = true;
 
-		this._findGameByName(name, (game) => {
+		this.findGameByName(name, (game) => {
 			if (game === undefined) {
-				console.log('entering callback');
 				errorCallback(name + ' not found.');
 			}
 			// Register currents elements
 			this.currentGame = game;
 			this.currentCallback = callback;
 
-			this._basicFormatting();
-			this._findCompanyById(game.developers[0], cbw._addDeveloperCallback.bind(this));
+			this.basicFormatting();
+			this.findCompanyById(game.developers[0], this.addDeveloperCallback.bind(this));
 		});
 	}
 
-	_basicFormatting() {
+	private basicFormatting() {
 		if (this.currentGame.total_rating) {
 			let rating = this.currentGame.total_rating;
 			this.currentGame.rating = Math.round(rating);
@@ -44,7 +48,7 @@ class IgdbWrapper {
 			this.currentGame.screenshots = [];
 	}
 
-	_findGameByName(name, callback) {
+	private findGameByName(name, callback) {
 		this.client.games({
 			limit: 1,
 			filters: {
@@ -68,7 +72,7 @@ class IgdbWrapper {
 		});
 	}
 
-	_findCompanyById(id, callback) {
+	private findCompanyById(id, callback) {
 		let ids = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.companies({
@@ -80,7 +84,7 @@ class IgdbWrapper {
 		});
 	}
 
-	_findSeriesById(id, callback) {
+	private findSeriesById(id, callback) {
 		let ids = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.collections({
@@ -92,7 +96,7 @@ class IgdbWrapper {
 		});
 	}
 
-	_findGenreById(id, callback) {
+	private findGenreById(id, callback) {
 		let ids = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.genres({
@@ -103,6 +107,35 @@ class IgdbWrapper {
 			throw err;
 		});
 	}
-}
 
-module.exports = IgdbWrapper;
+	private addDeveloperCallback(developer) {
+		this.currentGame.developers = developer.name;
+
+		this.findCompanyById(this.currentGame.publishers[0], this.addPublisherCallback.bind(this));
+	}
+
+	private addPublisherCallback(publisher) {
+		this.currentGame.publishers = publisher.name;
+
+		this.findSeriesById(this.currentGame.collection, this.addSeriesCallback.bind(this));
+	}
+
+	private addSeriesCallback(series) {
+		delete this.currentGame['collection'];
+		this.currentGame.series = series.name;
+
+		this.findGenreById(this.currentGame.genres, this.addGenresCallback.bind(this));
+	}
+
+	private addGenresCallback(genres) {
+		let genresArray = [];
+		genres.forEach(function(genre) {
+			genresArray.push(genre.name);
+		});
+		this.currentGame.genres = genresArray;
+
+		this.currentCallback(this.currentGame);
+		this.currentGame = this.currentCallback = null;
+		this.operating = false;
+	}
+}

@@ -1,3 +1,4 @@
 /node_modules
 .idea/workspace.xml
 public/app.css
+main.js

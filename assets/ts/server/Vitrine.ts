@@ -1,18 +1,21 @@
-const path = require('path');
-const electron = require('electron');
-const { app, BrowserWindow, ipcMain } = electron;
+import * as path from 'path';
+import { app, BrowserWindow, ipcMain } from 'electron';
 
-class Vitrine {
+export class Vitrine {
+	private windowsList;
+	private mainEntryPoint: string;
+	private devTools: boolean;
+
 	constructor() {
 		this.windowsList = {};
-		this.mainEntryPoint = path.join('file://', __dirname, '..', 'public', 'main.html');
+		this.mainEntryPoint = path.join('file://', __dirname, 'public', 'main.html');
 		this.devTools = false;
 	}
 
-	run(devTools) {
+	public run(devTools?: boolean) {
 		if (devTools)
 			this.devTools = devTools;
-		app.on('ready', this._createMainWindow.bind(this));
+		app.on('ready', this.createMainWindow.bind(this));
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin') {
 				app.quit();
@@ -20,21 +23,19 @@ class Vitrine {
 		});
 		app.on('activate', () => {
 			if (this.windowsList.mainWindow === null) {
-				this._createMainWindow();
+				this.createMainWindow();
 			}
 		});
 
 	}
 
-	registerEvents(events) {
-		if (typeof events !== 'object')
-			return null;
+	public registerEvents(events: {[name: string]: any}) {
 		Object.keys(events).forEach((name) => {
 			ipcMain.on(name, events[name]);
 		});
 	}
 
-	_createMainWindow() {
+	private createMainWindow() {
 		this.windowsList.mainWindow = new BrowserWindow({
 			width: 800,
 			height: 600,
@@ -52,5 +53,3 @@ class Vitrine {
 		});
 	}
 }
-
-module.exports = Vitrine;

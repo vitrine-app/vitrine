@@ -1,9 +1,8 @@
 const glob = require('glob');
 const path = require('path');
-const steamConfig = require('../config/steam.json');
-const AcfParser = require('./AcfParser');
-const fs = require('fs');
+import { AcfParser } from './api/AcfParser';
 
+const steamConfig = require('../../../config/steam.json');
 
 steamConfig.gamesFolders.forEach(function(folder) {
 	let gameFolder = '';
