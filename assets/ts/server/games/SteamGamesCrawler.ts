@@ -44,7 +44,8 @@ export class SteamGamesCrawler {
 				if (error)
 					return;
 				let potentialGame: PotentialSteamGame = new PotentialSteamGame(gameManifest.name, game);
-				potentialGame.commandLine = this.configFile.launchCommand.replace('%id', gameManifest.appid );
+				potentialGame.commandLine = path.join(this.configFile.installFolder, 'steam.exe') + ' ' +
+					this.configFile.launchCommand.replace('%id', gameManifest.appid);
 				this.potentialGames.push(potentialGame);
 				counter++;
 				if (counter === array.length) {

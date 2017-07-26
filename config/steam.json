@@ -3,5 +3,5 @@
   "gamesFolders": [
     "~steamapps"
   ],
-  "launchCommand": "steam://run/%id"
+  "launchCommand": "-applaunch %id"
 }

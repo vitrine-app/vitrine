@@ -27,7 +27,7 @@ ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
 	potentialGames.forEach((potentialGame) => {
 		let html: string = '<li><a onclick="sendGameLaunch(\'' + potentialGame.commandLine + '\')">' + potentialGame.name + '</a></li>';
 		$(html).appendTo('#beta-games-list');
-		console.log(potentialGame);
+		console.log(potentialGame.commandLine);
 	});
 });
 

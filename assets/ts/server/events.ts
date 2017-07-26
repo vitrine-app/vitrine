@@ -15,7 +15,8 @@ export const events = {
 	},
 	'client.launch-game': (event, commandLine) => {
 		console.log(commandLine);
-		const gameProcess = execFile('explorer', (err: string, stdout, stderr) => {
+		/*
+		const gameProcess = execFile(commandLine, (err: string, stdout, stderr) => {
 			if (err) {
 				console.error(err);
 				throw err;
@@ -26,5 +27,6 @@ export const events = {
 		gameProcess.on('exit', () => {
 			console.log('Game ended.');
 		});
+		*/
 	}
 };
