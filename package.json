@@ -12,7 +12,7 @@
     "font-awesome": "^4.7.0",
     "form-to-object": "^5.0.0",
     "glob": "^7.1.2",
-    "igdb-api-node": "^3.0.0",
+    "igdb-api-node": "^3.0.1",
     "jquery": "^3.2.1"
   },
   "devDependencies": {
@@ -30,6 +30,10 @@
     "build-css": "node-sass-chokidar assets/sass/main.scss public/app.css",
     "build-prod": "node-sass-chokidar assets/sass/main.scss public/app.css --output-style compressed",
     "start": "webpack && npm run build-css && electron .",
+    "run-electron": "electron .",
+    "run-server-electron": "webpack --config config/server.build.js && electron .",
+    "run-client-electron": "webpack --config config/client.build.js && electron .",
+    "run-style-electron": "npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0"
   }
 }
