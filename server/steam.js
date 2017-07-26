@@ -1,7 +1,9 @@
 const glob = require('glob');
 const path = require('path');
-const pythonShell = require('python-shell');
 const steamConfig = require('../config/steam.json');
+const AcfParser = require('./AcfParser');
+const fs = require('fs');
+/*
 
 steamConfig.gamesFolders.forEach(function(folder) {
 	let gameFolder = '';
@@ -19,7 +21,8 @@ function globCallback(err, files) {
 		console.log(appManifest);
 	});
 }
+*/
 
-pythonShell.run('scripts/script.py', function(err) {
-	console.log('finished');
-});
+let acfParser = new AcfParser('./config/appmanifest_550.acf');
+// let acfParser = new AcfParser('./config/test.acf');
+console.log(acfParser.createTree());
