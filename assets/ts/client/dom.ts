@@ -1,5 +1,5 @@
-const { ipcRenderer } = require('electron');
-const toObject = require('form-to-object');
+import { ipcRenderer } from 'electron';
+import * as formToObject from 'form-to-object';
 
 /* Debug */
 ipcRenderer.send('client.get-game', 'The Witcher');
@@ -7,7 +7,7 @@ ipcRenderer.send('client.get-game', 'The Witcher');
 $(document.body).on('submit', '#game-name-form', function(event) {
 	event.preventDefault();
 
-	let form = toObject(this);
+	let form = formToObject(this);
 	if (form.name) {
 		$('#game-title').html('Loading...');
 		ipcRenderer.send('client.get-game', form.name);

@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
+    "@types/jquery": "^3.2.9",
     "@types/node": "^8.0.16",
     "awesome-typescript-loader": "^3.2.1",
     "electron": "^1.7.5",
