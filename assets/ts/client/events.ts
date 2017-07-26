@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { beforeCss } from './helpers';
+import { beforeCss, alphabeticSort } from './helpers';
 
 ipcRenderer.on('server.send-game', (event, game) => {
 	console.log(game);
@@ -23,5 +23,14 @@ ipcRenderer.on('server.send-game-error', (event, error) => {
 });
 
 ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
-	console.log(potentialGames);
+	potentialGames.sort(alphabeticSort);
+	potentialGames.forEach((potentialGame) => {
+		let html: string = '<li><a onclick="sendGameLaunch(\'' + potentialGame.commandLine + '\')">' + potentialGame.name + '</a></li>';
+		$(html).appendTo('#beta-games-list');
+		console.log(potentialGame);
+	});
 });
+
+(<any>window).sendGameLaunch = function(commandLine: string) {
+	ipcRenderer.send('client.launch-game', commandLine);
+};

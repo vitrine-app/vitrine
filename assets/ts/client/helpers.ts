@@ -6,3 +6,7 @@ export function beforeCss(selector, styling) {
 
 	$('head').append('<style>' + selector + ':before{' + rawStyling + '}</style>');
 }
+
+export function alphabeticSort(nodeA, nodeB) {
+	return nodeA.name > nodeB.name;
+}
