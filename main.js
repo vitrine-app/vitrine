@@ -5,3 +5,5 @@ vitrineApp = new Vitrine();
 vitrineApp.registerEvents(events);
 
 vitrineApp.run(true);
+
+//require('./server/steam');
