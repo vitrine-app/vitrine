@@ -17,17 +17,25 @@ $(document.body).on('submit', '#game-name-form', function(event) {
 $(document.body).on({
 	mouseenter() {
 		$('#game-cover-image').addClass('cover-hovered');
+		$('#game-cover-component').addClass('cover-hovered');
+		$('#cover-play-btn').addClass('play-btn-visible');
 	},
 	mouseleave() {
 		$('#game-cover-image').removeClass('cover-hovered');
+		$('#game-cover-component').removeClass('cover-hovered');
+		$('#cover-play-btn').removeClass('play-btn-visible');
 	}
 }, '#game-cover-image');
 
 $(document.body).on({
 	mouseenter() {
 		$('#game-cover-image').addClass('cover-hovered');
+		$('#game-cover-component').addClass('cover-hovered');
+		$('#cover-play-btn').addClass('play-btn-visible');
 	},
 	mouseleave() {
 		$('#game-cover-image').removeClass('cover-hovered');
+		$('#game-cover-component').removeClass('cover-hovered');
+		$('#cover-play-btn').removeClass('play-btn-visible');
 	}
 }, '#cover-play-btn');
