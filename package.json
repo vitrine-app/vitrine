@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build-css": "node-sass-chokidar assets/sass/app.scss public/app.css --output-style compressed",
-    "start": "electron .",
+    "start": "npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0"
   }
 }
