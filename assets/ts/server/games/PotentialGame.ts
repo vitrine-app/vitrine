@@ -1,5 +1,5 @@
 export abstract class PotentialGame {
-	private commandLine: string;
+	public commandLine: string;
 
 	constructor(public name: string, public details?: any) {
 	}
