@@ -21,3 +21,7 @@ ipcRenderer.on('server.send-game-error', (event, error) => {
 	$('#game-title').html(error);
 	throw new Error(error);
 });
+
+ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
+	console.log(potentialGames);
+});

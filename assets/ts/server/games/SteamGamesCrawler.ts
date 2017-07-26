@@ -11,6 +11,7 @@ export class SteamGamesCrawler {
 	private configFile: any;
 	private manifestRegEx: string;
 	private potentialGames: PotentialSteamGame[];
+	private currentCallback: Function;
 
 	constructor() {
 		this.configFilePath = path.join('config/steam.json');
@@ -19,7 +20,8 @@ export class SteamGamesCrawler {
 		this.potentialGames = [];
 	}
 
-	public search(): void {
+	public search(callback): void {
+		this.currentCallback = callback;
 		this.configFile.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
 
@@ -33,15 +35,33 @@ export class SteamGamesCrawler {
 	}
 
 	private processGames(error, files): void {
-		files.forEach((appManifest) => {
+		let counter: number = 0;
+		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
 			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 
-			igdbWrapper.getGame(gameManifest.name, (game) => {
+			igdbWrapper.getGame(gameManifest.name, (error, game) => {
+				if (error)
+					return;
 				let potentialGame: PotentialSteamGame = new PotentialSteamGame(gameManifest.name, game);
 				this.potentialGames.push(potentialGame);
-				console.log(potentialGame.details);
+				counter++;
+				if (counter === array.length) {
+					this.currentCallback(null, this.potentialGames);
+					delete this.currentCallback;
+				}
 			});
 		});
 	}
+}
+
+export function getSteamCrawlerPromise() {
+	return new Promise((resolve, reject) => {
+		new SteamGamesCrawler().search((error, potentialGames) => {
+			if (error)
+				reject(error);
+			else
+				resolve(potentialGames);
+		});
+	});
 }

@@ -1,6 +1,8 @@
 import * as path from 'path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 
+import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
+
 export class Vitrine {
 	private windowsList;
 	private mainEntryPoint: string;
@@ -42,6 +44,12 @@ export class Vitrine {
 			minWidth: 800,
 			minHeight: 500
 		});
+
+		/* Will be moved */
+		getSteamCrawlerPromise().then((potentialGames) => {
+			this.windowsList.mainWindow.webContents.send('server.add-potential-games', potentialGames);
+		});
+
 		this.windowsList.mainWindow.setMenu(null);
 		this.windowsList.mainWindow.maximize();
 		this.windowsList.mainWindow.loadURL(this.mainEntryPoint);

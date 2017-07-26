@@ -17,12 +17,12 @@ export class IgdbWrapper {
 		this.currentCallback = null;
 	}
 
-	public getGame(name, callback, errorCallback?) {
+	public getGame(name, callback) {
 		this.operating = true;
 
-		this.findGameByName(name, (game) => {
-			if (game === undefined && errorCallback !== undefined) {
-				errorCallback(name + ' not found.');
+		this.findGameByName(name, (error, game) => {
+			if (game === undefined) {
+				callback(name + ' not found.', null);
 			}
 			// Register currents elements
 			this.currentGame = game;
@@ -68,9 +68,9 @@ export class IgdbWrapper {
 			'screenshots',
 			'cover'
 		]).then((response) => {
-			callback(response.body[0]);
-		}).catch((err) => {
-			throw err;
+			callback(null, response.body[0]);
+		}).catch((error) => {
+			callback(error, null);
 		});
 	}
 
@@ -136,7 +136,7 @@ export class IgdbWrapper {
 		});
 		this.currentGame.genres = genresArray;
 
-		this.currentCallback(this.currentGame);
+		this.currentCallback(null, this.currentGame);
 		delete this.currentGame;
 		delete this.currentCallback;
 		this.operating = false;
