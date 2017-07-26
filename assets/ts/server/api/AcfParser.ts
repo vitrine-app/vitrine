@@ -9,8 +9,9 @@ export class AcfParser {
 		this.c = 0;
 	}
 
-	public createTree() {
+	public toObject(): any {
 		let tree = {};
+
 		while (this.c < this.acfFd.length) {
 			this.deleteSpaces();
 			if (this.acfFd[this.c] === '}')
@@ -24,14 +25,14 @@ export class AcfParser {
 			else if (this.acfFd[this.c] === '{') {
 				this.c++;
 				this.deleteSpaces();
-				tree[name] = this.createTree();
+				tree[name] = this.toObject();
 				this.c++;
 			}
 		}
 		return tree;
 	}
 
-	private readField() {
+	private readField(): string {
 		if (this.acfFd[this.c] !== '"')
 			return null;
 		this.c++;
@@ -44,7 +45,7 @@ export class AcfParser {
 		return name;
 	}
 
-	private deleteSpaces() {
+	private deleteSpaces(): void {
 		while (this.acfFd[this.c] === '\t' || this.acfFd[this.c] === ' '
 		|| this.acfFd[this.c] === '\r' || this.acfFd[this.c] === '\n')
 			this.c++;

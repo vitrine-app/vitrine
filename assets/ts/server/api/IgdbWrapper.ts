@@ -6,20 +6,22 @@ export class IgdbWrapper {
 	private operating: boolean;
 	private currentCallback: any;
 	private currentGame: any;
+	private c: number;
 
 	constructor() {
 		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
 		this.client = igdb.default(this.apiKey);
 		this.operating = false;
 
-		this.currentGame = this.currentCallback = null;
+		this.currentGame = null;
+		this.currentCallback = null;
 	}
 
-	public getGame(name, callback, errorCallback) {
+	public getGame(name, callback, errorCallback?) {
 		this.operating = true;
 
 		this.findGameByName(name, (game) => {
-			if (game === undefined) {
+			if (game === undefined && errorCallback !== undefined) {
 				errorCallback(name + ' not found.');
 			}
 			// Register currents elements
@@ -65,9 +67,9 @@ export class IgdbWrapper {
 			'first_release_date',
 			'screenshots',
 			'cover'
-		]).then(function(response) {
+		]).then((response) => {
 			callback(response.body[0]);
-		}).catch(function(err) {
+		}).catch((err) => {
 			throw err;
 		});
 	}
@@ -77,9 +79,9 @@ export class IgdbWrapper {
 
 		this.client.companies({
 			ids: ids
-		}, ['name']).then(function(response) {
+		}, ['name']).then((response) => {
 			callback(response.body[0]);
-		}).catch(function(err) {
+		}).catch((err) => {
 			throw err;
 		});
 	}
@@ -89,9 +91,9 @@ export class IgdbWrapper {
 
 		this.client.collections({
 			ids: ids
-		}, ['name']).then(function(response) {
+		}, ['name']).then((response) => {
 			callback(response.body[0]);
-		}).catch(function(err) {
+		}).catch((err) => {
 			throw err;
 		});
 	}
@@ -101,9 +103,9 @@ export class IgdbWrapper {
 
 		this.client.genres({
 			ids: ids
-		}, ['name']).then(function(response) {
+		}, ['name']).then((response) => {
 			callback(response.body);
-		}).catch(function(err) {
+		}).catch((err) => {
 			throw err;
 		});
 	}
@@ -135,7 +137,8 @@ export class IgdbWrapper {
 		this.currentGame.genres = genresArray;
 
 		this.currentCallback(this.currentGame);
-		this.currentGame = this.currentCallback = null;
+		delete this.currentGame;
+		delete this.currentCallback;
 		this.operating = false;
 	}
 }
