@@ -25,9 +25,9 @@
     "webpack": "^3.4.1"
   },
   "scripts": {
-    "build-css": "node-sass-chokidar assets/sass/app.scss public/app.css",
-    "build-prod": "node-sass-chokidar assets/sass/app.scss public/app.css --output-style compressed",
-    "start": "webpack && build-css && electron .",
+    "build-css": "node-sass-chokidar assets/sass/main.scss public/app.css",
+    "build-prod": "node-sass-chokidar assets/sass/main.scss public/app.css --output-style compressed",
+    "start": "webpack && npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0"
   }
 }
