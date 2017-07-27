@@ -1,4 +1,4 @@
-import { execFile, exec, execSync } from 'child_process';
+import { execFile } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
 
@@ -16,7 +16,9 @@ export const events = {
 	'client.launch-game': (event, commandLine) => {
 		let beginTime: Date = new Date();
 
-		let gameProcess = exec(commandLine, (err: string, stdout, stderr) => {
+		let gameProcess = execFile(commandLine, (err: string, stdout, stderr) => {
+			if (err)
+				throw new Error(err);
 			console.log(stdout);
 			console.log(stderr);
 		});
