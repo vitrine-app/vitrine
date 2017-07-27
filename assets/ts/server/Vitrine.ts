@@ -29,7 +29,7 @@ export class Vitrine {
 
 	}
 
-	public registerEvents(events: {[name: string]: any}) {
+	public registerEvents(events: object) {
 		Object.keys(events).forEach((name) => {
 			ipcMain.on(name, events[name]);
 		});
@@ -42,6 +42,7 @@ export class Vitrine {
 			minWidth: 800,
 			minHeight: 500
 		});
+
 		this.windowsList.mainWindow.setMenu(null);
 		this.windowsList.mainWindow.maximize();
 		this.windowsList.mainWindow.loadURL(this.mainEntryPoint);

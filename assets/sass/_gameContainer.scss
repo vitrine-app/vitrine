@@ -41,6 +41,7 @@
 					width: 28em;
 					overflow: hidden;
 					position: relative;
+					box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.5);
 
 					&.cover-hovered {
 						/*
@@ -58,22 +59,20 @@
 						text-align: center;
 						vertical-align: middle;
 						line-height: 55em;
+						transition: 75ms filter linear;
 
 						&.cover-hovered {
 							filter: blur(3px);
-							//animation-name: fadeIn;
-							//transition: 0.5s filter linear;
 						}
 					}
 
 					#cover-play-btn {
 						display: none;
 						font-size: 16em;
-						color: rgba(255, 255, 255, 0.45);
+						color: rgba(255, 255, 255, 0.29);
 						position: fixed;
 						padding: 0.75em 0.45em;
-						animation-name: zoomIn;
-						animation-duration: 75ms;
+						cursor: pointer;
 
 						&.play-btn-visible {
 							display: block;

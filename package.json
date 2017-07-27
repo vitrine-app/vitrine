@@ -1,9 +1,9 @@
 {
   "name": "vitrine",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A modern game library using Electron, NodeJS and IGDB.",
   "main": "main.js",
-  "author": "",
+  "author": "Paul Roman",
   "license": "MIT",
   "dependencies": {
     "animate.sass": "^1.0.1",
@@ -12,14 +12,15 @@
     "font-awesome": "^4.7.0",
     "form-to-object": "^5.0.0",
     "glob": "^7.1.2",
-    "igdb-api-node": "^3.0.0",
-    "jquery": "^3.2.1"
+    "igdb-api-node": "^3.0.1",
+    "jquery": "^3.2.1",
+    "sass-percentage-circle": "^0.2.0"
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
     "@types/jquery": "^3.2.9",
-    "@types/node": "^8.0.16",
-    "awesome-typescript-loader": "^3.2.1",
+    "@types/node": "^8.0.17",
+    "awesome-typescript-loader": "^3.2.2",
     "electron": "^1.7.5",
     "node-sass-chokidar": "0.0.3",
     "parallel-webpack": "^2.0.0",
@@ -30,6 +31,10 @@
     "build-css": "node-sass-chokidar assets/sass/main.scss public/app.css",
     "build-prod": "node-sass-chokidar assets/sass/main.scss public/app.css --output-style compressed",
     "start": "webpack && npm run build-css && electron .",
+    "run-electron": "electron .",
+    "run-server-electron": "webpack --config config/server.build.js && electron .",
+    "run-client-electron": "webpack --config config/client.build.js && electron .",
+    "run-style-electron": "npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0"
   }
 }
