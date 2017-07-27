@@ -51,8 +51,3 @@ export function launchEvents() {
 		});
 	});
 }
-
-(<any>window).sendGameLaunch = function (commandLine: string) {
-	console.log(commandLine)
-	ipcRenderer.send('client.launch-game', JSON.parse(commandLine));
-};
