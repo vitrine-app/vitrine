@@ -46,8 +46,10 @@ export class Vitrine {
 		});
 
 		/* Will be moved */
-		getSteamCrawlerPromise().then((potentialGames) => {
-			this.windowsList.mainWindow.webContents.send('server.add-potential-games', potentialGames);
+		this.windowsList.mainWindow.webContents.on('did-finish-load', () => {
+			getSteamCrawlerPromise().then((potentialGames) => {
+				this.windowsList.mainWindow.webContents.send('server.add-potential-games', potentialGames);
+			});
 		});
 
 		this.windowsList.mainWindow.setMenu(null);

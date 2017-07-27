@@ -2,7 +2,6 @@ import { ipcRenderer } from 'electron';
 import { beforeCss, alphabeticSort } from './helpers';
 
 ipcRenderer.on('server.send-game', (event, game) => {
-	console.log(game);
 	$('#game-title').html(game.name);
 	$('#game-desc').addClass('game-desc').html(game.summary);
 	$('#game-cover-image').css({
@@ -23,7 +22,9 @@ ipcRenderer.on('server.send-game-error', (event, error) => {
 });
 
 ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
-	potentialGames.sort(alphabeticSort);
+	console.log('Games:', potentialGames);
+	if (potentialGames.length)
+		potentialGames.sort(alphabeticSort);
 	potentialGames.forEach((potentialGame) => {
 		let html: string = '<li><a onclick="sendGameLaunch(\'' + potentialGame.commandLine + '\')">' + potentialGame.name + '</a></li>';
 		$(html).appendTo('#beta-games-list');

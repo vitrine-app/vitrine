@@ -36,6 +36,10 @@ export class SteamGamesCrawler {
 
 	private processGames(error, files): void {
 		let counter: number = 0;
+		if (!files.length) {
+			this.currentCallback(null, []);
+			return;
+		}
 		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
 			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
