@@ -25,13 +25,26 @@ ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
 	console.log('Games:', potentialGames);
 	if (potentialGames.length)
 		potentialGames.sort(alphabeticSort);
+	let counter: number = 0;
 	potentialGames.forEach((potentialGame) => {
-		let html: string = '<li><a onclick="sendGameLaunch(\'' + potentialGame.commandLine + '\')">' + potentialGame.name + '</a></li>';
+		let html: string = '<li><a game-id="' + potentialGame.commandLine + '">' + potentialGame.name + '</a></li>';
 		$(html).appendTo('#beta-games-list');
 		console.log(potentialGame.commandLine);
+		counter++;
+		if (counter == potentialGames.length)
+			createGameClickEvents();
 	});
 });
 
 (<any>window).sendGameLaunch = function(commandLine: string) {
 	ipcRenderer.send('client.launch-game', commandLine);
 };
+
+function createGameClickEvents() {
+	$('a[game-id]').each(function() {
+		$(this).click(() => {
+			let gameId: string = $(this).attr('game-id');
+			ipcRenderer.send('client.launch-game', gameId);
+		});
+	})
+}

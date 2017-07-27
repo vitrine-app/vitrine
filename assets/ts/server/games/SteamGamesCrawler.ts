@@ -37,7 +37,10 @@ export class SteamGamesCrawler {
 	private processGames(error, files): void {
 		let counter: number = 0;
 		if (!files.length) {
-			this.currentCallback(null, []);
+			/* TODO: Remove this */
+			let blankGame: PotentialSteamGame = new PotentialSteamGame('PuTTY');
+			blankGame.commandLine = 'C:/Users/P.ROMAN/Desktop/putty.exe';
+			this.currentCallback(null, [blankGame]);
 			return;
 		}
 		files.forEach((appManifest, index, array) => {

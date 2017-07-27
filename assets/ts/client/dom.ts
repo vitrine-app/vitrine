@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 import * as formToObject from 'form-to-object';
 
-/* Debug */
+/* TODO: Remove this */
 ipcRenderer.send('client.get-game', 'The Witcher');
 
 $(document.body).on('submit', '#game-name-form', function(event) {

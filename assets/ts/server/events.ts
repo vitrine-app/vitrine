@@ -1,4 +1,4 @@
-import { execFile } from 'child_process';
+import { execFile, exec, execSync } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
 
@@ -14,19 +14,16 @@ export const events = {
 		});
 	},
 	'client.launch-game': (event, commandLine) => {
-		console.log(commandLine);
-		/*
-		const gameProcess = execFile(commandLine, (err: string, stdout, stderr) => {
-			if (err) {
-				console.error(err);
-				throw err;
-			}
+		let beginTime: Date = new Date();
+
+		let gameProcess = exec(commandLine, (err: string, stdout, stderr) => {
 			console.log(stdout);
+			console.log(stderr);
 		});
-		console.log('Started.');
 		gameProcess.on('exit', () => {
-			console.log('Game ended.');
+			let endTime: Date = new Date();
+			let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
+			console.log('You played', secondsPlayed, 'seconds.');
 		});
-		*/
 	}
 };
