@@ -15,6 +15,7 @@ export function launchDom() {
 
 		let form = formToObject(this);
 		if (form.name) {
+			$(this).find('input[name="name"]').val('');
 			$('#game-title').html('Loading...');
 			ipcRenderer.send('client.get-game', form.name);
 		}

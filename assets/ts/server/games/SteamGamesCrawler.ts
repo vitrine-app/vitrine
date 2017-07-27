@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as glob from 'glob';
 
+import { uuidV5 } from '../helpers';
 import { AcfParser } from '../api/AcfParser';
 import { PotentialSteamGame } from './PotentialSteamGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
@@ -50,6 +51,7 @@ export class SteamGamesCrawler {
 			igdbWrapper.getGame(gameManifest.name, (error, game) => {
 				if (error)
 					return;
+
 				let potentialGame: PotentialSteamGame = new PotentialSteamGame(gameManifest.name, game);
 				let commandArgs: string[] = this.configFile.launchCommand.split(' ');
 				potentialGame.commandLine = [
@@ -57,7 +59,9 @@ export class SteamGamesCrawler {
 					commandArgs[0],
 					commandArgs[1].replace('%id', gameManifest.appid)
 				];
+				potentialGame.uuid = uuidV5(potentialGame.name);
 				this.potentialGames.push(potentialGame);
+
 				counter++;
 				if (counter === array.length) {
 					this.currentCallback(null, this.potentialGames);
