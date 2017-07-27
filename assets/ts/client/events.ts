@@ -1,6 +1,9 @@
 import { ipcRenderer } from 'electron';
 
+import { PotentialSteamGame } from '../server/games/PotentialSteamGame';
 import { beforeCss, alphabeticSort } from './helpers';
+
+let potentialSteamGames: PotentialSteamGame[];
 
 function createGameClickEvents() {
 	$('a[game-id]').each(function() {
@@ -8,7 +11,32 @@ function createGameClickEvents() {
 			let gameId: string = $(this).attr('game-id');
 			ipcRenderer.send('client.launch-game', gameId);
 		});
-	})
+	});
+	$('button.add-game-btn[game-id]').each(function() {
+		$(this).click(() => {
+			let gameId: string = $(this).attr('game-id');
+			ipcRenderer.send('client.add-game', gameId);
+		});
+	});
+}
+
+function renderPotentialGames() {
+	$('#beta-games-list').html('');
+
+	if (potentialSteamGames.length)
+		(<any>potentialSteamGames).sort(alphabeticSort);
+
+	let counter: number = 0;
+	potentialSteamGames.forEach((potentialGame) => {
+		let html: string = '<li>' +
+			//'<a game-id="' + potentialGame.uuid + '">' + potentialGame.name + '</a>' +
+			'<button game-id="' + potentialGame.uuid + '" class="btn btn-success btn-sm add-game-btn">Add ' + potentialGame.name + '</button>' +
+			'</li>';
+		$('#beta-games-list').append(html);
+		counter++;
+		if (counter == potentialSteamGames.length)
+			createGameClickEvents();
+	});
 }
 
 export function setClientReady() {
@@ -39,15 +67,17 @@ export function launchEvents() {
 
 	ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
 		console.log(potentialGames);
-		if (potentialGames.length)
-			potentialGames.sort(alphabeticSort);
-		let counter: number = 0;
-		potentialGames.forEach((potentialGame) => {
-			let html: string = '<li><a game-id="' + potentialGame.uuid + '">' + potentialGame.name + '</a></li>';
-			$('#beta-games-list').append(html);
-			counter++;
-			if (counter == potentialGames.length)
-				createGameClickEvents();
+		potentialSteamGames = potentialGames;
+		renderPotentialGames();
+	});
+
+	ipcRenderer.on('server.remove-potential-game', (event, gameId) => {
+		potentialSteamGames.forEach(function(potentialGame) {
+			if (potentialGame.uuid == gameId) {
+				let index: number = potentialSteamGames.indexOf(potentialGame);
+				potentialSteamGames.splice(index, 1);
+				renderPotentialGames();
+			}
 		});
 	});
 }

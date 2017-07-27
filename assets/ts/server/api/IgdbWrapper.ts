@@ -43,7 +43,7 @@ export class IgdbWrapper {
 		if (this.currentGame.cover)
 			this.currentGame.cover = 'https:' + this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
 		else /* TODO: Change default image */
-			this.currentGame.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
+				this.currentGame.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
 		if (this.currentGame.screenshots) {
 			this.currentGame.screenshots.forEach((element, key) => {
 				this.currentGame.screenshots[key] = 'https:' + element.url.replace('t_thumb', 't_screenshot_med');
