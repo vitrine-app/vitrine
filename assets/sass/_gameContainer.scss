@@ -41,6 +41,7 @@
 					width: 28em;
 					overflow: hidden;
 					position: relative;
+					box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.5);
 
 					&.cover-hovered {
 						/*
@@ -71,8 +72,6 @@
 						color: rgba(255, 255, 255, 0.29);
 						position: fixed;
 						padding: 0.75em 0.45em;
-						//animation-name: zoomIn;
-						//animation-duration: 75ms;
 						cursor: pointer;
 
 						&.play-btn-visible {
