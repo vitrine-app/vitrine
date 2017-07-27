@@ -23,9 +23,9 @@ export class IgdbWrapper {
 		this.findGameByName(name, (error, game) => {
 			if (error && !game) {
 				console.error(error);
-				callback(error.message, null);
+				callback(name + ' not found.', null);
 			}
-			// Register currents elements
+
 			this.currentGame = game;
 			this.currentCallback = callback;
 

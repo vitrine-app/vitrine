@@ -6,7 +6,6 @@ function createGameClickEvents() {
 	$('a[game-id]').each(function() {
 		$(this).click(() => {
 			let gameId: string = $(this).attr('game-id');
-			console.log(gameId);
 			ipcRenderer.send('client.launch-game', gameId);
 		});
 	})
@@ -44,7 +43,7 @@ export function launchEvents() {
 			potentialGames.sort(alphabeticSort);
 		let counter: number = 0;
 		potentialGames.forEach((potentialGame) => {
-			let html: string = '<li><a game-id="' + potentialGame.commandLine + '">' + potentialGame.name + '</a></li>';
+			let html: string = '<li><a game-id="' + potentialGame.uuid + '">' + potentialGame.name + '</a></li>';
 			$('#beta-games-list').append(html);
 			counter++;
 			if (counter == potentialGames.length)
