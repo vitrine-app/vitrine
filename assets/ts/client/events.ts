@@ -1,13 +1,19 @@
 import { ipcRenderer } from 'electron';
+
 import { beforeCss, alphabeticSort } from './helpers';
 
 function createGameClickEvents() {
 	$('a[game-id]').each(function() {
 		$(this).click(() => {
 			let gameId: string = $(this).attr('game-id');
+			console.log(gameId);
 			ipcRenderer.send('client.launch-game', gameId);
 		});
 	})
+}
+
+export function setClientReady() {
+	ipcRenderer.send('client.ready');
 }
 
 export function launchEvents() {
@@ -33,20 +39,21 @@ export function launchEvents() {
 	});
 
 	ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
+		console.log(potentialGames);
 		if (potentialGames.length)
 			potentialGames.sort(alphabeticSort);
 		let counter: number = 0;
 		potentialGames.forEach((potentialGame) => {
 			let html: string = '<li><a game-id="' + potentialGame.commandLine + '">' + potentialGame.name + '</a></li>';
-			//$('#beta-games-list').append(html);
-			console.log('bah alors:', $('#beta-games-list'));
+			$('#beta-games-list').append(html);
 			counter++;
 			if (counter == potentialGames.length)
 				createGameClickEvents();
 		});
 	});
-
-	(<any>window).sendGameLaunch = function (commandLine: string) {
-		ipcRenderer.send('client.launch-game', commandLine);
-	};
 }
+
+(<any>window).sendGameLaunch = function (commandLine: string) {
+	console.log(commandLine)
+	ipcRenderer.send('client.launch-game', JSON.parse(commandLine));
+};

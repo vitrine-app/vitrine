@@ -1,10 +1,16 @@
 import { execFile } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
+import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
 
 let igdbWrapper = new IgdbWrapper();
 
 export const events = {
+	'client.ready': (event) => {
+		getSteamCrawlerPromise().then((potentialGames) => {
+			event.sender.send('server.add-potential-games', potentialGames);
+		});
+	},
 	'client.get-game': (event, gameName) => {
 		igdbWrapper.getGame(gameName, (error, game) => {
 			if (error)
@@ -15,10 +21,12 @@ export const events = {
 	},
 	'client.launch-game': (event, commandLine) => {
 		let beginTime: Date = new Date();
-
-		let gameProcess = execFile(commandLine, (err: string, stdout, stderr) => {
+		commandLine = commandLine.split(',');
+		let programName: string = commandLine.shift();
+		console.log(programName, commandLine);
+		let gameProcess = execFile(programName, commandLine, (err: string, stdout, stderr) => {
 			if (err)
-				throw new Error(err);
+				throw err;
 			console.log(stdout);
 			console.log(stderr);
 		});

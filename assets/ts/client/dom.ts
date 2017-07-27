@@ -4,13 +4,11 @@ import './helpers';
 
 function clickGameCover() {
 	(<any>$('#game-cover-component')).animateCss('pulse', 120);
-	// (<any>$('#cover-play-btn')).animateCss('pulse', 450);
-	console.log('Let\'s play!');
 }
 
 export function launchDom() {
 	/* TODO: Remove this */
-// ipcRenderer.send('client.get-game', 'The Witcher');
+	// ipcRenderer.send('client.get-game', 'The Witcher');
 
 	$(document.body).on('submit', '#game-name-form', function(event) {
 		event.preventDefault();

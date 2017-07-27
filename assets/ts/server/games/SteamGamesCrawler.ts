@@ -39,7 +39,7 @@ export class SteamGamesCrawler {
 		if (!files.length) {
 			/* TODO: Remove this */
 			let blankGame: PotentialSteamGame = new PotentialSteamGame('PuTTY', null);
-			blankGame.commandLine = 'C:/Users/P.ROMAN/Desktop/putty.exe';
+			blankGame.commandLine = ['C:/Users/P.ROMAN/Desktop/putty.exe'];
 			this.currentCallback(null, [blankGame]);
 			return;
 		}
@@ -51,8 +51,12 @@ export class SteamGamesCrawler {
 				if (error)
 					return;
 				let potentialGame: PotentialSteamGame = new PotentialSteamGame(gameManifest.name, game);
-				potentialGame.commandLine = path.join(this.configFile.installFolder, 'steam.exe') + ' ' +
-					this.configFile.launchCommand.replace('%id', gameManifest.appid);
+				let commandArgs: string[] = this.configFile.launchCommand.split(' ');
+				potentialGame.commandLine = [
+					path.join(this.configFile.installFolder, 'steam.exe'),
+					commandArgs[0],
+					commandArgs[1].replace('%id', gameManifest.appid)
+				];
 				this.potentialGames.push(potentialGame);
 				counter++;
 				if (counter === array.length) {

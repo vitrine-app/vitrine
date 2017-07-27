@@ -3,11 +3,11 @@ import * as jQuery from 'jquery';
 import 'bootstrap-sass';
 
 import { clientBootstrap } from './bootstrap';
-import { launchEvents } from './events';
+import { launchEvents, setClientReady } from './events';
 import { launchDom } from './dom';
 
 clientBootstrap(() => {
-	console.log('We escaped the loop!');
 	launchEvents();
 	launchDom();
+	setClientReady();
 });
