@@ -21,15 +21,16 @@ export class IgdbWrapper {
 		this.operating = true;
 
 		this.findGameByName(name, (error, game) => {
-			if (game === undefined) {
-				callback(name + ' not found.', null);
+			if (error && !game) {
+				console.error(error);
+				callback(error.message, null);
 			}
 			// Register currents elements
 			this.currentGame = game;
 			this.currentCallback = callback;
 
 			this.basicFormatting();
-			this.findCompanyById(game.developers[0], this.addDeveloperCallback.bind(this));
+			this.findCompanyById(game.developers, this.addDeveloperCallback.bind(this));
 		});
 	}
 
@@ -39,8 +40,10 @@ export class IgdbWrapper {
 			this.currentGame.rating = Math.round(rating);
 			delete this.currentGame['total_rating'];
 		}
-
-		this.currentGame.cover = 'https:' + this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
+		if (this.currentGame.cover)
+			this.currentGame.cover = 'https:' + this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
+		else /* TODO: Change default image */
+			this.currentGame.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
 		if (this.currentGame.screenshots) {
 			this.currentGame.screenshots.forEach((element, key) => {
 				this.currentGame.screenshots[key] = 'https:' + element.url.replace('t_thumb', 't_screenshot_med');
@@ -74,8 +77,12 @@ export class IgdbWrapper {
 		});
 	}
 
-	private findCompanyById(id, callback) {
-		let ids = (Array.isArray(id)) ? (id) : ([id]);
+	private findCompanyById(array, callback) {
+		if (!array || !array.length) {
+			callback({name: ''});
+			return;
+		}
+		let ids = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
 
 		this.client.companies({
 			ids: ids
@@ -113,7 +120,7 @@ export class IgdbWrapper {
 	private addDeveloperCallback(developer) {
 		this.currentGame.developers = developer.name;
 
-		this.findCompanyById(this.currentGame.publishers[0], this.addPublisherCallback.bind(this));
+		this.findCompanyById(this.currentGame.publishers, this.addPublisherCallback.bind(this));
 	}
 
 	private addPublisherCallback(publisher) {
