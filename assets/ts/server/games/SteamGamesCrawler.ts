@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as glob from 'glob';
-import * as uuid from 'uuid/v4';
 
+import { uuidV5 } from '../helpers';
 import { AcfParser } from '../api/AcfParser';
 import { PotentialSteamGame } from './PotentialSteamGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
@@ -59,7 +59,7 @@ export class SteamGamesCrawler {
 					commandArgs[0],
 					commandArgs[1].replace('%id', gameManifest.appid)
 				];
-				potentialGame.uuid = uuid();
+				potentialGame.uuid = uuidV5(potentialGame.name);
 				this.potentialGames.push(potentialGame);
 
 				counter++;

@@ -1,4 +1,5 @@
 import { execFile } from 'child_process';
+import { uuidV5 } from './helpers';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
 import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
@@ -29,6 +30,9 @@ export const events = {
 		potentialSteamGames.forEach(function(potentialSteamGame) {
 			if (potentialSteamGame.uuid == gameId) {
 				gameFound = true;
+				if (potentialSteamGame.uuid !== uuidV5(potentialSteamGame.name))
+					throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
+
 				let commandArgs: string[] = potentialSteamGame.commandLine;
 				let programName: string = commandArgs.shift();
 
