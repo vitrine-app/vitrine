@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron';
 import { beforeCss, alphabeticSort } from './helpers';
 
 ipcRenderer.on('server.send-game', (event, game) => {
+	console.log(game);
 	$('#game-title').html(game.name);
 	$('#game-desc').addClass('game-desc').html(game.summary);
 	$('#game-cover-image').css({
@@ -14,6 +15,8 @@ ipcRenderer.on('server.send-game', (event, game) => {
 			'background-image': 'url(' + game.screenshots[0] + ')'
 		});
 	}
+	let ratingHtml: string = '<div id="game-rating" class="c100 p' + game.rating + '"><span>' + game.rating + '</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div>';
+	$('#game-rating').html(ratingHtml);
 });
 
 ipcRenderer.on('server.send-game-error', (event, error) => {

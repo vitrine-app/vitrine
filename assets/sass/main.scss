@@ -12,6 +12,9 @@ $fa-font-path: '../node_modules/font-awesome/fonts';
 /* Animate.css */
 @import '../../node_modules/animate.sass/scss/animate';
 
+/* Circle percentages */
+@import '../../node_modules/sass-percentage-circle/circle.scss';
+
 /* GameWrapper component */
 @import 'game_wrapper';
 
