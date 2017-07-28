@@ -4,14 +4,14 @@ import * as glob from 'glob';
 
 import { uuidV5 } from '../helpers';
 import { AcfParser } from '../api/AcfParser';
-import { PotentialSteamGame } from './PotentialSteamGame';
+import { PotentialGame } from './PotentialGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
 
 export class SteamGamesCrawler {
 	private configFilePath: string;
 	private configFile: any;
 	private manifestRegEx: string;
-	private potentialGames: PotentialSteamGame[];
+	private potentialGames: PotentialGame[];
 	private currentCallback: Function;
 
 	constructor() {
@@ -36,14 +36,14 @@ export class SteamGamesCrawler {
 	}
 
 	private processGames(error, files): void {
-		let counter: number = 0;
 		if (!files.length) {
 			/* TODO: Remove this */
-			let blankGame: PotentialSteamGame = new PotentialSteamGame('PuTTY', null);
+			let blankGame: PotentialGame = new PotentialGame('PuTTY', null);
 			blankGame.commandLine = ['C:/Users/P.ROMAN/Desktop/putty.exe'];
 			this.currentCallback(null, [blankGame]);
 			return;
 		}
+		let counter: number = 0;
 		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
 			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
@@ -52,7 +52,7 @@ export class SteamGamesCrawler {
 				if (error)
 					return;
 
-				let potentialGame: PotentialSteamGame = new PotentialSteamGame(gameManifest.name, game);
+				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				let commandArgs: string[] = this.configFile.launchCommand.split(' ');
 				potentialGame.commandLine = [
 					path.join(this.configFile.installFolder, 'steam.exe'),

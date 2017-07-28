@@ -4,15 +4,15 @@ import { execFile } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
 import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
-import { PotentialSteamGame } from './games/PotentialSteamGame';
+import { PotentialGame } from './games/PotentialGame';
 import { uuidV5, downloadFile } from './helpers';
 
 let igdbWrapper: IgdbWrapper = new IgdbWrapper();
-let potentialSteamGames: PotentialSteamGame[];
+let potentialSteamGames: PotentialGame[];
 
 export const events = {
 	'client.ready': (event) => {
-		getSteamCrawlerPromise().then((potentialGames: PotentialSteamGame[]) => {
+		getSteamCrawlerPromise().then((potentialGames: PotentialGame[]) => {
 			potentialSteamGames = potentialGames;
 			event.sender.send('server.add-potential-games', potentialSteamGames);
 		});

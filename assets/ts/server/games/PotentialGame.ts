@@ -1,4 +1,4 @@
-export abstract class PotentialGame {
+export class PotentialGame {
 	public commandLine: string[];
 	public uuid: string;
 

@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron';
 
-import { PotentialSteamGame } from '../server/games/PotentialSteamGame';
+import { PotentialGame } from '../server/games/PotentialGame';
 import { beforeCss, alphabeticSort } from './helpers';
 
-let potentialSteamGames: PotentialSteamGame[];
+let potentialSteamGames: PotentialGame[];
 
 function createGameClickEvents() {
 	$('a[game-id]').each(function() {
