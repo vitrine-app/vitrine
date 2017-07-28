@@ -12,7 +12,7 @@ $.fn.extend({
 
 export function beforeCss(selector: any, styling: object) {
 	let rawStyling: string = '';
-	Object.keys(styling).forEach(function(key) {
+	Object.keys(styling).forEach((key) => {
 		rawStyling += key + ': ' + styling[key] + ';';
 	});
 

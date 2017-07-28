@@ -27,7 +27,7 @@
     "awesome-typescript-loader": "^3.2.2",
     "electron": "^1.7.5",
     "node-sass-chokidar": "0.0.3",
-    "parallel-webpack": "^2.0.0",
+    "parallel-webpack": "^2.1.0",
     "typescript": "^2.4.2",
     "webpack": "^3.4.1"
   },

@@ -138,7 +138,7 @@ export class IgdbWrapper {
 
 	private addGenresCallback(genres) {
 		let genresArray = [];
-		genres.forEach(function(genre) {
+		genres.forEach((genre) => {
 			genresArray.push(genre.name);
 		});
 		this.currentGame.genres = genresArray;

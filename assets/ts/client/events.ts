@@ -1,9 +1,11 @@
 import { ipcRenderer } from 'electron';
 
 import { PotentialGame } from '../server/games/PotentialGame';
+import { PlayableGame } from '../server/games/PlayableGame';
 import { beforeCss, alphabeticSort } from './helpers';
 
-let potentialSteamGames: PotentialGame[];
+let potentialGames: PotentialGame[];
+let playableGames: PlayableGame[];
 
 function createGameClickEvents() {
 	$('a[game-id]').each(function() {
@@ -21,20 +23,20 @@ function createGameClickEvents() {
 }
 
 function renderPotentialGames() {
-	$('#beta-games-list').html('');
+	$('#potential-games-list').html('');
 
-	if (potentialSteamGames.length)
-		(<any>potentialSteamGames).sort(alphabeticSort);
+	if (potentialGames.length)
+		(<any>potentialGames).sort(alphabeticSort);
 
 	let counter: number = 0;
-	potentialSteamGames.forEach((potentialGame) => {
+	potentialGames.forEach((potentialGame) => {
 		let html: string = '<li>' +
 			//'<a game-id="' + potentialGame.uuid + '">' + potentialGame.name + '</a>' +
 			'<button game-id="' + potentialGame.uuid + '" class="btn btn-success btn-sm add-game-btn">Add ' + potentialGame.name + '</button>' +
 			'</li>';
-		$('#beta-games-list').append(html);
+		$('#potential-games-list').append(html);
 		counter++;
-		if (counter == potentialSteamGames.length)
+		if (counter == potentialGames.length)
 			createGameClickEvents();
 	});
 }
@@ -46,6 +48,9 @@ export function setClientReady() {
 export function launchEvents() {
 	ipcRenderer.on('server.send-game', (event, game) => {
 		console.log(game);
+		$('#game-cover-container').css({
+			'display': 'block'
+		});
 		$('#game-title').html(game.name);
 		$('#game-desc').addClass('game-desc').html(game.summary);
 		$('#game-cover-image').css({
@@ -65,17 +70,22 @@ export function launchEvents() {
 		throw new Error(error);
 	});
 
-	ipcRenderer.on('server.add-potential-games', (event, potentialGames) => {
-		console.log(potentialGames);
-		potentialSteamGames = potentialGames;
+	ipcRenderer.on('server.add-potential-games', (event, games) => {
+		console.log('Potential games:', games);
+		potentialGames = games;
 		renderPotentialGames();
 	});
 
+	ipcRenderer.on('server.add-playable-games', (event, games) => {
+		console.log('Playable games:', games);
+		playableGames = games;
+	});
+
 	ipcRenderer.on('server.remove-potential-game', (event, gameId) => {
-		potentialSteamGames.forEach(function(potentialGame) {
+		potentialGames.forEach((potentialGame) => {
 			if (potentialGame.uuid == gameId) {
-				let index: number = potentialSteamGames.indexOf(potentialGame);
-				potentialSteamGames.splice(index, 1);
+				let index: number = potentialGames.indexOf(potentialGame);
+				potentialGames.splice(index, 1);
 				renderPotentialGames();
 			}
 		});
