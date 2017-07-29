@@ -28,7 +28,7 @@ function loadComponents() {
 }
 
 export function clientBootstrap(callback: Function) {
-	fs.readdir('./assets/components', (err, files) => {
+	fs.readdir(path.join(__dirname, '../assets/components'), (err, files) => {
 		componentsNb = files.length;
 		currentCallback = callback;
 		loadComponents();
