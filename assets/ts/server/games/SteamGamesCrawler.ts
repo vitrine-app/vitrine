@@ -6,6 +6,7 @@ import { uuidV5 } from '../helpers';
 import { AcfParser } from '../api/AcfParser';
 import { PotentialGame } from '../../models/PotentialGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
+import { GamesCollection } from '../../models/GamesCollection';
 
 class SteamGamesCrawler {
 	private configFilePath: string;
@@ -37,17 +38,15 @@ class SteamGamesCrawler {
 
 	private processGames(error, files): void {
 		if (!files.length) {
-			/* TODO: Remove this */
-			let blankGame: PotentialGame = new PotentialGame('PuTTY', null);
-			blankGame.commandLine = ['C:/Users/P.ROMAN/Desktop/putty.exe'];
-			this.callback(null, [blankGame]);
+			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+			this.callback(null, potentialGames);
 			return;
 		}
 		let counter: number = 0;
 		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
 
-			if (this.isGameAlreadyAdded(gameManifest.name)) {
+			if (SteamGamesCrawler.isGameAlreadyAdded(gameManifest.name)) {
 				counter++;
 				return;
 			}
@@ -69,14 +68,16 @@ class SteamGamesCrawler {
 
 				counter++;
 				if (counter === array.length) {
-					this.callback(null, this.potentialGames);
+					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+					potentialGames.games = this.potentialGames;
+					this.callback(null, potentialGames);
 					delete this.callback;
 				}
 			});
 		});
 	}
 
-	private isGameAlreadyAdded(name: string) {
+	private static isGameAlreadyAdded(name: string) {
 		let gameId: string = uuidV5(name);
 
 		let gameDirectory = path.join(__dirname, 'games', gameId);

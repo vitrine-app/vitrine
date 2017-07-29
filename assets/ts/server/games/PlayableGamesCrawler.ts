@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { PlayableGame } from '../../models/PlayableGame';
+import { GamesCollection } from '../../models/GamesCollection';
 
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];
@@ -15,14 +16,16 @@ class PlayableGamesCrawler {
 
 	public search(callback) {
 		this.callback = callback;
-		console.log(this.gamesDirectory);
-		fs.readdir(this.gamesDirectory, (err, files) => {
-			if (err) {
-				this.callback(err, null);
+		fs.readdir(this.gamesDirectory, (error, files) => {
+			if (error) {
+				this.callback(error, null);
 				return;
 			}
-			if (!files.length)
-				this.callback(null, []);
+			if (!files.length) {
+				let playableGames: GamesCollection<PlayableGame> = new GamesCollection();
+				this.callback(null, playableGames);
+				return;
+			}
 			let counter: number = 0;
 			files.forEach((gameId) => {
 				let configFilePath: any = path.join(this.gamesDirectory, gameId, 'config.json');
@@ -31,8 +34,12 @@ class PlayableGamesCrawler {
 					this.playableGames.push(playableGame);
 				}
 				counter++;
-				if (counter == files.length)
-					this.callback(null, this.playableGames);
+				if (counter === files.length) {
+					let playableGames: GamesCollection<PlayableGame> = new GamesCollection();
+					playableGames.games = this.playableGames;
+					this.callback(null, playableGames);
+					delete this.callback;
+				}
 			});
 		});
 	}

@@ -3,28 +3,32 @@ import * as fs from 'fs';
 import { execFile } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
-import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
+import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
-import { uuidV5, downloadFile } from './helpers';
+import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawlerPromise } from './games/PlayableGamesCrawler';
+import { uuidV5, downloadFile } from './helpers';
 
 let igdbWrapper: IgdbWrapper = new IgdbWrapper();
-let potentialGames: PotentialGame[];
-let playableGames: PlayableGame[];
+let potentialGames: GamesCollection<PotentialGame>;
+let playableGames: GamesCollection<PlayableGame>;
 
 export const events = {
 	'client.ready': (event) => {
-		getSteamCrawlerPromise().then((games: PotentialGame[]) => {
+		potentialGames = new GamesCollection();
+		playableGames = new GamesCollection();
+
+		getSteamCrawlerPromise().then((games: GamesCollection<PotentialGame>) => {
 			potentialGames = games;
-			event.sender.send('server.add-potential-games', potentialGames);
+			event.sender.send('server.add-potential-games', potentialGames.games);
 		}).catch((error) => {
 			throw error;
 		});
 
-		getPlayableGamesCrawlerPromise().then((games: PlayableGame[]) => {
+		getPlayableGamesCrawlerPromise().then((games: GamesCollection<PlayableGame>) => {
 			playableGames = games;
-			event.sender.send('server.add-playable-games', playableGames);
+			event.sender.send('server.add-playable-games', playableGames.games);
 		}).catch((error) => {
 			throw error;
 		});
@@ -66,7 +70,7 @@ export const events = {
 				});
 			}
 			counter++;
-			if (counter == potentialGames.length && !gameFound)
+			if (counter == potentialGames.games.length && !gameFound)
 				throw Error('Game not found');
 		});
 	},
