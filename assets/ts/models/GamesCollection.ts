@@ -1,4 +1,4 @@
-import { alphabeticSort } from '../../client/helpers';
+import { alphabeticSort } from '../client/helpers';
 
 export class GamesCollection<T> {
 	private _games: T[];

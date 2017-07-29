@@ -4,8 +4,8 @@ import { execFile } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
 import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
-import { PotentialGame } from './games/PotentialGame';
-import { PlayableGame } from './games/PlayableGame';
+import { PotentialGame } from '../models/PotentialGame';
+import { PlayableGame } from '../models/PlayableGame';
 import { uuidV5, downloadFile } from './helpers';
 import { getPlayableGamesCrawlerPromise } from './games/PlayableGamesCrawler';
 

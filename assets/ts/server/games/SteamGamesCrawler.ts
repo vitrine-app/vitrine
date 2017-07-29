@@ -4,7 +4,7 @@ import * as glob from 'glob';
 
 import { uuidV5 } from '../helpers';
 import { AcfParser } from '../api/AcfParser';
-import { PotentialGame } from './PotentialGame';
+import { PotentialGame } from '../../models/PotentialGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
 
 class SteamGamesCrawler {

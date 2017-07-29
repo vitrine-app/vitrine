@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { PlayableGame } from './PlayableGame';
+import { PlayableGame } from '../../models/PlayableGame';
 
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];

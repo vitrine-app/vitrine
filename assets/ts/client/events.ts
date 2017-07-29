@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron';
 
-import { PotentialGame } from '../server/games/PotentialGame';
-import { PlayableGame } from '../server/games/PlayableGame';
-import { beforeCss, alphabeticSort } from './helpers';
-import { GamesCollection } from '../server/games/GamesCollection';
+import { PotentialGame } from '../models/PotentialGame';
+import { PlayableGame } from '../models/PlayableGame';
+import { beforeCss } from './helpers';
+import { GamesCollection } from '../models/GamesCollection';
 
 let potentialGames: GamesCollection<PotentialGame>;
 let playableGames: GamesCollection<PlayableGame>;
