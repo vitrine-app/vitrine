@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron';
 
+import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { beforeCss } from './helpers';
-import { GamesCollection } from '../models/GamesCollection';
 
 let potentialGames: GamesCollection<PotentialGame>;
 let playableGames: GamesCollection<PlayableGame>;
@@ -13,7 +13,26 @@ function createGameClickEvents(treatingPlayableGames: boolean) {
 		$('a.play-game-link[game-id]').each(function() {
 			$(this).click(() => {
 				let gameId: string = $(this).attr('game-id');
-				ipcRenderer.send('client.launch-game', gameId);
+				playableGames.getGame(gameId, (error, game) => {
+					if (error)
+						throw new Error(error);
+					let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
+					let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
+					$('#game-cover-container').css({
+						'display': 'block'
+					});
+					$('#game-title').html(game.name);
+					$('#game-desc').addClass('game-desc').html(game.details.summary);
+					$('#game-cover-image').css({
+						'background-image': gameCover,
+						'background-repeat': 'no-repeat',
+						'background-size': '100% 100%',
+					});
+					beforeCss('#game-background', {
+						'background-image': gameBgScreen
+					});
+				});
+				// ipcRenderer.send('client.launch-game', gameId);
 			});
 		});
 	}
