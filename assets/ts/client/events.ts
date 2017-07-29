@@ -7,19 +7,23 @@ import { beforeCss, alphabeticSort } from './helpers';
 let potentialGames: PotentialGame[];
 let playableGames: PlayableGame[];
 
-function createGameClickEvents() {
-	$('a[game-id]').each(function() {
-		$(this).click(() => {
-			let gameId: string = $(this).attr('game-id');
-			ipcRenderer.send('client.launch-game', gameId);
+function createGameClickEvents(treatingPlayableGames: boolean) {
+	if (treatingPlayableGames) {
+		$('a.play-game-link[game-id]').each(function() {
+			$(this).click(() => {
+				let gameId: string = $(this).attr('game-id');
+				ipcRenderer.send('client.launch-game', gameId);
+			});
 		});
-	});
-	$('button.add-game-btn[game-id]').each(function() {
-		$(this).click(() => {
-			let gameId: string = $(this).attr('game-id');
-			ipcRenderer.send('client.add-game', gameId);
+	}
+	else {
+		$('button.add-game-btn[game-id]').each(function() {
+			$(this).click(() => {
+				let gameId: string = $(this).attr('game-id');
+				ipcRenderer.send('client.add-game', gameId);
+			});
 		});
-	});
+	}
 }
 
 function renderPotentialGames() {
@@ -29,7 +33,7 @@ function renderPotentialGames() {
 		(<any>potentialGames).sort(alphabeticSort);
 
 	let counter: number = 0;
-	potentialGames.forEach((potentialGame) => {
+	potentialGames.forEach((potentialGame: PotentialGame) => {
 		let html: string = '<li>' +
 			//'<a game-id="' + potentialGame.uuid + '">' + potentialGame.name + '</a>' +
 			'<button game-id="' + potentialGame.uuid + '" class="btn btn-success btn-sm add-game-btn">Add ' + potentialGame.name + '</button>' +
@@ -37,7 +41,23 @@ function renderPotentialGames() {
 		$('#potential-games-list').append(html);
 		counter++;
 		if (counter == potentialGames.length)
-			createGameClickEvents();
+			createGameClickEvents(false);
+	});
+}
+
+function renderPlayableGames() {
+	$('#playable-games-list').html('');
+
+	if (playableGames.length)
+		(<any>playableGames).sort(alphabeticSort);
+
+	let counter: number = 0;
+	playableGames.forEach((playableGame: PlayableGame) => {
+		let html: string = '<li><a class="play-game-link" game-id="' + playableGame.uuid + '">' + playableGame.name + '</a></li>';
+		$('#playable-games-list').append(html);
+		counter++;
+		if (counter == playableGames.length)
+			createGameClickEvents(true);
 	});
 }
 
@@ -71,18 +91,17 @@ export function launchEvents() {
 	});
 
 	ipcRenderer.on('server.add-potential-games', (event, games) => {
-		console.log('Potential games:', games);
 		potentialGames = games;
 		renderPotentialGames();
 	});
 
 	ipcRenderer.on('server.add-playable-games', (event, games) => {
-		console.log('Playable games:', games);
 		playableGames = games;
+		renderPlayableGames();
 	});
 
 	ipcRenderer.on('server.remove-potential-game', (event, gameId) => {
-		potentialGames.forEach((potentialGame) => {
+		potentialGames.forEach((potentialGame: PotentialGame) => {
 			if (potentialGame.uuid == gameId) {
 				let index: number = potentialGames.indexOf(potentialGame);
 				potentialGames.splice(index, 1);

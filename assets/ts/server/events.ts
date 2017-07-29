@@ -41,16 +41,17 @@ export const events = {
 		let counter: number = 0;
 		let gameFound: boolean = false;
 
-		potentialGames.forEach((potentialSteamGame) => {
-			if (potentialSteamGame.uuid == gameId) {
+		playableGames.forEach((potentialGame: PotentialGame) => {
+			if (potentialGame.uuid == gameId) {
 				gameFound = true;
-				if (potentialSteamGame.uuid !== uuidV5(potentialSteamGame.name))
+				if (potentialGame.uuid !== uuidV5(potentialGame.name))
 					throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
 
-				let commandArgs: string[] = potentialSteamGame.commandLine;
+				let commandArgs: string[] = potentialGame.commandLine;
 				let programName: string = commandArgs.shift();
 
 				let beginTime: Date = new Date();
+				console.log(programName, commandArgs);
 				let gameProcess = execFile(programName, commandArgs, (err: string, stdout, stderr) => {
 					if (err)
 						throw err;
