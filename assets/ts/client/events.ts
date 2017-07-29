@@ -3,9 +3,10 @@ import { ipcRenderer } from 'electron';
 import { PotentialGame } from '../server/games/PotentialGame';
 import { PlayableGame } from '../server/games/PlayableGame';
 import { beforeCss, alphabeticSort } from './helpers';
+import { GamesCollection } from '../server/games/GamesCollection';
 
-let potentialGames: PotentialGame[];
-let playableGames: PlayableGame[];
+let potentialGames: GamesCollection<PotentialGame>;
+let playableGames: GamesCollection<PlayableGame>;
 
 function createGameClickEvents(treatingPlayableGames: boolean) {
 	if (treatingPlayableGames) {
@@ -29,8 +30,7 @@ function createGameClickEvents(treatingPlayableGames: boolean) {
 function renderPotentialGames() {
 	$('#potential-games-list').html('');
 
-	if (potentialGames.length)
-		(<any>potentialGames).sort(alphabeticSort);
+	potentialGames.sort();
 
 	let counter: number = 0;
 	potentialGames.forEach((potentialGame: PotentialGame) => {
@@ -40,7 +40,7 @@ function renderPotentialGames() {
 			'</li>';
 		$('#potential-games-list').append(html);
 		counter++;
-		if (counter == potentialGames.length)
+		if (counter == potentialGames.games.length)
 			createGameClickEvents(false);
 	});
 }
@@ -48,26 +48,26 @@ function renderPotentialGames() {
 function renderPlayableGames() {
 	$('#playable-games-list').html('');
 
-	if (playableGames.length)
-		(<any>playableGames).sort(alphabeticSort);
+	playableGames.sort();
 
 	let counter: number = 0;
 	playableGames.forEach((playableGame: PlayableGame) => {
 		let html: string = '<li><a class="play-game-link" game-id="' + playableGame.uuid + '">' + playableGame.name + '</a></li>';
 		$('#playable-games-list').append(html);
 		counter++;
-		if (counter == playableGames.length)
+		if (counter == playableGames.games.length)
 			createGameClickEvents(true);
 	});
 }
 
 export function setClientReady() {
+	potentialGames = new GamesCollection();
+	playableGames = new GamesCollection();
 	ipcRenderer.send('client.ready');
 }
 
 export function launchEvents() {
 	ipcRenderer.on('server.send-game', (event, game) => {
-		console.log(game);
 		$('#game-cover-container').css({
 			'display': 'block'
 		});
@@ -91,22 +91,24 @@ export function launchEvents() {
 	});
 
 	ipcRenderer.on('server.add-potential-games', (event, games) => {
-		potentialGames = games;
+		potentialGames.games = games;
 		renderPotentialGames();
 	});
 
 	ipcRenderer.on('server.add-playable-games', (event, games) => {
-		playableGames = games;
+		playableGames.games = games;
 		renderPlayableGames();
 	});
 
 	ipcRenderer.on('server.remove-potential-game', (event, gameId) => {
-		potentialGames.forEach((potentialGame: PotentialGame) => {
-			if (potentialGame.uuid == gameId) {
-				let index: number = potentialGames.indexOf(potentialGame);
-				potentialGames.splice(index, 1);
+		potentialGames.removeGame(gameId, (error, game: PotentialGame) => {
+			if (error)
+				throw new Error(error);
+			else if (game) {
+				playableGames.addGame(PlayableGame.toPlayableGame(game));
 				renderPotentialGames();
+				renderPlayableGames();
 			}
-		});
+		})
 	});
 }

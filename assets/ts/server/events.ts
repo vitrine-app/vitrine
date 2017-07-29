@@ -80,7 +80,7 @@ export const events = {
 					return;
 				fs.mkdirSync(gameDirectory);
 
-				let addedGame: any = potentialSteamGame;
+				let addedGame: any = PlayableGame.toPlayableGame(potentialSteamGame);
 				let screenPath = path.join(gameDirectory, 'background.jpg');
 				let coverPath = path.join(gameDirectory, 'cover.jpg');
 
