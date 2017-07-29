@@ -82,6 +82,7 @@ export const events = {
 
 				if (fs.existsSync(configFilePath))
 					return;
+				console.log(gameDirectory);
 				fs.mkdirSync(gameDirectory);
 
 				let addedGame: any = PlayableGame.toPlayableGame(potentialSteamGame);

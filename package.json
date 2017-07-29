@@ -7,10 +7,7 @@
   "license": "MIT",
   "build": {
     "appId": "my.id",
-    "productName": "Vitrine",
-    "mac": {
-      "category": "mescouiles.salade"
-    }
+    "productName": "Vitrine"
   },
   "dependencies": {
     "animate.sass": "^1.0.1",
