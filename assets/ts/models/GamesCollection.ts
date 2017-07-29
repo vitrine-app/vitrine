@@ -1,4 +1,6 @@
-import { alphabeticSort } from '../client/helpers';
+function alphabeticSort(nodeA: any, nodeB: any) {
+	return nodeA.name > nodeB.name;
+}
 
 export class GamesCollection<T> {
 	private _games: T[];

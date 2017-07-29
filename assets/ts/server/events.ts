@@ -84,9 +84,9 @@ export const events = {
 				let screenPath = path.join(gameDirectory, 'background.jpg');
 				let coverPath = path.join(gameDirectory, 'cover.jpg');
 
-				downloadFile(addedGame.details.cover, coverPath, () => {
+				downloadFile(addedGame.details.cover, coverPath, true, () => {
 					addedGame.details.cover = coverPath;
-					downloadFile(addedGame.details.screenshots[0].replace('t_screenshot_med', 't_screenshot_huge'), screenPath, () => {
+					downloadFile(addedGame.details.screenshots[0].replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
 						addedGame.details.backgroundScreen = screenPath;
 						delete addedGame.details.screenshots;
 						fs.writeFile(configFilePath, JSON.stringify(addedGame, null, 2), (err) => {
