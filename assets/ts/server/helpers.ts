@@ -1,3 +1,4 @@
+import * as http from 'http';
 import * as https from 'https';
 import * as fs from 'fs';
 import * as uuid from 'uuid/v5';
@@ -8,10 +9,11 @@ export function uuidV5(name: string) {
 	return uuid(name, dnsNamespace);
 }
 
-export function downloadFile(url, path, callback) {
+export function downloadFile(url, path, isHttps, callback) {
 	let file = fs.createWriteStream(path);
+	let protocol: any = (isHttps) ? (https) : (http);
 
-	https.get(url, (response) => {
+	protocol.get(url, (response) => {
 		response.pipe(file);
 		callback();
 	});

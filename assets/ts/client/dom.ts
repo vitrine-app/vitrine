@@ -1,14 +1,14 @@
 import { ipcRenderer } from 'electron';
 import * as formToObject from 'form-to-object';
-import './helpers';
+
+import { extendJQuery } from './helpers';
 
 function clickGameCover() {
 	(<any>$('#game-cover-component')).animateCss('pulse', 120);
 }
 
 export function launchDom() {
-	/* TODO: Remove this */
-	// ipcRenderer.send('client.get-game', 'The Witcher');
+	extendJQuery();
 
 	$(document.body).on('submit', '#game-name-form', function(event) {
 		event.preventDefault();

@@ -3,12 +3,13 @@ import * as jQuery from 'jquery';
 import 'bootstrap-sass';
 
 import { clientBootstrap, loadTitleBar } from './bootstrap';
-import { launchEvents, setClientReady } from './events';
+import { VitrineClient } from './VitrineClient';
 import { launchDom } from './dom';
 
 clientBootstrap(() => {
 	// loadTitleBar();
-	launchEvents();
+	let vitrineClient: VitrineClient = new VitrineClient();
+	vitrineClient.launchEvents();
 	launchDom();
-	setClientReady();
+	vitrineClient.run();
 });
