@@ -5,6 +5,13 @@
   "main": "main.js",
   "author": "Paul Roman",
   "license": "MIT",
+  "build": {
+    "appId": "my.id",
+    "productName": "Vitrine",
+    "mac": {
+      "category": "mescouiles.salade"
+    }
+  },
   "dependencies": {
     "animate.sass": "^1.0.1",
     "bootstrap-sass": "^3.3.7",
@@ -26,8 +33,9 @@
     "@types/uuid": "^3.4.0",
     "awesome-typescript-loader": "^3.2.2",
     "electron": "^1.7.5",
+    "electron-builder": "^19.18.0",
     "node-sass-chokidar": "0.0.3",
-    "parallel-webpack": "^2.0.0",
+    "parallel-webpack": "^2.1.0",
     "typescript": "^2.4.2",
     "webpack": "^3.4.1"
   },
@@ -39,6 +47,8 @@
     "run-server-electron": "webpack --config config/server.build.js && electron .",
     "run-client-electron": "webpack --config config/client.build.js && electron .",
     "run-style-electron": "npm run build-css && electron .",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   }
 }

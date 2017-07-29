@@ -7,12 +7,12 @@ import { AcfParser } from '../api/AcfParser';
 import { PotentialGame } from './PotentialGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
 
-export class SteamGamesCrawler {
+class SteamGamesCrawler {
 	private configFilePath: string;
 	private configFile: any;
 	private manifestRegEx: string;
 	private potentialGames: PotentialGame[];
-	private currentCallback: Function;
+	private callback: Function;
 
 	constructor() {
 		this.configFilePath = path.join('config/steam.json');
@@ -22,7 +22,7 @@ export class SteamGamesCrawler {
 	}
 
 	public search(callback): void {
-		this.currentCallback = callback;
+		this.callback = callback;
 		this.configFile.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
 
@@ -40,18 +40,23 @@ export class SteamGamesCrawler {
 			/* TODO: Remove this */
 			let blankGame: PotentialGame = new PotentialGame('PuTTY', null);
 			blankGame.commandLine = ['C:/Users/P.ROMAN/Desktop/putty.exe'];
-			this.currentCallback(null, [blankGame]);
+			this.callback(null, [blankGame]);
 			return;
 		}
 		let counter: number = 0;
 		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
-			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 
+			if (this.isGameAlreadyAdded(gameManifest.name)) {
+				counter++;
+				return;
+			}
+
+			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 			igdbWrapper.getGame(gameManifest.name, (error, game) => {
 				if (error)
 					return;
-
+				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				let commandArgs: string[] = this.configFile.launchCommand.split(' ');
 				potentialGame.commandLine = [
@@ -64,17 +69,27 @@ export class SteamGamesCrawler {
 
 				counter++;
 				if (counter === array.length) {
-					this.currentCallback(null, this.potentialGames);
-					delete this.currentCallback;
+					this.callback(null, this.potentialGames);
+					delete this.callback;
 				}
 			});
 		});
+	}
+
+	private isGameAlreadyAdded(name: string) {
+		let gameId: string = uuidV5(name);
+
+		let gameDirectory = path.join(__dirname, 'games', gameId);
+		let configFilePath = path.join(gameDirectory, 'config.json');
+
+		return fs.existsSync(configFilePath);
+
 	}
 }
 
 export function getSteamCrawlerPromise() {
 	return new Promise((resolve, reject) => {
-		new SteamGamesCrawler().search((error, potentialGames) => {
+		new SteamGamesCrawler().search((error, potentialGames: PotentialGame[]) => {
 			if (error)
 				reject(error);
 			else

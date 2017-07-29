@@ -5,16 +5,28 @@ import { execFile } from 'child_process';
 import { IgdbWrapper } from './api/IgdbWrapper';
 import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
 import { PotentialGame } from './games/PotentialGame';
+import { PlayableGame } from './games/PlayableGame';
 import { uuidV5, downloadFile } from './helpers';
+import { getPlayableGamesCrawlerPromise } from './games/PlayableGamesCrawler';
 
 let igdbWrapper: IgdbWrapper = new IgdbWrapper();
-let potentialSteamGames: PotentialGame[];
+let potentialGames: PotentialGame[];
+let playableGames: PlayableGame[];
 
 export const events = {
 	'client.ready': (event) => {
-		getSteamCrawlerPromise().then((potentialGames: PotentialGame[]) => {
-			potentialSteamGames = potentialGames;
-			event.sender.send('server.add-potential-games', potentialSteamGames);
+		getSteamCrawlerPromise().then((games: PotentialGame[]) => {
+			potentialGames = games;
+			event.sender.send('server.add-potential-games', potentialGames);
+		}).catch((error) => {
+			throw error;
+		});
+
+		getPlayableGamesCrawlerPromise().then((games: PlayableGame[]) => {
+			playableGames = games;
+			event.sender.send('server.add-playable-games', playableGames);
+		}).catch((error) => {
+			throw error;
 		});
 	},
 	'client.get-game': (event, gameName) => {
@@ -29,16 +41,17 @@ export const events = {
 		let counter: number = 0;
 		let gameFound: boolean = false;
 
-		potentialSteamGames.forEach(function(potentialSteamGame) {
-			if (potentialSteamGame.uuid == gameId) {
+		playableGames.forEach((potentialGame: PotentialGame) => {
+			if (potentialGame.uuid == gameId) {
 				gameFound = true;
-				if (potentialSteamGame.uuid !== uuidV5(potentialSteamGame.name))
+				if (potentialGame.uuid !== uuidV5(potentialGame.name))
 					throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
 
-				let commandArgs: string[] = potentialSteamGame.commandLine;
+				let commandArgs: string[] = potentialGame.commandLine;
 				let programName: string = commandArgs.shift();
 
 				let beginTime: Date = new Date();
+				console.log(programName, commandArgs);
 				let gameProcess = execFile(programName, commandArgs, (err: string, stdout, stderr) => {
 					if (err)
 						throw err;
@@ -53,18 +66,17 @@ export const events = {
 				});
 			}
 			counter++;
-			if (counter == potentialSteamGames.length && !gameFound)
+			if (counter == potentialGames.length && !gameFound)
 				throw Error('Game not found');
 		});
 	},
 	'client.add-game': (event, gameId) => {
-		potentialSteamGames.forEach(function(potentialSteamGame) {
+		potentialGames.forEach((potentialSteamGame) => {
 			if (potentialSteamGame.uuid == gameId) {
 				let gameDirectory = path.join(__dirname, 'games', potentialSteamGame.uuid);
 				let configFilePath = path.join(gameDirectory, 'config.json');
-				console.log(configFilePath);
 
-				if (fs.existsSync(gameDirectory) || fs.existsSync(configFilePath))
+				if (fs.existsSync(configFilePath))
 					return;
 				fs.mkdirSync(gameDirectory);
 
