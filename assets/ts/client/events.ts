@@ -7,6 +7,7 @@ import { beforeCss } from './helpers';
 
 let potentialGames: GamesCollection<PotentialGame>;
 let playableGames: GamesCollection<PlayableGame>;
+let selectedGameId: string;
 
 function createGameClickEvents(treatingPlayableGames: boolean) {
 	if (treatingPlayableGames) {
@@ -16,6 +17,8 @@ function createGameClickEvents(treatingPlayableGames: boolean) {
 				playableGames.getGame(gameId, (error, game) => {
 					if (error)
 						throw new Error(error);
+					if (selectedGameId === gameId)
+						return;
 					let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
 					let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
 					$('#game-cover-container').css({
@@ -31,6 +34,7 @@ function createGameClickEvents(treatingPlayableGames: boolean) {
 					beforeCss('#game-background', {
 						'background-image': gameBgScreen
 					});
+					selectedGameId = gameId;
 				});
 				// ipcRenderer.send('client.launch-game', gameId);
 			});

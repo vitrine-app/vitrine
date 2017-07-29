@@ -14,6 +14,7 @@ export function extendJQuery() {
 }
 
 export function beforeCss(selector: any, styling: object) {
+	$('head style').remove();
 	let rawStyling: string = '';
 	Object.keys(styling).forEach((key) => {
 		rawStyling += key + ': ' + styling[key] + ';';
