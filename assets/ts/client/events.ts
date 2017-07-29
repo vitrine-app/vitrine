@@ -128,10 +128,13 @@ export function launchEvents() {
 			if (error)
 				throw new Error(error);
 			else if (game) {
-				playableGames.addGame(PlayableGame.toPlayableGame(game));
 				renderPotentialGames();
-				renderPlayableGames();
 			}
 		})
+	});
+
+	ipcRenderer.on('server.add-playable-game', (event, playableGame) => {
+		playableGames.addGame(playableGame);
+		renderPlayableGames();
 	});
 }

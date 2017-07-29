@@ -97,6 +97,7 @@ export const events = {
 							if (err)
 								throw err;
 							event.sender.send('server.remove-potential-game', potentialSteamGame.uuid);
+							event.sender.send('server.add-playable-game', addedGame);
 						});
 					});
 				});
