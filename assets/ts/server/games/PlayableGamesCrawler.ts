@@ -3,6 +3,7 @@ import * as path from 'path';
 
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
+import { getGamesFolder } from '../helpers';
 
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];
@@ -11,7 +12,7 @@ class PlayableGamesCrawler {
 
 	constructor() {
 		this.playableGames = [];
-		this.gamesDirectory = path.join(__dirname, 'games');
+		this.gamesDirectory = getGamesFolder();
 	}
 
 	public search(callback) {

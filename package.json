@@ -2,7 +2,7 @@
   "name": "vitrine",
   "version": "0.0.9",
   "description": "A modern game library using Electron, NodeJS and IGDB.",
-  "main": "main.js",
+  "main": "public/server.js",
   "author": "Paul Roman",
   "license": "MIT",
   "build": {
@@ -10,7 +10,10 @@
     "productName": "Vitrine",
     "extraResources": [
       "games"
-    ]
+    ],
+    "extraMetadata": {
+      "env": "prod"
+    }
   },
   "dependencies": {
     "animate.sass": "^1.0.1",

@@ -2,11 +2,11 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as glob from 'glob';
 
-import { uuidV5 } from '../helpers';
 import { AcfParser } from '../api/AcfParser';
 import { PotentialGame } from '../../models/PotentialGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
 import { GamesCollection } from '../../models/GamesCollection';
+import { getGamesFolder, uuidV5 } from '../helpers';
 
 class SteamGamesCrawler {
 	private configFilePath: string;
@@ -16,7 +16,7 @@ class SteamGamesCrawler {
 	private callback: Function;
 
 	constructor() {
-		this.configFilePath = path.join(__dirname, 'config/steam.json');
+		this.configFilePath = path.join(__dirname, '../config/steam.json');
 		this.configFile = JSON.parse(fs.readFileSync(this.configFilePath).toString());
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.potentialGames = [];
@@ -80,7 +80,7 @@ class SteamGamesCrawler {
 	private static isGameAlreadyAdded(name: string) {
 		let gameId: string = uuidV5(name);
 
-		let gameDirectory = path.join(__dirname, '../games', gameId);
+		let gameDirectory = path.join(getGamesFolder(), gameId);
 		let configFilePath = path.join(gameDirectory, 'config.json');
 
 		return fs.existsSync(configFilePath);
