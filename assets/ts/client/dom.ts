@@ -31,10 +31,10 @@ export function launchDom() {
 			$('#game-cover-image').removeClass('cover-hovered');
 			$('#game-cover-component').removeClass('cover-hovered');
 			(<any>$('#cover-play-btn')).removeClass('play-btn-visible');
-		},
+		}/*,
 		click() {
 			clickGameCover();
-		}
+		}*/
 	};
 
 	$(document.body).on(gameCoverEvents, '#game-cover-image');
