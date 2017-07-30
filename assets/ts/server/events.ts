@@ -77,7 +77,7 @@ export const events = {
 	'client.add-game': (event, gameId) => {
 		potentialGames.forEach((potentialSteamGame) => {
 			if (potentialSteamGame.uuid == gameId) {
-				let gameDirectory = path.join(__dirname, 'games', potentialSteamGame.uuid);
+				let gameDirectory = path.join(__dirname, '../games', potentialSteamGame.uuid);
 				let configFilePath = path.join(gameDirectory, 'config.json');
 
 				if (fs.existsSync(configFilePath))
