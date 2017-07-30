@@ -36,7 +36,7 @@ class SteamGamesCrawler {
 		});
 	}
 
-	private processGames(error, files): void {
+	private processGames(error, files) {
 		if (!files.length) {
 			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
@@ -54,7 +54,7 @@ class SteamGamesCrawler {
 			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 			igdbWrapper.getGame(gameManifest.name, (error, game) => {
 				if (error)
-					return;
+					throw error;
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				let commandArgs: string[] = this.configFile.launchCommand.split(' ');
