@@ -1,7 +1,7 @@
 module.exports = {
 	entry: './assets/ts/client/main.ts',
 	output: {
-		filename: 'public/app.js'
+		filename: 'public/client.js'
 	},
 	node: {
 		__dirname: false,

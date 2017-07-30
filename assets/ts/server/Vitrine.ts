@@ -8,7 +8,7 @@ export class Vitrine {
 
 	constructor() {
 		this.windowsList = {};
-		this.mainEntryPoint = path.join('file://', __dirname, 'public', 'main.html');
+		this.mainEntryPoint = path.join('file://', __dirname, 'main.html');
 		this.devTools = false;
 	}
 

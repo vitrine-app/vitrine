@@ -8,7 +8,7 @@ import { beforeCss } from './helpers';
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
-	private selectedGameId: string;
+	private clickedGame: PlayableGame;
 
 	constructor() {
 		this.potentialGames = new GamesCollection();
@@ -16,7 +16,7 @@ export class VitrineClient {
 	}
 
 	public run() {
-		this.selectedGameId = '';
+		// this.selectedGameId = '';
 		ipcRenderer.send('client.ready');
 	}
 
@@ -111,7 +111,7 @@ export class VitrineClient {
 					this.playableGames.getGame(gameId, (error, game) => {
 						if (error)
 							throw new Error(error);
-						if (this.selectedGameId === gameId)
+						if (this.clickedGame && this.clickedGame.uuid === gameId)
 							return;
 						let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
 						let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
@@ -128,9 +128,18 @@ export class VitrineClient {
 						beforeCss('#game-background', {
 							'background-image': gameBgScreen
 						});
-						this.selectedGameId = gameId;
+						this.clickedGame = game;
+						let self: VitrineClient = this;
+						let events: any = {
+							click() {
+								(<any>$('#game-cover-component')).animateCss('pulse', 120);
+								console.log(this);
+								ipcRenderer.send('client.launch-game', self.clickedGame.uuid)
+							}
+						};
+						$(document.body).on(events, '#game-cover-image');
+						$(document.body).on(events, '#cover-play-btn');
 					});
-					// ipcRenderer.send('client.launch-game', gameId);
 				});
 			});
 		}

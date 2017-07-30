@@ -2,11 +2,11 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as glob from 'glob';
 
-import { uuidV5 } from '../helpers';
 import { AcfParser } from '../api/AcfParser';
 import { PotentialGame } from '../../models/PotentialGame';
 import { IgdbWrapper } from '../api/IgdbWrapper';
 import { GamesCollection } from '../../models/GamesCollection';
+import { getGamesFolder, uuidV5 } from '../helpers';
 
 class SteamGamesCrawler {
 	private configFilePath: string;
@@ -16,7 +16,7 @@ class SteamGamesCrawler {
 	private callback: Function;
 
 	constructor() {
-		this.configFilePath = path.join('config/steam.json');
+		this.configFilePath = path.resolve(__dirname, '../config/steam.json');
 		this.configFile = JSON.parse(fs.readFileSync(this.configFilePath).toString());
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.potentialGames = [];
@@ -28,15 +28,15 @@ class SteamGamesCrawler {
 			let gameFolder: string = '';
 
 			if (folder.startsWith('~')) {
-				gameFolder = path.join(this.configFile.installFolder, folder.substr(1), this.manifestRegEx);
+				gameFolder = path.resolve(this.configFile.installFolder, folder.substr(1), this.manifestRegEx);
 			}
 			else
-				gameFolder = path.join(folder, this.manifestRegEx);
+				gameFolder = path.resolve(folder, this.manifestRegEx);
 			glob(gameFolder, this.processGames.bind(this));
 		});
 	}
 
-	private processGames(error, files): void {
+	private processGames(error, files) {
 		if (!files.length) {
 			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
@@ -54,12 +54,12 @@ class SteamGamesCrawler {
 			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 			igdbWrapper.getGame(gameManifest.name, (error, game) => {
 				if (error)
-					return;
+					throw error;
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				let commandArgs: string[] = this.configFile.launchCommand.split(' ');
 				potentialGame.commandLine = [
-					path.join(this.configFile.installFolder, 'steam.exe'),
+					path.resolve(this.configFile.installFolder, 'steam.exe'),
 					commandArgs[0],
 					commandArgs[1].replace('%id', gameManifest.appid)
 				];
@@ -80,8 +80,8 @@ class SteamGamesCrawler {
 	private static isGameAlreadyAdded(name: string) {
 		let gameId: string = uuidV5(name);
 
-		let gameDirectory = path.join(__dirname, 'games', gameId);
-		let configFilePath = path.join(gameDirectory, 'config.json');
+		let gameDirectory = path.resolve(getGamesFolder(), gameId);
+		let configFilePath = path.resolve(gameDirectory, 'config.json');
 
 		return fs.existsSync(configFilePath);
 
