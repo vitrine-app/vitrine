@@ -32,7 +32,7 @@
   "devDependencies": {
     "@types/electron": "^1.6.10",
     "@types/jquery": "^3.2.10",
-    "@types/node": "^8.0.17",
+    "@types/node": "^8.0.19",
     "@types/uuid": "^3.4.0",
     "awesome-typescript-loader": "^3.2.2",
     "electron": "^1.7.5",
