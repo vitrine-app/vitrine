@@ -17,15 +17,12 @@ export class GameLauncher {
 
 		execFile(this.scriptPath, this.game.commandLine, (error) => {
 			if (error)
-				throw new Error(error);
+				callback(error, null);
 		});
-		console.log('Waiting for timeout');
 		setTimeout(() => {
-			console.log('time outed!');
-			let gameProcess = execFile(this.watcherPath, [this.game.details.steamId], (err, stdout, stderr) => {
-				if (err)
-					callback(err, null);
-				console.log(stdout, '|', stderr)
+			let gameProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
+				if (error)
+					callback(error, null);
 			});
 			gameProcess.on('exit', () => {
 				let endTime: Date = new Date();

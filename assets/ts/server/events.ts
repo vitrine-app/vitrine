@@ -66,6 +66,7 @@ export const events = {
 							throw err;
 						event.sender.send('server.remove-potential-game', potentialSteamGame.uuid);
 						event.sender.send('server.add-playable-game', addedGame);
+						playableGames.addGame(addedGame);
 					});
 				});
 			});
@@ -77,8 +78,9 @@ export const events = {
 				throw new Error(error);
 			if (game.uuid !== uuidV5(game.name))
 				throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
-			getGameLauncherPromise(game).then((minutesPlayed) => {
+			getGameLauncherPromise(game).then((minutesPlayed: number) => {
 				console.log('You played', minutesPlayed, 'minutes.');
+				game.addPlayTime(minutesPlayed);
 				event.sender.send('server.stop-game', true);
 			}).catch((error) => {
 				if (error)
