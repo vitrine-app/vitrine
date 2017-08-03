@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { execFile } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
 import { GamesCollection } from '../models/GamesCollection';
@@ -9,6 +8,7 @@ import { PlayableGame } from '../models/PlayableGame';
 import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawlerPromise } from './games/PlayableGamesCrawler';
 import { uuidV5, downloadFile, getGamesFolder } from './helpers';
+import { getGameLauncherPromise } from './GameLauncher';
 
 let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 let potentialGames: GamesCollection<PotentialGame>;
@@ -41,31 +41,6 @@ export const events = {
 				event.sender.send('server.send-game', game);
 		});
 	},
-	'client.launch-game': (event, gameId) => {
-		playableGames.getGame(gameId, (error, potentialGame: PotentialGame) => {
-			if (error)
-				throw new Error(error);
-			console.log(potentialGame.name);
-			if (potentialGame.uuid !== uuidV5(potentialGame.name))
-				throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
-
-			let commandArgs: string[] = potentialGame.commandLine.slice(0);
-			let programName: string = commandArgs.shift();
-
-			let beginTime: Date = new Date();
-			// console.log(programName, commandArgs);
-			let gameProcess = execFile(programName, commandArgs, (err: string, stdout, stderr) => {
-				if (err)
-					throw err;
-			});
-
-			gameProcess.on('exit', () => {
-				let endTime: Date = new Date();
-				let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
-				console.log('You played', secondsPlayed, 'seconds.');
-			});
-		});
-	},
 	'client.add-game': (event, gameId) => {
 		potentialGames.getGame(gameId, (error, potentialSteamGame) => {
 			if (error)
@@ -91,9 +66,26 @@ export const events = {
 							throw err;
 						event.sender.send('server.remove-potential-game', potentialSteamGame.uuid);
 						event.sender.send('server.add-playable-game', addedGame);
+						playableGames.addGame(addedGame);
 					});
 				});
 			});
 		});
-	}
+	},
+	'client.launch-game': (event, gameId) => {
+		playableGames.getGame(gameId, (error, game: PlayableGame) => {
+			if (error)
+				throw new Error(error);
+			if (game.uuid !== uuidV5(game.name))
+				throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
+			getGameLauncherPromise(game).then((minutesPlayed: number) => {
+				console.log('You played', minutesPlayed, 'minutes.');
+				game.addPlayTime(minutesPlayed);
+				event.sender.send('server.stop-game', true);
+			}).catch((error) => {
+				if (error)
+					throw new Error(error);
+			});
+		});
+	},
 };

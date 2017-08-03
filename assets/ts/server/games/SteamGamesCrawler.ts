@@ -57,13 +57,12 @@ class SteamGamesCrawler {
 					throw error;
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
-				let commandArgs: string[] = this.configFile.launchCommand.split(' ');
 				potentialGame.commandLine = [
 					path.resolve(this.configFile.installFolder, 'steam.exe'),
-					commandArgs[0],
-					commandArgs[1].replace('%id', gameManifest.appid)
+					this.configFile.launchCommand.replace('%id', gameManifest.appid)
 				];
 				potentialGame.uuid = uuidV5(potentialGame.name);
+				potentialGame.details.steamId = gameManifest.appid;
 				this.potentialGames.push(potentialGame);
 
 				counter++;

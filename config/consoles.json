@@ -1,37 +1,37 @@
 [
-	{
-		"id": 0,
-		"name": "Nintendo Entertainment System",
-		"folder": "NES"
-	},
-	{
-		"id": 1,
-		"name": "Super Nintendo Entertainment System",
-		"folder": "SNES"
-	},
-	{
-		"id": 2,
-		"name": "Nintendo 64",
-		"folder": "N64"
-	},
-	{
-		"id": 3,
-		"name": "Nintendo GameCube",
-		"folder": "GameCube"
-	},
-	{
-		"id": 4,
-		"name": "Nintendo Wii",
-		"folder": "Wii"
-	},
-	{
-		"id": 5,
-		"name": "Nintendo Wii U",
-		"folder": "WiiU"
-	},
-	{
-		"id": 6,
-		"name": "PlayStation",
-		"folder": "PlayStation"
-	}
+  {
+    "id": 0,
+    "name": "Nintendo Entertainment System",
+    "folder": "NES"
+  },
+  {
+    "id": 1,
+    "name": "Super Nintendo Entertainment System",
+    "folder": "SNES"
+  },
+  {
+    "id": 2,
+    "name": "Nintendo 64",
+    "folder": "N64"
+  },
+  {
+    "id": 3,
+    "name": "Nintendo GameCube",
+    "folder": "GameCube"
+  },
+  {
+    "id": 4,
+    "name": "Nintendo Wii",
+    "folder": "Wii"
+  },
+  {
+    "id": 5,
+    "name": "Nintendo Wii U",
+    "folder": "WiiU"
+  },
+  {
+    "id": 6,
+    "name": "PlayStation",
+    "folder": "PlayStation"
+  }
 ]

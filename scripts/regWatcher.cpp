@@ -8,7 +8,7 @@ int main(int ac, char **av) {
 		return 1;
 	}
 	std::string gameId = av[1];
-	std::string regKey = "Software\\Valve\\Steam\\" + gameId;
+	std::string regKey = "Software\\Valve\\Steam\\Apps\\" + gameId;
 	HKEY hKey;
 	long errorCode;
 	DWORD filter = REG_NOTIFY_CHANGE_NAME | REG_NOTIFY_CHANGE_ATTRIBUTES |
