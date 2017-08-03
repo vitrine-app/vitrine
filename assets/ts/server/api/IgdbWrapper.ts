@@ -6,7 +6,6 @@ export class IgdbWrapper {
 	private operating: boolean;
 	private currentCallback: any;
 	private currentGame: any;
-	private c: number;
 
 	constructor() {
 		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
@@ -29,7 +28,8 @@ export class IgdbWrapper {
 			this.currentGame = game;
 			this.currentCallback = callback;
 
-			this.basicFormatting();
+			if (this.currentGame)
+				this.basicFormatting();
 			this.findCompanyById(game.developers, this.addDeveloperCallback.bind(this));
 		});
 	}
@@ -43,7 +43,7 @@ export class IgdbWrapper {
 		if (this.currentGame.cover)
 			this.currentGame.cover = 'https:' + this.currentGame.cover.url.replace('t_thumb', 't_cover_big_2x');
 		else /* TODO: Change default image */
-				this.currentGame.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
+			this.currentGame.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
 		if (this.currentGame.screenshots) {
 			this.currentGame.screenshots.forEach((element, key) => {
 				this.currentGame.screenshots[key] = 'https:' + element.url.replace('t_thumb', 't_screenshot_med');

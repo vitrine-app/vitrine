@@ -2,14 +2,15 @@ import { execFile } from 'child_process';
 import * as path from 'path';
 
 import { PlayableGame } from '../models/PlayableGame';
+import { getScriptsFolder } from './helpers';
 
 export class GameLauncher {
 	private scriptPath: string;
 	private watcherPath: string;
 
 	constructor(private game: PlayableGame) {
-		this.scriptPath = path.resolve(__dirname, '../scripts/gameLauncher.exe');
-		this.watcherPath = path.resolve(__dirname, '../scripts/regWatcher.exe');
+		this.scriptPath = path.resolve(__dirname, getScriptsFolder(), 'gameLauncher.exe');
+		this.watcherPath = path.resolve(__dirname, getScriptsFolder(), 'regWatcher.exe');
 	}
 
 	launch(callback) {

@@ -9,7 +9,8 @@
     "appId": "my.id",
     "productName": "Vitrine",
     "extraResources": [
-      "games"
+      "games",
+      "scripts"
     ],
     "extraMetadata": {
       "env": "prod"
