@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { execFile } from 'child_process';
 
 import { IgdbWrapper } from './api/IgdbWrapper';
 import { GamesCollection } from '../models/GamesCollection';
@@ -80,7 +79,7 @@ export const events = {
 				throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
 			getGameLauncherPromise(game).then((minutesPlayed) => {
 				console.log('You played', minutesPlayed, 'minutes.');
-				event.sender.send('server.stop-game');
+				event.sender.send('server.stop-game', true);
 			}).catch((error) => {
 				if (error)
 					throw new Error(error);

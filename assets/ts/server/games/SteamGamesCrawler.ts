@@ -64,6 +64,7 @@ class SteamGamesCrawler {
 					commandArgs[1].replace('%id', gameManifest.appid)
 				];
 				potentialGame.uuid = uuidV5(potentialGame.name);
+				potentialGame.details.steamId = gameManifest.appid;
 				this.potentialGames.push(potentialGame);
 
 				counter++;

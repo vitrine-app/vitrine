@@ -71,7 +71,7 @@ export class VitrineClient {
 			this.renderPlayableGames();
 		});
 
-		ipcRenderer.on('server.stop-game', (event) => {
+		ipcRenderer.on('server.stop-game', () => {
 			console.log('Game stopped.');
 			this.gameLaunched = false;
 		});

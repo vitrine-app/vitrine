@@ -1,28 +1,38 @@
 import { execFile } from 'child_process';
+import * as path from 'path';
 
 import { PlayableGame } from '../models/PlayableGame';
 
 export class GameLauncher {
-	private commandArgs: string[];
-	private programName: string;
+	private scriptPath: string;
+	private watcherPath: string;
 
 	constructor(private game: PlayableGame) {
-		this.commandArgs = this.game.commandLine.slice(0);
-		this.programName = this.commandArgs.shift()
+		this.scriptPath = path.resolve(__dirname, '../scripts/gameLauncher.exe');
+		this.watcherPath = path.resolve(__dirname, '../scripts/regWatcher.exe');
 	}
 
 	launch(callback) {
 		let beginTime: Date = new Date();
 
-		let gameProcess = execFile(this.programName, this.commandArgs, (err, stdout, stderr) => {
-			if (err)
-				callback(err, null);
+		execFile(this.scriptPath, this.game.commandLine, (error) => {
+			if (error)
+				throw new Error(error);
 		});
-		gameProcess.on('exit', () => {
-			let endTime: Date = new Date();
-			let minutesPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 60000);
-			callback(null, minutesPlayed);
-		});
+		console.log('Waiting for timeout');
+		setTimeout(() => {
+			console.log('time outed!');
+			let gameProcess = execFile(this.watcherPath, [this.game.details.steamId], (err, stdout, stderr) => {
+				if (err)
+					callback(err, null);
+				console.log(stdout, '|', stderr)
+			});
+			gameProcess.on('exit', () => {
+				let endTime: Date = new Date();
+				let minutesPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 60000);
+				callback(null, minutesPlayed);
+			});
+		}, 16500);
 	}
 }
 
