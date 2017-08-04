@@ -13,6 +13,7 @@
 			height: 100%;
 			background-repeat: no-repeat;
 			background-size: cover;
+			transition: 750ms linear;
 		}
 
 		#game-core {
@@ -61,7 +62,7 @@
 						text-align: center;
 						vertical-align: middle;
 						line-height: 55em;
-						transition: 75ms filter linear;
+						transition: 75ms linear;
 
 						&.cover-hovered {
 							filter: blur(3px);
