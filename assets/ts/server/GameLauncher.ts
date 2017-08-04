@@ -4,7 +4,7 @@ import * as path from 'path';
 import { PlayableGame } from '../models/PlayableGame';
 import { getScriptsFolder } from './helpers';
 
-export class GameLauncher {
+class GameLauncher {
 	private scriptPath: string;
 	private watcherPath: string;
 
@@ -34,7 +34,7 @@ export class GameLauncher {
 	}
 }
 
-export function getGameLauncherPromise(game: PlayableGame) {
+export function getGameLauncher(game: PlayableGame) {
 	return new Promise((resolve, reject) => {
 		new GameLauncher(game).launch((error, minutesPlayed) => {
 			if (error)

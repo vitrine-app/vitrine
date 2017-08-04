@@ -5,7 +5,7 @@ import * as glob from 'glob';
 import { AcfParser } from '../api/AcfParser';
 import { PotentialGame } from '../../models/PotentialGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getIgdbWrapperPromise } from '../api/IgdbWrapper';
+import { getIgdbWrapper } from '../api/IgdbWrapper';
 import { getGamesFolder, uuidV5 } from '../helpers';
 
 class SteamGamesCrawler {
@@ -54,7 +54,7 @@ class SteamGamesCrawler {
 				counter++;
 				return;
 			}
-			getIgdbWrapperPromise(gameManifest.name).then((game: any) => {
+			getIgdbWrapper(gameManifest.name).then((game: any) => {
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				potentialGame.commandLine = [
@@ -89,7 +89,7 @@ class SteamGamesCrawler {
 	}
 }
 
-export function getSteamCrawlerPromise() {
+export function getSteamCrawler() {
 	return new Promise((resolve, reject) => {
 		new SteamGamesCrawler().search((error, potentialGames: PotentialGame[]) => {
 			if (error)

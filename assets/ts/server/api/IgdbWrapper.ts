@@ -151,7 +151,7 @@ class IgdbWrapper {
 	}
 }
 
-export function getIgdbWrapperPromise(gameName: string) {
+export function getIgdbWrapper(gameName: string) {
 	return new Promise((resolve, reject) => {
 		new IgdbWrapper().getGame(gameName, (error, game) => {
 			if (error)
