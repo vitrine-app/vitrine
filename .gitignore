@@ -6,3 +6,4 @@
 /games/*
 /build
 /dist
+/assets/sass/theme/variables.less
