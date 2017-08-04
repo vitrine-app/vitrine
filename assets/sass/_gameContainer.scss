@@ -1,4 +1,5 @@
 #game-container {
+	height: 100%;
 	background: radial-gradient(ellipse at center, rgba(131, 131, 131, 0.08) 0%, rgba(0, 0, 0, 0.76) 120%);
 	overflow: hidden;
 
@@ -46,13 +47,6 @@
 					position: relative;
 					box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.5);
 
-					&.cover-hovered {
-						/*
-						height: 103%;
-						width: 103%;
-						*/
-					}
-
 					#game-cover-image {
 						height: 100%;
 						width: 100%;
@@ -84,6 +78,5 @@
 				}
 			}
 		}
-
 	}
 }

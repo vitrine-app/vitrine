@@ -23,12 +23,8 @@ export function downloadFile(url, path, isHttps, callback) {
 	});
 }
 
-export function getGamesFolder() {
-	return path.resolve(__dirname, (isEnvProd) ? ('../../games') : ('../games'));
-}
-
-export function getScriptsFolder() {
-	return path.resolve(__dirname, (isEnvProd) ? ('../../scripts') : ('../scripts'));
+export function getEnvFolder(folder: string) {
+	return path.resolve(__dirname, (isEnvProd) ? ('../../' + folder) : ('../' + folder));
 }
 
 export function nameArray(array) {

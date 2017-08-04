@@ -5,6 +5,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { beforeCss } from './helpers';
+import { languageInstance } from './Language';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -86,10 +87,8 @@ export class VitrineClient {
 
 		let counter: number = 0;
 		this.potentialGames.forEach((potentialGame: PotentialGame) => {
-			let html: string = '<li>' +
-				'<button game-id="' + potentialGame.uuid + '" class="btn btn-success btn-sm add-game-btn">' +
-				'Add ' + truncate(potentialGame.name, 20) +
-				'</button>' +
+			let html: string = '<li game-id="' + potentialGame.uuid + '" class="add-game-link">' +
+				languageInstance.replaceJs('addGame', truncate(potentialGame.name, 35)) +
 				'</li>';
 			$('#potential-games-list').append(html);
 			counter++;
@@ -105,7 +104,7 @@ export class VitrineClient {
 
 		let counter: number = 0;
 		this.playableGames.forEach((playableGame: PlayableGame) => {
-			let html: string = '<li class="play-game-link" game-id="' + playableGame.uuid + '">' + playableGame.name + '</li>';
+			let html: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
 			$('#playable-games-list').append(html);
 			counter++;
 			if (counter == this.playableGames.games.length)
@@ -123,6 +122,11 @@ export class VitrineClient {
 							throw new Error(error);
 						if (this.clickedGame && this.clickedGame.uuid === gameId)
 							return;
+
+						if (this.clickedGame)
+							$('li.play-game-link[game-id=' + this.clickedGame.uuid + ']').removeClass('selected-game');
+						$(value).addClass('selected-game');
+
 						let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
 						let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
 						$('#game-cover-container').css({
@@ -157,7 +161,7 @@ export class VitrineClient {
 			});
 		}
 		else {
-			$('button.add-game-btn[game-id]').each((index, value) => {
+			$('li.add-game-link[game-id]').each((index, value) => {
 				$(value).click(() => {
 					let gameId: string = $(value).attr('game-id');
 					ipcRenderer.send('client.add-game', gameId);

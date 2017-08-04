@@ -1,9 +1,10 @@
 #sidebar-container {
+	height: 100%;
 	padding: 0;
 	position: absolute;
 	background-color: $body-bg;
 	width: 16%;
-	overflow-y: scroll;
+	overflow-y: auto;
 
 	hr {
 		margin: 0;
@@ -20,9 +21,11 @@
 
 			&:hover {
 				background-color: #3E372E;
+				color: #AFACA7;
 			}
 			&.selected-game {
 				background-color: #504638;
+				color: #AFACA7;
 			}
 		}
 	}

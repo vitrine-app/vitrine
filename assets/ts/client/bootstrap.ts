@@ -2,6 +2,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { pascalCase } from 'change-case';
 
+import { languageInstance } from './Language';
+
 const componentSuffix: string = 'Component.html';
 const componentsFolder: string = '../assets/components';
 
@@ -10,13 +12,22 @@ let componentsNb: number;
 let currentCallback: Function;
 let callbackProceeded: boolean = false;
 
+function adaptComponent(componentName: string) {
+	let fileString = fs.readFileSync(path.resolve(__dirname, componentsFolder, componentName)).toString();
+	fileString = fileString.replace(/{{(.*?)}}/g, (match, p1) => {
+		return languageInstance.replaceHtml(p1.trim());
+	});
+	return fileString;
+}
+
 function loadComponents() {
 	$('[component]').each(function() {
 		if (!$(this).attr('loaded')) {
 			let componentName: string = $(this).attr('component');
 			componentName = pascalCase(componentName) + componentSuffix;
+			$(this).html(adaptComponent(componentName));
 			$(this).attr('loaded', 'loaded');
-			$(this).load(path.join(componentsFolder, componentName)).ready(loadComponents);
+			loadComponents();
 			counter++;
 		}
 		if (counter == componentsNb && !callbackProceeded) {
