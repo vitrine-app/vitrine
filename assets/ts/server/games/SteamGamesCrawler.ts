@@ -4,8 +4,8 @@ import * as glob from 'glob';
 
 import { AcfParser } from '../api/AcfParser';
 import { PotentialGame } from '../../models/PotentialGame';
-import { IgdbWrapper } from '../api/IgdbWrapper';
 import { GamesCollection } from '../../models/GamesCollection';
+import { getIgdbWrapper } from '../api/IgdbWrapper';
 import { getGamesFolder, uuidV5 } from '../helpers';
 
 class SteamGamesCrawler {
@@ -37,6 +37,10 @@ class SteamGamesCrawler {
 	}
 
 	private processGames(error, files) {
+		if (error) {
+			this.callback(error, null);
+			return;
+		}
 		if (!files.length) {
 			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
@@ -50,11 +54,7 @@ class SteamGamesCrawler {
 				counter++;
 				return;
 			}
-
-			let igdbWrapper: IgdbWrapper = new IgdbWrapper();
-			igdbWrapper.getGame(gameManifest.name, (error, game) => {
-				if (error)
-					throw error;
+			getIgdbWrapper(gameManifest.name).then((game: any) => {
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				potentialGame.commandLine = [
@@ -70,8 +70,10 @@ class SteamGamesCrawler {
 					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 					potentialGames.games = this.potentialGames;
 					this.callback(null, potentialGames);
-					delete this.callback;
 				}
+			}).catch((error) => {
+				if (error)
+					throw error;
 			});
 		});
 	}
@@ -87,7 +89,7 @@ class SteamGamesCrawler {
 	}
 }
 
-export function getSteamCrawlerPromise() {
+export function getSteamCrawler() {
 	return new Promise((resolve, reject) => {
 		new SteamGamesCrawler().search((error, potentialGames: PotentialGame[]) => {
 			if (error)

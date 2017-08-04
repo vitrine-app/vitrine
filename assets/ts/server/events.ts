@@ -1,16 +1,15 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { IgdbWrapper } from './api/IgdbWrapper';
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
-import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
-import { getPlayableGamesCrawlerPromise } from './games/PlayableGamesCrawler';
+import { getIgdbWrapper } from './api/IgdbWrapper';
+import { getSteamCrawler } from './games/SteamGamesCrawler';
+import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { uuidV5, downloadFile, getGamesFolder } from './helpers';
-import { getGameLauncherPromise } from './GameLauncher';
+import { getGameLauncher } from './GameLauncher';
 
-let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 let potentialGames: GamesCollection<PotentialGame>;
 let playableGames: GamesCollection<PlayableGame>;
 
@@ -19,14 +18,14 @@ export const events = {
 		potentialGames = new GamesCollection();
 		playableGames = new GamesCollection();
 
-		getSteamCrawlerPromise().then((games: GamesCollection<PotentialGame>) => {
+		getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
 			potentialGames = games;
 			event.sender.send('server.add-potential-games', potentialGames.games);
 		}).catch((error) => {
 			throw error;
 		});
 
-		getPlayableGamesCrawlerPromise().then((games: GamesCollection<PlayableGame>) => {
+		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 			playableGames = games;
 			event.sender.send('server.add-playable-games', playableGames.games);
 		}).catch((error) => {
@@ -34,11 +33,10 @@ export const events = {
 		});
 	},
 	'client.get-game': (event, gameName) => {
-		igdbWrapper.getGame(gameName, (error, game) => {
-			if (error)
-				event.sender.send('server.send-game-error', error);
-			else
-				event.sender.send('server.send-game', game);
+		getIgdbWrapper(gameName).then((game) => {
+			event.sender.send('server.send-game', game);
+		}).catch((error) => {
+			event.sender.send('server.send-game-error', error);
 		});
 	},
 	'client.add-game': (event, gameId) => {
@@ -78,7 +76,7 @@ export const events = {
 				throw new Error(error);
 			if (game.uuid !== uuidV5(game.name))
 				throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
-			getGameLauncherPromise(game).then((minutesPlayed: number) => {
+			getGameLauncher(game).then((minutesPlayed: number) => {
 				console.log('You played', minutesPlayed, 'minutes.');
 				game.addPlayTime(minutesPlayed);
 				event.sender.send('server.stop-game', true);
