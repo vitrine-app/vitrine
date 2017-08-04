@@ -5,6 +5,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { beforeCss } from './helpers';
+import { languageInstance } from './Language';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -88,7 +89,7 @@ export class VitrineClient {
 		this.potentialGames.forEach((potentialGame: PotentialGame) => {
 			let html: string = '<li>' +
 				'<button game-id="' + potentialGame.uuid + '" class="btn btn-success btn-sm add-game-btn">' +
-				'Add ' + truncate(potentialGame.name, 20) +
+				languageInstance.replaceJs('addGame', truncate(potentialGame.name, 20)) +
 				'</button>' +
 				'</li>';
 			$('#potential-games-list').append(html);
@@ -123,6 +124,11 @@ export class VitrineClient {
 							throw new Error(error);
 						if (this.clickedGame && this.clickedGame.uuid === gameId)
 							return;
+
+						if (this.clickedGame)
+							$('li.play-game-link[game-id=' + this.clickedGame.uuid + ']').removeClass('selected-game');
+						$(value).addClass('selected-game');
+
 						let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
 						let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
 						$('#game-cover-container').css({
