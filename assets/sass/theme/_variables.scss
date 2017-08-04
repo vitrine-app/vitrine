@@ -1,0 +1,458 @@
+// Colors
+$gray-base: rgb(0, 0, 0) !default;
+$gray-darker: lighten($gray-base, 13.5%) !default;
+$gray-dark: lighten($gray-base, 20%) !default;
+$gray: lighten($gray-base, 33.5%) !default;
+$gray-light: lighten($gray-base, 46.7%) !default;
+$gray-lighter: lighten($gray-base, 93.5%) !default;
+$brand-primary: darken(#428bca, 6.5%) !default;
+$brand-success: rgb(92, 184, 92) !default;
+$brand-info: rgb(91, 192, 222) !default;
+$brand-warning: rgb(240, 173, 78) !default;
+$brand-danger: rgb(217, 83, 79) !default;
+
+// Scaffolding
+$body-bg: rgb(255, 255, 255) !default;
+$text-color: $gray-dark !default;
+$link-color: $brand-primary !default;
+$link-hover-color: darken($link-color, 15%) !default;
+$link-hover-decoration: underline !default;
+
+// Typography
+$font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !default;
+$font-family-serif: Georgia, 'Times New Roman', Times, serif !default;
+$font-family-monospace: Menlo, Monaco, Consolas, 'Courier New', monospace !default;
+$font-family-base: $font-family-sans-serif !default;
+$font-size-base: 15px !default;
+$font-size-large: ceil(($font-size-base * 1.25)) !default;
+$font-size-small: ceil(($font-size-base * 0.85)) !default;
+$font-size-h1: floor(($font-size-base * 2.6)) !default;
+$font-size-h2: floor(($font-size-base * 2.15)) !default;
+$font-size-h3: ceil(($font-size-base * 1.7)) !default;
+$font-size-h4: ceil(($font-size-base * 1.25)) !default;
+$font-size-h5: $font-size-base !default;
+$font-size-h6: ceil(($font-size-base * 0.85)) !default;
+$line-height-base: 1.428571429 !default;
+$line-height-computed: floor(($font-size-base * $line-height-base)) !default;
+$headings-font-family: inherit !default;
+$headings-font-weight: 500 !default;
+$headings-line-height: 1.1 !default;
+$headings-color: inherit !default;
+
+// Iconography
+$icon-font-path: '../fonts/' !default;
+$icon-font-name: 'glyphicons-halflings-regular' !default;
+$icon-font-svg-id: 'glyphicons_halflingsregular' !default;
+
+// Components
+$padding-base-vertical: 6px !default;
+$padding-base-horizontal: 11px !default;
+$padding-large-vertical: 10px !default;
+$padding-large-horizontal: 16px !default;
+$padding-small-vertical: 5px !default;
+$padding-small-horizontal: 10px !default;
+$padding-xs-vertical: 1px !default;
+$padding-xs-horizontal: 5px !default;
+$line-height-large: 1.3333333 !default;
+$line-height-small: 1.5 !default;
+$border-radius-base: 1px !default;
+$border-radius-large: 1px !default;
+$border-radius-small: 1px !default;
+$component-active-color: rgb(255, 255, 255) !default;
+$component-active-bg: $brand-primary !default;
+$caret-width-base: 3px !default;
+$caret-width-large: 4px !default;
+
+// Tables
+$table-cell-padding: 13px !default;
+$table-condensed-cell-padding: 5px !default;
+$table-bg: transparent !default;
+$table-bg-accent: rgb(249, 249, 249) !default;
+$table-bg-hover: rgb(245, 245, 245) !default;
+$table-bg-active: $table-bg-hover !default;
+$table-border-color: rgb(221, 221, 221) !default;
+
+// Buttons
+$btn-font-weight: normal !default;
+$btn-default-color: rgb(102, 102, 102) !default;
+$btn-default-bg: rgb(251, 251, 251) !default;
+$btn-default-border: rgb(204, 204, 204) !default;
+$btn-primary-color: rgb(255, 255, 255) !default;
+$btn-primary-bg: $brand-primary !default;
+$btn-primary-border: darken($btn-primary-bg, 5%) !default;
+$btn-success-color: rgb(255, 255, 255) !default;
+$btn-success-bg: $brand-success !default;
+$btn-success-border: darken($btn-success-bg, 5%) !default;
+$btn-info-color: rgb(255, 255, 255) !default;
+$btn-info-bg: $brand-info !default;
+$btn-info-border: darken($btn-info-bg, 5%) !default;
+$btn-warning-color: rgb(255, 255, 255) !default;
+$btn-warning-bg: $brand-warning !default;
+$btn-warning-border: darken($btn-warning-bg, 5%) !default;
+$btn-danger-color: rgb(255, 255, 255) !default;
+$btn-danger-bg: $brand-danger !default;
+$btn-danger-border: darken($btn-danger-bg, 5%) !default;
+$btn-link-disabled-color: $gray-light !default;
+$btn-border-radius-base: $border-radius-base !default;
+$btn-border-radius-large: $border-radius-large !default;
+$btn-border-radius-small: $border-radius-small !default;
+
+// Forms
+$input-bg: rgb(255, 255, 255) !default;
+$input-bg-disabled: $gray-lighter !default;
+$input-color: $gray !default;
+$input-border: rgb(204, 204, 204) !default;
+$input-border-radius: $border-radius-base !default;
+$input-border-radius-large: $border-radius-large !default;
+$input-border-radius-small: $border-radius-small !default;
+$input-border-focus: rgb(102, 175, 233) !default;
+$input-color-placeholder: rgb(153, 153, 153) !default;
+$input-height-base: ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
+$input-height-large: (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 2) + 2) !default;
+$input-height-small: (floor($font-size-small * $line-height-small) + ($padding-small-vertical * 2) + 2) !default;
+$form-group-margin-bottom: 15px !default;
+$legend-color: $gray-dark !default;
+$legend-border-color: rgb(229, 229, 229) !default;
+$input-group-addon-bg: $gray-lighter !default;
+$input-group-addon-border-color: $input-border !default;
+$cursor-disabled: not-allowed !default;
+
+// Dropdowns
+$dropdown-bg: rgb(255, 255, 255) !default;
+$dropdown-border: rgba(0, 0, 0, 0.15) !default;
+$dropdown-fallback-border: rgb(204, 204, 204) !default;
+$dropdown-divider-bg: rgb(229, 229, 229) !default;
+$dropdown-link-color: $gray-dark !default;
+$dropdown-link-hover-color: darken($gray-dark, 5%) !default;
+$dropdown-link-hover-bg: rgb(245, 245, 245) !default;
+$dropdown-link-active-color: $component-active-color !default;
+$dropdown-link-active-bg: $component-active-bg !default;
+$dropdown-link-disabled-color: $gray-light !default;
+$dropdown-header-color: $gray-light !default;
+$dropdown-caret-color: rgb(0, 0, 0) !default;
+$zindex-navbar: 1000 !default;
+$zindex-dropdown: 1000 !default;
+$zindex-popover: 1060 !default;
+$zindex-tooltip: 1070 !default;
+$zindex-navbar-fixed: 1030 !default;
+$zindex-modal-background: 1040 !default;
+$zindex-modal: 1050 !default;
+
+// Media queries breakpoints
+$screen-xs: 480px !default;
+$screen-xs-min: $screen-xs !default;
+$screen-phone: $screen-xs-min !default;
+$screen-sm: 768px !default;
+$screen-sm-min: $screen-sm !default;
+$screen-tablet: $screen-sm-min !default;
+$screen-md: 992px !default;
+$screen-md-min: $screen-md !default;
+$screen-desktop: $screen-md-min !default;
+$screen-lg: 1200px !default;
+$screen-lg-min: $screen-lg !default;
+$screen-lg-desktop: $screen-lg-min !default;
+$screen-xs-max: ($screen-sm-min - 1) !default;
+$screen-sm-max: ($screen-md-min - 1) !default;
+$screen-md-max: ($screen-lg-min - 1) !default;
+
+// Grid system
+$grid-columns: 12 !default;
+$grid-gutter-width: 30px !default;
+$grid-float-breakpoint: $screen-sm-min !default;
+$grid-float-breakpoint-max: ($grid-float-breakpoint - 1) !default;
+
+// Container sizes
+$container-tablet: (720px + $grid-gutter-width) !default;
+$container-sm: $container-tablet !default;
+$container-desktop: (940px + $grid-gutter-width) !default;
+$container-md: $container-desktop !default;
+$container-large-desktop: (1140px + $grid-gutter-width) !default;
+$container-lg: $container-large-desktop !default;
+
+// Navbar
+$navbar-height: 50px !default;
+$navbar-margin-bottom: $line-height-computed !default;
+$navbar-border-radius: $border-radius-base !default;
+$navbar-padding-horizontal: floor(($grid-gutter-width / 2)) !default;
+$navbar-padding-vertical: (($navbar-height - $line-height-computed) / 2) !default;
+$navbar-collapse-max-height: 340px !default;
+$navbar-default-color: rgb(119, 119, 119) !default;
+$navbar-default-bg: rgb(248, 248, 248) !default;
+$navbar-default-border: darken($navbar-default-bg, 6.5%) !default;
+$navbar-default-link-color: rgb(119, 119, 119) !default;
+$navbar-default-link-hover-color: rgb(51, 51, 51) !default;
+$navbar-default-link-hover-bg: transparent !default;
+$navbar-default-link-active-color: rgb(85, 85, 85) !default;
+$navbar-default-link-active-bg: darken($navbar-default-bg, 6.5%) !default;
+$navbar-default-link-disabled-color: rgb(204, 204, 204) !default;
+$navbar-default-link-disabled-bg: transparent !default;
+$navbar-default-brand-color: $navbar-default-link-color !default;
+$navbar-default-brand-hover-color: darken($navbar-default-brand-color, 10%) !default;
+$navbar-default-brand-hover-bg: transparent !default;
+$navbar-default-toggle-hover-bg: rgb(221, 221, 221) !default;
+$navbar-default-toggle-icon-bar-bg: rgb(136, 136, 136) !default;
+$navbar-default-toggle-border-color: rgb(221, 221, 221) !default;
+$navbar-inverse-color: lighten($gray-light, 15%) !default;
+$navbar-inverse-bg: rgb(34, 34, 34) !default;
+$navbar-inverse-border: darken($navbar-inverse-bg, 10%) !default;
+$navbar-inverse-link-color: lighten($gray-light, 15%) !default;
+$navbar-inverse-link-hover-color: rgb(255, 255, 255) !default;
+$navbar-inverse-link-hover-bg: transparent !default;
+$navbar-inverse-link-active-color: $navbar-inverse-link-hover-color !default;
+$navbar-inverse-link-active-bg: darken($navbar-inverse-bg, 10%) !default;
+$navbar-inverse-link-disabled-color: rgb(68, 68, 68) !default;
+$navbar-inverse-link-disabled-bg: transparent !default;
+$navbar-inverse-brand-color: $navbar-inverse-link-color !default;
+$navbar-inverse-brand-hover-color: rgb(255, 255, 255) !default;
+$navbar-inverse-brand-hover-bg: transparent !default;
+$navbar-inverse-toggle-hover-bg: rgb(51, 51, 51) !default;
+$navbar-inverse-toggle-icon-bar-bg: rgb(255, 255, 255) !default;
+$navbar-inverse-toggle-border-color: rgb(51, 51, 51) !default;
+
+// Navs
+$nav-link-padding: 10px 15px !default;
+$nav-link-hover-bg: $gray-lighter !default;
+$nav-disabled-link-color: $gray-light !default;
+$nav-disabled-link-hover-color: $gray-light !default;
+
+// Tabs
+$nav-tabs-border-color: rgb(221, 221, 221) !default;
+$nav-tabs-link-hover-border-color: $gray-lighter !default;
+$nav-tabs-active-link-hover-bg: $body-bg !default;
+$nav-tabs-active-link-hover-color: $gray !default;
+$nav-tabs-active-link-hover-border-color: rgb(221, 221, 221) !default;
+$nav-tabs-justified-link-border-color: rgb(221, 221, 221) !default;
+$nav-tabs-justified-active-link-border-color: $body-bg !default;
+
+// Pills
+$nav-pills-border-radius: $border-radius-base !default;
+$nav-pills-active-link-hover-bg: $component-active-bg !default;
+$nav-pills-active-link-hover-color: $component-active-color !default;
+
+// Pagination
+$pagination-color: $link-color !default;
+$pagination-bg: rgb(255, 255, 255) !default;
+$pagination-border: rgb(221, 221, 221) !default;
+$pagination-hover-color: $link-hover-color !default;
+$pagination-hover-bg: $gray-lighter !default;
+$pagination-hover-border: rgb(221, 221, 221) !default;
+$pagination-active-color: rgb(255, 255, 255) !default;
+$pagination-active-bg: $brand-primary !default;
+$pagination-active-border: $brand-primary !default;
+$pagination-disabled-color: $gray-light !default;
+$pagination-disabled-bg: rgb(255, 255, 255) !default;
+$pagination-disabled-border: rgb(221, 221, 221) !default;
+
+// Pager
+$pager-bg: $pagination-bg !default;
+$pager-border: $pagination-border !default;
+$pager-border-radius: 15px !default;
+$pager-hover-bg: $pagination-hover-bg !default;
+$pager-active-bg: $pagination-active-bg !default;
+$pager-active-color: $pagination-active-color !default;
+$pager-disabled-color: $pagination-disabled-color !default;
+
+// Jumbotron
+$jumbotron-padding: 30px !default;
+$jumbotron-color: inherit !default;
+$jumbotron-bg: $gray-lighter !default;
+$jumbotron-heading-color: inherit !default;
+$jumbotron-font-size: ceil(($font-size-base * 1.5)) !default;
+$jumbotron-heading-font-size: ceil(($font-size-base * 4.5)) !default;
+
+// Form states and alerts
+$state-success-text: rgb(60, 118, 61) !default;
+$state-success-bg: rgb(223, 240, 216) !default;
+$state-success-border: darken(adjust-hue($state-success-bg, -10), 5%) !default;
+$state-info-text: rgb(49, 112, 143) !default;
+$state-info-bg: rgb(217, 237, 247) !default;
+$state-info-border: darken(adjust-hue($state-info-bg, -10), 7%) !default;
+$state-warning-text: rgb(138, 109, 59) !default;
+$state-warning-bg: rgb(252, 248, 227) !default;
+$state-warning-border: darken(adjust-hue($state-warning-bg, -10), 5%) !default;
+$state-danger-text: rgb(169, 68, 66) !default;
+$state-danger-bg: rgb(242, 222, 222) !default;
+$state-danger-border: darken(adjust-hue($state-danger-bg, -10), 5%) !default;
+
+// Tooltips
+$tooltip-max-width: 200px !default;
+$tooltip-color: rgb(255, 255, 255) !default;
+$tooltip-bg: rgb(0, 0, 0) !default;
+$tooltip-opacity: .9 !default;
+$tooltip-arrow-width: 5px !default;
+$tooltip-arrow-color: $tooltip-bg !default;
+
+// Popovers
+$popover-bg: rgb(255, 255, 255) !default;
+$popover-max-width: 276px !default;
+$popover-border-color: rgba(0, 0, 0, 0.2) !default;
+$popover-fallback-border-color: rgb(204, 204, 204) !default;
+$popover-title-bg: darken($popover-bg, 3%) !default;
+$popover-arrow-width: 10px !default;
+$popover-arrow-color: $popover-bg !default;
+$popover-arrow-outer-width: ($popover-arrow-width + 1) !default;
+$popover-arrow-outer-color: fade-in($popover-border-color, 5%) !default;
+$popover-arrow-outer-fallback-color: darken($popover-fallback-border-color, 20%) !default;
+
+// Labels
+$label-default-bg: $gray-light !default;
+$label-primary-bg: $brand-primary !default;
+$label-success-bg: $brand-success !default;
+$label-info-bg: $brand-info !default;
+$label-warning-bg: $brand-warning !default;
+$label-danger-bg: $brand-danger !default;
+$label-color: rgb(255, 255, 255) !default;
+$label-link-hover-color: rgb(255, 255, 255) !default;
+
+// Modals
+$modal-inner-padding: 15px !default;
+$modal-title-padding: 15px !default;
+$modal-title-line-height: $line-height-base !default;
+$modal-content-bg: rgb(255, 255, 255) !default;
+$modal-content-border-color: rgba(0, 0, 0, 0.2) !default;
+$modal-content-fallback-border-color: rgb(153, 153, 153) !default;
+$modal-backdrop-bg: rgb(0, 0, 0) !default;
+$modal-backdrop-opacity: .5 !default;
+$modal-header-border-color: rgb(229, 229, 229) !default;
+$modal-footer-border-color: $modal-header-border-color !default;
+$modal-lg: 900px !default;
+$modal-md: 600px !default;
+$modal-sm: 300px !default;
+
+// Alerts
+$alert-padding: 15px !default;
+$alert-border-radius: $border-radius-base !default;
+$alert-link-font-weight: bold !default;
+$alert-success-bg: $state-success-bg !default;
+$alert-success-text: $state-success-text !default;
+$alert-success-border: $state-success-border !default;
+$alert-info-bg: $state-info-bg !default;
+$alert-info-text: $state-info-text !default;
+$alert-info-border: $state-info-border !default;
+$alert-warning-bg: $state-warning-bg !default;
+$alert-warning-text: $state-warning-text !default;
+$alert-warning-border: $state-warning-border !default;
+$alert-danger-bg: $state-danger-bg !default;
+$alert-danger-text: $state-danger-text !default;
+$alert-danger-border: $state-danger-border !default;
+
+// Progress bars
+$progress-bg: rgb(245, 245, 245) !default;
+$progress-bar-color: rgb(255, 255, 255) !default;
+$progress-border-radius: $border-radius-base !default;
+$progress-bar-bg: $brand-primary !default;
+$progress-bar-success-bg: $brand-success !default;
+$progress-bar-warning-bg: $brand-warning !default;
+$progress-bar-danger-bg: $brand-danger !default;
+$progress-bar-info-bg: $brand-info !default;
+
+// List group
+$list-group-bg: rgb(255, 255, 255) !default;
+$list-group-border: rgb(221, 221, 221) !default;
+$list-group-border-radius: $border-radius-base !default;
+$list-group-hover-bg: rgb(245, 245, 245) !default;
+$list-group-active-color: $component-active-color !default;
+$list-group-active-bg: $component-active-bg !default;
+$list-group-active-border: $list-group-active-bg !default;
+$list-group-active-text-color: lighten($list-group-active-bg, 40%) !default;
+$list-group-disabled-color: $gray-light !default;
+$list-group-disabled-bg: $gray-lighter !default;
+$list-group-disabled-text-color: $list-group-disabled-color !default;
+$list-group-link-color: rgb(85, 85, 85) !default;
+$list-group-link-hover-color: $list-group-link-color !default;
+$list-group-link-heading-color: rgb(51, 51, 51) !default;
+
+// Panels
+$panel-bg: rgb(255, 255, 255) !default;
+$panel-body-padding: 15px !default;
+$panel-heading-padding: 10px 15px !default;
+$panel-footer-padding: $panel-heading-padding !default;
+$panel-border-radius: $border-radius-base !default;
+$panel-inner-border: rgb(221, 221, 221) !default;
+$panel-footer-bg: rgb(245, 245, 245) !default;
+$panel-default-text: $gray-dark !default;
+$panel-default-border: rgb(221, 221, 221) !default;
+$panel-default-heading-bg: rgb(245, 245, 245) !default;
+$panel-primary-text: rgb(255, 255, 255) !default;
+$panel-primary-border: $brand-primary !default;
+$panel-primary-heading-bg: $brand-primary !default;
+$panel-success-text: $state-success-text !default;
+$panel-success-border: $state-success-border !default;
+$panel-success-heading-bg: $state-success-bg !default;
+$panel-info-text: $state-info-text !default;
+$panel-info-border: $state-info-border !default;
+$panel-info-heading-bg: $state-info-bg !default;
+$panel-warning-text: $state-warning-text !default;
+$panel-warning-border: $state-warning-border !default;
+$panel-warning-heading-bg: $state-warning-bg !default;
+$panel-danger-text: $state-danger-text !default;
+$panel-danger-border: $state-danger-border !default;
+$panel-danger-heading-bg: $state-danger-bg !default;
+
+// Thumbnails
+$thumbnail-padding: 4px !default;
+$thumbnail-bg: $body-bg !default;
+$thumbnail-border: rgb(221, 221, 221) !default;
+$thumbnail-border-radius: $border-radius-base !default;
+$thumbnail-caption-color: $text-color !default;
+$thumbnail-caption-padding: 9px !default;
+
+// Wells
+$well-bg: rgb(245, 245, 245) !default;
+$well-border: darken($well-bg, 7%) !default;
+
+// Badges
+$badge-color: rgb(255, 255, 255) !default;
+$badge-link-hover-color: rgb(255, 255, 255) !default;
+$badge-bg: $gray-light !default;
+$badge-active-color: $link-color !default;
+$badge-active-bg: rgb(255, 255, 255) !default;
+$badge-font-weight: bold !default;
+$badge-line-height: 1 !default;
+$badge-border-radius: 10px !default;
+
+// Breadcrumbs
+$breadcrumb-padding-vertical: 8px !default;
+$breadcrumb-padding-horizontal: 15px !default;
+$breadcrumb-bg: rgb(245, 245, 245) !default;
+$breadcrumb-color: rgb(204, 204, 204) !default;
+$breadcrumb-active-color: $gray-light !default;
+$breadcrumb-separator: '/' !default;
+
+// Carousel
+$carousel-text-shadow: 0 1px 2px rgba(0,0,0,.6) !default;
+$carousel-control-color: rgb(255, 255, 255) !default;
+$carousel-control-width: 15% !default;
+$carousel-control-opacity: .5 !default;
+$carousel-control-font-size: 20px !default;
+$carousel-indicator-active-bg: rgb(255, 255, 255) !default;
+$carousel-indicator-border-color: rgb(255, 255, 255) !default;
+$carousel-caption-color: rgb(255, 255, 255) !default;
+
+// Close
+$close-font-weight: bold !default;
+$close-color: rgb(0, 0, 0) !default;
+$close-text-shadow: 0 1px 0 #fff !default;
+
+// Code
+$code-color: rgb(199, 37, 78) !default;
+$code-bg: rgb(249, 242, 244) !default;
+$kbd-color: rgb(255, 255, 255) !default;
+$kbd-bg: rgb(51, 51, 51) !default;
+$pre-bg: rgb(245, 245, 245) !default;
+$pre-color: $gray-dark !default;
+$pre-border-color: rgb(204, 204, 204) !default;
+$pre-scrollable-max-height: 340px !default;
+
+// Type
+$component-offset-horizontal: 180px !default;
+$text-muted: $gray-light !default;
+$abbr-border-color: $gray-light !default;
+$headings-small-color: $gray-light !default;
+$blockquote-small-color: $gray-light !default;
+$blockquote-font-size: ($font-size-base * 1.25) !default;
+$blockquote-border-color: $gray-lighter !default;
+$page-header-border-color: $gray-lighter !default;
+$dl-horizontal-offset: $component-offset-horizontal !default;
+$dl-horizontal-breakpoint: $grid-float-breakpoint !default;
+$hr-border: $gray-lighter !default;

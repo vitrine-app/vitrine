@@ -1,4 +1,4 @@
-const serverBuild = require('./config/server.build');
-const clientBuild = require('./config/client.build');
+const serverBuild = require('./config/build/server.build');
+const clientBuild = require('./config/build/client.build');
 
 module.exports = [serverBuild, clientBuild];
