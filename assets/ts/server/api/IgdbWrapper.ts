@@ -1,6 +1,6 @@
 import * as igdb from 'igdb-api-node';
 
-export class IgdbWrapper {
+class IgdbWrapper {
 	private apiKey: string;
 	private client: any;
 	private operating: boolean;
@@ -28,9 +28,10 @@ export class IgdbWrapper {
 			this.currentGame = game;
 			this.currentCallback = callback;
 
-			if (this.currentGame)
+			if (this.currentGame) {
 				this.basicFormatting();
-			this.findCompanyById(game.developers, this.addDeveloperCallback.bind(this));
+				this.findCompanyById(game.developers, this.addDeveloperCallback.bind(this));
+			}
 		});
 	}
 
@@ -148,4 +149,15 @@ export class IgdbWrapper {
 		delete this.currentCallback;
 		this.operating = false;
 	}
+}
+
+export function getIgdbWrapperPromise(gameName: string) {
+	return new Promise((resolve, reject) => {
+		new IgdbWrapper().getGame(gameName, (error, game) => {
+			if (error)
+				reject(error);
+			else
+				resolve(game);
+		});
+	});
 }

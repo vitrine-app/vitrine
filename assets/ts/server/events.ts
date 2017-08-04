@@ -1,16 +1,15 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { IgdbWrapper } from './api/IgdbWrapper';
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
+import { getIgdbWrapperPromise } from './api/IgdbWrapper';
 import { getSteamCrawlerPromise } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawlerPromise } from './games/PlayableGamesCrawler';
 import { uuidV5, downloadFile, getGamesFolder } from './helpers';
 import { getGameLauncherPromise } from './GameLauncher';
 
-let igdbWrapper: IgdbWrapper = new IgdbWrapper();
 let potentialGames: GamesCollection<PotentialGame>;
 let playableGames: GamesCollection<PlayableGame>;
 
@@ -34,11 +33,10 @@ export const events = {
 		});
 	},
 	'client.get-game': (event, gameName) => {
-		igdbWrapper.getGame(gameName, (error, game) => {
-			if (error)
-				event.sender.send('server.send-game-error', error);
-			else
-				event.sender.send('server.send-game', game);
+		getIgdbWrapperPromise(gameName).then((game) => {
+			event.sender.send('server.send-game', game);
+		}).catch((error) => {
+			event.sender.send('server.send-game-error', error);
 		});
 	},
 	'client.add-game': (event, gameId) => {
