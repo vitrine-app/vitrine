@@ -47,13 +47,6 @@
 					position: relative;
 					box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.5);
 
-					&.cover-hovered {
-						/*
-						height: 103%;
-						width: 103%;
-						*/
-					}
-
 					#game-cover-image {
 						height: 100%;
 						width: 100%;
@@ -85,6 +78,5 @@
 				}
 			}
 		}
-
 	}
 }

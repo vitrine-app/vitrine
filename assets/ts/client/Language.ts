@@ -1,11 +1,13 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
+import { getEnvFolder } from '../server/helpers';
+
 class Language {
 	private dict: any;
 
 	constructor(private lang: string) {
-		let filePath: string = path.resolve(__dirname, '../config/lang', lang + '.json');
+		let filePath: string = path.resolve(getEnvFolder('config'), 'lang', lang + '.json');
 		this.dict = JSON.parse(fs.readFileSync(filePath).toString());
 	}
 

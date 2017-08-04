@@ -8,8 +8,20 @@
   "build": {
     "appId": "my.id",
     "productName": "Vitrine",
+    "files": [
+      "!.circleci",
+      "!assets/sass",
+      "!assets/ts",
+      "!config/build",
+      "!.gitignore",
+      "!LICENSE",
+      "!README.md",
+      "!tsconfig.json",
+      "!webpack.config.js"
+    ],
     "extraResources": [
       "games",
+      "config",
       "scripts"
     ],
     "extraMetadata": {

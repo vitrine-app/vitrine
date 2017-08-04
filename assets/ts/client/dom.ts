@@ -1,6 +1,7 @@
 import { ipcRenderer } from 'electron';
 import * as formToObject from 'form-to-object';
 
+import { languageInstance } from './Language';
 import { extendJQuery } from './helpers';
 
 function clickGameCover() {
@@ -16,7 +17,7 @@ export function launchDom() {
 		let form = formToObject(this);
 		if (form.name) {
 			$(this).find('input[name="name"]').val('');
-			$('#game-title').html('Loading...');
+			$('#game-title').html(languageInstance.replaceJs('loading'));
 			ipcRenderer.send('client.get-game', form.name);
 		}
 	});

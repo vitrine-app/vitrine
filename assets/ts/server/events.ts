@@ -7,7 +7,7 @@ import { PlayableGame } from '../models/PlayableGame';
 import { getIgdbWrapper } from './api/IgdbWrapper';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
-import { uuidV5, downloadFile, getGamesFolder } from './helpers';
+import { uuidV5, downloadFile, getEnvFolder } from './helpers';
 import { getGameLauncher } from './GameLauncher';
 
 let potentialGames: GamesCollection<PotentialGame>;
@@ -43,7 +43,7 @@ export const events = {
 		potentialGames.getGame(gameId, (error, potentialSteamGame) => {
 			if (error)
 				throw new Error(error);
-			let gameDirectory = path.resolve(getGamesFolder(), potentialSteamGame.uuid);
+			let gameDirectory = path.resolve(getEnvFolder('games'), potentialSteamGame.uuid);
 			let configFilePath = path.resolve(gameDirectory, 'config.json');
 
 			if (fs.existsSync(configFilePath))
