@@ -1,5 +1,5 @@
 /* Bootstrap */
-@import 'theme/variables';
+@import 'theme/bootstrapVariables';
 @import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
 
 /* Font Awesome */
@@ -9,10 +9,8 @@ $fa-font-path: '../node_modules/font-awesome/fonts';
 /* Animate.css */
 @import '../../node_modules/animate.sass/scss/animate';
 
-/* Title bar */
-// @import 'titleBar';
-
 /* Vitrine Components */
+// @import 'titleBar';
 @import 'sideBar';
 @import 'gameContainer';
 
@@ -22,7 +20,12 @@ $fa-font-path: '../node_modules/font-awesome/fonts';
 	height: 100%;
 }
 
-#scroller-container {
-	background-color: #505050;
+.no-padding {
+	padding: 0;
+}
+
+#app {
+	padding: 0;
 	height: 100%;
+	user-select: none;
 }

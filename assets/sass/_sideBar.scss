@@ -1,5 +1,8 @@
 #sidebar-container {
 	padding: 0;
+	position: absolute;
+	background-color: $body-bg;
+	width: 16%;
 
 	hr {
 		margin: 0;
@@ -22,5 +25,4 @@
 			}
 		}
 	}
-
 }

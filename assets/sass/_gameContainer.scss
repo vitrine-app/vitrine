@@ -1,12 +1,12 @@
 #game-container {
 	background: radial-gradient(ellipse at center, rgba(131, 131, 131, 0.08) 0%, rgba(0, 0, 0, 0.76) 120%);
+	overflow: hidden;
 
 	#game-background {
 		&:before {
 			content: '';
 			position: fixed;
 			transform: scale(1.02);
-			right: 0;
 			z-index: -1;
 			filter: blur(4px);
 			width: 100%;
