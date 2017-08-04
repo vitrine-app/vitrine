@@ -1,9 +1,6 @@
-/* Native Font */
-$font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !default;
-
 /* Bootstrap */
+@import 'theme/bootstrapVariables';
 @import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
-@import 'navbar';
 
 /* Font Awesome */
 $fa-font-path: '../node_modules/font-awesome/fonts';
@@ -12,22 +9,23 @@ $fa-font-path: '../node_modules/font-awesome/fonts';
 /* Animate.css */
 @import '../../node_modules/animate.sass/scss/animate';
 
-/* Circle percentages */
-@import '../../node_modules/sass-percentage-circle/circle.scss';
-
-/* Title bar */
-@import 'titleBar';
-
-/* GameWrapper component */
+/* Vitrine Components */
+// @import 'titleBar';
+@import 'sideBar';
 @import 'gameContainer';
 
-@import 'buttons';
+// @import 'buttons';
 
 .full-height {
 	height: 100%;
 }
 
-#scroller-container {
-	background-color: #505050;
+.no-padding {
+	padding: 0;
+}
+
+#app {
+	padding: 0;
 	height: 100%;
+	user-select: none;
 }

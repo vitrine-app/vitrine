@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import * as truncate from 'truncate';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
@@ -36,7 +37,8 @@ export class VitrineClient {
 			});
 			if (game.screenshots.length) {
 				beforeCss('#game-background', {
-					'background-image': 'url(' + game.screenshots[0] + ')'
+					'background-image': 'url(' + game.screenshots[0] + ')',
+					'opacity': '0.4'
 				});
 			}
 		});
@@ -85,8 +87,9 @@ export class VitrineClient {
 		let counter: number = 0;
 		this.potentialGames.forEach((potentialGame: PotentialGame) => {
 			let html: string = '<li>' +
-				//'<a game-id="' + potentialGame.uuid + '">' + potentialGame.name + '</a>' +
-				'<button game-id="' + potentialGame.uuid + '" class="btn btn-success btn-sm add-game-btn">Add ' + potentialGame.name + '</button>' +
+				'<button game-id="' + potentialGame.uuid + '" class="btn btn-success btn-sm add-game-btn">' +
+				'Add ' + truncate(potentialGame.name, 20) +
+				'</button>' +
 				'</li>';
 			$('#potential-games-list').append(html);
 			counter++;
@@ -102,7 +105,7 @@ export class VitrineClient {
 
 		let counter: number = 0;
 		this.playableGames.forEach((playableGame: PlayableGame) => {
-			let html: string = '<li><a class="play-game-link" game-id="' + playableGame.uuid + '">' + playableGame.name + '</a></li>';
+			let html: string = '<li class="play-game-link" game-id="' + playableGame.uuid + '">' + playableGame.name + '</li>';
 			$('#playable-games-list').append(html);
 			counter++;
 			if (counter == this.playableGames.games.length)
@@ -112,7 +115,7 @@ export class VitrineClient {
 
 	private createGameClickEvents(treatingPlayableGames: boolean) {
 		if (treatingPlayableGames) {
-			$('a.play-game-link[game-id]').each((index, value) => {
+			$('li.play-game-link[game-id]').each((index, value) => {
 				$(value).click(() => {
 					let gameId: string = $(value).attr('game-id');
 					this.playableGames.getGame(gameId, (error, game) => {
@@ -133,7 +136,8 @@ export class VitrineClient {
 							'background-size': '100% 100%',
 						});
 						beforeCss('#game-background', {
-							'background-image': gameBgScreen
+							'background-image': gameBgScreen,
+							'opacity': '0.4'
 						});
 						this.clickedGame = game;
 						let self: VitrineClient = this;
