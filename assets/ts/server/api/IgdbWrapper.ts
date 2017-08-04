@@ -23,6 +23,7 @@ class IgdbWrapper {
 
 	public getGame(name, callback) {
 		this.operating = true;
+		this.refinerSwitch(name);
 		this.client.games({
 			limit: this.levenshteinRefiner,
 			search: name
@@ -50,6 +51,17 @@ class IgdbWrapper {
 		});
 	}
 
+	private refinerSwitch(name) {
+		if (name === 'Magicka')
+			this.levenshteinRefiner = 13;
+		else if (name === 'Sanctum')
+			this.levenshteinRefiner = 11;
+		else if (name === 'Assassin\'s Creed')
+			this.levenshteinRefiner = 7;
+		else if (name === 'Warframe')
+			this.levenshteinRefiner = 6;
+	}
+
 	private basicFormatting() {
 		if (this.game.total_rating) {
 			let rating = this.game.total_rating;
@@ -72,9 +84,6 @@ class IgdbWrapper {
 	private findGameById(id, callback) {
 		this.client.games({
 			ids: [id]
-			/*filters: {
-				'name-eq': name
-			}*/
 		}, [
 			'name',
 			'summary',
