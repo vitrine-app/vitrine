@@ -5,15 +5,15 @@ $gray-dark: lighten($gray-base, 20%) !default;
 $gray: lighten($gray-base, 33.5%) !default;
 $gray-light: lighten($gray-base, 46.7%) !default;
 $gray-lighter: lighten($gray-base, 93.5%) !default;
-$brand-primary: darken(#428bca, 6.5%) !default;
-$brand-success: rgb(92, 184, 92) !default;
-$brand-info: rgb(91, 192, 222) !default;
+$brand-primary: #CE8833 !default;
+$brand-success: #5B9D5B !default;
+$brand-info: #7B8D93 !default;
 $brand-warning: rgb(240, 173, 78) !default;
-$brand-danger: rgb(217, 83, 79) !default;
+$brand-danger: #B3504D !default;
 
 // Scaffolding
-$body-bg: rgb(255, 255, 255) !default;
-$text-color: $gray-dark !default;
+$body-bg: #2F2C28 !default;
+$text-color: $gray-light !default;
 $link-color: $brand-primary !default;
 $link-hover-color: darken($link-color, 15%) !default;
 $link-hover-decoration: underline !default;
@@ -67,16 +67,16 @@ $caret-width-large: 4px !default;
 $table-cell-padding: 13px !default;
 $table-condensed-cell-padding: 5px !default;
 $table-bg: transparent !default;
-$table-bg-accent: rgb(249, 249, 249) !default;
-$table-bg-hover: rgb(245, 245, 245) !default;
+$table-bg-accent: #443D32 !default;
+$table-bg-hover: $table-bg-accent !default;
 $table-bg-active: $table-bg-hover !default;
-$table-border-color: rgb(221, 221, 221) !default;
+$table-border-color: #2A2925 !default;
 
 // Buttons
 $btn-font-weight: normal !default;
-$btn-default-color: rgb(102, 102, 102) !default;
-$btn-default-bg: rgb(251, 251, 251) !default;
-$btn-default-border: rgb(204, 204, 204) !default;
+$btn-default-color: #D9CBBA !default;
+$btn-default-bg: #6C5A47 !default;
+$btn-default-border: #59493E !default;
 $btn-primary-color: rgb(255, 255, 255) !default;
 $btn-primary-bg: $brand-primary !default;
 $btn-primary-border: darken($btn-primary-bg, 5%) !default;
@@ -98,14 +98,14 @@ $btn-border-radius-large: $border-radius-large !default;
 $btn-border-radius-small: $border-radius-small !default;
 
 // Forms
-$input-bg: rgb(255, 255, 255) !default;
+$input-bg: #39342E !default;
 $input-bg-disabled: $gray-lighter !default;
-$input-color: $gray !default;
-$input-border: rgb(204, 204, 204) !default;
+$input-color: #B9B0A2 !default;
+$input-border: #2A2623 !default;
 $input-border-radius: $border-radius-base !default;
 $input-border-radius-large: $border-radius-large !default;
 $input-border-radius-small: $border-radius-small !default;
-$input-border-focus: rgb(102, 175, 233) !default;
+$input-border-focus: $brand-primary !default;
 $input-color-placeholder: rgb(153, 153, 153) !default;
 $input-height-base: ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
 $input-height-large: (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 2) + 2) !default;
@@ -291,7 +291,7 @@ $popover-title-bg: darken($popover-bg, 3%) !default;
 $popover-arrow-width: 10px !default;
 $popover-arrow-color: $popover-bg !default;
 $popover-arrow-outer-width: ($popover-arrow-width + 1) !default;
-$popover-arrow-outer-color: fade-in($popover-border-color, 5%) !default;
+$popover-arrow-outer-color: fadeIn($popover-border-color, 5%) !default;
 $popover-arrow-outer-fallback-color: darken($popover-fallback-border-color, 20%) !default;
 
 // Labels

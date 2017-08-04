@@ -36,7 +36,8 @@ export class VitrineClient {
 			});
 			if (game.screenshots.length) {
 				beforeCss('#game-background', {
-					'background-image': 'url(' + game.screenshots[0] + ')'
+					'background-image': 'url(' + game.screenshots[0] + ')',
+					'opacity': '0.4'
 				});
 			}
 		});
@@ -133,7 +134,8 @@ export class VitrineClient {
 							'background-size': '100% 100%',
 						});
 						beforeCss('#game-background', {
-							'background-image': gameBgScreen
+							'background-image': gameBgScreen,
+							'opacity': '0.4'
 						});
 						this.clickedGame = game;
 						let self: VitrineClient = this;
