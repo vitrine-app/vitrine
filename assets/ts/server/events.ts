@@ -76,9 +76,9 @@ export const events = {
 				throw new Error(error);
 			if (game.uuid !== uuidV5(game.name))
 				throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
-			getGameLauncher(game).then((minutesPlayed: number) => {
-				console.log('You played', minutesPlayed, 'minutes.');
-				game.addPlayTime(minutesPlayed);
+			getGameLauncher(game).then((secondsPlayed: number) => {
+				console.log('You played', secondsPlayed, 'seconds.');
+				game.addPlayTime(secondsPlayed);
 				event.sender.send('server.stop-game', true);
 			}).catch((error) => {
 				if (error)

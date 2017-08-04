@@ -14,23 +14,26 @@ class GameLauncher {
 	}
 
 	launch(callback) {
-		let beginTime: Date = new Date();
-
+		let inWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
+			if (error)
+				callback(error, null);
+		});
 		execFile(this.scriptPath, this.game.commandLine, (error) => {
 			if (error)
 				callback(error, null);
 		});
-		setTimeout(() => {
-			let gameProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
+		inWatcherProcess.on('exit', () => {
+			let beginTime: Date = new Date();
+			let outWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
 				if (error)
 					callback(error, null);
 			});
-			gameProcess.on('exit', () => {
+			outWatcherProcess.on('exit', () => {
 				let endTime: Date = new Date();
-				let minutesPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 60000);
-				callback(null, minutesPlayed);
+				let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
+				callback(null, secondsPlayed);
 			});
-		}, 16500);
+		});
 	}
 }
 
