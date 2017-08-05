@@ -1,5 +1,5 @@
 {
-  "welcomeMessage": "Bienvenue sur Vitrine !",
+  "welcomeMessage": "Bienvenue sur %1 !",
   "addGame": "Ajouter %1",
   "gameNamePlaceholder": "Nom du jeu",
   "getGame": "Récupérer le jeu",

@@ -20,11 +20,12 @@ export class VitrineClient {
 	}
 
 	public run() {
-		// this.selectedGameId = '';
+		this.clickedGame = null;
 		ipcRenderer.send('client.ready');
 	}
 
 	public launchEvents() {
+		// TODO: Remove this events pipeline
 		ipcRenderer.on('server.send-game', (event, game) => {
 			$('#game-cover-container').css({
 				'display': 'block'
@@ -38,8 +39,7 @@ export class VitrineClient {
 			});
 			if (game.screenshots.length) {
 				beforeCss('#game-background', {
-					'background-image': 'url(' + game.screenshots[0] + ')',
-					'opacity': '0.4'
+					'background-image': 'url(' + game.screenshots[0] + ')'
 				});
 			}
 		});
@@ -140,8 +140,7 @@ export class VitrineClient {
 							'background-size': '100% 100%',
 						});
 						beforeCss('#game-background', {
-							'background-image': gameBgScreen,
-							'opacity': '0.4'
+							'background-image': gameBgScreen
 						});
 						this.clickedGame = game;
 						let self: VitrineClient = this;

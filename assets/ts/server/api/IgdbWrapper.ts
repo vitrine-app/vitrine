@@ -70,7 +70,7 @@ class IgdbWrapper {
 		}
 		if (this.game.cover)
 			this.game.cover = 'https:' + this.game.cover.url.replace('t_thumb', 't_cover_big_2x');
-		else /* TODO: Change default image */
+		else // TODO: Change default image
 			this.game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
 		if (this.game.screenshots) {
 			this.game.screenshots.forEach((element, key) => {
