@@ -1,9 +1,7 @@
 /node_modules
 /.idea/workspace.xml
-/public/app.css
-/public/client.js
-/public/server.js
+/public
+!/public/.file
 /games/*
-/build
 /dist
 /assets/sass/theme/variables.less

@@ -15,19 +15,25 @@ export class Vitrine {
 	private windowsList;
 	private mainEntryPoint: string;
 	private devTools: boolean;
+	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 
 	constructor() {
 		this.windowsList = {};
-		this.mainEntryPoint = path.join('file://', __dirname, 'main.html');
+		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
+		this.iconPath = path.resolve(__dirname, '../build/icon.png');
 		this.devTools = false;
 	}
 
 	public run(devTools?: boolean) {
 		if (devTools)
 			this.devTools = devTools;
-		app.on('ready', this.createMainWindow.bind(this));
+
+		app.on('ready', () => {
+			this.createLoadingWindow();
+			this.createMainWindow();
+		});
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin') {
 				app.quit();
@@ -57,7 +63,8 @@ export class Vitrine {
 			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
 				event.sender.send('server.add-playable-games', this.playableGames.games);
-				console.log('Server is ready to showup');
+				this.windowsList.loadingWindow.destroy();
+				this.windowsList.mainWindow.show();
 			}).catch((error) => {
 				throw error;
 			});
@@ -118,12 +125,22 @@ export class Vitrine {
 		});
 	}
 
+	private createLoadingWindow() {
+		this.windowsList.loadingWindow = new BrowserWindow({
+			height: 300,
+			width: 500,
+			frame: false
+		});
+	}
+
 	private createMainWindow() {
 		this.windowsList.mainWindow = new BrowserWindow({
 			width: 800,
 			height: 600,
 			minWidth: 800,
-			minHeight: 500
+			minHeight: 500,
+			icon: this.iconPath,
+			show: false
 		});
 
 		this.windowsList.mainWindow.setMenu(null);
