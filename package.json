@@ -10,8 +10,7 @@
     "productName": "Vitrine",
     "files": [
       "!.circleci",
-      "!assets/sass",
-      "!assets/ts",
+      "!assets",
       "!config/build",
       "!.gitignore",
       "!LICENSE",
