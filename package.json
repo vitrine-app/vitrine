@@ -69,7 +69,7 @@
     "run-client-electron": "webpack --config config/build/client.build.js && electron .",
     "run-style-electron": "npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "pack": "webpack && npm run build-css && electron-builder --dir",
-    "dist": "webpack && npm run build-css && electron-builder"
+    "pack": "webpack && npm run build-prod && electron-builder --dir",
+    "dist": "webpack && npm run build-prod && electron-builder"
   }
 }

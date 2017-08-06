@@ -49,7 +49,6 @@ export class Vitrine {
 
 	public registerEvents() {
 		ipcMain.on('client.ready', (event) => {
-			console.log('Client is ready');
 			this.potentialGames = new GamesCollection();
 			this.playableGames = new GamesCollection();
 

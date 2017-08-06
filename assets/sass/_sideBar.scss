@@ -4,7 +4,6 @@
 	position: absolute;
 	background-color: $body-bg;
 	width: 16%;
-	overflow-y: auto;
 
 	div#potential-games-area {
 		text-align: center;
@@ -15,24 +14,39 @@
 		margin: 0;
 		border-top: 1px solid #565149;
 	}
-	ul.games-list {
-		list-style-type: none;
-		padding: 0;
-		margin: 0;
 
-		li {
-			color: #A5A5A5;
-			display: block;
-			padding: 10px 20px;
+	.games-list {
+		height: 88%;
+		overflow-y: auto;
 
-			&:hover {
-				background-color: #3E372E;
-				color: #AFACA7;
+		ul {
+			height: 98%;
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+
+			li {
+				color: #A5A5A5;
+				display: block;
+				padding: 10px 20px;
+
+				&:hover {
+					background-color: #3E372E;
+					color: #AFACA7;
+				}
+				&.selected-game {
+					background-color: #504638;
+					color: #AFACA7;
+				}
 			}
-			&.selected-game {
-				background-color: #504638;
-				color: #AFACA7;
-			}
+		}
+	}
+
+	.add-game {
+		padding: 0 10px;
+
+		.btn {
+			width: 100%;
 		}
 	}
 }

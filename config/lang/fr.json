@@ -4,5 +4,8 @@
   "gameNamePlaceholder": "Nom du jeu",
   "getGame": "Récupérer le jeu",
   "loading": "Chargement...",
-  "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)"
+  "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
+  "addGameLabel": "Ajouter un jeu",
+  "fillWithIGDB": "Remplir avec IGDB",
+  "submitNewGame": "Ajouter"
 }

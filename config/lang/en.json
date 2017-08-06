@@ -4,5 +4,8 @@
   "gameNamePlaceholder": "Game name",
   "getGame": "Get game",
   "loading": "Loading...",
-  "potentialGamesAdd": "You can add %1 game(s)"
+  "potentialGamesAdd": "You can add %1 game(s)",
+  "addGameLabel": "Add game",
+  "fillWithIGDB": "Fill with IGDB",
+  "submitNewGame": "Add"
 }

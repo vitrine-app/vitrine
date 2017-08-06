@@ -2,12 +2,18 @@
 	{{ loading }}
 </div>
 <hr>
-<ul id="playable-games-list" class="games-list">
-	<li>No added games.</li>
-</ul>
+<div class="games-list">
+	<ul id="playable-games-list" class="games-list">
+		<li>No added games.</li>
+	</ul>
+</div>
+<!--
 <form id="game-name-form" class="navbar-form">
 	<div class="form-group">
 		<input name="name" class="form-control" placeholder="{{ gameNamePlaceholder }}">
 	</div>
 	<button class="btn btn-primary">{{ getGame }}</button>
-</form>
+</form>-->
+<div class="add-game">
+	<button class="btn btn-primary" data-toggle="modal" data-target="#add-game-modal">{{ addGameLabel }}</button>
+</div>
