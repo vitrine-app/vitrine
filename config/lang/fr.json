@@ -3,5 +3,6 @@
   "addGame": "Ajouter %1",
   "gameNamePlaceholder": "Nom du jeu",
   "getGame": "Récupérer le jeu",
-  "loading": "Chargement..."
+  "loading": "Chargement...",
+  "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)"
 }

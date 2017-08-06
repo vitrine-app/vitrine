@@ -9,7 +9,7 @@ import { launchDom } from './dom';
 clientBootstrap(() => {
 	// loadTitleBar();
 	let vitrineClient: VitrineClient = new VitrineClient();
-	vitrineClient.launchEvents();
+	vitrineClient.registerEvents();
 	launchDom();
 	vitrineClient.run();
 });
