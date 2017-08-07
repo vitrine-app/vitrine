@@ -4,4 +4,4 @@
 !/public/.file
 /games/*
 /dist
-/assets/sass/theme/variables.less
+/assets/sass/theme/_bootstrapDatepicker.scss

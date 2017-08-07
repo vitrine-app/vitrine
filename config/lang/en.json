@@ -1,11 +1,15 @@
 {
   "welcomeMessage": "Welcome to %1!",
   "addGame": "Add %1",
-  "gameNamePlaceholder": "Game name",
   "getGame": "Get game",
   "loading": "Loading...",
   "potentialGamesAdd": "You can add %1 game(s)",
   "addGameLabel": "Add game",
   "fillWithIGDB": "Fill with IGDB",
-  "submitNewGame": "Add"
+  "submitNewGame": "Add",
+  "gameName": "Game name",
+  "gamesSeries": "Games series",
+  "releaseDate": "Release date",
+  "developer": "Developer",
+  "publisher": "Publisher"
 }

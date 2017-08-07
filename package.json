@@ -30,6 +30,7 @@
   "dependencies": {
     "bootstrap-datepicker": "^1.7.1",
     "change-case": "^3.0.1",
+    "dateformat": "^2.0.0",
     "download-file": "^0.1.5",
     "electron-titlebar": "0.0.3",
     "form-to-object": "^5.0.0",
@@ -43,6 +44,8 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@types/bootstrap-datepicker": "0.0.9",
+    "@types/dateformat": "^1.0.1",
     "@types/electron": "^1.6.10",
     "@types/jquery": "^3.2.11",
     "@types/node": "^8.0.19",

@@ -11,27 +11,27 @@
 					<div class="col-md-7 col-md-offset-1">
 						<form id="add-game-form">
 							<div class="form-group">
-								<label class="control-label">Game name</label>
-								<input type="text" class="form-control" name="name" placeholder="Game name">
+								<label class="control-label">{{ gameName }}</label>
+								<input type="text" class="form-control" name="name" placeholder="{{ gameName }}">
 							</div>
 							<div class="row">
 								<div class="form-group col-md-8">
-									<label class="control-label">Games series</label>
-									<input type="text" class="form-control" name="series" placeholder="Games series">
+									<label class="control-label">{{ gamesSeries }}</label>
+									<input type="text" class="form-control" name="series" placeholder="{{ gamesSeries }}">
 								</div>
 								<div class="form-group col-md-4">
-									<label class="control-label">Release date</label>
-									<input type="date" class="form-control" name="date" placeholder="Release date">
+									<label class="control-label">{{ releaseDate }}</label>
+									<input type="text" class="form-control" name="date" placeholder="{{ releaseDate }}">
 								</div>
 							</div>
 							<div class="row">
 								<div class="form-group col-md-6">
-									<label class="control-label">Developer</label>
-									<input type="text" class="form-control" name="developer" placeholder="Developer">
+									<label class="control-label">{{ developer }}</label>
+									<input type="text" class="form-control" name="developer" placeholder="{{ developer }}">
 								</div>
 								<div class="form-group col-md-6">
-									<label class="control-label">Publisher</label>
-									<input type="text" class="form-control" name="publisher" placeholder="Publisher">
+									<label class="control-label">{{ publisher }}</label>
+									<input type="text" class="form-control" name="publisher" placeholder="{{ publisher }}">
 								</div>
 							</div>
 						</form>

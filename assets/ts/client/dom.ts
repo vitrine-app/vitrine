@@ -33,6 +33,11 @@ function registerAddGameForm() {
 		else
 			$('#fill-with-igdb-btn').addClass('disabled');
 	});
+	$('#add-game-form').find('input[name=date]').datepicker({
+		weekStart: 1,
+		language: 'fr',
+		format: 'dd/mm/yyyy'
+	});
 
 	$('#fill-with-igdb-btn').click((event) => {
 		event.preventDefault();
