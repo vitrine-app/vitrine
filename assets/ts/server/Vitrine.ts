@@ -107,6 +107,9 @@ export class Vitrine {
 				});
 			});
 		});
+		ipcMain.on('client.add-game-manual', (event, gameForm) => {
+			console.log(gameForm);
+		});
 		ipcMain.on('client.launch-game', (event, gameId) => {
 			this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
 				if (error)
