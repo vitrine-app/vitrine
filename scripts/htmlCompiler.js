@@ -4,15 +4,6 @@ const { pascalCase } = require('change-case');
 const cheerio = require('cheerio');
 const htmlMinifier = require('html-minifier');
 
-let htmlEntryPoint = path.resolve(__dirname, '../assets/html', 'main.html');
-let htmlString = fs.readFileSync(htmlEntryPoint).toString();
-const componentSuffix = 'Component.html';
-const componentsFolder = '../assets/html/components';
-let counter = 0;
-let componentsNb;
-let callbackProceeded = false;
-
-
 function loadComponents() {
 	$('[component]').each(function() {
 		if (!$(this).attr('loaded')) {
@@ -26,21 +17,44 @@ function loadComponents() {
 		}
 		if (counter === componentsNb && !callbackProceeded) {
 			callbackProceeded = true;
-			callback();
+			return callback();
 		}
 	});
 }
 
 function callback() {
 	$('body').append('<script>require(\'./client\');</script>');
+	return minify();
+}
+
+function minify() {
 	let minifiedHtml = htmlMinifier.minify($.html(), {
 		collapseWhitespace: true
 	});
-	fs.writeFileSync(path.resolve(__dirname, '../public', 'main.html'), minifiedHtml);
+	fs.writeFileSync(destFile, minifiedHtml);
+	console.log(destFile, 'built and minified!');
+	return 0;
 }
 
+if (process.argv.length < 4) {
+	console.error('Missing parameters: Needs src and destination file.');
+	return 1;
+}
+
+const srcFile =  process.argv[2];
+const destFile = process.argv[3];
+let htmlString = fs.readFileSync(srcFile).toString();
+const componentSuffix = 'Component.html';
+const componentsFolder = '../assets/html/components';
+let counter = 0;
+let componentsNb;
+let callbackProceeded = false;
 const $ = cheerio.load(htmlString);
+
 fs.readdir(path.join(__dirname, componentsFolder), (err, files) => {
 	componentsNb = files.length;
-	loadComponents();
+	if ($('[component]').length)
+		return loadComponents();
+	else
+		return minify();
 });
