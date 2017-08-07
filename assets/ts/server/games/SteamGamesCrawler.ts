@@ -63,7 +63,6 @@ class SteamGamesCrawler {
 				];
 				potentialGame.details.steamId = parseInt(gameManifest.appid);
 				this.potentialGames.push(potentialGame);
-
 				counter++;
 				if (counter === array.length) {
 					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();

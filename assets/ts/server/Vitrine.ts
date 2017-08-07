@@ -92,6 +92,7 @@ export class Vitrine {
 			delete gameForm.executable;
 			let game: PlayableGame = new PlayableGame(gameName, gameForm);
 			game.commandLine.push(programName);
+			game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
 			game.details.rating = parseInt(game.details.rating);
 			game.details.genres = game.details.genres.split(', ');
 			game.details.releaseDate = new Date(game.details.date).getTime();
