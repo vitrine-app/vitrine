@@ -4,9 +4,15 @@ import * as formToObject from 'form-to-object';
 import { languageInstance } from './Language';
 import { extendJQuery } from './helpers';
 
-/* function clickGameCover() {
-	(<any>$('#game-cover-component')).animateCss('pulse', 120);
-}*/
+function registerModalOverlay() {
+	$(document).on('show.bs.modal', '.modal', function() {
+		let zIndex = 1040 + (10 * $('.modal:visible').length);
+		$(this).css('z-index', zIndex);
+		setTimeout(function() {
+			$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+		}, 0);
+	});
+}
 
 function registerGameCover() {
 	let gameCoverEvents: any = {
@@ -95,6 +101,7 @@ function registerAddGameForm() {
 	});
 }
 
+
 export function launchDom() {
 	extendJQuery();
 	$(document.body).on('submit', '#game-name-form', function(event) {
@@ -108,6 +115,7 @@ export function launchDom() {
 		}
 	});
 
+	registerModalOverlay();
 	registerGameCover();
 	registerAddGameForm();
 }
