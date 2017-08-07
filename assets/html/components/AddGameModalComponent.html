@@ -5,42 +5,43 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ addGameLabel }}</h4>
 			</div>
-			<form class="form-horizontal">
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-4"></div>
-						<div class="col-md-4">
+			<div class="modal-body">
+				<div class="row">
+					<div id="add-game-cover" class="col-md-2"></div>
+					<div class="col-md-7 col-md-offset-1">
+						<form id="add-game-form">
 							<div class="form-group">
-								<label class="control-label col-sm-2" for="email">Email:</label>
-								<div class="col-sm-10">
-									<input type="email" class="form-control" id="email" placeholder="Enter email">
+								<label class="control-label">Game name</label>
+								<input type="text" class="form-control" name="name" placeholder="Game name">
+							</div>
+							<div class="row">
+								<div class="form-group col-md-8">
+									<label class="control-label">Games series</label>
+									<input type="text" class="form-control" name="series" placeholder="Games series">
+								</div>
+								<div class="form-group col-md-4">
+									<label class="control-label">Release date</label>
+									<input type="date" class="form-control" name="date" placeholder="Release date">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-2" for="pwd">Password:</label>
-								<div class="col-sm-10">
-									<input type="password" class="form-control" id="pwd" placeholder="Enter password">
+							<div class="row">
+								<div class="form-group col-md-6">
+									<label class="control-label">Developer</label>
+									<input type="text" class="form-control" name="developer" placeholder="Developer">
+								</div>
+								<div class="form-group col-md-6">
+									<label class="control-label">Publisher</label>
+									<input type="text" class="form-control" name="publisher" placeholder="Publisher">
 								</div>
 							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<div class="checkbox">
-										<label><input type="checkbox"> Remember me</label>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-								</div>
-							</div>
-						</div>
+						</form>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button id="fill-with-igdb-btn" class="btn btn-primary">{{ fillWithIGDB }}</button>
-					<button type="submit" class="btn btn-primary">{{ submitNewGame }}</button>
-				</div>
-			</form>
+			</div>
+			<div class="modal-footer">
+				<button id="fill-with-igdb-btn" class="btn btn-primary disabled">{{ fillWithIGDB }}</button>
+				<button class="btn btn-primary">{{ submitNewGame }}</button>
+			</div>
 		</div>
 
 	</div>

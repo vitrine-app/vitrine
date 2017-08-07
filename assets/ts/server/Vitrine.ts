@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
@@ -14,6 +14,7 @@ import { downloadFile, getEnvFolder, uuidV5 } from './helpers';
 export class Vitrine {
 	private windowsList;
 	private mainEntryPoint: string;
+	private loadingEntryPoint: string;
 	private devTools: boolean;
 	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -22,6 +23,7 @@ export class Vitrine {
 	constructor() {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
+		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
 		this.iconPath = path.resolve(__dirname, '../build/icon.png');
 		this.devTools = false;
 	}
@@ -44,7 +46,6 @@ export class Vitrine {
 				this.createMainWindow();
 			}
 		});
-
 	}
 
 	public registerEvents() {
@@ -68,11 +69,11 @@ export class Vitrine {
 				throw error;
 			});
 		});
-		ipcMain.on('client.get-game', (event, gameName) => {
+		ipcMain.on('client.fill-igdb-game', (event, gameName) => {
 			getIgdbWrapper(gameName).then((game) => {
-				event.sender.send('server.send-game', game);
+				event.sender.send('server.send-igdb-game', null, game);
 			}).catch((error) => {
-				event.sender.send('server.send-game-error', error);
+				event.sender.send('server.send-igdb-game', error, null);
 			});
 		});
 		ipcMain.on('client.add-game', (event, gameId) => {
@@ -130,14 +131,16 @@ export class Vitrine {
 			width: 500,
 			frame: false
 		});
+		this.windowsList.loadingWindow.loadURL(this.loadingEntryPoint);
 	}
 
 	private createMainWindow() {
+		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 		this.windowsList.mainWindow = new BrowserWindow({
-			width: 800,
-			height: 600,
-			minWidth: 800,
-			minHeight: 500,
+			width: width,
+			height: height,
+			minWidth: width,
+			minHeight: height,
 			icon: this.iconPath,
 			show: false
 		});

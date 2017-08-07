@@ -24,27 +24,20 @@ export class VitrineClient {
 	}
 
 	public registerEvents() {
-		// TODO: Remove this events pipeline
-		ipcRenderer.on('server.send-game', (event, game) => {
-			$('#game-cover-container').css({
-				'display': 'block'
-			});
-			$('#game-title').html(game.name);
-			$('#game-desc').addClass('game-desc').html(game.summary);
-			$('#game-cover-image').css({
-				'background-image': 'url(' + game.cover + ')',
-				'background-repeat': 'no-repeat',
-				'background-size': '100% 100%',
-			});
-			if (game.screenshots.length) {
-				beforeCss('#game-background', {
-					'background-image': 'url(' + game.screenshots[0] + ')'
-				});
-			}
-		});
-		ipcRenderer.on('server.send-game-error', (event, error) => {
-			$('#game-title').html(error);
-			throw new Error(error);
+		ipcRenderer.on('server.send-igdb-game', (event, error, game) => {
+			if (error)
+				throw new Error(error);
+			console.log(game);
+			$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
+
+			let formSelector = $('#add-game-form');
+
+			formSelector.find('input[name=name]').val(game.name);
+			formSelector.find('input[name=series]').val(game.series);
+			formSelector.find('input[name=developer]').val(game.developer);
+			formSelector.find('input[name=publisher]').val(game.publisher);
+
+			$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
 		});
 		ipcRenderer.on('server.add-potential-games', (event, games) => {
 			this.potentialGames.games = games;

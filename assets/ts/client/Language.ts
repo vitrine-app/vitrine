@@ -15,7 +15,6 @@ class Language {
 		let keyArray: string[] = key.split(',');
 		if (keyArray.length === 1)
 			return this.dict[key];
-		console.log(keyArray);
 		let ret: string = this.dict[keyArray[0]];
 		for (let i in keyArray) {
 			if (i)
