@@ -1,7 +1,21 @@
 {
-  "welcomeMessage": "Welcome to Vitrine!",
+  "welcomeMessage": "Welcome to %1!",
   "addGame": "Add %1",
-  "gameNamePlaceholder": "Game name",
   "getGame": "Get game",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "potentialGamesAdd": "You can add %1 game(s)",
+  "addGameLabel": "Add game",
+  "fillWithIGDB": "Fill with IGDB",
+  "submitNewGame": "Add",
+  "gameName": "Game name",
+  "gamesSeries": "Games series",
+  "releaseDate": "Release date",
+  "developer": "Developer",
+  "publisher": "Publisher",
+  "genres": "Genres",
+  "rating": "Rating",
+  "summary": "Summary",
+  "executable": "Executable",
+  "executables": "Executables",
+  "allFiles": "All files"
 }

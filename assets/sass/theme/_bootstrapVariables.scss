@@ -13,7 +13,7 @@ $brand-danger: #B3504D !default;
 
 // Scaffolding
 $body-bg: #2F2C28 !default;
-$text-color: $gray-light !default;
+$text-color: #D5D5D5 !default;
 $link-color: $brand-primary !default;
 $link-hover-color: darken($link-color, 15%) !default;
 $link-hover-decoration: underline !default;
@@ -40,7 +40,7 @@ $headings-line-height: 1.1 !default;
 $headings-color: inherit !default;
 
 // Iconography
-$icon-font-path: '../fonts/' !default;
+$icon-font-path: '../node_modules/bootstrap-sass/assets/fonts/bootstrap/' !default;
 $icon-font-name: 'glyphicons-halflings-regular' !default;
 $icon-font-svg-id: 'glyphicons_halflingsregular' !default;
 
@@ -308,14 +308,14 @@ $label-link-hover-color: rgb(255, 255, 255) !default;
 $modal-inner-padding: 15px !default;
 $modal-title-padding: 15px !default;
 $modal-title-line-height: $line-height-base !default;
-$modal-content-bg: rgb(255, 255, 255) !default;
+$modal-content-bg: $body-bg !default;
 $modal-content-border-color: rgba(0, 0, 0, 0.2) !default;
 $modal-content-fallback-border-color: rgb(153, 153, 153) !default;
 $modal-backdrop-bg: rgb(0, 0, 0) !default;
-$modal-backdrop-opacity: .5 !default;
-$modal-header-border-color: rgb(229, 229, 229) !default;
+$modal-backdrop-opacity: 0.65 !default;
+$modal-header-border-color: #55524B !default;
 $modal-footer-border-color: $modal-header-border-color !default;
-$modal-lg: 900px !default;
+$modal-lg: 1200px !default;
 $modal-md: 600px !default;
 $modal-sm: 300px !default;
 

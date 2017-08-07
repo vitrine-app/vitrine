@@ -2,13 +2,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { PotentialGame } from './PotentialGame';
-import { getEnvFolder } from '../server/helpers';
+import { getEnvFolder, uuidV5 } from '../server/helpers';
 
 export class PlayableGame extends PotentialGame {
 	public timePlayed: number;
 
 	constructor(name: string, details?: any) {
 		super(name, details);
+		this.timePlayed = 0;
 	}
 
 	public addPlayTime(timePlayed: number) {

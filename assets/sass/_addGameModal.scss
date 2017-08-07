@@ -1,0 +1,35 @@
+#add-game-cover {
+	padding-left: 5%;
+}
+
+#add-game-form textarea {
+	resize: none;
+}
+
+.datepicker {
+	background-color: $body-bg;
+
+	.datepicker-days table tr td:hover, table tr td span:hover, .datepicker-switch:hover, .prev:hover, .next:hover {
+		border-radius: $border-radius-base;
+		background-color: #3E372E !important;
+		color: #AFACA7 !important;
+	}
+
+	table tr td {
+		border-radius: $border-radius-base;
+
+		&.active, &.active:hover {
+			background-color: $brand-primary !important;
+			text-shadow: none !important;
+		}
+
+		span {
+			border-radius: $border-radius-base;
+
+			&.active, &:active:hover, &.focused, &.focused:hover {
+				background-color: $brand-primary !important;
+				text-shadow: none !important;
+			}
+		}
+	}
+}

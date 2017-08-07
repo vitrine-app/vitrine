@@ -1,6 +1,7 @@
 /* Bootstrap */
 @import 'theme/bootstrapVariables';
 @import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+@import 'theme/bootstrapDatepicker';
 
 /* Font Awesome */
 $fa-font-path: '../node_modules/font-awesome/fonts';

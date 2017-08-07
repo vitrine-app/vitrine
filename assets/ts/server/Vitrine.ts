@@ -1,21 +1,41 @@
+import * as fs from 'fs';
 import * as path from 'path';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
+
+import { GamesCollection } from '../models/GamesCollection';
+import { PotentialGame } from '../models/PotentialGame';
+import { PlayableGame } from '../models/PlayableGame';
+import { getGameLauncher } from './GameLauncher';
+import { getSteamCrawler } from './games/SteamGamesCrawler';
+import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
+import { getIgdbWrapper } from './api/IgdbWrapper';
+import { downloadFile, getEnvFolder, uuidV5 } from './helpers';
 
 export class Vitrine {
 	private windowsList;
 	private mainEntryPoint: string;
+	private loadingEntryPoint: string;
 	private devTools: boolean;
+	private iconPath: string;
+	private potentialGames: GamesCollection<PotentialGame>;
+	private playableGames: GamesCollection<PlayableGame>;
 
 	constructor() {
 		this.windowsList = {};
-		this.mainEntryPoint = path.join('file://', __dirname, 'main.html');
+		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
+		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
+		this.iconPath = path.resolve(__dirname, '../build/icon.png');
 		this.devTools = false;
 	}
 
 	public run(devTools?: boolean) {
 		if (devTools)
 			this.devTools = devTools;
-		app.on('ready', this.createMainWindow.bind(this));
+
+		app.on('ready', () => {
+			this.createLoadingWindow();
+			this.createMainWindow();
+		});
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin') {
 				app.quit();
@@ -26,21 +46,90 @@ export class Vitrine {
 				this.createMainWindow();
 			}
 		});
-
 	}
 
-	public registerEvents(events: object) {
-		Object.keys(events).forEach((name) => {
-			ipcMain.on(name, events[name]);
+	public registerEvents() {
+		ipcMain.on('client.ready', (event) => {
+			this.potentialGames = new GamesCollection();
+			this.playableGames = new GamesCollection();
+
+			getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
+				this.potentialGames = games;
+				event.sender.send('server.add-potential-games', this.potentialGames.games);
+			}).catch((error) => {
+				throw error;
+			});
+
+			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
+				this.playableGames = games;
+				event.sender.send('server.add-playable-games', this.playableGames.games);
+				this.windowsList.loadingWindow.destroy();
+				this.windowsList.mainWindow.show();
+			}).catch((error) => {
+				throw error;
+			});
+		});
+		ipcMain.on('client.fill-igdb-game', (event, gameName) => {
+			getIgdbWrapper(gameName).then((game) => {
+				event.sender.send('server.send-igdb-game', null, game);
+			}).catch((error) => {
+				event.sender.send('server.send-igdb-game', error, null);
+			});
+		});
+		ipcMain.on('client.add-game', (event, gameId) => {
+			this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
+				if (error)
+					throw new Error(error);
+				let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
+				this.addGame(event, addedGame);
+			});
+		});
+		ipcMain.on('client.add-game-manual', (event, gameForm) => {
+			let gameName: string = gameForm.name;
+			let programName: string = gameForm.executable;
+			delete gameForm.name;
+			delete gameForm.executable;
+			let game: PlayableGame = new PlayableGame(gameName, gameForm);
+			game.commandLine.push(programName);
+			console.log(game);
+			this.addGame(event, game);
+		});
+		ipcMain.on('client.launch-game', (event, gameId) => {
+			this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
+				if (error)
+					throw new Error(error);
+				if (game.uuid !== uuidV5(game.name))
+					throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
+				getGameLauncher(game).then((secondsPlayed: number) => {
+					console.log('You played', secondsPlayed, 'seconds.');
+					game.addPlayTime(secondsPlayed);
+					event.sender.send('server.stop-game', true);
+				}).catch((error) => {
+					if (error)
+						throw new Error(error);
+				});
+			});
 		});
 	}
 
+	private createLoadingWindow() {
+		this.windowsList.loadingWindow = new BrowserWindow({
+			height: 300,
+			width: 500,
+			frame: false
+		});
+		this.windowsList.loadingWindow.loadURL(this.loadingEntryPoint);
+	}
+
 	private createMainWindow() {
+		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 		this.windowsList.mainWindow = new BrowserWindow({
-			width: 800,
-			height: 600,
-			minWidth: 800,
-			minHeight: 500
+			width: width,
+			height: height,
+			minWidth: width,
+			minHeight: height,
+			icon: this.iconPath,
+			show: false
 		});
 
 		this.windowsList.mainWindow.setMenu(null);
@@ -51,6 +140,35 @@ export class Vitrine {
 
 		this.windowsList.mainWindow.on('closed', () => {
 			delete this.windowsList.mainWindow;
+		});
+	}
+
+	private addGame(event, game: PlayableGame) {
+		let gameDirectory = path.resolve(getEnvFolder('games'), game.uuid);
+		let configFilePath = path.resolve(gameDirectory, 'config.json');
+
+		if (fs.existsSync(configFilePath))
+			return;
+		fs.mkdirSync(gameDirectory);
+
+		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
+		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
+		let backgroundScreen: string = (game.details.steamId) ? (game.details.screenshots[0]) : (game.details.background);
+
+		downloadFile(game.details.cover, coverPath, true, () => {
+			game.details.cover = coverPath;
+			downloadFile(backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
+				game.details.backgroundScreen = screenPath;
+				delete game.details.screenshots;
+				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (err) => {
+					if (err)
+						throw err;
+					if (game.details.steamId)
+					event.sender.send('server.remove-potential-game', game.uuid);
+					event.sender.send('server.add-playable-game', game);
+					this.playableGames.addGame(game);
+				});
+			});
 		});
 	}
 }

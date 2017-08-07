@@ -1,7 +1,21 @@
 {
-  "welcomeMessage": "Bienvenue sur Vitrine !",
+  "welcomeMessage": "Bienvenue sur %1 !",
   "addGame": "Ajouter %1",
-  "gameNamePlaceholder": "Nom du jeu",
   "getGame": "Récupérer le jeu",
-  "loading": "Chargement..."
+  "loading": "Chargement...",
+  "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
+  "addGameLabel": "Ajouter un jeu",
+  "fillWithIGDB": "Remplir avec IGDB",
+  "submitNewGame": "Ajouter",
+  "gameName": "Nom du jeu",
+  "gamesSeries": "Série de jeux",
+  "releaseDate": "Date de sortie",
+  "developer": "Développeur",
+  "publisher": "Éditeur",
+  "genres": "Genres",
+  "rating": "Note",
+  "summary": "Description",
+  "executable": "Programme",
+  "executables": "Programmes",
+  "allFiles": "Tous les fichiers"
 }

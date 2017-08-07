@@ -11,14 +11,22 @@ class Language {
 		this.dict = JSON.parse(fs.readFileSync(filePath).toString());
 	}
 
-	public replaceHtml(key: string) {
-		return this.dict[key];
+	public replaceHtml(key: string, arg?: any) {
+		let keyArray: string[] = key.split(',');
+		if (keyArray.length === 1)
+			return this.dict[key];
+		let ret: string = this.dict[keyArray[0]];
+		for (let i in keyArray) {
+			if (i)
+				ret = ret.replace('%' + i, keyArray[i]);
+		}
+		return ret;
 	}
 
 	public replaceJs(key: string, arg?: any) {
-		if (arg)
-			return this.dict[key].replace('%1', arg);
-		return this.dict[key];
+		if (!arg)
+			return this.dict[key];
+		return this.dict[key].replace('%1', arg);
 	}
 }
 

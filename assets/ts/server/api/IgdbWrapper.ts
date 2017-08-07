@@ -68,9 +68,13 @@ class IgdbWrapper {
 			this.game.rating = Math.round(rating);
 			delete this.game['total_rating'];
 		}
+		if (this.game.first_release_date) {
+			this.game.release_date = this.game.first_release_date;
+			delete this.game.first_release_date;
+		}
 		if (this.game.cover)
 			this.game.cover = 'https:' + this.game.cover.url.replace('t_thumb', 't_cover_big_2x');
-		else /* TODO: Change default image */
+		else // TODO: Change default image
 			this.game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
 		if (this.game.screenshots) {
 			this.game.screenshots.forEach((element, key) => {
@@ -144,13 +148,15 @@ class IgdbWrapper {
 	}
 
 	private addDeveloperCallback(developer) {
-		this.game.developers = developer.name;
+		delete this.game.developers;
+		this.game.developer = developer.name;
 
 		this.findCompanyById(this.game.publishers, this.addPublisherCallback.bind(this));
 	}
 
 	private addPublisherCallback(publisher) {
-		this.game.publishers = publisher.name;
+		delete this.game.publishers;
+		this.game.publisher = publisher.name;
 
 		this.findSeriesById(this.game.collection, this.addSeriesCallback.bind(this));
 	}
@@ -169,7 +175,7 @@ class IgdbWrapper {
 		});
 		this.game.genres = genresArray;
 
-		this.callback(null, this.game)
+		this.callback(null, this.game);
 		this.operating = false;
 	}
 }

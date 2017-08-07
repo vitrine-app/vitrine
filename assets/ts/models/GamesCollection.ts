@@ -22,12 +22,12 @@ export class GamesCollection<T> {
 		let found: boolean = false;
 
 		this._games.forEach((game: any) => {
-			if (game.uuid == gameId) {
+			if (game.uuid === gameId) {
 				found = true;
 				callback(null, game);
 			}
 			counter++;
-			if (counter == this._games.length && !found)
+			if (counter === this._games.length && !found)
 				callback('Game not found.', null);
 
 		});
@@ -42,14 +42,14 @@ export class GamesCollection<T> {
 		let found: boolean = false;
 
 		this._games.forEach((game: any) => {
-			if (game.uuid == gameId) {
+			if (game.uuid === gameId) {
 				found = true;
 				let index: number = this._games.indexOf(game);
 				this._games.splice(index, 1);
 				callback(null, game);
 			}
 			counter++;
-			if (counter == this._games.length && !found)
+			if (counter === this._games.length && !found)
 				callback('Game not found.', null);
 
 		});

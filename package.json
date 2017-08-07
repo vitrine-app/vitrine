@@ -10,8 +10,7 @@
     "productName": "Vitrine",
     "files": [
       "!.circleci",
-      "!assets/sass",
-      "!assets/ts",
+      "!assets",
       "!config/build",
       "!.gitignore",
       "!LICENSE",
@@ -29,16 +28,15 @@
     }
   },
   "dependencies": {
-    "animate.sass": "^1.0.1",
-    "bootstrap-sass": "^3.3.7",
+    "bootstrap-datepicker": "^1.7.1",
     "change-case": "^3.0.1",
+    "dateformat": "^2.0.0",
     "download-file": "^0.1.5",
     "electron-titlebar": "0.0.3",
-    "font-awesome": "^4.7.0",
     "form-to-object": "^5.0.0",
     "get-closest": "0.0.4",
     "glob": "^7.1.2",
-    "igdb-api-node": "^3.0.1",
+    "igdb-api-node": "^3.0.2",
     "jquery": "^3.2.1",
     "levenshtein": "^1.0.5",
     "sass-percentage-circle": "^0.2.0",
@@ -46,28 +44,36 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@types/bootstrap-datepicker": "0.0.9",
+    "@types/dateformat": "^1.0.1",
     "@types/electron": "^1.6.10",
-    "@types/jquery": "^3.2.10",
+    "@types/jquery": "^3.2.11",
     "@types/node": "^8.0.19",
     "@types/uuid": "^3.4.0",
+    "animate.sass": "^1.0.1",
     "awesome-typescript-loader": "^3.2.2",
+    "bootstrap-sass": "^3.3.7",
+    "cheerio": "^1.0.0-rc.2",
     "electron": "^1.7.5",
     "electron-builder": "^19.19.1",
+    "font-awesome": "^4.7.0",
+    "html-minifier": "^3.5.3",
     "node-sass-chokidar": "0.0.3",
     "parallel-webpack": "^2.1.0",
     "typescript": "^2.4.2",
     "webpack": "^3.4.1"
   },
   "scripts": {
+    "build-html": "node scripts\\htmlCompiler.js assets\\html\\main.html public\\main.html && node scripts\\htmlCompiler.js assets\\html\\loading.html public\\loading.html",
     "build-css": "node-sass-chokidar assets/sass/main.scss public/app.css",
     "build-prod": "node-sass-chokidar assets/sass/main.scss public/app.css --output-style compressed",
-    "start": "webpack && npm run build-css && electron .",
+    "start": "webpack && npm run build-html && npm run build-css && electron .",
     "run-electron": "electron .",
     "run-server-electron": "webpack --config config/build/server.build.js && electron .",
     "run-client-electron": "webpack --config config/build/client.build.js && electron .",
     "run-style-electron": "npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "pack": "webpack && npm run build-css && electron-builder --dir",
-    "dist": "webpack && npm run build-css && electron-builder"
+    "pack": "webpack && npm run build-prod && electron-builder --dir",
+    "dist": "webpack && npm run build-prod && electron-builder"
   }
 }
