@@ -61,7 +61,7 @@ class SteamGamesCrawler {
 					path.resolve(this.configFile.installFolder, 'steam.exe'),
 					this.configFile.launchCommand.replace('%id', gameManifest.appid)
 				];
-				potentialGame.details.steamId = gameManifest.appid;
+				potentialGame.details.steamId = parseInt(gameManifest.appid);
 				this.potentialGames.push(potentialGame);
 
 				counter++;

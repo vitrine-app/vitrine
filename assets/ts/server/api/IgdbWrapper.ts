@@ -66,10 +66,10 @@ class IgdbWrapper {
 		if (this.game.total_rating) {
 			let rating = this.game.total_rating;
 			this.game.rating = Math.round(rating);
-			delete this.game['total_rating'];
+			delete this.game.total_rating;
 		}
 		if (this.game.first_release_date) {
-			this.game.release_date = this.game.first_release_date;
+			this.game.releaseDate = this.game.first_release_date;
 			delete this.game.first_release_date;
 		}
 		if (this.game.cover)
@@ -162,7 +162,7 @@ class IgdbWrapper {
 	}
 
 	private addSeriesCallback(series) {
-		delete this.game['collection'];
+		delete this.game.collection;
 		this.game.series = series.name;
 
 		this.findGenreById(this.game.genres, this.addGenresCallback.bind(this));

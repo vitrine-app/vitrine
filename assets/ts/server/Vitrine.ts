@@ -81,6 +81,7 @@ export class Vitrine {
 				if (error)
 					throw new Error(error);
 				let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
+				delete addedGame.details.id;
 				this.addGame(event, addedGame);
 			});
 		});
@@ -91,7 +92,10 @@ export class Vitrine {
 			delete gameForm.executable;
 			let game: PlayableGame = new PlayableGame(gameName, gameForm);
 			game.commandLine.push(programName);
-			console.log(game);
+			game.details.rating = parseInt(game.details.rating);
+			game.details.genres = game.details.genres.split(', ');
+			game.details.releaseDate = new Date(game.details.date).getTime();
+			delete game.details.date;
 			this.addGame(event, game);
 		});
 		ipcMain.on('client.launch-game', (event, gameId) => {
@@ -159,12 +163,15 @@ export class Vitrine {
 			game.details.cover = coverPath;
 			downloadFile(backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
 				game.details.backgroundScreen = screenPath;
+				if (game.details.steamId)
 				delete game.details.screenshots;
+				else
+					delete game.details.background;
 				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (err) => {
 					if (err)
 						throw err;
 					if (game.details.steamId)
-					event.sender.send('server.remove-potential-game', game.uuid);
+						event.sender.send('server.remove-potential-game', game.uuid);
 					event.sender.send('server.add-playable-game', game);
 					this.playableGames.addGame(game);
 				});

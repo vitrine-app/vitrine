@@ -13,7 +13,27 @@ class GameLauncher {
 		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
 	}
 
-	launch(callback) {
+	public launch(callback: Function) {
+		if (this.game.details.steamId)
+			this.launchSteamGame(callback);
+		else
+			this.launchStandardGame(callback);
+	}
+
+	private launchStandardGame(callback: Function) {
+		let beginTime: Date = new Date();
+		let gameProcess = execFile(this.scriptPath, this.game.commandLine, (error) => {
+			if (error)
+				callback(error, null);
+		});
+		gameProcess.on('exit', () => {
+			let endTime: Date = new Date();
+			let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
+			callback(null, secondsPlayed);
+		});
+	}
+
+	private launchSteamGame(callback: Function) {
 		let inWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
 			if (error)
 				callback(error, null);

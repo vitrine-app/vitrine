@@ -63,7 +63,7 @@ function registerAddGameForm() {
 				{name: languageInstance.replaceJs('allFiles'), extensions: ['*']}
 			]
 		});
-		if (!dialogRet.length)
+		if (!dialogRet || !dialogRet.length)
 			return;
 		$('#add-game-form').find('input[name=executable]').val(dialogRet[0]);
 		if (formSelector.find('input[name=name]').val())
