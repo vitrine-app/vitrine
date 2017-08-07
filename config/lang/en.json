@@ -18,5 +18,6 @@
   "executable": "Executable",
   "lineArguments": "Command line arguments",
   "executables": "Executables",
-  "allFiles": "All files"
+  "allFiles": "All files",
+  "error": "An error occured:"
 }

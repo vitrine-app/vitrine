@@ -22,6 +22,12 @@ export class VitrineClient {
 	public run() {
 		this.clickedGame = null;
 		ipcRenderer.send('client.ready');
+
+		window.onerror = function(error, url, line) {
+			let errorHtml: string = '<h3>' + languageInstance.replaceJs('error') + '</h3><hr><h4>' + error + '</h4>';
+			$('#error-message').html('').html(errorHtml);
+			(<any>$('#error-modal')).modal('show');
+		}
 	}
 
 	public registerEvents() {

@@ -1,0 +1,19 @@
+#error-modal {
+	.modal-content {
+		background-color: #332929;
+
+		#error-message {
+			padding-bottom: 86px;
+			padding-left: 30px;
+			padding-right: 30px;
+
+		}
+		#error-icon {
+			font-size: 205px;
+			position: absolute;
+			color: rgba(255, 50, 50, 0.12);
+			bottom: -24px;
+			right: 23px;
+		}
+	}
+}
