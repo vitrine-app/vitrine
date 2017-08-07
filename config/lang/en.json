@@ -11,5 +11,11 @@
   "gamesSeries": "Games series",
   "releaseDate": "Release date",
   "developer": "Developer",
-  "publisher": "Publisher"
+  "publisher": "Publisher",
+  "genres": "Genres",
+  "rating": "Rating",
+  "summary": "Summary",
+  "executable": "Executable",
+  "executables": "Executables",
+  "allFiles": "All files"
 }

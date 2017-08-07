@@ -2,6 +2,10 @@
 	padding-left: 5%;
 }
 
+#add-game-form textarea {
+	resize: none;
+}
+
 .datepicker {
 	background-color: $body-bg;
 

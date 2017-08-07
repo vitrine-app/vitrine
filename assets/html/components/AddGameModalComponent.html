@@ -11,27 +11,53 @@
 					<div class="col-md-7 col-md-offset-1">
 						<form id="add-game-form">
 							<div class="form-group">
-								<label class="control-label">{{ gameName }}</label>
-								<input type="text" class="form-control" name="name" placeholder="{{ gameName }}">
+								<label>{{ gameName }}</label>
+								<input class="form-control" name="name" placeholder="{{ gameName }}">
 							</div>
 							<div class="row">
 								<div class="form-group col-md-8">
-									<label class="control-label">{{ gamesSeries }}</label>
-									<input type="text" class="form-control" name="series" placeholder="{{ gamesSeries }}">
+									<label>{{ gamesSeries }}</label>
+									<input class="form-control" name="series" placeholder="{{ gamesSeries }}">
 								</div>
 								<div class="form-group col-md-4">
-									<label class="control-label">{{ releaseDate }}</label>
-									<input type="text" class="form-control" name="date" placeholder="{{ releaseDate }}">
+									<label>{{ releaseDate }}</label>
+									<input class="form-control" name="date" placeholder="{{ releaseDate }}">
 								</div>
 							</div>
 							<div class="row">
 								<div class="form-group col-md-6">
-									<label class="control-label">{{ developer }}</label>
-									<input type="text" class="form-control" name="developer" placeholder="{{ developer }}">
+									<label>{{ developer }}</label>
+									<input class="form-control" name="developer" placeholder="{{ developer }}">
 								</div>
 								<div class="form-group col-md-6">
-									<label class="control-label">{{ publisher }}</label>
-									<input type="text" class="form-control" name="publisher" placeholder="{{ publisher }}">
+									<label>{{ publisher }}</label>
+									<input class="form-control" name="publisher" placeholder="{{ publisher }}">
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-md-9">
+									<label>{{ genres }}</label>
+									<input class="form-control" name="genres" placeholder="{{ genres }}">
+								</div>
+								<div class="form-group col-md-3">
+									<label>{{ rating }}</label>
+									<input type="number" class="form-control" name="rating" min="0" max="100" placeholder="{{ rating }}">
+								</div>
+							</div>
+							<div class="form-group">
+								<label>{{ summary }}</label>
+								<textarea class="form-control" rows="4" name="summary" placeholder="{{ summary }}"></textarea>
+							</div>
+							<hr>
+							<div class="form-group">
+								<label>{{ executable }}</label>
+								<div class="input-group">
+									<input class="form-control" name="program" placeholder="{{ executable }}">
+									<span class="input-group-btn">
+										<button id="add-game-program-btn" class="btn btn-default" type="button">
+											<i class="fa fa-folder-open-o"></i>
+										</button>
+									</span>
 								</div>
 							</div>
 						</form>

@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import * as dateFormat from 'dateformat';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
@@ -36,6 +37,10 @@ export class VitrineClient {
 			formSelector.find('input[name=series]').val(game.series);
 			formSelector.find('input[name=developer]').val(game.developer);
 			formSelector.find('input[name=publisher]').val(game.publisher);
+			formSelector.find('input[name=date]').datepicker('update', dateFormat(game.release_date, 'dd/mm/yyyy'));
+			formSelector.find('input[name=genres]').val(game.genres.join(', '));
+			formSelector.find('input[name=rating]').val(game.rating);
+			formSelector.find('textarea[name=summary]').val(game.summary);
 
 			$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
 		});

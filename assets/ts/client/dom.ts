@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import * as formToObject from 'form-to-object';
 
 import { languageInstance } from './Language';
@@ -47,6 +47,19 @@ function registerAddGameForm() {
 		ipcRenderer.send('client.fill-igdb-game', gameName);
 	});
 
+	$('#add-game-program-btn').click(() => {
+		let dialogRet: string[] = remote.dialog.showOpenDialog({
+			properties: ['openFile'],
+			filters: [
+				{name: languageInstance.replaceJs('executables'), extensions: ['exe']},
+				{name: languageInstance.replaceJs('allFiles'), extensions: ['*']}
+			]
+		});
+		if (!dialogRet.length)
+			return;
+		$('#add-game-form').find('input[name=program]').val(dialogRet[0]);
+	});
+
 	$('#add-game-modal').on('hidden.bs.modal', () => {
 		$('#add-game-cover').html('');
 		let formSelector = $('#add-game-form');
@@ -54,6 +67,11 @@ function registerAddGameForm() {
 		formSelector.find('input[name=series]').val('');
 		formSelector.find('input[name=developer]').val('');
 		formSelector.find('input[name=publisher]').val('');
+		formSelector.find('input[name=date]').datepicker('update', '');
+		formSelector.find('input[name=genres]').val('');
+		formSelector.find('input[name=rating]').val('');
+		formSelector.find('textarea[name=summary]').val('');
+		formSelector.find('input[name=program]').val('');
 	});
 }
 
