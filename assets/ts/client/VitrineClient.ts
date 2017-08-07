@@ -88,7 +88,7 @@ export class VitrineClient {
 			let html: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
 			$('#playable-games-list').append(html);
 			counter++;
-			if (counter == this.playableGames.games.length)
+			if (counter === this.playableGames.games.length)
 				this.eventPlayableGames();
 		});
 	}
