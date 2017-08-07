@@ -1,0 +1,16 @@
+.potential-games-row {
+	padding: 15px 0 15px 50px;
+
+	.potential-game {
+		padding: 0 20px;
+		font-size: 18px;
+
+		.potential-game-cover {
+			width: 200px;
+			height: 286px;
+			background-size: cover;
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.42);
+			margin-bottom: 10px;
+		}
+	}
+}

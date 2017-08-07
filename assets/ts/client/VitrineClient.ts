@@ -23,7 +23,7 @@ export class VitrineClient {
 		this.clickedGame = null;
 		ipcRenderer.send('client.ready');
 
-		window.onerror = function(error, url, line) {
+		window.onerror = function(error) {
 			let errorHtml: string = '<h3>' + languageInstance.replaceJs('error') + '</h3><hr><h4>' + error + '</h4>';
 			$('#error-message').html('').html(errorHtml);
 			(<any>$('#error-modal')).modal('show');
@@ -84,17 +84,34 @@ export class VitrineClient {
 	}
 
 	private renderPotentialGames() {
-		let html: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
-			languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
-			'</button>';
-		$('#potential-games-area').html(html);
+		this.potentialGames.sort();
+		let counter: number = 0;
+		let gamesListHtml: string = '<div class="row potential-games-row">';
+		this.potentialGames.forEach((potentialGame: PotentialGame) => {
+			gamesListHtml += '<div class="col-md-3 potential-game">'
+				+ '<div class="potential-game-cover" style="background-image: url(' + potentialGame.details.cover + ')"></div>'
+				+ potentialGame.name
+				+ '</div>';
+			counter++;
+			if (counter % 4 === 0 || counter === this.potentialGames.games.length) {
+				gamesListHtml += '</div>';
+				if (counter === this.potentialGames.games.length) {
+					$('#add-games-modal').find('.modal-body').html('').html(gamesListHtml);
+					let buttonHtml: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
+						languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
+						'</button>';
+					$('#potential-games-area').html(buttonHtml);
+				}
+				else
+					gamesListHtml += '<div class="row potential-games-row">';
+			}
+		});
 	}
 
 	private renderPlayableGames() {
 		$('#playable-games-list').html('');
 
 		this.playableGames.sort();
-
 		let counter: number = 0;
 		this.playableGames.forEach((playableGame: PlayableGame) => {
 			let html: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
