@@ -88,15 +88,16 @@ export class Vitrine {
 		ipcMain.on('client.add-game-manual', (event, gameForm) => {
 			let gameName: string = gameForm.name;
 			let programName: string = gameForm.executable;
-			delete gameForm.name;
-			delete gameForm.executable;
 			let game: PlayableGame = new PlayableGame(gameName, gameForm);
+
 			game.commandLine.push(programName);
 			game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
 			game.details.rating = parseInt(game.details.rating);
 			game.details.genres = game.details.genres.split(', ');
 			game.details.releaseDate = new Date(game.details.date).getTime();
+
 			delete game.details.date;
+			delete game.details.arguments;
 			this.addGame(event, game);
 		});
 		ipcMain.on('client.launch-game', (event, gameId) => {
