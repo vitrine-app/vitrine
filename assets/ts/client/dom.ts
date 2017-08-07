@@ -87,6 +87,8 @@ function registerAddGameForm() {
 		formSelector.find('input[name=rating]').val('');
 		formSelector.find('textarea[name=summary]').val('');
 		formSelector.find('input[name=executable]').val('');
+		formSelector.find('input[name=cover]').val('');
+		formSelector.find('input[name=background]').val('');
 
 		$('#fill-with-igdb-btn').prop('disabled', true);
 		$('#add-game-submit-btn').prop('disabled', true);

@@ -80,35 +80,19 @@ export class Vitrine {
 			this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
 				if (error)
 					throw new Error(error);
-				let gameDirectory = path.resolve(getEnvFolder('games'), potentialSteamGame.uuid);
-				let configFilePath = path.resolve(gameDirectory, 'config.json');
-
-				if (fs.existsSync(configFilePath))
-					return;
-				fs.mkdirSync(gameDirectory);
-
-				let addedGame: any = PlayableGame.toPlayableGame(potentialSteamGame);
-				let screenPath = path.resolve(gameDirectory, 'background.jpg');
-				let coverPath = path.resolve(gameDirectory, 'cover.jpg');
-
-				downloadFile(addedGame.details.cover, coverPath, true, () => {
-					addedGame.details.cover = coverPath;
-					downloadFile(addedGame.details.screenshots[0].replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
-						addedGame.details.backgroundScreen = screenPath;
-						delete addedGame.details.screenshots;
-						fs.writeFile(configFilePath, JSON.stringify(addedGame, null, 2), (err) => {
-							if (err)
-								throw err;
-							event.sender.send('server.remove-potential-game', potentialSteamGame.uuid);
-							event.sender.send('server.add-playable-game', addedGame);
-							this.playableGames.addGame(addedGame);
-						});
-					});
-				});
+				let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
+				this.addGame(event, addedGame);
 			});
 		});
 		ipcMain.on('client.add-game-manual', (event, gameForm) => {
-			console.log(gameForm);
+			let gameName: string = gameForm.name;
+			let programName: string = gameForm.executable;
+			delete gameForm.name;
+			delete gameForm.executable;
+			let game: PlayableGame = new PlayableGame(gameName, gameForm);
+			game.commandLine.push(programName);
+			console.log(game);
+			this.addGame(event, game);
 		});
 		ipcMain.on('client.launch-game', (event, gameId) => {
 			this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
@@ -156,6 +140,35 @@ export class Vitrine {
 
 		this.windowsList.mainWindow.on('closed', () => {
 			delete this.windowsList.mainWindow;
+		});
+	}
+
+	private addGame(event, game: PlayableGame) {
+		let gameDirectory = path.resolve(getEnvFolder('games'), game.uuid);
+		let configFilePath = path.resolve(gameDirectory, 'config.json');
+
+		if (fs.existsSync(configFilePath))
+			return;
+		fs.mkdirSync(gameDirectory);
+
+		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
+		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
+		let backgroundScreen: string = (game.details.steamId) ? (game.details.screenshots[0]) : (game.details.background);
+
+		downloadFile(game.details.cover, coverPath, true, () => {
+			game.details.cover = coverPath;
+			downloadFile(backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
+				game.details.backgroundScreen = screenPath;
+				delete game.details.screenshots;
+				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (err) => {
+					if (err)
+						throw err;
+					if (game.details.steamId)
+					event.sender.send('server.remove-potential-game', game.uuid);
+					event.sender.send('server.add-playable-game', game);
+					this.playableGames.addGame(game);
+				});
+			});
 		});
 	}
 }

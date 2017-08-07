@@ -4,8 +4,8 @@ import * as dateFormat from 'dateformat';
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
-import { beforeCss } from './helpers';
 import { languageInstance } from './Language';
+import { beforeCss } from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -28,7 +28,6 @@ export class VitrineClient {
 		ipcRenderer.on('server.send-igdb-game', (event, error, game) => {
 			if (error)
 				throw new Error(error);
-			console.log(game);
 			$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
 
 			let formSelector = $('#add-game-form');
@@ -41,6 +40,9 @@ export class VitrineClient {
 			formSelector.find('input[name=genres]').val(game.genres.join(', '));
 			formSelector.find('input[name=rating]').val(game.rating);
 			formSelector.find('textarea[name=summary]').val(game.summary);
+			formSelector.find('input[name=cover]').val(game.cover);
+			// TODO: Change default screenshot
+			formSelector.find('input[name=background]').val(game.screenshots[0]);
 
 			$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
 		});
@@ -62,6 +64,10 @@ export class VitrineClient {
 			})
 		});
 		ipcRenderer.on('server.add-playable-game', (event, playableGame) => {
+			if (!playableGame.details.steamId) {
+				(<any>$('#add-game-modal')).modal('hide');
+				$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
+			}
 			this.playableGames.addGame(playableGame);
 			this.renderPlayableGames();
 		});
