@@ -101,6 +101,18 @@ function registerAddGameForm() {
 	});
 }
 
+function registerContextMenu() {
+	(<any>$).contextMenu({
+		selector: '.games-list li.play-game-link',
+		items: {
+			foo: { name: 'Remove', callback() {
+				let gameId: string = $(this).attr('game-id');
+				ipcRenderer.send('client.remove-game', gameId);
+				console.log('Removal sent');
+			}}
+		}
+	});
+}
 
 export function launchDom() {
 	extendJQuery();
@@ -118,4 +130,5 @@ export function launchDom() {
 	registerModalOverlay();
 	registerGameCover();
 	registerAddGameForm();
+	registerContextMenu();
 }

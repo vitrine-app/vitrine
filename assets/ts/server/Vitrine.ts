@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import * as rimraf from 'rimraf';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
@@ -119,6 +120,14 @@ export class Vitrine {
 				});
 			});
 		});
+		ipcMain.on('client.remove-game', (event, gameId) => {
+			this.playableGames.removeGame(gameId, (error) => {
+				let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
+				rimraf(gameDirectory, () => {
+					event.sender.send('server.game-removed', error, gameId);
+				});
+			});
+		});
 	}
 
 	private createLoadingWindow() {
@@ -169,7 +178,7 @@ export class Vitrine {
 			downloadFile(backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
 				game.details.backgroundScreen = screenPath;
 				if (game.details.steamId)
-				delete game.details.screenshots;
+					delete game.details.screenshots;
 				else
 					delete game.details.background;
 				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (err) => {

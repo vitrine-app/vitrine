@@ -456,3 +456,14 @@ $page-header-border-color: $gray-lighter !default;
 $dl-horizontal-offset: $component-offset-horizontal !default;
 $dl-horizontal-breakpoint: $grid-float-breakpoint !default;
 $hr-border: $gray-lighter !default;
+
+// Context menu
+$context-menu-background-color: #252424 !default;
+$context-menu-border-width: none !default;
+$context-menu-border-style: none !default;
+$context-menu-border-color: none !default;
+$context-menu-box-shadow: none !default;
+$context-menu-border-radius: $border-radius-base !default;
+$context-menu-item-color-hover: $brand-primary !default;
+$context-menu-text-color: $text-color !default;
+$context-menu-icon-color: $text-color !default;

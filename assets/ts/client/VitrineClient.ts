@@ -82,7 +82,17 @@ export class VitrineClient {
 				$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
 			}
 			this.playableGames.addGame(playableGame);
+			console.log(this.playableGames);
 			this.renderPlayableGames();
+		});
+		ipcRenderer.on('server.game-removed', (event, error, gameId) => {
+			if (error)
+				throw new Error(error);
+			this.playableGames.removeGame(gameId, (error) => {
+				if (error)
+					throw new Error(error);
+				this.renderPlayableGames();
+			});
 		});
 		ipcRenderer.on('server.stop-game', () => {
 			console.log('Game stopped.');

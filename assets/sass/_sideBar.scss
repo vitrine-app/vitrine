@@ -29,6 +29,7 @@
 				color: #A5A5A5;
 				display: block;
 				padding: 10px 20px;
+				cursor: pointer;
 
 				&:hover {
 					background-color: #3E372E;
@@ -37,6 +38,7 @@
 				&.selected-game {
 					background-color: #504638;
 					color: #AFACA7;
+					cursor: default;
 				}
 			}
 		}

@@ -37,7 +37,7 @@ export class GamesCollection<T> {
 		this._games.push(game);
 	}
 
-	public removeGame(gameId: string, callback) {
+	public removeGame(gameId: string, callback: Function) {
 		let counter: number = 0;
 		let found: boolean = false;
 
