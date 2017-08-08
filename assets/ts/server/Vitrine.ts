@@ -79,7 +79,7 @@ export class Vitrine {
 		ipcMain.on('client.add-game', (event, gameId) => {
 			this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
 				if (error)
-					throw new Error(error);
+					return this.throwServerError(event, error);
 				let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
 				delete addedGame.details.id;
 				this.addGame(event, addedGame);
@@ -103,16 +103,19 @@ export class Vitrine {
 		ipcMain.on('client.launch-game', (event, gameId) => {
 			this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
 				if (error)
-					throw new Error(error);
-				if (game.uuid !== uuidV5(game.name))
-					throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
+					return this.throwServerError(event, error);
+				if (game.uuid === uuidV5(game.name))
+					return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 				getGameLauncher(game).then((secondsPlayed: number) => {
 					console.log('You played', secondsPlayed, 'seconds.');
-					game.addPlayTime(secondsPlayed);
+					game.addPlayTime(secondsPlayed, (error) => {
+						if (error)
+							return this.throwServerError(event, error);
+					});
 					event.sender.send('server.stop-game', true);
 				}).catch((error) => {
 					if (error)
-						throw new Error(error);
+						return this.throwServerError(event, error);
 				});
 			});
 		});
@@ -149,7 +152,7 @@ export class Vitrine {
 		});
 	}
 
-	private addGame(event, game: PlayableGame) {
+	private addGame(event: any, game: PlayableGame) {
 		let gameDirectory = path.resolve(getEnvFolder('games'), game.uuid);
 		let configFilePath = path.resolve(gameDirectory, 'config.json');
 
@@ -179,5 +182,9 @@ export class Vitrine {
 				});
 			});
 		});
+	}
+
+	private throwServerError(event: any, error: string | Error) {
+		return event.sender.send('server.server-error', error);
 	}
 }

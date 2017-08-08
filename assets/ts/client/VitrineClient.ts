@@ -23,14 +23,21 @@ export class VitrineClient {
 		this.clickedGame = null;
 		ipcRenderer.send('client.ready');
 
-		window.onerror = function(error) {
-			let errorHtml: string = '<h3>' + languageInstance.replaceJs('error') + '</h3><hr><h4>' + error + '</h4>';
+		window.onerror = function(error, url, line) {
+			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
+				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
 			$('#error-message').html('').html(errorHtml);
 			(<any>$('#error-modal')).modal('show');
 		}
 	}
 
 	public registerEvents() {
+		ipcRenderer.on('server.server-error', (event, error) => {
+			if (error) {
+				this.gameLaunched = false;
+				throw new Error(error);
+			}
+		});
 		ipcRenderer.on('server.send-igdb-game', (event, error, game) => {
 			if (error)
 				throw new Error(error);

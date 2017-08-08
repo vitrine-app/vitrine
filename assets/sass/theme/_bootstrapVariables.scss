@@ -105,7 +105,7 @@ $input-border: #2A2623 !default;
 $input-border-radius: $border-radius-base !default;
 $input-border-radius-large: $border-radius-large !default;
 $input-border-radius-small: $border-radius-small !default;
-$input-border-focus: $brand-primary !default;
+$input-border-focus: rgb(112, 84, 56) !default;
 $input-color-placeholder: rgb(153, 153, 153) !default;
 $input-height-base: ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
 $input-height-large: (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 2) + 2) !default;

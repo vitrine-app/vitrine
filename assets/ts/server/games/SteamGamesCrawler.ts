@@ -71,7 +71,7 @@ class SteamGamesCrawler {
 				}
 			}).catch((error) => {
 				if (error)
-					throw error;
+					this.callback(error, null);
 			});
 		});
 	}

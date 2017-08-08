@@ -33,8 +33,7 @@ class IgdbWrapper {
 
 			this.findGameById(response.body[gameId].id, (error, game) => {
 				if (error && !game) {
-					console.error(error);
-					callback(name + ' not found.', null);
+					callback(error, null);
 				}
 
 				this.game = game;
@@ -118,8 +117,8 @@ class IgdbWrapper {
 			ids: ids
 		}, ['name']).then((response) => {
 			callback(response.body[0]);
-		}).catch((err) => {
-			throw err;
+		}).catch((error) => {
+			this.callback(error, null);
 		});
 	}
 
@@ -130,8 +129,8 @@ class IgdbWrapper {
 			ids: ids
 		}, ['name']).then((response) => {
 			callback(response.body[0]);
-		}).catch((err) => {
-			throw err;
+		}).catch((error) => {
+			this.callback(error, null);
 		});
 	}
 
@@ -142,8 +141,8 @@ class IgdbWrapper {
 			ids: ids
 		}, ['name']).then((response) => {
 			callback(response.body);
-		}).catch((err) => {
-			throw err;
+		}).catch((error) => {
+			this.callback(error, null);
 		});
 	}
 
