@@ -5,7 +5,9 @@ import * as path from 'path';
 import * as uuid from 'uuid/v5';
 import * as Levenshtein from 'levenshtein';
 
-let isEnvProd: boolean = (JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json')).toString()).env) ? (true) : (false);
+import * as data from '../../../package.json';
+
+let isEnvProd: boolean = ((<any>data).env) ? (true) : (false);
 
 export function uuidV5(name: string) {
 	let dnsNamespace: string = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
