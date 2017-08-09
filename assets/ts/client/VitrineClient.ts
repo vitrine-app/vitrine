@@ -59,11 +59,11 @@ export class VitrineClient {
 
 			$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
 		});
-		ipcRenderer.on('server.add-potential-games', (event, games) => {
+		ipcRenderer.on('server.add-potential-games', (event, games: PotentialGame[]) => {
 			this.potentialGames.games = games;
 			this.renderPotentialGames();
 		});
-		ipcRenderer.on('server.add-playable-games', (event, games) => {
+		ipcRenderer.on('server.add-playable-games', (event, games: PlayableGame[]) => {
 			this.playableGames.games = games;
 			this.renderPlayableGames();
 		});
@@ -101,6 +101,10 @@ export class VitrineClient {
 	}
 
 	private renderPotentialGames() {
+		if (!this.potentialGames.games.length) {
+			$('#potential-games-area').html('');
+			return;
+		}
 		this.potentialGames.sort();
 		let counter: number = 0;
 		let gamesListHtml: string = '<div class="row potential-games-row">';

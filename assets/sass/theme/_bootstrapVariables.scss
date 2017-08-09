@@ -458,12 +458,13 @@ $dl-horizontal-breakpoint: $grid-float-breakpoint !default;
 $hr-border: $gray-lighter !default;
 
 // Context menu
-$context-menu-background-color: #252424 !default;
+$context-menu-background-color: #3E3A34 !default;
 $context-menu-border-width: none !default;
 $context-menu-border-style: none !default;
 $context-menu-border-color: none !default;
-$context-menu-box-shadow: none !default;
+$context-menu-box-shadow: 0 0 6px rgba(0, 0, 0, 0.24) !default;
 $context-menu-border-radius: $border-radius-base !default;
-$context-menu-item-color-hover: $brand-primary !default;
 $context-menu-text-color: $text-color !default;
 $context-menu-icon-color: $text-color !default;
+$context-menu-item-color-hover: #564f49 !default;
+$context-menu-text-color-hover: #C7C7C7 !default;

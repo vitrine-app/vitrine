@@ -105,7 +105,7 @@ export class Vitrine {
 			this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
 				if (error)
 					return this.throwServerError(event, error);
-				if (game.uuid === uuidV5(game.name))
+				if (game.uuid !== uuidV5(game.name))
 					return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 				getGameLauncher(game).then((secondsPlayed: number) => {
 					console.log('You played', secondsPlayed, 'seconds.');
