@@ -19,7 +19,7 @@ function registerGameCover() {
 		mouseenter() {
 			$('#game-cover-image').addClass('cover-hovered');
 			$('#game-cover-component').addClass('cover-hovered');
-			(<any>$('#cover-play-btn')).animateCss('zoomIn', 75).addClass('play-btn-visible');
+			$('#cover-play-btn').animateCss('zoomIn', 75).addClass('play-btn-visible');
 		},
 		mouseleave() {
 			$('#game-cover-image').removeClass('cover-hovered');
@@ -131,4 +131,8 @@ export function launchDom() {
 	registerGameCover();
 	registerAddGameForm();
 	registerContextMenu();
+	$('input[type=number]').each(function() {
+		$(this).numberPicker();
+	});
+
 }

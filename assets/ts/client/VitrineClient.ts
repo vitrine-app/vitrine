@@ -172,7 +172,7 @@ export class VitrineClient {
 					let self: VitrineClient = this;
 					let events: any = {
 						click() {
-							(<any>$('#game-cover-component')).animateCss('pulse', 120);
+							$('#game-cover-component').animateCss('pulse', 120);
 							if (!self.gameLaunched) {
 								ipcRenderer.send('client.launch-game', self.clickedGame.uuid);
 								self.gameLaunched = true;
