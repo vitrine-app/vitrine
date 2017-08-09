@@ -17,7 +17,7 @@ export class GamesCollection<T> {
 		this._games = games;
 	}
 
-	public getGame(gameId: string, callback) {
+	public getGame(gameId: string, callback: Function) {
 		let counter: number = 0;
 		let found: boolean = false;
 
@@ -60,7 +60,7 @@ export class GamesCollection<T> {
 			(<any>this._games).sort(alphabeticSort);
 	}
 
-	public forEach(callback) {
+	public forEach(callback: Function) {
 		this._games.forEach(function(game: any) {
 			callback(game);
 		})

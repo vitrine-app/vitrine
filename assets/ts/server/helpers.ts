@@ -15,7 +15,7 @@ export function uuidV5(name: string) {
 	return uuid(name, dnsNamespace);
 }
 
-export function downloadFile(url, path, isHttps, callback) {
+export function downloadFile(url: string, path: string, isHttps: boolean, callback: Function) {
 	let file = fs.createWriteStream(path);
 	let protocol: any = (isHttps) ? (https) : (http);
 
@@ -29,7 +29,7 @@ export function getEnvFolder(folder: string) {
 	return path.resolve(__dirname, (isEnvProd) ? ('../../' + folder) : ('../' + folder));
 }
 
-export function nameArray(array) {
+export function nameArray(array: any[]) {
 	let namesArray: string[] = [];
 
 	for (let i in array)
@@ -37,6 +37,6 @@ export function nameArray(array) {
 	return namesArray;
 }
 
-export function levenshteinDistanceCmp(node, baseItem) {
+export function levenshteinDistanceCmp(node: any, baseItem: any) {
 	return new Levenshtein(node, baseItem).distance;
 }

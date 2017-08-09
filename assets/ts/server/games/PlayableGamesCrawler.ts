@@ -15,7 +15,7 @@ class PlayableGamesCrawler {
 		this.gamesDirectory = getEnvFolder('games');
 	}
 
-	public search(callback) {
+	public search(callback: Function) {
 		this.callback = callback;
 		fs.readdir(this.gamesDirectory, (error, files) => {
 			if (error) {

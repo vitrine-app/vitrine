@@ -49,6 +49,7 @@
     "@types/bootstrap-datepicker": "0.0.9",
     "@types/dateformat": "^1.0.1",
     "@types/electron": "^1.6.10",
+    "@types/glob": "^5.0.30",
     "@types/jquery": "^3.2.11",
     "@types/jquery.contextmenu": "^1.7.32",
     "@types/node": "^8.0.19",

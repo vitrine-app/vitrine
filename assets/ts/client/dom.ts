@@ -134,5 +134,4 @@ export function launchDom() {
 	$('input[type=number]').each(function() {
 		$(this).numberPicker();
 	});
-
 }
