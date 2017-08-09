@@ -14,12 +14,15 @@ As it is in beta, Vitrine only currently supports Steam, but in the future it wi
 ## Technologies
 
 Vitrine is made possible thanks to a lot of different technologies:
-- NodeJS
-- Electron
-- TypeScript
-- Sass
-- Webpack
-- IGDB API
+
+[![Node.js](https://image.ibb.co/gTMzRa/node.png)](https://nodejs.org)
+[![Electron](https://image.ibb.co/iaUm6a/electron.png)](https://electron.atom.io)
+[![Bootstrap](https://image.ibb.co/b3jxCF/bootstrap.png)](http://getbootstrap.com)
+[![IGDB](https://image.ibb.co/mhvLXF/igdb.png)](https://www.igdb.com)
+
+[![TypeScript](https://image.ibb.co/hsGAXF/typescript.png)](http://www.typescriptlang.org)
+[![Sass](https://image.ibb.co/cG266a/sass.png)](http://sass-lang.com)
+[![Webpack](https://image.ibb.co/ehmcCF/webpack.png)](https://webpack.js.org)
 
 ## License
 
