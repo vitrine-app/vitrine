@@ -35,11 +35,11 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="form-group col-md-9">
+								<div class="form-group col-md-10">
 									<label>{{ genres }}</label>
 									<input class="form-control" name="genres" placeholder="{{ genres }}">
 								</div>
-								<div class="form-group col-md-3">
+								<div class="form-group col-md-2">
 									<label>{{ rating }}</label>
 									<input type="number" class="form-control" name="rating" min="0" max="100" placeholder="{{ rating }}">
 								</div>
@@ -59,6 +59,10 @@
 										</button>
 									</span>
 								</div>
+							</div>
+							<div class="form-group">
+								<label>{{ lineArguments }}</label>
+								<input class="form-control" name="arguments" placeholder="{{ lineArguments }}">
 							</div>
 							<input name="cover" hidden>
 							<input name="background" hidden>

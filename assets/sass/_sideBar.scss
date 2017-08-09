@@ -5,38 +5,43 @@
 	background-color: $body-bg;
 	width: 16%;
 
-	div#potential-games-area {
-		text-align: center;
-		padding: 20px;
-	}
+	#sidebar-content {
+		height: 96%;
 
-	hr {
-		margin: 0;
-		border-top: 1px solid #565149;
-	}
+		#potential-games-area {
+			text-align: center;
+			padding: 20px;
+		}
 
-	.games-list {
-		height: 88%;
-		overflow-y: auto;
-
-		ul {
-			height: 98%;
-			list-style-type: none;
-			padding: 0;
+		hr {
 			margin: 0;
+			border-top: 1px solid #565149;
+		}
 
-			li {
-				color: #A5A5A5;
-				display: block;
-				padding: 10px 20px;
+		.games-list {
+			overflow-y: auto;
 
-				&:hover {
-					background-color: #3E372E;
-					color: #AFACA7;
-				}
-				&.selected-game {
-					background-color: #504638;
-					color: #AFACA7;
+			ul {
+				height: 98%;
+				list-style-type: none;
+				padding: 0;
+				margin: 0;
+
+				li {
+					color: #A5A5A5;
+					display: block;
+					padding: 10px 20px;
+					cursor: pointer;
+
+					&:hover {
+						background-color: #3E372E;
+						color: #AFACA7;
+					}
+					&.selected-game {
+						background-color: #504638;
+						color: #AFACA7;
+						cursor: default;
+					}
 				}
 			}
 		}

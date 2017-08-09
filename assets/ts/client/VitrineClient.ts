@@ -22,9 +22,22 @@ export class VitrineClient {
 	public run() {
 		this.clickedGame = null;
 		ipcRenderer.send('client.ready');
+
+		window.onerror = function(error, url, line) {
+			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
+				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
+			$('#error-message').html('').html(errorHtml);
+			(<any>$('#error-modal')).modal('show');
+		}
 	}
 
 	public registerEvents() {
+		ipcRenderer.on('server.server-error', (event, error) => {
+			if (error) {
+				this.gameLaunched = false;
+				throw new Error(error);
+			}
+		});
 		ipcRenderer.on('server.send-igdb-game', (event, error, game) => {
 			if (error)
 				throw new Error(error);
@@ -46,11 +59,11 @@ export class VitrineClient {
 
 			$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
 		});
-		ipcRenderer.on('server.add-potential-games', (event, games) => {
+		ipcRenderer.on('server.add-potential-games', (event, games: PotentialGame[]) => {
 			this.potentialGames.games = games;
 			this.renderPotentialGames();
 		});
-		ipcRenderer.on('server.add-playable-games', (event, games) => {
+		ipcRenderer.on('server.add-playable-games', (event, games: PlayableGame[]) => {
 			this.playableGames.games = games;
 			this.renderPlayableGames();
 		});
@@ -69,7 +82,17 @@ export class VitrineClient {
 				$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
 			}
 			this.playableGames.addGame(playableGame);
+			console.log(this.playableGames);
 			this.renderPlayableGames();
+		});
+		ipcRenderer.on('server.game-removed', (event, error, gameId) => {
+			if (error)
+				throw new Error(error);
+			this.playableGames.removeGame(gameId, (error) => {
+				if (error)
+					throw new Error(error);
+				this.renderPlayableGames();
+			});
 		});
 		ipcRenderer.on('server.stop-game', () => {
 			console.log('Game stopped.');
@@ -78,17 +101,38 @@ export class VitrineClient {
 	}
 
 	private renderPotentialGames() {
-		let html: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
-			languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
-			'</button>';
-		$('#potential-games-area').html(html);
+		if (!this.potentialGames.games.length) {
+			$('#potential-games-area').html('');
+			return;
+		}
+		this.potentialGames.sort();
+		let counter: number = 0;
+		let gamesListHtml: string = '<div class="row potential-games-row">';
+		this.potentialGames.forEach((potentialGame: PotentialGame) => {
+			gamesListHtml += '<div class="col-md-3 potential-game">'
+				+ '<div class="potential-game-cover" style="background-image: url(' + potentialGame.details.cover + ')"></div>'
+				+ potentialGame.name
+				+ '</div>';
+			counter++;
+			if (counter % 4 === 0 || counter === this.potentialGames.games.length) {
+				gamesListHtml += '</div>';
+				if (counter === this.potentialGames.games.length) {
+					$('#add-games-modal').find('.modal-body').html('').html(gamesListHtml);
+					let buttonHtml: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
+						languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
+						'</button>';
+					$('#potential-games-area').html(buttonHtml);
+				}
+				else
+					gamesListHtml += '<div class="row potential-games-row">';
+			}
+		});
 	}
 
 	private renderPlayableGames() {
 		$('#playable-games-list').html('');
 
 		this.playableGames.sort();
-
 		let counter: number = 0;
 		this.playableGames.forEach((playableGame: PlayableGame) => {
 			let html: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
@@ -132,7 +176,7 @@ export class VitrineClient {
 					let self: VitrineClient = this;
 					let events: any = {
 						click() {
-							(<any>$('#game-cover-component')).animateCss('pulse', 120);
+							$('#game-cover-component').animateCss('pulse', 120);
 							if (!self.gameLaunched) {
 								ipcRenderer.send('client.launch-game', self.clickedGame.uuid);
 								self.gameLaunched = true;

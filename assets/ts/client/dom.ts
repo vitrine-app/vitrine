@@ -4,16 +4,22 @@ import * as formToObject from 'form-to-object';
 import { languageInstance } from './Language';
 import { extendJQuery } from './helpers';
 
-/* function clickGameCover() {
-	(<any>$('#game-cover-component')).animateCss('pulse', 120);
-}*/
+function registerModalOverlay() {
+	$(document).on('show.bs.modal', '.modal', function() {
+		let zIndex = 1040 + (10 * $('.modal:visible').length);
+		$(this).css('z-index', zIndex);
+		setTimeout(function() {
+			$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+		}, 0);
+	});
+}
 
 function registerGameCover() {
 	let gameCoverEvents: any = {
 		mouseenter() {
 			$('#game-cover-image').addClass('cover-hovered');
 			$('#game-cover-component').addClass('cover-hovered');
-			(<any>$('#cover-play-btn')).animateCss('zoomIn', 75).addClass('play-btn-visible');
+			$('#cover-play-btn').animateCss('zoomIn', 75).addClass('play-btn-visible');
 		},
 		mouseleave() {
 			$('#game-cover-image').removeClass('cover-hovered');
@@ -63,7 +69,7 @@ function registerAddGameForm() {
 				{name: languageInstance.replaceJs('allFiles'), extensions: ['*']}
 			]
 		});
-		if (!dialogRet.length)
+		if (!dialogRet || !dialogRet.length)
 			return;
 		$('#add-game-form').find('input[name=executable]').val(dialogRet[0]);
 		if (formSelector.find('input[name=name]').val())
@@ -95,6 +101,19 @@ function registerAddGameForm() {
 	});
 }
 
+function registerContextMenu() {
+	(<any>$).contextMenu({
+		selector: '.games-list li.play-game-link',
+		items: {
+			foo: { name: 'Remove', callback() {
+				let gameId: string = $(this).attr('game-id');
+				ipcRenderer.send('client.remove-game', gameId);
+				console.log('Removal sent');
+			}}
+		}
+	});
+}
+
 export function launchDom() {
 	extendJQuery();
 	$(document.body).on('submit', '#game-name-form', function(event) {
@@ -108,6 +127,12 @@ export function launchDom() {
 		}
 	});
 
+	registerModalOverlay();
 	registerGameCover();
 	registerAddGameForm();
+	registerContextMenu();
+	$('input[type=number]').each(function() {
+		$(this).numberPicker();
+	});
+
 }

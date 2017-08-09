@@ -16,6 +16,8 @@
   "rating": "Note",
   "summary": "Description",
   "executable": "Programme",
+  "lineArguments": "Arguments de la ligne de commande",
   "executables": "Programmes",
-  "allFiles": "Tous les fichiers"
+  "allFiles": "Tous les fichiers",
+  "error": "Une erreur est survenue :"
 }

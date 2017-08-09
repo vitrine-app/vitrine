@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import * as rimraf from 'rimraf';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
@@ -79,34 +80,51 @@ export class Vitrine {
 		ipcMain.on('client.add-game', (event, gameId) => {
 			this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
 				if (error)
-					throw new Error(error);
+					return this.throwServerError(event, error);
 				let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
+				delete addedGame.details.id;
 				this.addGame(event, addedGame);
 			});
 		});
 		ipcMain.on('client.add-game-manual', (event, gameForm) => {
 			let gameName: string = gameForm.name;
 			let programName: string = gameForm.executable;
-			delete gameForm.name;
-			delete gameForm.executable;
 			let game: PlayableGame = new PlayableGame(gameName, gameForm);
+
 			game.commandLine.push(programName);
-			console.log(game);
+			game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
+			game.details.rating = parseInt(game.details.rating);
+			game.details.genres = game.details.genres.split(', ');
+			game.details.releaseDate = new Date(game.details.date).getTime();
+
+			delete game.details.date;
+			delete game.details.arguments;
 			this.addGame(event, game);
 		});
 		ipcMain.on('client.launch-game', (event, gameId) => {
 			this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
 				if (error)
-					throw new Error(error);
+					return this.throwServerError(event, error);
 				if (game.uuid !== uuidV5(game.name))
-					throw new Error('Hashed codes do\'nt match. Your game is probably corrupted.');
+					return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 				getGameLauncher(game).then((secondsPlayed: number) => {
 					console.log('You played', secondsPlayed, 'seconds.');
-					game.addPlayTime(secondsPlayed);
+					game.addPlayTime(secondsPlayed, (error) => {
+						if (error)
+							return this.throwServerError(event, error);
+					});
 					event.sender.send('server.stop-game', true);
 				}).catch((error) => {
 					if (error)
-						throw new Error(error);
+						return this.throwServerError(event, error);
+				});
+			});
+		});
+		ipcMain.on('client.remove-game', (event, gameId) => {
+			this.playableGames.removeGame(gameId, (error) => {
+				let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
+				rimraf(gameDirectory, () => {
+					event.sender.send('server.game-removed', error, gameId);
 				});
 			});
 		});
@@ -143,7 +161,7 @@ export class Vitrine {
 		});
 	}
 
-	private addGame(event, game: PlayableGame) {
+	private addGame(event: any, game: PlayableGame) {
 		let gameDirectory = path.resolve(getEnvFolder('games'), game.uuid);
 		let configFilePath = path.resolve(gameDirectory, 'config.json');
 
@@ -159,16 +177,23 @@ export class Vitrine {
 			game.details.cover = coverPath;
 			downloadFile(backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
 				game.details.backgroundScreen = screenPath;
-				delete game.details.screenshots;
+				if (game.details.steamId)
+					delete game.details.screenshots;
+				else
+					delete game.details.background;
 				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (err) => {
 					if (err)
 						throw err;
 					if (game.details.steamId)
-					event.sender.send('server.remove-potential-game', game.uuid);
+						event.sender.send('server.remove-potential-game', game.uuid);
 					event.sender.send('server.add-playable-game', game);
 					this.playableGames.addGame(game);
 				});
 			});
 		});
+	}
+
+	private throwServerError(event: any, error: string | Error) {
+		return event.sender.send('server.server-error', error);
 	}
 }
