@@ -57,7 +57,7 @@ function registerAddGameForm() {
 		event.preventDefault();
 
 		let gameName: any = $('#add-game-form').find('input[name=name]').val();
-		$('#fill-with-igdb-btn').html(languageInstance.replaceJs('loading'));
+		$('#fill-with-igdb-btn').loading();
 		ipcRenderer.send('client.fill-igdb-game', gameName);
 	});
 
@@ -79,7 +79,7 @@ function registerAddGameForm() {
 	$('#add-game-submit-btn').click(() => {
 		let gameForm: any = formToObject($('#add-game-form')[0]);
 		ipcRenderer.send('client.add-game-manual', gameForm);
-		$('#add-game-submit-btn').html(languageInstance.replaceJs('loading'));
+		$('#add-game-submit-btn').loading();
 	});
 
 	$('#add-game-modal').on('hidden.bs.modal', () => {

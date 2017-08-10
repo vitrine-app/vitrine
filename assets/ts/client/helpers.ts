@@ -98,6 +98,12 @@ export function extendJQuery() {
 				callback();
 			});
 			return this;
+		},
+		loading() {
+			let width: string = this.css('width');
+			this.html('<i class="fa fa-spinner fa-pulse fa-fw"></i>');
+			this.css('width', width);
+			return this;
 		}
 	});
 }

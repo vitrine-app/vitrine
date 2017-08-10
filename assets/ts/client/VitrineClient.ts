@@ -14,18 +14,17 @@ export class VitrineClient {
 	constructor() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
-	}
-
-	public run() {
-		this.clickedGame = null;
-		ipcRenderer.send('client.ready');
-
 		window.onerror = function(error, url, line) {
 			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
 				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
 			$('#error-message').html('').html(errorHtml);
 			(<any>$('#error-modal')).modal('show');
 		}
+	}
+
+	public run() {
+		this.clickedGame = null;
+		ipcRenderer.send('client.ready');
 	}
 
 	public registerEvents() {

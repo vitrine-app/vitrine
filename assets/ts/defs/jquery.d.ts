@@ -6,4 +6,5 @@ interface JQuery {
 	numberPicker(): JQuery;
 	blurPicture(fontSize: number, callback: Function, width?: number, height?: number): JQuery;
 	updateBlurClickCallback(callback: Function): JQuery;
+	loading(): JQuery;
 }
