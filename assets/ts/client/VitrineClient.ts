@@ -10,12 +10,10 @@ export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private clickedGame: PlayableGame;
-	private gameLaunched: boolean;
 
 	constructor() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
-		this.gameLaunched = false;
 	}
 
 	public run() {
@@ -33,7 +31,6 @@ export class VitrineClient {
 	public registerEvents() {
 		ipcRenderer.on('server.server-error', (event, error) => {
 			if (error) {
-				this.gameLaunched = false;
 				throw new Error(error);
 			}
 		});
@@ -95,7 +92,6 @@ export class VitrineClient {
 		});
 		ipcRenderer.on('server.stop-game', () => {
 			console.log('Game stopped.');
-			this.gameLaunched = false;
 		});
 	}
 
@@ -174,10 +170,7 @@ export class VitrineClient {
 		}).find('.image').css({
 			'background-image': gameCover
 		}).parent().updateBlurClickCallback(() => {
-			if (!this.gameLaunched) {
-				ipcRenderer.send('client.launch-game', this.clickedGame.uuid);
-				this.gameLaunched = true;
-			}
+			ipcRenderer.send('client.launch-game', game.uuid);
 		});
 	}
 }

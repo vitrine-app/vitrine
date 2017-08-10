@@ -20,6 +20,7 @@ export class Vitrine {
 	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
+	private gameLaunched: boolean;
 
 	constructor() {
 		this.windowsList = {};
@@ -27,6 +28,7 @@ export class Vitrine {
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
 		this.iconPath = path.resolve(__dirname, '../build/icon.png');
 		this.devTools = false;
+		this.gameLaunched = false;
 	}
 
 	public run(devTools?: boolean) {
@@ -107,7 +109,11 @@ export class Vitrine {
 					return this.throwServerError(event, error);
 				if (game.uuid !== uuidV5(game.name))
 					return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
+				if (this.gameLaunched)
+					return;
+				this.gameLaunched = true;
 				getGameLauncher(game).then((secondsPlayed: number) => {
+					this.gameLaunched = false;
 					console.log('You played', secondsPlayed, 'seconds.');
 					game.addPlayTime(secondsPlayed, (error) => {
 						if (error)
@@ -117,6 +123,7 @@ export class Vitrine {
 				}).catch((error) => {
 					if (error)
 						return this.throwServerError(event, error);
+					this.gameLaunched = false;
 				});
 			});
 		});

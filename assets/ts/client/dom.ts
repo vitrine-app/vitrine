@@ -104,28 +104,27 @@ function registerAddGameForm() {
 function registerContextMenu() {
 	(<any>$).contextMenu({
 		selector: '.games-list li.play-game-link',
-		items: {
-			foo: { name: 'Remove', callback() {
-				let gameId: string = $(this).attr('game-id');
-				ipcRenderer.send('client.remove-game', gameId);
-				console.log('Removal sent');
-			}}
-		}
+		items: [
+			{
+				name: 'Play',
+				callback() {
+					let gameId: string = $(this).attr('game-id');
+					ipcRenderer.send('client.launch-game', gameId);
+				}
+			},
+			{
+				name: 'Remove',
+				callback() {
+					let gameId: string = $(this).attr('game-id');
+					ipcRenderer.send('client.remove-game', gameId);
+				}
+			}
+		]
 	});
 }
 
 export function launchDom() {
 	extendJQuery();
-	$(document.body).on('submit', '#game-name-form', function(event) {
-		event.preventDefault();
-
-		let form: any = formToObject(this);
-		if (form.name) {
-			$(this).find('input[name="name"]').val('');
-			$('#game-title').html(languageInstance.replaceJs('loading'));
-			ipcRenderer.send('client.get-game', form.name);
-		}
-	});
 
 	registerModalOverlay();
 	registerGameCover();
