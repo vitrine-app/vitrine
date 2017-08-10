@@ -131,7 +131,7 @@ export class Vitrine {
 			this.playableGames.removeGame(gameId, (error) => {
 				let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
 				rimraf(gameDirectory, () => {
-					event.sender.send('server.game-removed', error, gameId);
+					event.sender.send('server.remove-playable-game', error, gameId);
 				});
 			});
 		});

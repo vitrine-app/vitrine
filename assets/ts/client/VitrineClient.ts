@@ -29,74 +29,90 @@ export class VitrineClient {
 	}
 
 	public registerEvents() {
-		ipcRenderer.on('server.server-error', (event, error) => {
-			if (error) {
-				throw new Error(error);
-			}
-		});
-		ipcRenderer.on('server.send-igdb-game', (event, error, game) => {
+		ipcRenderer.on('server.server-error', this.serverError.bind(this));
+		ipcRenderer.on('server.send-igdb-game', this.sendIgdbGame.bind(this));
+		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
+		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
+		ipcRenderer.on('server.remove-potential-game', this.removePotentialGame.bind(this));
+		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
+		ipcRenderer.on('server.remove-playable-game', this.removePlayableGame.bind(this));
+		ipcRenderer.on('server.stop-game', this.stopGame.bind(this));
+	}
+
+	private serverError(event: Electron.Event, error: string) {
+		if (error) {
+			throw new Error(error);
+		}
+	}
+
+	private sendIgdbGame(event: Electron.Event, error: string, game: any) {
+		if (error)
+			throw new Error(error);
+		$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
+
+		let formSelector = $('#add-game-form');
+
+		formSelector.find('input[name=name]').val(game.name);
+		formSelector.find('input[name=series]').val(game.series);
+		formSelector.find('input[name=developer]').val(game.developer);
+		formSelector.find('input[name=publisher]').val(game.publisher);
+		formSelector.find('input[name=date]').datepicker('update', dateFormat(game.release_date, 'dd/mm/yyyy'));
+		formSelector.find('input[name=genres]').val(game.genres.join(', '));
+		formSelector.find('input[name=rating]').val(game.rating);
+		formSelector.find('textarea[name=summary]').val(game.summary);
+		formSelector.find('input[name=cover]').val(game.cover);
+		// TODO: Change default screenshot
+		formSelector.find('input[name=background]').val(game.screenshots[0]);
+
+		$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
+	}
+
+	private addPotentialGames(event: Electron.Event, games: PotentialGame[]) {
+		this.potentialGames.games = games;
+		this.renderPotentialGames();
+	}
+
+	private removePotentialGame(event: Electron.Event, gameId: string)  {
+		this.potentialGames.removeGame(gameId, (error, game: PotentialGame) => {
 			if (error)
 				throw new Error(error);
-			$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
-
-			let formSelector = $('#add-game-form');
-
-			formSelector.find('input[name=name]').val(game.name);
-			formSelector.find('input[name=series]').val(game.series);
-			formSelector.find('input[name=developer]').val(game.developer);
-			formSelector.find('input[name=publisher]').val(game.publisher);
-			formSelector.find('input[name=date]').datepicker('update', dateFormat(game.release_date, 'dd/mm/yyyy'));
-			formSelector.find('input[name=genres]').val(game.genres.join(', '));
-			formSelector.find('input[name=rating]').val(game.rating);
-			formSelector.find('textarea[name=summary]').val(game.summary);
-			formSelector.find('input[name=cover]').val(game.cover);
-			// TODO: Change default screenshot
-			formSelector.find('input[name=background]').val(game.screenshots[0]);
-
-			$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
-		});
-		ipcRenderer.on('server.add-potential-games', (event, games: PotentialGame[]) => {
-			this.potentialGames.games = games;
-			this.renderPotentialGames();
-		});
-		ipcRenderer.on('server.add-playable-games', (event, games: PlayableGame[]) => {
-			this.playableGames.games = games;
-			this.renderPlayableGames();
-		});
-		ipcRenderer.on('server.remove-potential-game', (event, gameId) => {
-			this.potentialGames.removeGame(gameId, (error, game: PotentialGame) => {
-				if (error)
-					throw new Error(error);
-				else if (game) {
-					this.renderPotentialGames();
-				}
-			})
-		});
-		ipcRenderer.on('server.add-playable-game', (event, playableGame) => {
-			if (!playableGame.details.steamId) {
-				(<any>$('#add-game-modal')).modal('hide');
-				$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
+			else if (game) {
+				this.renderPotentialGames();
 			}
-			this.playableGames.addGame(playableGame);
-			console.log(this.playableGames);
-			this.renderPlayableGames();
 		});
-		ipcRenderer.on('server.game-removed', (event, error, gameId) => {
+	}
+
+	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
+		this.playableGames.games = games;
+		this.renderPlayableGames();
+	}
+
+	private addPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
+		if (!playableGame.details.steamId) {
+			(<any>$('#add-game-modal')).modal('hide');
+			$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
+		}
+		this.playableGames.addGame(playableGame);
+		console.log(this.playableGames);
+		this.renderPlayableGames();
+	}
+
+	private removePlayableGame(event: Electron.Event, error: string, gameId: string) {
+		if (error)
+			throw new Error(error);
+		this.playableGames.removeGame(gameId, (error) => {
 			if (error)
 				throw new Error(error);
-			this.playableGames.removeGame(gameId, (error) => {
-				if (error)
-					throw new Error(error);
-				this.renderPlayableGames();
-			});
+			this.renderPlayableGames();
 		});
-		ipcRenderer.on('server.stop-game', (event: any, gameId: string, totalTimePlayed: number) => {
-			this.playableGames.getGame(gameId, (error: string, game: PlayableGame) => {
-				if (error)
-					throw new Error(error);
-				game.timePlayed = totalTimePlayed;
-				this.updateGameUi(game);
-			});
+	}
+
+	private stopGame(event: Electron.Event, gameId: string, totalTimePlayed: number)  {
+		this.playableGames.getGame(gameId, (error: string, game: PlayableGame) => {
+			if (error)
+				throw new Error(error);
+			game.timePlayed = totalTimePlayed;
+			this.updateGameUi(game);
 		});
 	}
 
