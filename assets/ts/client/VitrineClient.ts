@@ -5,6 +5,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
+import { formatTimePlayed } from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -89,8 +90,13 @@ export class VitrineClient {
 				this.renderPlayableGames();
 			});
 		});
-		ipcRenderer.on('server.stop-game', () => {
-			console.log('Game stopped.');
+		ipcRenderer.on('server.stop-game', (event: any, gameId: string, totalTimePlayed: number) => {
+			this.playableGames.getGame(gameId, (error: string, game: PlayableGame) => {
+				if (error)
+					throw new Error(error);
+				game.timePlayed = totalTimePlayed;
+				this.updateGameUi(game);
+			});
 		});
 	}
 
@@ -129,8 +135,11 @@ export class VitrineClient {
 		this.playableGames.sort();
 		let counter: number = 0;
 		this.playableGames.forEach((playableGame: PlayableGame) => {
-			let html: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
-			$('#playable-games-list').append(html);
+			let gameLi: JQuery = $('<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>');
+			gameLi.dblclick(() => {
+				ipcRenderer.send('client.launch-game', playableGame.uuid);
+			});
+			$('#playable-games-list').append(gameLi);
 			counter++;
 			if (counter === this.playableGames.games.length)
 				this.eventPlayableGames();
@@ -159,8 +168,14 @@ export class VitrineClient {
 	private updateGameUi(game: PlayableGame) {
 		let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
 		let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
+
 		$('#game-title').html(game.name);
-		$('#game-desc').addClass('game-desc').html(game.details.summary);
+		$('#game-play').addClass('game-infos-visible').find('p').html('Time played: ' + formatTimePlayed(game.timePlayed)).parent()
+			.find('button').click(() => {
+			ipcRenderer.send('client.launch-game', game.uuid);
+		});
+		$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
+
 		$('#game-background').beforeCss('#game-background', {
 			'background-image': gameBgScreen
 		});

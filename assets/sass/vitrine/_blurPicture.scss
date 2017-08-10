@@ -13,7 +13,7 @@
 		background-repeat: no-repeat;
 		background-size: 100% 100%;
 		transform: scale(1.02);
-		transition: 75ms background-image linear;
+		transition: 75ms filter linear;
 
 		&.cover-hovered {
 			filter: blur(4px);

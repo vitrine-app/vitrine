@@ -106,14 +106,14 @@ function registerContextMenu() {
 		selector: '.games-list li.play-game-link',
 		items: [
 			{
-				name: 'Play',
+				name: languageInstance.replaceJs('playGame'),
 				callback() {
 					let gameId: string = $(this).attr('game-id');
 					ipcRenderer.send('client.launch-game', gameId);
 				}
 			},
 			{
-				name: 'Remove',
+				name: languageInstance.replaceJs('removeGame'),
 				callback() {
 					let gameId: string = $(this).attr('game-id');
 					ipcRenderer.send('client.remove-game', gameId);

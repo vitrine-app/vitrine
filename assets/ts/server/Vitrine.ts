@@ -119,7 +119,7 @@ export class Vitrine {
 						if (error)
 							return this.throwServerError(event, error);
 					});
-					event.sender.send('server.stop-game', true);
+					event.sender.send('server.stop-game', gameId, game.timePlayed);
 				}).catch((error) => {
 					if (error)
 						return this.throwServerError(event, error);

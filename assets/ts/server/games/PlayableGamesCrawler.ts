@@ -35,7 +35,7 @@ class PlayableGamesCrawler {
 					let playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
 					playableGame.uuid = rawGame.uuid;
 					playableGame.commandLine = rawGame.commandLine;
-					playableGame.timePlayed = 0;
+					playableGame.timePlayed = parseInt(rawGame.timePlayed);
 
 					this.playableGames.push(playableGame);
 				}

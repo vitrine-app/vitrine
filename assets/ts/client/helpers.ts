@@ -1,3 +1,5 @@
+import { languageInstance } from './Language';
+
 export function extendJQuery() {
 	$.fn.extend({
 		beforeCss(selector: string, props: object) {
@@ -78,7 +80,7 @@ export function extendJQuery() {
 
 			this.find('.icon').mouseenter(() => {
 				this.find('.image').addClass('cover-hovered');
-				this.find('.icon').animateCss('zoomIn', 75).addClass('cover-hovered');
+				this.find('.icon').addClass('cover-hovered');
 			}).mouseleave(() => {
 				this.find('.image').removeClass('cover-hovered');
 				this.find('.icon').removeClass('cover-hovered');
@@ -108,3 +110,37 @@ export function extendJQuery() {
 	});
 }
 
+export function formatTimePlayed(timePlayed: number) {
+	if (timePlayed < 60) {
+		let secondsStr: string;
+		if (timePlayed == 1)
+			secondsStr = languageInstance.replaceJs('secondSing');
+		else
+			secondsStr = languageInstance.replaceJs('secondPlur');
+		return timePlayed + ' ' + secondsStr;
+	}
+	let minutes: number = Math.floor(timePlayed / 60);
+	if (minutes < 60) {
+		let minutesStr: string;
+		if (minutes == 1)
+			minutesStr = languageInstance.replaceJs('minutesSing');
+		else
+			minutesStr = languageInstance.replaceJs('minutesPlur');
+		return minutes + ' ' + minutesStr;
+	}
+	let hours: number = minutes / 60;
+	let hoursStr: string;
+	if (hours == 1)
+		hoursStr = languageInstance.replaceJs('hoursSing');
+	else
+		hoursStr = languageInstance.replaceJs('hoursPlur');
+	minutes = minutes % 60;
+	let minutesStr: string;
+	if (!minutes)
+		minutesStr = null;
+	if (minutes == 1)
+		minutesStr = languageInstance.replaceJs('minutesSing');
+	else
+		minutesStr = languageInstance.replaceJs('minutesPlur');
+	return hours + ' ' + hoursStr + (minutesStr) ? (minutes + ' ' + minutesStr) : ('');
+}

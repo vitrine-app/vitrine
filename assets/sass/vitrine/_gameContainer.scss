@@ -24,17 +24,28 @@
 			h1 {
 				color: #d5d5d5;
 			}
-
 			hr {
 				border-top: 1px solid rgba(210, 210, 210, 0.23);
 			}
-
-			.game-desc {
+			.selected-game-infos {
+				display: none;
 				background-color: rgba(0, 0, 0, 0.49);
 				padding: 13px 24px;
-				color: #e4e4e4;
+				color: #E4E4E4;
 				font-size: 1.2em;
 				border-radius: 3px;
+				margin: 10px 0;
+			}
+			div.selected-game-infos {
+				width: 16em;
+				padding-bottom: 1px;
+
+				p {
+					padding-top: 6px;
+				}
+			}
+			.game-infos-visible {
+				display: block;
 			}
 		}
 	}
