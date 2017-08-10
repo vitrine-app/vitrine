@@ -131,7 +131,12 @@ export function launchDom() {
 	registerGameCover();
 	registerAddGameForm();
 	registerContextMenu();
+
 	$('input[type=number]').each(function() {
 		$(this).numberPicker();
+	});
+
+	$('#selected-game-cover').blurPicture(125, () => {
+		console.log('nutting');
 	});
 }

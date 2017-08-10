@@ -1,5 +1,14 @@
 export function extendJQuery() {
 	$.fn.extend({
+		beforeCss(selector: string, props: object) {
+			$('head style').remove();
+			let rawStyling: string = '';
+			Object.keys(props).forEach((key) => {
+				rawStyling += key + ': ' + props[key] + ';';
+			});
+			$('head').append('<style>' + selector + ':before{' + rawStyling + '}</style>');
+			return this;
+		},
 		animateCss(animationName: string, animationDuration?: number) {
 			if (animationDuration !== undefined)
 				this.css('animation-duration', animationDuration + 'ms');
@@ -44,15 +53,52 @@ export function extendJQuery() {
 				}
 			});
 			return self;
+		},
+		blurPicture(fontSize: number, callback: Function, width?: number, height?: number) {
+			width = (width) ? (width) : (3.136);
+			height = (height) ? (height) : (4.48);
+			this.css({
+				'font-size': fontSize + 'px',
+				'width': width + 'em',
+				'height': height + 'em',
+			}).find('.icon').css({
+				'left': (width / 2 - 0.3) + 'em',
+				'top': (height / 2 - 0.5) + 'em'
+			});
+			this.find('.image').mouseenter(() => {
+				this.find('.image').addClass('cover-hovered');
+				this.find('.icon').animateCss('zoomIn', 75).addClass('cover-hovered');
+			}).mouseleave(() => {
+				this.find('.image').removeClass('cover-hovered');
+				this.find('.icon').removeClass('cover-hovered');
+			}).click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+
+			this.find('.icon').mouseenter(() => {
+				this.find('.image').addClass('cover-hovered');
+				this.find('.icon').animateCss('zoomIn', 75).addClass('cover-hovered');
+			}).mouseleave(() => {
+				this.find('.image').removeClass('cover-hovered');
+				this.find('.icon').removeClass('cover-hovered');
+			}).click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+			return this;
+		},
+		updateBlurClickCallback(callback: Function) {
+			this.find('.image').off('click').click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+			this.find('.icon').off('click').click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+			return this;
 		}
 	});
 }
 
-export function beforeCss(selector: any, styling: object) {
-	$('head style').remove();
-	let rawStyling: string = '';
-	Object.keys(styling).forEach((key) => {
-		rawStyling += key + ': ' + styling[key] + ';';
-	});
-	$('head').append('<style>' + selector + ':before{' + rawStyling + '}</style>');
-}

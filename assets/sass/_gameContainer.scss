@@ -36,48 +36,6 @@
 				font-size: 1.2em;
 				border-radius: 3px;
 			}
-
-			#game-cover-container {
-				padding-left: 6em;
-				display: none;
-
-				#game-cover-component {
-					height: 40em;
-					width: 28em;
-					overflow: hidden;
-					position: relative;
-					box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.5);
-
-					#game-cover-image {
-						height: 100%;
-						width: 100%;
-						transform: scale(1.01);
-						position: absolute;
-						background-position: center;
-						text-align: center;
-						vertical-align: middle;
-						line-height: 55em;
-						transition: 75ms linear;
-
-						&.cover-hovered {
-							filter: blur(3px);
-						}
-					}
-
-					#cover-play-btn {
-						display: none;
-						font-size: 16em;
-						color: rgba(255, 255, 255, 0.29);
-						position: fixed;
-						padding: 0.75em 0.45em;
-						cursor: pointer;
-
-						&.play-btn-visible {
-							display: block;
-						}
-					}
-				}
-			}
 		}
 	}
 }

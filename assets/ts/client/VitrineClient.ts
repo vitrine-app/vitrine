@@ -5,7 +5,6 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
-import { beforeCss } from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -152,41 +151,33 @@ export class VitrineClient {
 						throw new Error(error);
 					if (this.clickedGame && this.clickedGame.uuid === gameId)
 						return;
-
 					if (this.clickedGame)
 						$('li.play-game-link[game-id=' + this.clickedGame.uuid + ']').removeClass('selected-game');
 					$(value).addClass('selected-game');
-
-					let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
-					let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
-					$('#game-cover-container').css({
-						'display': 'block'
-					});
-					$('#game-title').html(game.name);
-					$('#game-desc').addClass('game-desc').html(game.details.summary);
-					$('#game-cover-image').css({
-						'background-image': gameCover,
-						'background-repeat': 'no-repeat',
-						'background-size': '100% 100%',
-					});
-					beforeCss('#game-background', {
-						'background-image': gameBgScreen
-					});
+					this.updateGameUi(game);
 					this.clickedGame = game;
-					let self: VitrineClient = this;
-					let events: any = {
-						click() {
-							$('#game-cover-component').animateCss('pulse', 120);
-							if (!self.gameLaunched) {
-								ipcRenderer.send('client.launch-game', self.clickedGame.uuid);
-								self.gameLaunched = true;
-							}
-						}
-					};
-					$(document.body).on(events, '#game-cover-image');
-					$(document.body).on(events, '#cover-play-btn');
 				});
 			});
+		});
+	}
+
+	private updateGameUi(game: PlayableGame) {
+		let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
+		let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
+		$('#game-title').html(game.name);
+		$('#game-desc').addClass('game-desc').html(game.details.summary);
+		$('#game-background').beforeCss('#game-background', {
+			'background-image': gameBgScreen
+		});
+		$('#selected-game-cover').css({
+			'display': 'block'
+		}).find('.image').css({
+			'background-image': gameCover
+		}).parent().updateBlurClickCallback(() => {
+			if (!this.gameLaunched) {
+				ipcRenderer.send('client.launch-game', this.clickedGame.uuid);
+				this.gameLaunched = true;
+			}
 		});
 	}
 }
