@@ -4,7 +4,7 @@ export class AcfParser {
 	private acfFd: string;
 	private c: number;
 
-	constructor(filename) {
+	constructor(filename: string) {
 		this.acfFd = fs.readFileSync(filename).toString();
 		this.c = 0;
 	}

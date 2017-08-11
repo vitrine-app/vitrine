@@ -1,5 +1,16 @@
+import { languageInstance } from './Language';
+
 export function extendJQuery() {
 	$.fn.extend({
+		beforeCss(selector: string, props: object) {
+			$('head style').remove();
+			let rawStyling: string = '';
+			Object.keys(props).forEach((key) => {
+				rawStyling += key + ': ' + props[key] + ';';
+			});
+			$('head').append('<style>' + selector + ':before{' + rawStyling + '}</style>');
+			return this;
+		},
 		animateCss(animationName: string, animationDuration?: number) {
 			if (animationDuration !== undefined)
 				this.css('animation-duration', animationDuration + 'ms');
@@ -44,15 +55,92 @@ export function extendJQuery() {
 				}
 			});
 			return self;
+		},
+		blurPicture(fontSize: number, callback: Function, width?: number, height?: number) {
+			width = (width) ? (width) : (3.136);
+			height = (height) ? (height) : (4.48);
+			this.css({
+				'font-size': fontSize + 'px',
+				'width': width + 'em',
+				'height': height + 'em',
+			}).find('.icon').css({
+				'left': (width / 2 - 0.3) + 'em',
+				'top': (height / 2 - 0.5) + 'em'
+			});
+			this.find('.image').mouseenter(() => {
+				this.find('.image').addClass('cover-hovered');
+				this.find('.icon').animateCss('zoomIn', 75).addClass('cover-hovered');
+			}).mouseleave(() => {
+				this.find('.image').removeClass('cover-hovered');
+				this.find('.icon').removeClass('cover-hovered');
+			}).click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+
+			this.find('.icon').mouseenter(() => {
+				this.find('.image').addClass('cover-hovered');
+				this.find('.icon').addClass('cover-hovered');
+			}).mouseleave(() => {
+				this.find('.image').removeClass('cover-hovered');
+				this.find('.icon').removeClass('cover-hovered');
+			}).click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+			return this;
+		},
+		updateBlurClickCallback(callback: Function) {
+			this.find('.image').off('click').click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+			this.find('.icon').off('click').click(() => {
+				this.animateCss('pulse', 120);
+				callback();
+			});
+			return this;
+		},
+		loading() {
+			let width: string = this.css('width');
+			this.html('<i class="fa fa-spinner fa-pulse fa-fw"></i>');
+			this.css('width', width);
+			return this;
 		}
 	});
 }
 
-export function beforeCss(selector: any, styling: object) {
-	$('head style').remove();
-	let rawStyling: string = '';
-	Object.keys(styling).forEach((key) => {
-		rawStyling += key + ': ' + styling[key] + ';';
-	});
-	$('head').append('<style>' + selector + ':before{' + rawStyling + '}</style>');
+export function formatTimePlayed(timePlayed: number) {
+	if (timePlayed < 60) {
+		let secondsStr: string;
+		if (timePlayed == 1)
+			secondsStr = languageInstance.replaceJs('secondSing');
+		else
+			secondsStr = languageInstance.replaceJs('secondPlur');
+		return timePlayed + ' ' + secondsStr;
+	}
+	let minutes: number = Math.floor(timePlayed / 60);
+	if (minutes < 60) {
+		let minutesStr: string;
+		if (minutes == 1)
+			minutesStr = languageInstance.replaceJs('minutesSing');
+		else
+			minutesStr = languageInstance.replaceJs('minutesPlur');
+		return minutes + ' ' + minutesStr;
+	}
+	let hours: number = minutes / 60;
+	let hoursStr: string;
+	if (hours == 1)
+		hoursStr = languageInstance.replaceJs('hoursSing');
+	else
+		hoursStr = languageInstance.replaceJs('hoursPlur');
+	minutes = minutes % 60;
+	let minutesStr: string;
+	if (!minutes)
+		minutesStr = null;
+	if (minutes == 1)
+		minutesStr = languageInstance.replaceJs('minutesSing');
+	else
+		minutesStr = languageInstance.replaceJs('minutesPlur');
+	return hours + ' ' + hoursStr + (minutesStr) ? (minutes + ' ' + minutesStr) : ('');
 }

@@ -21,7 +21,7 @@ class IgdbWrapper {
 		this.callback = null;
 	}
 
-	public getGame(name, callback) {
+	public getGame(name: string, callback: Function) {
 		this.operating = true;
 		this.refinerSwitch(name);
 		this.client.games({
@@ -50,7 +50,7 @@ class IgdbWrapper {
 		});
 	}
 
-	private refinerSwitch(name) {
+	private refinerSwitch(name: string) {
 		if (name === 'Magicka')
 			this.levenshteinRefiner = 13;
 		else if (name === 'Sanctum')
@@ -84,7 +84,7 @@ class IgdbWrapper {
 			this.game.screenshots = [];
 	}
 
-	private findGameById(id, callback) {
+	private findGameById(id: number, callback: Function) {
 		this.client.games({
 			ids: [id]
 		}, [
@@ -106,7 +106,7 @@ class IgdbWrapper {
 		});
 	}
 
-	private findCompanyById(array, callback) {
+	private findCompanyById(array: number[], callback: Function) {
 		if (!array || !array.length) {
 			callback({name: ''});
 			return;
@@ -122,7 +122,7 @@ class IgdbWrapper {
 		});
 	}
 
-	private findSeriesById(id, callback) {
+	private findSeriesById(id: number, callback: Function) {
 		let ids = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.collections({
@@ -134,7 +134,7 @@ class IgdbWrapper {
 		});
 	}
 
-	private findGenreById(id, callback) {
+	private findGenreById(id: number, callback: Function) {
 		let ids = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.genres({
@@ -146,28 +146,28 @@ class IgdbWrapper {
 		});
 	}
 
-	private addDeveloperCallback(developer) {
+	private addDeveloperCallback(developer: any) {
 		delete this.game.developers;
 		this.game.developer = developer.name;
 
 		this.findCompanyById(this.game.publishers, this.addPublisherCallback.bind(this));
 	}
 
-	private addPublisherCallback(publisher) {
+	private addPublisherCallback(publisher: any) {
 		delete this.game.publishers;
 		this.game.publisher = publisher.name;
 
 		this.findSeriesById(this.game.collection, this.addSeriesCallback.bind(this));
 	}
 
-	private addSeriesCallback(series) {
+	private addSeriesCallback(series: any) {
 		delete this.game.collection;
 		this.game.series = series.name;
 
 		this.findGenreById(this.game.genres, this.addGenresCallback.bind(this));
 	}
 
-	private addGenresCallback(genres) {
+	private addGenresCallback(genres: any) {
 		let genresArray = [];
 		genres.forEach((genre) => {
 			genresArray.push(genre.name);

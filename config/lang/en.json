@@ -3,6 +3,8 @@
   "addGame": "Add %1",
   "getGame": "Get game",
   "loading": "Loading...",
+  "playGame": "Play game",
+  "removeGame": "Remove game",
   "potentialGamesAdd": "You can add %1 game(s)",
   "addGameLabel": "Add game",
   "fillWithIGDB": "Fill with IGDB",
@@ -19,5 +21,11 @@
   "lineArguments": "Command line arguments",
   "executables": "Executables",
   "allFiles": "All files",
-  "error": "An error occured:"
+  "error": "An error occured:",
+  "hoursPlur": "hours",
+  "hoursSing": "hour",
+  "minutesPlur": "minutes",
+  "minutesSing": "minute",
+  "secondsPlur": "seconds",
+  "secondsSing": "second"
 }

@@ -20,6 +20,7 @@ export class Vitrine {
 	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
+	private gameLaunched: boolean;
 
 	constructor() {
 		this.windowsList = {};
@@ -27,6 +28,7 @@ export class Vitrine {
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
 		this.iconPath = path.resolve(__dirname, '../build/icon.png');
 		this.devTools = false;
+		this.gameLaunched = false;
 	}
 
 	public run(devTools?: boolean) {
@@ -43,89 +45,105 @@ export class Vitrine {
 			}
 		});
 		app.on('activate', () => {
-			if (this.windowsList.mainWindow === null) {
+			if (!this.windowsList.mainWindow)
 				this.createMainWindow();
-			}
 		});
 	}
 
 	public registerEvents() {
-		ipcMain.on('client.ready', (event) => {
-			this.potentialGames = new GamesCollection();
-			this.playableGames = new GamesCollection();
+		ipcMain.on('client.ready', this.ready.bind(this));
+		ipcMain.on('client.fill-igdb-game', this.fillIgdbGame.bind(this));
+		ipcMain.on('client.add-game', this.addGame.bind(this));
+		ipcMain.on('client.add-game-manual', this.addGameManual.bind(this));
+		ipcMain.on('client.launch-game', this.launchGame.bind(this));
+		ipcMain.on('client.remove-game', this.removeGame.bind(this));
+	}
 
-			getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames = games;
-				event.sender.send('server.add-potential-games', this.potentialGames.games);
-			}).catch((error) => {
-				throw error;
-			});
+	private ready(event: Electron.Event) {
+		this.potentialGames = new GamesCollection();
+		this.playableGames = new GamesCollection();
 
-			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
-				this.playableGames = games;
-				event.sender.send('server.add-playable-games', this.playableGames.games);
-				this.windowsList.loadingWindow.destroy();
-				this.windowsList.mainWindow.show();
-			}).catch((error) => {
-				throw error;
-			});
+		getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
+			this.potentialGames = games;
+			event.sender.send('server.add-potential-games', this.potentialGames.games);
+		}).catch((error) => {
+			throw error;
 		});
-		ipcMain.on('client.fill-igdb-game', (event, gameName) => {
-			getIgdbWrapper(gameName).then((game) => {
-				event.sender.send('server.send-igdb-game', null, game);
-			}).catch((error) => {
-				event.sender.send('server.send-igdb-game', error, null);
-			});
-		});
-		ipcMain.on('client.add-game', (event, gameId) => {
-			this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
-				if (error)
-					return this.throwServerError(event, error);
-				let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
-				delete addedGame.details.id;
-				this.addGame(event, addedGame);
-			});
-		});
-		ipcMain.on('client.add-game-manual', (event, gameForm) => {
-			let gameName: string = gameForm.name;
-			let programName: string = gameForm.executable;
-			let game: PlayableGame = new PlayableGame(gameName, gameForm);
 
-			game.commandLine.push(programName);
-			game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
-			game.details.rating = parseInt(game.details.rating);
-			game.details.genres = game.details.genres.split(', ');
-			game.details.releaseDate = new Date(game.details.date).getTime();
-
-			delete game.details.date;
-			delete game.details.arguments;
-			this.addGame(event, game);
+		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
+			this.playableGames = games;
+			event.sender.send('server.add-playable-games', this.playableGames.games);
+			this.windowsList.loadingWindow.destroy();
+			this.windowsList.mainWindow.show();
+		}).catch((error) => {
+			throw error;
 		});
-		ipcMain.on('client.launch-game', (event, gameId) => {
-			this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
-				if (error)
-					return this.throwServerError(event, error);
-				if (game.uuid !== uuidV5(game.name))
-					return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
-				getGameLauncher(game).then((secondsPlayed: number) => {
-					console.log('You played', secondsPlayed, 'seconds.');
-					game.addPlayTime(secondsPlayed, (error) => {
-						if (error)
-							return this.throwServerError(event, error);
-					});
-					event.sender.send('server.stop-game', true);
-				}).catch((error) => {
+	}
+
+	private fillIgdbGame(event: Electron.Event, gameName: string) {
+		getIgdbWrapper(gameName).then((game) => {
+			event.sender.send('server.send-igdb-game', null, game);
+		}).catch((error) => {
+			event.sender.send('server.send-igdb-game', error, null);
+		});
+	}
+
+	private addGame(event: Electron.Event, gameId: string) {
+		this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
+			if (error)
+				return this.throwServerError(event, error);
+			let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
+			delete addedGame.details.id;
+			this.registerGame(event, addedGame);
+		});
+	}
+
+	private addGameManual(event: Electron.Event, gameForm: any) {
+		let gameName: string = gameForm.name;
+		let programName: string = gameForm.executable;
+		let game: PlayableGame = new PlayableGame(gameName, gameForm);
+
+		game.commandLine.push(programName);
+		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
+		game.details.rating = parseInt(game.details.rating);
+		game.details.genres = game.details.genres.split(', ');
+		game.details.releaseDate = new Date(game.details.date).getTime();
+
+		delete game.details.date;
+		delete game.details.arguments;
+		this.registerGame(event, game);
+	}
+
+	private launchGame(event: Electron.Event, gameId: string)  {
+		this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
+			if (error)
+				return this.throwServerError(event, error);
+			if (game.uuid !== uuidV5(game.name))
+				return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
+			if (this.gameLaunched)
+				return;
+			this.gameLaunched = true;
+			getGameLauncher(game).then((secondsPlayed: number) => {
+				this.gameLaunched = false;
+				console.log('You played', secondsPlayed, 'seconds.');
+				game.addPlayTime(secondsPlayed, (error) => {
 					if (error)
 						return this.throwServerError(event, error);
 				});
+				event.sender.send('server.stop-game', gameId, game.timePlayed);
+			}).catch((error) => {
+				if (error)
+					return this.throwServerError(event, error);
+				this.gameLaunched = false;
 			});
 		});
-		ipcMain.on('client.remove-game', (event, gameId) => {
-			this.playableGames.removeGame(gameId, (error) => {
-				let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
-				rimraf(gameDirectory, () => {
-					event.sender.send('server.game-removed', error, gameId);
-				});
+	}
+
+	private removeGame(event: Electron.Event, gameId: string) {
+		this.playableGames.removeGame(gameId, (error) => {
+			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
+			rimraf(gameDirectory, () => {
+				event.sender.send('server.remove-playable-game', error, gameId);
 			});
 		});
 	}
@@ -161,7 +179,7 @@ export class Vitrine {
 		});
 	}
 
-	private addGame(event: any, game: PlayableGame) {
+	private registerGame(event: any, game: PlayableGame) {
 		let gameDirectory = path.resolve(getEnvFolder('games'), game.uuid);
 		let configFilePath = path.resolve(gameDirectory, 'config.json');
 

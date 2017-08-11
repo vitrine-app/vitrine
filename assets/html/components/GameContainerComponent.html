@@ -3,10 +3,17 @@
 		<div class="col-md-8">
 			<h1 id="game-title">{{ welcomeMessage, Vitrine }}</h1>
 			<hr>
-			<div class="row">
-				<p id="game-desc"></p>
+			<div id="game-play" class="selected-game-infos">
+				<button class="btn btn-primary"><i class="fa fa-play"></i> Play</button>
+				<p>Time played: 8 hours</p>
+			</div>
+			<p id="game-desc" class="selected-game-infos"></p>
+		</div>
+		<div class="col-md-4">
+			<div id="selected-game-cover" class="blur-picture-container">
+				<div class="image"></div>
+				<i class="fa fa-play icon animated"></i>
 			</div>
 		</div>
-		<div component="game-cover" id="game-cover-container" class="col-md-4"></div>
 	</div>
 </div>

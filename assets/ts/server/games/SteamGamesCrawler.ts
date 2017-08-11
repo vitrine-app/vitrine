@@ -22,7 +22,7 @@ class SteamGamesCrawler {
 		this.potentialGames = [];
 	}
 
-	public search(callback): void {
+	public search(callback: Function): void {
 		this.callback = callback;
 		this.configFile.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
@@ -36,7 +36,7 @@ class SteamGamesCrawler {
 		});
 	}
 
-	private processGames(error, files) {
+	private processGames(error: Error, files: string[]) {
 		if (error) {
 			this.callback(error, null);
 			return;
@@ -83,7 +83,6 @@ class SteamGamesCrawler {
 		let configFilePath = path.resolve(gameDirectory, 'config.json');
 
 		return fs.existsSync(configFilePath);
-
 	}
 }
 

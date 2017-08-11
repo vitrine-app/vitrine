@@ -5,24 +5,16 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
-import { beforeCss } from './helpers';
+import { formatTimePlayed } from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private clickedGame: PlayableGame;
-	private gameLaunched: boolean;
 
 	constructor() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
-		this.gameLaunched = false;
-	}
-
-	public run() {
-		this.clickedGame = null;
-		ipcRenderer.send('client.ready');
-
 		window.onerror = function(error, url, line) {
 			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
 				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
@@ -31,72 +23,96 @@ export class VitrineClient {
 		}
 	}
 
+	public run() {
+		this.clickedGame = null;
+		ipcRenderer.send('client.ready');
+	}
+
 	public registerEvents() {
-		ipcRenderer.on('server.server-error', (event, error) => {
-			if (error) {
-				this.gameLaunched = false;
-				throw new Error(error);
-			}
-		});
-		ipcRenderer.on('server.send-igdb-game', (event, error, game) => {
+		ipcRenderer.on('server.server-error', this.serverError.bind(this));
+		ipcRenderer.on('server.send-igdb-game', this.sendIgdbGame.bind(this));
+		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
+		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
+		ipcRenderer.on('server.remove-potential-game', this.removePotentialGame.bind(this));
+		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
+		ipcRenderer.on('server.remove-playable-game', this.removePlayableGame.bind(this));
+		ipcRenderer.on('server.stop-game', this.stopGame.bind(this));
+	}
+
+	private serverError(event: Electron.Event, error: string) {
+		if (error) {
+			throw new Error(error);
+		}
+	}
+
+	private sendIgdbGame(event: Electron.Event, error: string, game: any) {
+		if (error)
+			throw new Error(error);
+		$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
+
+		let formSelector = $('#add-game-form');
+
+		formSelector.find('input[name=name]').val(game.name);
+		formSelector.find('input[name=series]').val(game.series);
+		formSelector.find('input[name=developer]').val(game.developer);
+		formSelector.find('input[name=publisher]').val(game.publisher);
+		formSelector.find('input[name=date]').datepicker('update', dateFormat(game.release_date, 'dd/mm/yyyy'));
+		formSelector.find('input[name=genres]').val(game.genres.join(', '));
+		formSelector.find('input[name=rating]').val(game.rating);
+		formSelector.find('textarea[name=summary]').val(game.summary);
+		formSelector.find('input[name=cover]').val(game.cover);
+		// TODO: Change default screenshot
+		formSelector.find('input[name=background]').val(game.screenshots[0]);
+
+		$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
+	}
+
+	private addPotentialGames(event: Electron.Event, games: PotentialGame[]) {
+		this.potentialGames.games = games;
+		this.renderPotentialGames();
+	}
+
+	private removePotentialGame(event: Electron.Event, gameId: string)  {
+		this.potentialGames.removeGame(gameId, (error, game: PotentialGame) => {
 			if (error)
 				throw new Error(error);
-			$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
-
-			let formSelector = $('#add-game-form');
-
-			formSelector.find('input[name=name]').val(game.name);
-			formSelector.find('input[name=series]').val(game.series);
-			formSelector.find('input[name=developer]').val(game.developer);
-			formSelector.find('input[name=publisher]').val(game.publisher);
-			formSelector.find('input[name=date]').datepicker('update', dateFormat(game.release_date, 'dd/mm/yyyy'));
-			formSelector.find('input[name=genres]').val(game.genres.join(', '));
-			formSelector.find('input[name=rating]').val(game.rating);
-			formSelector.find('textarea[name=summary]').val(game.summary);
-			formSelector.find('input[name=cover]').val(game.cover);
-			// TODO: Change default screenshot
-			formSelector.find('input[name=background]').val(game.screenshots[0]);
-
-			$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
-		});
-		ipcRenderer.on('server.add-potential-games', (event, games: PotentialGame[]) => {
-			this.potentialGames.games = games;
-			this.renderPotentialGames();
-		});
-		ipcRenderer.on('server.add-playable-games', (event, games: PlayableGame[]) => {
-			this.playableGames.games = games;
-			this.renderPlayableGames();
-		});
-		ipcRenderer.on('server.remove-potential-game', (event, gameId) => {
-			this.potentialGames.removeGame(gameId, (error, game: PotentialGame) => {
-				if (error)
-					throw new Error(error);
-				else if (game) {
-					this.renderPotentialGames();
-				}
-			})
-		});
-		ipcRenderer.on('server.add-playable-game', (event, playableGame) => {
-			if (!playableGame.details.steamId) {
-				(<any>$('#add-game-modal')).modal('hide');
-				$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
+			else if (game) {
+				this.renderPotentialGames();
 			}
-			this.playableGames.addGame(playableGame);
-			console.log(this.playableGames);
-			this.renderPlayableGames();
 		});
-		ipcRenderer.on('server.game-removed', (event, error, gameId) => {
+	}
+
+	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
+		this.playableGames.games = games;
+		this.renderPlayableGames();
+	}
+
+	private addPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
+		if (!playableGame.details.steamId) {
+			(<any>$('#add-game-modal')).modal('hide');
+			$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
+		}
+		this.playableGames.addGame(playableGame);
+		console.log(this.playableGames);
+		this.renderPlayableGames();
+	}
+
+	private removePlayableGame(event: Electron.Event, error: string, gameId: string) {
+		if (error)
+			throw new Error(error);
+		this.playableGames.removeGame(gameId, (error) => {
 			if (error)
 				throw new Error(error);
-			this.playableGames.removeGame(gameId, (error) => {
-				if (error)
-					throw new Error(error);
-				this.renderPlayableGames();
-			});
+			this.renderPlayableGames();
 		});
-		ipcRenderer.on('server.stop-game', () => {
-			console.log('Game stopped.');
-			this.gameLaunched = false;
+	}
+
+	private stopGame(event: Electron.Event, gameId: string, totalTimePlayed: number)  {
+		this.playableGames.getGame(gameId, (error: string, game: PlayableGame) => {
+			if (error)
+				throw new Error(error);
+			game.timePlayed = totalTimePlayed;
+			this.updateGameUi(game);
 		});
 	}
 
@@ -135,8 +151,11 @@ export class VitrineClient {
 		this.playableGames.sort();
 		let counter: number = 0;
 		this.playableGames.forEach((playableGame: PlayableGame) => {
-			let html: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
-			$('#playable-games-list').append(html);
+			let gameLi: JQuery = $('<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>');
+			gameLi.dblclick(() => {
+				ipcRenderer.send('client.launch-game', playableGame.uuid);
+			});
+			$('#playable-games-list').append(gameLi);
 			counter++;
 			if (counter === this.playableGames.games.length)
 				this.eventPlayableGames();
@@ -152,41 +171,36 @@ export class VitrineClient {
 						throw new Error(error);
 					if (this.clickedGame && this.clickedGame.uuid === gameId)
 						return;
-
 					if (this.clickedGame)
 						$('li.play-game-link[game-id=' + this.clickedGame.uuid + ']').removeClass('selected-game');
 					$(value).addClass('selected-game');
-
-					let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
-					let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
-					$('#game-cover-container').css({
-						'display': 'block'
-					});
-					$('#game-title').html(game.name);
-					$('#game-desc').addClass('game-desc').html(game.details.summary);
-					$('#game-cover-image').css({
-						'background-image': gameCover,
-						'background-repeat': 'no-repeat',
-						'background-size': '100% 100%',
-					});
-					beforeCss('#game-background', {
-						'background-image': gameBgScreen
-					});
+					this.updateGameUi(game);
 					this.clickedGame = game;
-					let self: VitrineClient = this;
-					let events: any = {
-						click() {
-							$('#game-cover-component').animateCss('pulse', 120);
-							if (!self.gameLaunched) {
-								ipcRenderer.send('client.launch-game', self.clickedGame.uuid);
-								self.gameLaunched = true;
-							}
-						}
-					};
-					$(document.body).on(events, '#game-cover-image');
-					$(document.body).on(events, '#cover-play-btn');
 				});
 			});
+		});
+	}
+
+	private updateGameUi(game: PlayableGame) {
+		let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
+		let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
+
+		$('#game-title').html(game.name);
+		$('#game-play').addClass('game-infos-visible').find('p').html('Time played: ' + formatTimePlayed(game.timePlayed)).parent()
+			.find('button').off('click').click(() => {
+			ipcRenderer.send('client.launch-game', game.uuid);
+		});
+		$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
+
+		$('#game-background').beforeCss('#game-background', {
+			'background-image': gameBgScreen
+		});
+		$('#selected-game-cover').css({
+			'display': 'block'
+		}).find('.image').css({
+			'background-image': gameCover
+		}).parent().updateBlurClickCallback(() => {
+			ipcRenderer.send('client.launch-game', game.uuid);
 		});
 	}
 }

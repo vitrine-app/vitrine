@@ -1,10 +1,13 @@
 /* Vitrine Components */
-// @import 'titleBar';
-@import 'error';
-@import 'sideBar';
-@import 'addGameModal';
-@import 'addGamesModal';
-@import 'gameContainer';
+@import 'vitrine/bootstrapDatepicker';
+@import 'vitrine/bootstrapNumberPicker';
+
+@import 'vitrine/error';
+@import 'vitrine/sideBar';
+@import 'vitrine/addGameModal';
+@import 'vitrine/addGamesModal';
+@import 'vitrine/gameContainer';
+@import 'vitrine/blurPicture';
 
 .full-height {
 	height: 100%;

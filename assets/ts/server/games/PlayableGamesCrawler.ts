@@ -15,7 +15,7 @@ class PlayableGamesCrawler {
 		this.gamesDirectory = getEnvFolder('games');
 	}
 
-	public search(callback) {
+	public search(callback: Function) {
 		this.callback = callback;
 		fs.readdir(this.gamesDirectory, (error, files) => {
 			if (error) {
@@ -35,7 +35,7 @@ class PlayableGamesCrawler {
 					let playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
 					playableGame.uuid = rawGame.uuid;
 					playableGame.commandLine = rawGame.commandLine;
-					playableGame.timePlayed = 0;
+					playableGame.timePlayed = parseInt(rawGame.timePlayed);
 
 					this.playableGames.push(playableGame);
 				}

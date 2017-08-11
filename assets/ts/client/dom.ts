@@ -57,7 +57,7 @@ function registerAddGameForm() {
 		event.preventDefault();
 
 		let gameName: any = $('#add-game-form').find('input[name=name]').val();
-		$('#fill-with-igdb-btn').html(languageInstance.replaceJs('loading'));
+		$('#fill-with-igdb-btn').loading();
 		ipcRenderer.send('client.fill-igdb-game', gameName);
 	});
 
@@ -79,7 +79,7 @@ function registerAddGameForm() {
 	$('#add-game-submit-btn').click(() => {
 		let gameForm: any = formToObject($('#add-game-form')[0]);
 		ipcRenderer.send('client.add-game-manual', gameForm);
-		$('#add-game-submit-btn').html(languageInstance.replaceJs('loading'));
+		$('#add-game-submit-btn').loading();
 	});
 
 	$('#add-game-modal').on('hidden.bs.modal', () => {
@@ -104,35 +104,38 @@ function registerAddGameForm() {
 function registerContextMenu() {
 	(<any>$).contextMenu({
 		selector: '.games-list li.play-game-link',
-		items: {
-			foo: { name: 'Remove', callback() {
-				let gameId: string = $(this).attr('game-id');
-				ipcRenderer.send('client.remove-game', gameId);
-				console.log('Removal sent');
-			}}
-		}
+		items: [
+			{
+				name: languageInstance.replaceJs('playGame'),
+				callback() {
+					let gameId: string = $(this).attr('game-id');
+					ipcRenderer.send('client.launch-game', gameId);
+				}
+			},
+			{
+				name: languageInstance.replaceJs('removeGame'),
+				callback() {
+					let gameId: string = $(this).attr('game-id');
+					ipcRenderer.send('client.remove-game', gameId);
+				}
+			}
+		]
 	});
 }
 
 export function launchDom() {
 	extendJQuery();
-	$(document.body).on('submit', '#game-name-form', function(event) {
-		event.preventDefault();
-
-		let form: any = formToObject(this);
-		if (form.name) {
-			$(this).find('input[name="name"]').val('');
-			$('#game-title').html(languageInstance.replaceJs('loading'));
-			ipcRenderer.send('client.get-game', form.name);
-		}
-	});
 
 	registerModalOverlay();
 	registerGameCover();
 	registerAddGameForm();
 	registerContextMenu();
+
 	$('input[type=number]').each(function() {
 		$(this).numberPicker();
 	});
 
+	$('#selected-game-cover').blurPicture(125, () => {
+		console.log('nutting');
+	});
 }

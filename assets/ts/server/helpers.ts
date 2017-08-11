@@ -5,7 +5,9 @@ import * as path from 'path';
 import * as uuid from 'uuid/v5';
 import * as Levenshtein from 'levenshtein';
 
-let isEnvProd: boolean = (JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json')).toString()).env) ? (true) : (false);
+import * as data from '../../../package.json';
+
+let isEnvProd: boolean = ((<any>data).env) ? (true) : (false);
 
 export function uuidV5(name: string) {
 	let dnsNamespace: string = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
@@ -13,7 +15,7 @@ export function uuidV5(name: string) {
 	return uuid(name, dnsNamespace);
 }
 
-export function downloadFile(url, path, isHttps, callback) {
+export function downloadFile(url: string, path: string, isHttps: boolean, callback: Function) {
 	let file = fs.createWriteStream(path);
 	let protocol: any = (isHttps) ? (https) : (http);
 
@@ -27,7 +29,7 @@ export function getEnvFolder(folder: string) {
 	return path.resolve(__dirname, (isEnvProd) ? ('../../' + folder) : ('../' + folder));
 }
 
-export function nameArray(array) {
+export function nameArray(array: any[]) {
 	let namesArray: string[] = [];
 
 	for (let i in array)
@@ -35,6 +37,6 @@ export function nameArray(array) {
 	return namesArray;
 }
 
-export function levenshteinDistanceCmp(node, baseItem) {
+export function levenshteinDistanceCmp(node: any, baseItem: any) {
 	return new Levenshtein(node, baseItem).distance;
 }

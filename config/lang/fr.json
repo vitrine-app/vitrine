@@ -3,6 +3,8 @@
   "addGame": "Ajouter %1",
   "getGame": "Récupérer le jeu",
   "loading": "Chargement...",
+  "playGame": "Jouer",
+  "removeGame": "Supprimer le jeu",
   "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
   "addGameLabel": "Ajouter un jeu",
   "fillWithIGDB": "Remplir avec IGDB",
@@ -19,5 +21,11 @@
   "lineArguments": "Arguments de la ligne de commande",
   "executables": "Programmes",
   "allFiles": "Tous les fichiers",
-  "error": "Une erreur est survenue :"
+  "error": "Une erreur est survenue :",
+  "hoursPlur": "heures",
+  "hoursSing": "heure",
+  "minutesPlur": "minutes",
+  "minutesSing": "minute",
+  "secondsPlur": "secondes",
+  "secondsSing": "seconde"
 }
