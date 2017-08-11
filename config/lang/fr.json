@@ -19,6 +19,7 @@
   "summary": "Description",
   "executable": "Programme",
   "lineArguments": "Arguments de la ligne de commande",
+  "backgroundImage": "Image de fond",
   "executables": "Programmes",
   "allFiles": "Tous les fichiers",
   "error": "Une erreur est survenue :",

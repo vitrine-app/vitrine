@@ -2,8 +2,35 @@
 	padding-left: 5%;
 }
 
-#add-game-form textarea {
-	resize: none;
+#add-game-form {
+	#background-picker-group {
+		display: none;
+
+		#background-picker {
+			overflow-x: auto;
+			overflow-y: hidden;
+			white-space: nowrap;
+
+			img {
+				width: 400px;
+				height: 270px;
+				margin: 5px;
+				border-radius: $border-radius-base;
+				box-shadow: 0 0 6px rgba(0, 0, 0, 0.46);
+				filter: brightness(65%);
+
+				&.selected-screenshot {
+					filter: brightness(115%);
+				}
+			}
+		}
+	}
+	hr {
+		border-top: 1px solid rgba(238, 238, 238, 0.15);
+	}
+	textarea {
+		resize: none;
+	}
 }
 
 .datepicker {

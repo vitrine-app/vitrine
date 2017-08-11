@@ -19,6 +19,7 @@
   "summary": "Summary",
   "executable": "Executable",
   "lineArguments": "Command line arguments",
+  "backgroundImage": "Background image",
   "executables": "Executables",
   "allFiles": "All files",
   "error": "An error occured:",

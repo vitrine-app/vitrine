@@ -30,7 +30,7 @@ export class VitrineClient {
 
 	public registerEvents() {
 		ipcRenderer.on('server.server-error', this.serverError.bind(this));
-		ipcRenderer.on('server.send-igdb-game', this.sendIgdbGame.bind(this));
+		ipcRenderer.on('server.send-igdb-game', this.getIgdbGame.bind(this));
 		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
 		ipcRenderer.on('server.remove-potential-game', this.removePotentialGame.bind(this));
@@ -45,7 +45,7 @@ export class VitrineClient {
 		}
 	}
 
-	private sendIgdbGame(event: Electron.Event, error: string, game: any) {
+	private getIgdbGame(event: Electron.Event, error: string, game: any) {
 		if (error)
 			throw new Error(error);
 		$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
@@ -60,8 +60,20 @@ export class VitrineClient {
 		formSelector.find('input[name=genres]').val(game.genres.join(', '));
 		formSelector.find('input[name=rating]').val(game.rating);
 		formSelector.find('textarea[name=summary]').val(game.summary);
+
 		formSelector.find('input[name=cover]').val(game.cover);
-		// TODO: Change default screenshot
+
+		formSelector.find('#background-picker').html('');
+		$('#background-picker-group').show();
+		game.screenshots.forEach((screenshot: string, index: number) => {
+			let currentScreenshotHtml: string = '<img src="' + screenshot + '" ' + ((!index) ? ('class="selected-screenshot"') : ('')) + '>';
+			let currentScreenshot: JQuery = $(currentScreenshotHtml).click(function() {
+				$(this).parent().find('img.selected-screenshot').removeClass('selected-screenshot');
+				$(this).addClass('selected-screenshot');
+				formSelector.find('input[name=background]').val(screenshot);
+			});
+			formSelector.find('#background-picker').append(currentScreenshot);
+		});
 		formSelector.find('input[name=background]').val(game.screenshots[0]);
 
 		$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
