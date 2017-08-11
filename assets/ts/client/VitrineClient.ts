@@ -187,7 +187,7 @@ export class VitrineClient {
 
 		$('#game-title').html(game.name);
 		$('#game-play').addClass('game-infos-visible').find('p').html('Time played: ' + formatTimePlayed(game.timePlayed)).parent()
-			.find('button').click(() => {
+			.find('button').off('click').click(() => {
 			ipcRenderer.send('client.launch-game', game.uuid);
 		});
 		$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
