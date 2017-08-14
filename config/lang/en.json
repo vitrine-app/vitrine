@@ -21,6 +21,7 @@
   "lineArguments": "Command line arguments",
   "backgroundImage": "Background image",
   "executables": "Executables",
+  "images": "Images",
   "allFiles": "All files",
   "error": "An error occured:",
   "hoursPlur": "hours",

@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from 'electron';
 import * as formToObject from 'form-to-object';
 
 import { languageInstance } from './Language';
-import { extendJQuery } from './helpers';
+import {extendJQuery, openExecutableDialog, openImageDialog} from './helpers';
 
 function registerModalOverlay() {
 	$(document).on('show.bs.modal', '.modal', function() {
@@ -34,6 +34,17 @@ function registerGameCover() {
 
 function registerAddGameForm() {
 	let formSelector = $('#add-game-form');
+	$('#add-game-cover').blurPicture(55, function() {
+		let cover: string = openImageDialog();
+		if (cover) {
+			cover = 'file://' + cover;
+			let gameCover: string = 'url(' + cover.split('\\').join('\\\\') + ')';
+			this.find('.image').css({
+				'background-image': gameCover
+			});
+			formSelector.find('input[name=cover]').val(cover);
+		}
+	});
 
 	formSelector.find('input[name=name]').on('input', function() {
 		if ($(this).val())
@@ -62,16 +73,9 @@ function registerAddGameForm() {
 	});
 
 	$('#add-game-executable-btn').click(() => {
-		let dialogRet: string[] = remote.dialog.showOpenDialog({
-			properties: ['openFile'],
-			filters: [
-				{name: languageInstance.replaceJs('executables'), extensions: ['exe']},
-				{name: languageInstance.replaceJs('allFiles'), extensions: ['*']}
-			]
-		});
-		if (!dialogRet || !dialogRet.length)
-			return;
-		$('#add-game-form').find('input[name=executable]').val(dialogRet[0]);
+		let dialogRet: string = openExecutableDialog();
+		if (dialogRet)
+			$('#add-game-form').find('input[name=executable]').val(dialogRet);
 		if (formSelector.find('input[name=name]').val())
 			$('#add-game-submit-btn').prop('disabled', false);
 	});
@@ -93,6 +97,7 @@ function registerAddGameForm() {
 		formSelector.find('input[name=rating]').val('');
 		formSelector.find('textarea[name=summary]').val('');
 		formSelector.find('input[name=executable]').val('');
+
 		formSelector.find('input[name=cover]').val('');
 		formSelector.find('input[name=background]').val('');
 
@@ -135,7 +140,5 @@ export function launchDom() {
 		$(this).numberPicker();
 	});
 
-	$('#selected-game-cover').blurPicture(125, () => {
-		console.log('nutting');
-	});
+	$('#selected-game-cover').blurPicture(125, () => {}).hide();
 }

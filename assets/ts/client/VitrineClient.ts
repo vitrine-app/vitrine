@@ -198,10 +198,11 @@ export class VitrineClient {
 		let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
 
 		$('#game-title').html(game.name);
-		$('#game-play').addClass('game-infos-visible').find('p').html('Time played: ' + formatTimePlayed(game.timePlayed)).parent()
-			.find('button').off('click').click(() => {
+		$('#game-play').addClass('game-infos-visible').find('button').off('click').click(() => {
 			ipcRenderer.send('client.launch-game', game.uuid);
 		});
+		if (game.timePlayed)
+			$('#game-play').find('p').html('Time played: ' + formatTimePlayed(game.timePlayed));
 		$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
 
 		$('#game-background').beforeCss('#game-background', {

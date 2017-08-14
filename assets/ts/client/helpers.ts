@@ -1,4 +1,13 @@
+import { remote } from 'electron';
+
 import { languageInstance } from './Language';
+
+function openDialog(options: any) {
+	let dialogRet: string[] = remote.dialog.showOpenDialog(options);
+	if (!dialogRet || !dialogRet.length)
+		return null;
+	return dialogRet[0];
+}
 
 export function extendJQuery() {
 	$.fn.extend({
@@ -59,6 +68,7 @@ export function extendJQuery() {
 		blurPicture(fontSize: number, callback: Function, width?: number, height?: number) {
 			width = (width) ? (width) : (3.136);
 			height = (height) ? (height) : (4.48);
+			this.addClass('blur-picture-container');
 			this.css({
 				'font-size': fontSize + 'px',
 				'width': width + 'em',
@@ -75,7 +85,7 @@ export function extendJQuery() {
 				this.find('.icon').removeClass('cover-hovered');
 			}).click(() => {
 				this.animateCss('pulse', 120);
-				callback();
+				callback.bind(this)();
 			});
 
 			this.find('.icon').mouseenter(() => {
@@ -86,18 +96,18 @@ export function extendJQuery() {
 				this.find('.icon').removeClass('cover-hovered');
 			}).click(() => {
 				this.animateCss('pulse', 120);
-				callback();
+				callback.bind(this)();
 			});
 			return this;
 		},
 		updateBlurClickCallback(callback: Function) {
 			this.find('.image').off('click').click(() => {
 				this.animateCss('pulse', 120);
-				callback();
+				callback.bind(this)();
 			});
 			this.find('.icon').off('click').click(() => {
 				this.animateCss('pulse', 120);
-				callback();
+				callback.bind(this)();
 			});
 			return this;
 		},
@@ -114,9 +124,9 @@ export function formatTimePlayed(timePlayed: number) {
 	if (timePlayed < 60) {
 		let secondsStr: string;
 		if (timePlayed == 1)
-			secondsStr = languageInstance.replaceJs('secondSing');
+			secondsStr = languageInstance.replaceJs('secondsSing');
 		else
-			secondsStr = languageInstance.replaceJs('secondPlur');
+			secondsStr = languageInstance.replaceJs('secondsPlur');
 		return timePlayed + ' ' + secondsStr;
 	}
 	let minutes: number = Math.floor(timePlayed / 60);
@@ -143,4 +153,32 @@ export function formatTimePlayed(timePlayed: number) {
 	else
 		minutesStr = languageInstance.replaceJs('minutesPlur');
 	return hours + ' ' + hoursStr + (minutesStr) ? (minutes + ' ' + minutesStr) : ('');
+}
+
+export function openExecutableDialog() {
+	return openDialog({
+		properties: ['openFile'],
+		filters: [
+			{
+				name: languageInstance.replaceJs('executables'),
+				extensions: ['exe']
+			},
+			{
+				name: languageInstance.replaceJs('allFiles'),
+				extensions: ['*']
+			}
+		]
+	});
+}
+
+export function openImageDialog() {
+	return openDialog({
+		properties: ['openFile'],
+		filters: [
+			{
+				name: languageInstance.replaceJs('images'),
+				extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp']
+			}
+		]
+	});
 }

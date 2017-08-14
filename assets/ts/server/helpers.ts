@@ -16,6 +16,10 @@ export function uuidV5(name: string) {
 }
 
 export function downloadFile(url: string, path: string, isHttps: boolean, callback: Function) {
+	if (!url) {
+		callback();
+		return;
+	}
 	let file = fs.createWriteStream(path);
 	let protocol: any = (isHttps) ? (https) : (http);
 
