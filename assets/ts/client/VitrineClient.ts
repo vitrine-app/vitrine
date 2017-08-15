@@ -61,8 +61,6 @@ export class VitrineClient {
 		formSelector.find('input[name=rating]').val(game.rating);
 		formSelector.find('textarea[name=summary]').val(game.summary);
 
-		formSelector.find('input[name=cover]').val(game.cover);
-
 		formSelector.find('#background-picker').html('');
 		$('#background-picker-group').show();
 		game.screenshots.forEach((screenshot: string, index: number) => {
@@ -76,7 +74,11 @@ export class VitrineClient {
 		});
 		formSelector.find('input[name=background]').val(game.screenshots[0]);
 
-		$('#add-game-cover').html('').append('<img width="200" src="' + game.cover + '" alt="' + game.name + '">');
+		let gameCover: string = 'url(' + game.cover.split('\\').join('\\\\') + ')';
+		$('#add-game-cover').find('.image').css({
+			'background-image': gameCover
+		});
+		formSelector.find('input[name=cover]').val(game.cover);
 	}
 
 	private addPotentialGames(event: Electron.Event, games: PotentialGame[]) {

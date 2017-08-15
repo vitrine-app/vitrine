@@ -21,12 +21,17 @@ export function downloadFile(url: string, path: string, isHttps: boolean, callba
 		return;
 	}
 	let file = fs.createWriteStream(path);
-	let protocol: any = (isHttps) ? (https) : (http);
-
-	protocol.get(url, (response) => {
-		response.pipe(file);
+	if (url.startsWith('file://')) {
+		fs.createReadStream(url.substr(7)).pipe(file);
 		callback();
-	});
+	}
+	else {
+		let protocol: any = (isHttps) ? (https) : (http);
+		protocol.get(url, (response) => {
+			response.pipe(file);
+			callback();
+		});
+	}
 }
 
 export function getEnvFolder(folder: string) {

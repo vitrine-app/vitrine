@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from 'electron';
 import * as formToObject from 'form-to-object';
 
 import { languageInstance } from './Language';
-import {extendJQuery, openExecutableDialog, openImageDialog} from './helpers';
+import { extendJQuery, openExecutableDialog, openImageDialog } from './helpers';
 
 function registerModalOverlay() {
 	$(document).on('show.bs.modal', '.modal', function() {

@@ -60,13 +60,13 @@
     "bootstrap-sass": "^3.3.7",
     "cheerio": "^1.0.0-rc.2",
     "electron": "^1.7.6",
-    "electron-builder": "^19.20.0",
+    "electron-builder": "^19.21.0",
     "font-awesome": "^4.7.0",
     "html-minifier": "^3.5.3",
     "node-sass-chokidar": "0.0.3",
     "parallel-webpack": "^2.1.0",
     "typescript": "^2.4.2",
-    "webpack": "^3.5.1"
+    "webpack": "^3.5.4"
   },
   "scripts": {
     "build-html": "node scripts\\htmlCompiler.js assets\\html\\main.html public\\main.html && node scripts\\htmlCompiler.js assets\\html\\loading.html public\\loading.html",
