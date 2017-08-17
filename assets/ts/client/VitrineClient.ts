@@ -61,18 +61,20 @@ export class VitrineClient {
 		formSelector.find('input[name=rating]').val(game.rating);
 		formSelector.find('textarea[name=summary]').val(game.summary);
 
-		formSelector.find('#background-picker').html('');
+		$('#background-picker *:not(".manual-screenshot")').remove();
 		$('#background-picker-group').show();
 		game.screenshots.forEach((screenshot: string, index: number) => {
-			let currentScreenshotHtml: string = '<img src="' + screenshot + '" ' + ((!index) ? ('class="selected-screenshot"') : ('')) + '>';
+			let isFirst: boolean = (!index && !$('#background-picker').find('.manual-screenshot').length) ? (true) : (false);
+			let currentScreenshotHtml: string = '<img src="' + screenshot + '" ' + ((isFirst) ? ('class="selected-screenshot"') : ('')) + '>';
 			let currentScreenshot: JQuery = $(currentScreenshotHtml).click(function() {
 				$(this).parent().find('img.selected-screenshot').removeClass('selected-screenshot');
 				$(this).addClass('selected-screenshot');
 				formSelector.find('input[name=background]').val(screenshot);
 			});
 			formSelector.find('#background-picker').append(currentScreenshot);
+			if (isFirst)
+				formSelector.find('input[name=background]').val(screenshot);
 		});
-		formSelector.find('input[name=background]').val(game.screenshots[0]);
 
 		let gameCover: string = 'url(' + game.cover.split('\\').join('\\\\') + ')';
 		$('#add-game-cover').find('.image').css({
@@ -204,7 +206,7 @@ export class VitrineClient {
 			ipcRenderer.send('client.launch-game', game.uuid);
 		});
 		if (game.timePlayed)
-			$('#game-play').find('p').html('Time played: ' + formatTimePlayed(game.timePlayed));
+			$('#game-play').find('p').html(languageInstance.replaceJs('timePlayed') + ' ' + formatTimePlayed(game.timePlayed));
 		$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
 
 		$('#game-background').beforeCss('#game-background', {

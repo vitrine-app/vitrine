@@ -1,5 +1,7 @@
 {
   "welcomeMessage": "Bienvenue sur %1 !",
+  "play": "Jouer",
+  "timePlayed": "Temps de jeu :",
   "addGame": "Ajouter %1",
   "getGame": "Récupérer le jeu",
   "loading": "Chargement...",
@@ -20,6 +22,7 @@
   "executable": "Programme",
   "lineArguments": "Arguments de la ligne de commande",
   "backgroundImage": "Image de fond",
+  "addCustomBgImage": "Image de fond personnalisée",
   "executables": "Programmes",
   "images": "Images",
   "allFiles": "Tous les fichiers",

@@ -103,6 +103,30 @@ function registerAddGameForm() {
 
 		$('#fill-with-igdb-btn').prop('disabled', true);
 		$('#add-game-submit-btn').prop('disabled', true);
+		$('#background-picker').html('');
+	});
+
+	$('#add-custom-background-btn').click((event) => {
+		event.preventDefault();
+
+		let screenshot: string = openImageDialog();
+		if (screenshot) {
+			screenshot = 'file://' + screenshot;
+			let currentScreenshotHtml: string = '<img src="' + screenshot + '" class="selected-screenshot manual-screenshot">';
+			let currentScreenshot: JQuery = $(currentScreenshotHtml).click(function () {
+				$(this).parent().find('img.selected-screenshot').removeClass('selected-screenshot');
+				$(this).addClass('selected-screenshot');
+				formSelector.find('input[name=background]').val(screenshot);
+			});
+			$('#background-picker').find('img.selected-screenshot').removeClass('selected-screenshot');
+			formSelector.find('input[name=background]').val(screenshot);
+			if ($('#background-picker').find('.manual-screenshot').length) {
+				$('#background-picker').find('.manual-screenshot').replaceWith(currentScreenshot)
+			}
+			else {
+				$('#background-picker').prepend(currentScreenshot);
+			}
+		}
 	});
 }
 

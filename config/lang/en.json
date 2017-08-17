@@ -1,5 +1,7 @@
 {
   "welcomeMessage": "Welcome to %1!",
+  "play": "Play",
+  "timePlayed": "Time played:",
   "addGame": "Add %1",
   "getGame": "Get game",
   "loading": "Loading...",
@@ -20,6 +22,7 @@
   "executable": "Executable",
   "lineArguments": "Command line arguments",
   "backgroundImage": "Background image",
+  "addCustomBgImage": "Custom background image",
   "executables": "Executables",
   "images": "Images",
   "allFiles": "All files",
