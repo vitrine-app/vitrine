@@ -5,7 +5,7 @@ import * as rimraf from 'rimraf';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
-import { PlayableGame } from '../models/PlayableGame';
+import { GameSource, PlayableGame} from '../models/PlayableGame';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
@@ -93,6 +93,7 @@ export class Vitrine {
 			if (error)
 				return this.throwServerError(event, error);
 			let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
+			addedGame.source = GameSource.STEAM;
 			delete addedGame.details.id;
 			this.registerGame(event, addedGame);
 		});
@@ -102,6 +103,7 @@ export class Vitrine {
 		let gameName: string = gameForm.name;
 		let programName: string = gameForm.executable;
 		let game: PlayableGame = new PlayableGame(gameName, gameForm);
+		game.source = GameSource.LOCAL;
 
 		game.commandLine.push(programName);
 		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));

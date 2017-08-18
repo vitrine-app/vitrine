@@ -1,7 +1,7 @@
 import { execFile } from 'child_process';
 import * as path from 'path';
 
-import { PlayableGame } from '../models/PlayableGame';
+import { GameSource, PlayableGame } from '../models/PlayableGame';
 import { getEnvFolder } from './helpers';
 
 class GameLauncher {
@@ -14,10 +14,16 @@ class GameLauncher {
 	}
 
 	public launch(callback: Function) {
-		if (this.game.details.steamId)
-			this.launchSteamGame(callback);
-		else
-			this.launchStandardGame(callback);
+		switch (this.game.source) {
+			case GameSource.STEAM: {
+				this.launchSteamGame(callback);
+				break;
+			}
+			case GameSource.LOCAL: {
+				this.launchStandardGame(callback);
+				break;
+			}
+		}
 	}
 
 	private launchStandardGame(callback: Function) {

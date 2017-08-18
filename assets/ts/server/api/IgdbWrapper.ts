@@ -32,21 +32,20 @@ class IgdbWrapper {
 			let gameId: number = getClosest.custom(name, gamesNames, levenshteinDistanceCmp);
 
 			this.findGameById(response.body[gameId].id, (error, game) => {
-				if (error && !game) {
+				if (error && !game)
 					callback(error, null);
-				}
-
-				this.game = game;
-				this.callback = callback;
-
-				if (this.game) {
+				else {
+					this.game = game;
+					this.callback = callback;
 					this.basicFormatting();
 					this.findCompanyById(game.developers, this.addDeveloperCallback.bind(this));
 				}
+
 			});
 		}).catch((error) => {
-			if (error)
-				this.callback(error, null);
+			if (error) {
+				callback(error, null);
+			}
 		});
 	}
 
