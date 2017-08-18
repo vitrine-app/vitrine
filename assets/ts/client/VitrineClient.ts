@@ -18,7 +18,7 @@ export class VitrineClient {
 		window.onerror = function(error, url, line) {
 			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
 				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
-			$('#error-message').html('').html(errorHtml);
+			$('#error-message').clear().html(errorHtml);
 			(<any>$('#error-modal')).modal('show');
 		}
 	}
@@ -76,7 +76,7 @@ export class VitrineClient {
 				formSelector.find('input[name=background]').val(screenshot);
 		});
 
-		let gameCover: string = 'url(' + game.cover.split('\\').join('\\\\') + ')';
+		let gameCover: string = 'url(' + game.cover.replace(/\\g/,'\\\\') + ')';
 		$('#add-game-cover').find('.image').css({
 			'background-image': gameCover
 		});
@@ -101,6 +101,8 @@ export class VitrineClient {
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
 		this.playableGames.games = games;
 		this.renderPlayableGames();
+		if (this.playableGames.games.length)
+			this.updateGameUi(this.playableGames.games[0]);
 	}
 
 	private addPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
@@ -116,10 +118,14 @@ export class VitrineClient {
 	private removePlayableGame(event: Electron.Event, error: string, gameId: string) {
 		if (error)
 			throw new Error(error);
-		this.playableGames.removeGame(gameId, (error) => {
+		this.playableGames.removeGame(gameId, (error, game: PlayableGame, index: number) => {
 			if (error)
 				throw new Error(error);
 			this.renderPlayableGames();
+			if (this.playableGames.games.length)
+				this.updateGameUi(this.playableGames.games[index - 1]);
+			else
+				this.updateGameUi(null);
 		});
 	}
 
@@ -134,7 +140,7 @@ export class VitrineClient {
 
 	private renderPotentialGames() {
 		if (!this.potentialGames.games.length) {
-			$('#potential-games-area').html('');
+			$('#potential-games-area').clear();
 			return;
 		}
 		this.potentialGames.sort();
@@ -149,7 +155,7 @@ export class VitrineClient {
 			if (counter % 4 === 0 || counter === this.potentialGames.games.length) {
 				gamesListHtml += '</div>';
 				if (counter === this.potentialGames.games.length) {
-					$('#add-games-modal').find('.modal-body').html('').html(gamesListHtml);
+					$('#add-games-modal').find('.modal-body').clear().html(gamesListHtml);
 					let buttonHtml: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
 						languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
 						'</button>';
@@ -162,44 +168,36 @@ export class VitrineClient {
 	}
 
 	private renderPlayableGames() {
-		$('#playable-games-list').html('');
+		$('#playable-games-list').clear();
 
 		this.playableGames.sort();
-		let counter: number = 0;
 		this.playableGames.forEach((playableGame: PlayableGame) => {
-			let gameLi: JQuery = $('<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>');
-			gameLi.dblclick(() => {
+			let gameLiHtml: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
+			let self: VitrineClient = this;
+			let gameLi: JQuery = $(gameLiHtml).click(function() {
+				self.playableGames.getGame(playableGame.uuid, (error, game) => {
+					if (error)
+						throw new Error(error);
+					if (self.clickedGame && self.clickedGame.uuid === playableGame.uuid)
+						return;
+					self.updateGameUi(game);
+				});
+			}).dblclick(() => {
 				ipcRenderer.send('client.launch-game', playableGame.uuid);
 			});
 			$('#playable-games-list').append(gameLi);
-			counter++;
-			if (counter === this.playableGames.games.length)
-				this.eventPlayableGames();
-		});
-	}
-
-	private eventPlayableGames() {
-		$('li.play-game-link[game-id]').each((index, value) => {
-			$(value).click(() => {
-				let gameId: string = $(value).attr('game-id');
-				this.playableGames.getGame(gameId, (error, game) => {
-					if (error)
-						throw new Error(error);
-					if (this.clickedGame && this.clickedGame.uuid === gameId)
-						return;
-					if (this.clickedGame)
-						$('li.play-game-link[game-id=' + this.clickedGame.uuid + ']').removeClass('selected-game');
-					$(value).addClass('selected-game');
-					this.updateGameUi(game);
-					this.clickedGame = game;
-				});
-			});
 		});
 	}
 
 	private updateGameUi(game: PlayableGame) {
-		let gameCover: string = 'url(' + game.details.cover.split('\\').join('\\\\') + ')';
-		let gameBgScreen: string = 'url(' + game.details.backgroundScreen.split('\\').join('\\\\') + ')';
+		if (!game) {
+			console.log('no more games');
+			return;
+		}
+		$('li.play-game-link').removeClass('selected-game');
+		$('li.play-game-link[game-id="' + game.uuid + '"]').addClass('selected-game');
+		let gameCover: string = 'url(' + game.details.cover.replace(/\\g/,'\\\\') + ')';
+		let gameBgScreen: string = 'url(' + game.details.backgroundScreen.replace(/\\g/,'\\\\') + ')';
 
 		$('#game-title').html(game.name);
 		$('#game-play').addClass('game-infos-visible').find('button').off('click').click(() => {
@@ -219,5 +217,6 @@ export class VitrineClient {
 		}).parent().updateBlurClickCallback(() => {
 			ipcRenderer.send('client.launch-game', game.uuid);
 		});
+		this.clickedGame = game;
 	}
 }

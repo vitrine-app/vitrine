@@ -11,6 +11,9 @@ function openDialog(options: any) {
 
 export function extendJQuery() {
 	$.fn.extend({
+		clear() {
+			return this.html('');
+		},
 		beforeCss(selector: string, props: object) {
 			$('head style').remove();
 			let rawStyling: string = '';

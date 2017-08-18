@@ -46,11 +46,11 @@ export class GamesCollection<T> {
 				found = true;
 				let index: number = this._games.indexOf(game);
 				this._games.splice(index, 1);
-				callback(null, game);
+				callback(null, game, index);
 			}
 			counter++;
 			if (counter === this._games.length && !found)
-				callback('Game not found.', null);
+				callback('Game not found.', null, null);
 
 		});
 	}

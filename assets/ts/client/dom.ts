@@ -38,7 +38,7 @@ function registerAddGameForm() {
 		let cover: string = openImageDialog();
 		if (cover) {
 			cover = 'file://' + cover;
-			let gameCover: string = 'url(' + cover.split('\\').join('\\\\') + ')';
+			let gameCover: string = 'url(' + cover.replace(/\\g/,'\\\\') + ')';
 			this.find('.image').css({
 				'background-image': gameCover
 			});
@@ -87,7 +87,7 @@ function registerAddGameForm() {
 	});
 
 	$('#add-game-modal').on('hidden.bs.modal', () => {
-		$('#add-game-cover').html('');
+		$('#add-game-cover').clear();
 		formSelector.find('input[name=name]').val('');
 		formSelector.find('input[name=series]').val('');
 		formSelector.find('input[name=developer]').val('');
@@ -103,7 +103,7 @@ function registerAddGameForm() {
 
 		$('#fill-with-igdb-btn').prop('disabled', true);
 		$('#add-game-submit-btn').prop('disabled', true);
-		$('#background-picker').html('');
+		$('#background-picker').clear();
 	});
 
 	$('#add-custom-background-btn').click((event) => {
