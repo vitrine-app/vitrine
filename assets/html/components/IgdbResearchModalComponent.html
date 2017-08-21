@@ -1,0 +1,31 @@
+<div id="igdb-research-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ fillWithIGDB }}</h4>
+			</div>
+			<div class="modal-body">
+				<form id="igdb-research-form">
+					<div class="row">
+						<div class="form-group col-md-8">
+							<label>{{ gameName }}</label>
+							<input class="form-control" name="name" placeholder="{{ gameName }}">
+						</div>
+						<div class="form-group col-md-3">
+							<label>Results number</label>
+							<input type="number" class="form-control" name="results" min="1" max="20" value="5" placeholder="Results number">
+						</div>
+						<div id="igdb-research-btn-div" class="col-md-1">
+							<button id="igdb-new-research-btn" class="btn btn-primary"><i class="fa fa-search"></i></button>
+						</div>
+					</div>
+					<div id="igdb-researches-list"></div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button id="submit-igdb-research-btn" class="btn btn-primary" disabled>{{ submitNewGame }}</button>
+			</div>
+		</div>
+	</div>
+</div>

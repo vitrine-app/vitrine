@@ -8,7 +8,7 @@ function registerModalOverlay() {
 	$(document).on('show.bs.modal', '.modal', function() {
 		let zIndex = 1040 + (10 * $('.modal:visible').length);
 		$(this).css('z-index', zIndex);
-		setTimeout(function() {
+		setTimeout(() => {
 			$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
 		}, 0);
 	});
@@ -68,7 +68,8 @@ function registerAddGameForm() {
 
 		let gameName: any = $('#add-game-form').find('input[name=name]').val();
 		$('#fill-with-igdb-btn').loading();
-		ipcRenderer.send('client.fill-igdb-game', gameName);
+		$('#igdb-research-form').find('input[name=name]').val(gameName);
+		ipcRenderer.send('client.search-igdb-games', gameName);
 	});
 
 	$('#add-game-executable-btn').click(() => {
@@ -129,6 +130,20 @@ function registerAddGameForm() {
 	});
 }
 
+function registerIgdbResearchForm() {
+	$('#igdb-new-research-btn').click(function(event) {
+		event.preventDefault();
+
+		let formSelector: JQuery = $('#igdb-research-form');
+		let research: any = formSelector.find('input[name=name]').val();
+		let resultsNbStr: any = formSelector.find('input[name=results]').val();
+		let resultsNb: number = parseInt(resultsNbStr);
+		ipcRenderer.send('client.search-igdb-games', research, resultsNb);
+		$(this).loading();
+		$('#submit-igdb-research-btn').prop('disabled', true);
+	});
+}
+
 function registerContextMenu() {
 	(<any>$).contextMenu({
 		selector: '.games-list li.play-game-link',
@@ -157,6 +172,7 @@ export function launchDom() {
 	registerModalOverlay();
 	registerGameCover();
 	registerAddGameForm();
+	registerIgdbResearchForm();
 	registerContextMenu();
 
 	$('input[type=number]').each(function() {

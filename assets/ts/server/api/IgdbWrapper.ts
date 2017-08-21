@@ -6,7 +6,6 @@ import {levenshteinDistanceCmp, nameArray} from '../helpers';
 class IgdbWrapper {
 	private apiKey: string;
 	private client: any;
-	private operating: boolean;
 	private levenshteinRefiner: number;
 	private callback: any;
 	private game: any;
@@ -14,7 +13,6 @@ class IgdbWrapper {
 	constructor() {
 		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
 		this.client = igdb.default(this.apiKey);
-		this.operating = false;
 		this.levenshteinRefiner = 5;
 
 		this.game = null;
@@ -22,7 +20,6 @@ class IgdbWrapper {
 	}
 
 	public getGame(name: string, callback: Function) {
-		this.operating = true;
 		this.refinerSwitch(name);
 		this.client.games({
 			limit: this.levenshteinRefiner,
@@ -43,9 +40,27 @@ class IgdbWrapper {
 
 			});
 		}).catch((error) => {
-			if (error) {
+			if (error)
 				callback(error, null);
-			}
+		});
+	}
+
+	public searchGames(name: string, callback: Function, resultsNb?: number) {
+		this.client.games({
+			limit: (resultsNb) ? (resultsNb) : (this.levenshteinRefiner),
+			search: name
+		}, ['name', 'cover']).then((response) => {
+			let counter: number = 0;
+			response.body.forEach((game: any) => {
+				if (game.cover)
+					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small');
+				counter++;
+				if (counter === response.body.length)
+					callback(null, response.body);
+			});
+		}).catch((error) => {
+			if (error)
+				callback(error, null);
 		});
 	}
 
@@ -174,11 +189,10 @@ class IgdbWrapper {
 		this.game.genres = genresArray;
 
 		this.callback(null, this.game);
-		this.operating = false;
 	}
 }
 
-export function getIgdbWrapper(gameName: string) {
+export function getIgdbWrapperFiller(gameName: string) {
 	return new Promise((resolve, reject) => {
 		new IgdbWrapper().getGame(gameName, (error, game) => {
 			if (error)
@@ -186,5 +200,16 @@ export function getIgdbWrapper(gameName: string) {
 			else
 				resolve(game);
 		});
+	});
+}
+
+export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number) {
+	return new Promise((resolve, reject) => {
+		new IgdbWrapper().searchGames(gameName,(error, game) => {
+			if (error)
+				reject(error);
+			else
+				resolve(game);
+		}, resultsNb);
 	});
 }
