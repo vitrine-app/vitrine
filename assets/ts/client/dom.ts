@@ -141,6 +141,16 @@ function registerIgdbResearchForm() {
 		ipcRenderer.send('client.search-igdb-games', research, resultsNb);
 		$(this).loading();
 		$('#submit-igdb-research-btn').prop('disabled', true);
+		formSelector.find('input[name=game-id]').val('');
+	});
+
+	$('#submit-igdb-research-btn').click(function(event) {
+		event.preventDefault();
+
+		let gameIdStr: any = $('#igdb-research-form').find('input[name=game-id]').val();
+		let gameId: number = parseInt(gameIdStr);
+		$(this).loading();
+		ipcRenderer.send('client.fill-igdb-game', gameId);
 	});
 }
 

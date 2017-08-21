@@ -19,7 +19,7 @@ class IgdbWrapper {
 		this.callback = null;
 	}
 
-	public getGame(name: string, callback: Function) {
+	/*public getGame(name: string, callback: Function) {
 		this.refinerSwitch(name);
 		this.client.games({
 			limit: this.levenshteinRefiner,
@@ -43,6 +43,30 @@ class IgdbWrapper {
 			if (error)
 				callback(error, null);
 		});
+	}*/
+
+	public findGameById(id: number, callback: Function) {
+		this.client.games({
+			ids: [id]
+		}, [
+			'name',
+			'summary',
+			'collection',
+			'total_rating',
+			'developers',
+			'publishers',
+			'genres',
+			'first_release_date',
+			'screenshots',
+			'cover'
+		]).then((response) => {
+			this.game = response.body[0];
+			this.callback = callback;
+			this.basicFormatting();
+			this.findCompanyById(this.game.developers, this.addDeveloperCallback.bind(this));
+		}).catch((error) => {
+			callback(error, null);
+		});
 	}
 
 	public searchGames(name: string, callback: Function, resultsNb?: number) {
@@ -54,6 +78,8 @@ class IgdbWrapper {
 			response.body.forEach((game: any) => {
 				if (game.cover)
 					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small');
+				else // TODO: Change default image
+					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small/nocover_qhhlj6.jpg';
 				counter++;
 				if (counter === response.body.length)
 					callback(null, response.body);
@@ -62,17 +88,6 @@ class IgdbWrapper {
 			if (error)
 				callback(error, null);
 		});
-	}
-
-	private refinerSwitch(name: string) {
-		if (name === 'Magicka')
-			this.levenshteinRefiner = 13;
-		else if (name === 'Sanctum')
-			this.levenshteinRefiner = 11;
-		else if (name === 'Assassin\'s Creed')
-			this.levenshteinRefiner = 7;
-		else if (name === 'Warframe')
-			this.levenshteinRefiner = 6;
 	}
 
 	private basicFormatting() {
@@ -96,28 +111,6 @@ class IgdbWrapper {
 		}
 		else
 			this.game.screenshots = [];
-	}
-
-	private findGameById(id: number, callback: Function) {
-		this.client.games({
-			ids: [id]
-		}, [
-			'name',
-			'summary',
-			'collection',
-			'total_rating',
-			'developers',
-			'publishers',
-			'genres',
-			'first_release_date',
-			'screenshots',
-			'cover'
-		]).then((response) => {
-			let firstGame = response.body[0];
-			callback(null, firstGame);
-		}).catch((error) => {
-			callback(error, null);
-		});
 	}
 
 	private findCompanyById(array: number[], callback: Function) {
@@ -192,9 +185,9 @@ class IgdbWrapper {
 	}
 }
 
-export function getIgdbWrapperFiller(gameName: string) {
+export function getIgdbWrapperFiller(gameId: number) {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper().getGame(gameName, (error, game) => {
+		new IgdbWrapper().findGameById(gameId, (error, game) => {
 			if (error)
 				reject(error);
 			else

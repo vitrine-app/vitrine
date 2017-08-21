@@ -81,8 +81,8 @@ export class Vitrine {
 		});
 	}
 
-	private fillIgdbGame(event: Electron.Event, gameName: string) {
-		getIgdbWrapperFiller(gameName).then((game) => {
+	private fillIgdbGame(event: Electron.Event, gameId: number) {
+		getIgdbWrapperFiller(gameId).then((game) => {
 			event.sender.send('server.send-igdb-game', null, game);
 		}).catch((error) => {
 			event.sender.send('server.send-igdb-game', error, null);

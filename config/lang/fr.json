@@ -9,7 +9,7 @@
   "removeGame": "Supprimer le jeu",
   "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
   "addGameLabel": "Ajouter un jeu",
-  "fillWithIGDB": "Remplir avec IGDB",
+  "fillWithIgdb": "Remplir les détails",
   "submitNewGame": "Ajouter",
   "gameName": "Nom du jeu",
   "gamesSeries": "Série de jeux",
@@ -32,5 +32,6 @@
   "minutesPlur": "minutes",
   "minutesSing": "minute",
   "secondsPlur": "secondes",
-  "secondsSing": "seconde"
+  "secondsSing": "seconde",
+  "resultsNumber": "Résultats"
 }

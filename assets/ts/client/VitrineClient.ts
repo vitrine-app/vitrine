@@ -49,7 +49,9 @@ export class VitrineClient {
 	private getIgdbGame(event: Electron.Event, error: string, game: any) {
 		if (error)
 			throw new Error(error);
-		$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
+		$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIgdb'));
+		$('#submit-igdb-research-btn').html(languageInstance.replaceJs('submitNewGame'));
+		$('#igdb-research-modal').modal('hide');
 
 		let formSelector = $('#add-game-form');
 
@@ -98,13 +100,14 @@ export class VitrineClient {
 				listSelector.find('div.row').removeClass('selected-igdb-research');
 				$(this).addClass('selected-igdb-research');
 				$('#submit-igdb-research-btn').prop('disabled', false);
+				$('#igdb-research-form').find('input[name=game-id]').val(game.id);
 			});
 			listSelector.append(researchRow);
 			counter++;
 			if (counter === games.length) {
 				if (!$('#igdb-research-modal').is(':visible'))
 					$('#igdb-research-modal').modal('show');
-				$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIGDB'));
+				$('#fill-with-igdb-btn').html(languageInstance.replaceJs('fillWithIgdb'));
 				$('#igdb-new-research-btn').html('<i class="fa fa-search"></i>');
 			}
 		});
@@ -138,7 +141,6 @@ export class VitrineClient {
 			$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
 		}
 		this.playableGames.addGame(playableGame);
-		console.log(this.playableGames);
 		this.renderPlayableGames();
 	}
 
