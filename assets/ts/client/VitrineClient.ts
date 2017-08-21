@@ -5,7 +5,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
-import { formatTimePlayed } from './helpers';
+import {formatTimePlayed, urlify} from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -76,9 +76,8 @@ export class VitrineClient {
 				formSelector.find('input[name=background]').val(screenshot);
 		});
 
-		let gameCover: string = 'url(' + game.cover.replace(/\\g/,'\\\\') + ')';
 		$('#add-game-cover').find('.image').css({
-			'background-image': gameCover
+			'background-image': urlify(game.cover)
 		});
 		formSelector.find('input[name=cover]').val(game.cover);
 	}
@@ -196,8 +195,6 @@ export class VitrineClient {
 		}
 		$('li.play-game-link').removeClass('selected-game');
 		$('li.play-game-link[game-id="' + game.uuid + '"]').addClass('selected-game');
-		let gameCover: string = 'url(' + game.details.cover.replace(/\\g/,'\\\\') + ')';
-		let gameBgScreen: string = 'url(' + game.details.backgroundScreen.replace(/\\g/,'\\\\') + ')';
 
 		$('#game-title').html(game.name);
 		$('#game-play').addClass('game-infos-visible').find('button').off('click').click(() => {
@@ -208,12 +205,12 @@ export class VitrineClient {
 		$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
 
 		$('#game-background').beforeCss('#game-background', {
-			'background-image': gameBgScreen
+			'background-image': urlify(game.details.backgroundScreen)
 		});
 		$('#selected-game-cover').css({
 			'display': 'block'
 		}).find('.image').css({
-			'background-image': gameCover
+			'background-image': urlify(game.details.cover)
 		}).parent().updateBlurClickCallback(() => {
 			ipcRenderer.send('client.launch-game', game.uuid);
 		});

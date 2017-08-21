@@ -185,3 +185,7 @@ export function openImageDialog() {
 		]
 	});
 }
+
+export function urlify(imgPath: string) {
+	return 'url(' + imgPath.replace(/\\/g, '\\\\') + ')';
+}

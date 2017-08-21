@@ -28,7 +28,7 @@ class GameLauncher {
 
 	private launchStandardGame(callback: Function) {
 		let beginTime: Date = new Date();
-		let gameProcess = execFile(this.scriptPath, this.game.commandLine, (error) => {
+		let gameProcess = execFile(this.scriptPath, this.game.commandLine, null,(error) => {
 			if (error)
 				callback(error, null);
 		});
@@ -40,17 +40,17 @@ class GameLauncher {
 	}
 
 	private launchSteamGame(callback: Function) {
-		let inWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
+		let inWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], null,(error) => {
 			if (error)
 				callback(error, null);
 		});
-		execFile(this.scriptPath, this.game.commandLine, (error) => {
+		execFile(this.scriptPath, this.game.commandLine, null, (error) => {
 			if (error)
 				callback(error, null);
 		});
 		inWatcherProcess.on('exit', () => {
 			let beginTime: Date = new Date();
-			let outWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
+			let outWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], null, (error) => {
 				if (error)
 					callback(error, null);
 			});

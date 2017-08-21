@@ -52,7 +52,7 @@
     "@types/glob": "^5.0.31",
     "@types/jquery": "^3.2.11",
     "@types/jquery.contextmenu": "^1.7.32",
-    "@types/node": "^8.0.23",
+    "@types/node": "^8.0.24",
     "@types/rimraf": "0.0.28",
     "@types/uuid": "^3.4.0",
     "animate.sass": "^1.0.1",
@@ -60,13 +60,13 @@
     "bootstrap-sass": "^3.3.7",
     "cheerio": "^1.0.0-rc.2",
     "electron": "^1.7.6",
-    "electron-builder": "^19.21.0",
+    "electron-builder": "^19.24.1",
     "font-awesome": "^4.7.0",
     "html-minifier": "^3.5.3",
     "node-sass-chokidar": "0.0.3",
     "parallel-webpack": "^2.1.0",
-    "typescript": "^2.4.2",
-    "webpack": "^3.5.4"
+    "typescript": "^2.5.1",
+    "webpack": "^3.5.5"
   },
   "scripts": {
     "build-html": "node scripts\\htmlCompiler.js assets\\html\\main.html public\\main.html && node scripts\\htmlCompiler.js assets\\html\\loading.html public\\loading.html",

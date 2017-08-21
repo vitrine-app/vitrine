@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from 'electron';
 import * as formToObject from 'form-to-object';
 
 import { languageInstance } from './Language';
-import { extendJQuery, openExecutableDialog, openImageDialog } from './helpers';
+import {extendJQuery, openExecutableDialog, openImageDialog, urlify} from './helpers';
 
 function registerModalOverlay() {
 	$(document).on('show.bs.modal', '.modal', function() {
@@ -38,9 +38,8 @@ function registerAddGameForm() {
 		let cover: string = openImageDialog();
 		if (cover) {
 			cover = 'file://' + cover;
-			let gameCover: string = 'url(' + cover.replace(/\\g/,'\\\\') + ')';
 			this.find('.image').css({
-				'background-image': gameCover
+				'background-image': urlify(cover)
 			});
 			formSelector.find('input[name=cover]').val(cover);
 		}
