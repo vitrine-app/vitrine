@@ -1,5 +1,7 @@
 {
   "welcomeMessage": "Bienvenue sur %1 !",
+  "play": "Jouer",
+  "timePlayed": "Temps de jeu :",
   "addGame": "Ajouter %1",
   "getGame": "Récupérer le jeu",
   "loading": "Chargement...",
@@ -7,7 +9,7 @@
   "removeGame": "Supprimer le jeu",
   "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
   "addGameLabel": "Ajouter un jeu",
-  "fillWithIGDB": "Remplir avec IGDB",
+  "fillWithIgdb": "Remplir les détails",
   "submitNewGame": "Ajouter",
   "gameName": "Nom du jeu",
   "gamesSeries": "Série de jeux",
@@ -19,7 +21,10 @@
   "summary": "Description",
   "executable": "Programme",
   "lineArguments": "Arguments de la ligne de commande",
+  "backgroundImage": "Image de fond",
+  "addCustomBgImage": "Image de fond personnalisée",
   "executables": "Programmes",
+  "images": "Images",
   "allFiles": "Tous les fichiers",
   "error": "Une erreur est survenue :",
   "hoursPlur": "heures",
@@ -27,5 +32,6 @@
   "minutesPlur": "minutes",
   "minutesSing": "minute",
   "secondsPlur": "secondes",
-  "secondsSing": "seconde"
+  "secondsSing": "seconde",
+  "resultsNumber": "Résultats"
 }

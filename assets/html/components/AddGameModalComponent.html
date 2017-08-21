@@ -7,7 +7,12 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-					<div id="add-game-cover" class="col-md-2"></div>
+					<div class="col-md-2">
+						<div id="add-game-cover">
+							<div class="image"></div>
+							<i class="fa fa-folder-open-o icon animated"></i>
+						</div>
+					</div>
 					<div class="col-md-7 col-md-offset-1">
 						<form id="add-game-form">
 							<div class="form-group">
@@ -64,6 +69,14 @@
 								<label>{{ lineArguments }}</label>
 								<input class="form-control" name="arguments" placeholder="{{ lineArguments }}">
 							</div>
+							<hr>
+							<div class="form-group">
+								<label>{{ backgroundImage }}</label>
+								<button id="add-custom-background-btn" class="btn btn-primary">
+									<i class="fa fa-plus"></i> {{ addCustomBgImage }}
+								</button>
+								<div id="background-picker"></div>
+							</div>
 							<input name="cover" hidden>
 							<input name="background" hidden>
 						</form>
@@ -71,7 +84,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="fill-with-igdb-btn" class="btn btn-primary" disabled>{{ fillWithIGDB }}</button>
+				<button id="fill-with-igdb-btn" class="btn btn-primary" disabled>{{ fillWithIgdb }}</button>
 				<button id="add-game-submit-btn" class="btn btn-primary" disabled>{{ submitNewGame }}</button>
 			</div>
 		</div>

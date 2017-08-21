@@ -5,11 +5,11 @@ import * as rimraf from 'rimraf';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
-import { PlayableGame } from '../models/PlayableGame';
+import { GameSource, PlayableGame} from '../models/PlayableGame';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
-import { getIgdbWrapper } from './api/IgdbWrapper';
+import {getIgdbWrapperFiller, getIgdbWrapperSearcher} from './api/IgdbWrapper';
 import { downloadFile, getEnvFolder, uuidV5 } from './helpers';
 
 export class Vitrine {
@@ -53,6 +53,7 @@ export class Vitrine {
 	public registerEvents() {
 		ipcMain.on('client.ready', this.ready.bind(this));
 		ipcMain.on('client.fill-igdb-game', this.fillIgdbGame.bind(this));
+		ipcMain.on('client.search-igdb-games', this.searchIgdbGames.bind(this));
 		ipcMain.on('client.add-game', this.addGame.bind(this));
 		ipcMain.on('client.add-game-manual', this.addGameManual.bind(this));
 		ipcMain.on('client.launch-game', this.launchGame.bind(this));
@@ -80,12 +81,20 @@ export class Vitrine {
 		});
 	}
 
-	private fillIgdbGame(event: Electron.Event, gameName: string) {
-		getIgdbWrapper(gameName).then((game) => {
+	private fillIgdbGame(event: Electron.Event, gameId: number) {
+		getIgdbWrapperFiller(gameId).then((game) => {
 			event.sender.send('server.send-igdb-game', null, game);
 		}).catch((error) => {
 			event.sender.send('server.send-igdb-game', error, null);
 		});
+	}
+
+	private searchIgdbGames(event: Electron.Event, gameName: string, resultsNb?: number) {
+		getIgdbWrapperSearcher(gameName, resultsNb).then((games: any) => {
+			event.sender.send('server.send-igdb-searches', null, games);
+		}).catch((error) => {
+			event.sender.send('server.send-igdb-searches', error, null);
+		})
 	}
 
 	private addGame(event: Electron.Event, gameId: string) {
@@ -93,6 +102,7 @@ export class Vitrine {
 			if (error)
 				return this.throwServerError(event, error);
 			let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
+			addedGame.source = GameSource.STEAM;
 			delete addedGame.details.id;
 			this.registerGame(event, addedGame);
 		});
@@ -102,6 +112,7 @@ export class Vitrine {
 		let gameName: string = gameForm.name;
 		let programName: string = gameForm.executable;
 		let game: PlayableGame = new PlayableGame(gameName, gameForm);
+		game.source = GameSource.LOCAL;
 
 		game.commandLine.push(programName);
 		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));

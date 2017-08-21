@@ -36,6 +36,7 @@ class PlayableGamesCrawler {
 					playableGame.uuid = rawGame.uuid;
 					playableGame.commandLine = rawGame.commandLine;
 					playableGame.timePlayed = parseInt(rawGame.timePlayed);
+					playableGame.source = rawGame.source;
 
 					this.playableGames.push(playableGame);
 				}

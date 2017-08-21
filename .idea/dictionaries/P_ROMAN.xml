@@ -2,8 +2,11 @@
   <dictionary name="P.ROMAN">
     <words>
       <w>bootstrapper</w>
+      <w>datepicker</w>
       <w>igdb</w>
       <w>levenshtein</w>
+      <w>rimraf</w>
+      <w>screenshot</w>
       <w>scroller</w>
     </words>
   </dictionary>

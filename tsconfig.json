@@ -19,7 +19,6 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types": ["node", "electron"],
     "paths": {
       "assets/ts/": ["assets/ts/"]
     }

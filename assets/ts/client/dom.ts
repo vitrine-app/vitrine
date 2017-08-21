@@ -2,13 +2,13 @@ import { ipcRenderer, remote } from 'electron';
 import * as formToObject from 'form-to-object';
 
 import { languageInstance } from './Language';
-import { extendJQuery } from './helpers';
+import {extendJQuery, openExecutableDialog, openImageDialog, urlify} from './helpers';
 
 function registerModalOverlay() {
 	$(document).on('show.bs.modal', '.modal', function() {
 		let zIndex = 1040 + (10 * $('.modal:visible').length);
 		$(this).css('z-index', zIndex);
-		setTimeout(function() {
+		setTimeout(() => {
 			$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
 		}, 0);
 	});
@@ -34,6 +34,16 @@ function registerGameCover() {
 
 function registerAddGameForm() {
 	let formSelector = $('#add-game-form');
+	$('#add-game-cover').blurPicture(55, function() {
+		let cover: string = openImageDialog();
+		if (cover) {
+			cover = 'file://' + cover;
+			this.find('.image').css({
+				'background-image': urlify(cover)
+			});
+			formSelector.find('input[name=cover]').val(cover);
+		}
+	});
 
 	formSelector.find('input[name=name]').on('input', function() {
 		if ($(this).val())
@@ -58,20 +68,14 @@ function registerAddGameForm() {
 
 		let gameName: any = $('#add-game-form').find('input[name=name]').val();
 		$('#fill-with-igdb-btn').loading();
-		ipcRenderer.send('client.fill-igdb-game', gameName);
+		$('#igdb-research-form').find('input[name=name]').val(gameName);
+		ipcRenderer.send('client.search-igdb-games', gameName);
 	});
 
 	$('#add-game-executable-btn').click(() => {
-		let dialogRet: string[] = remote.dialog.showOpenDialog({
-			properties: ['openFile'],
-			filters: [
-				{name: languageInstance.replaceJs('executables'), extensions: ['exe']},
-				{name: languageInstance.replaceJs('allFiles'), extensions: ['*']}
-			]
-		});
-		if (!dialogRet || !dialogRet.length)
-			return;
-		$('#add-game-form').find('input[name=executable]').val(dialogRet[0]);
+		let dialogRet: string = openExecutableDialog();
+		if (dialogRet)
+			$('#add-game-form').find('input[name=executable]').val(dialogRet);
 		if (formSelector.find('input[name=name]').val())
 			$('#add-game-submit-btn').prop('disabled', false);
 	});
@@ -83,7 +87,7 @@ function registerAddGameForm() {
 	});
 
 	$('#add-game-modal').on('hidden.bs.modal', () => {
-		$('#add-game-cover').html('');
+		$('#add-game-cover').clear();
 		formSelector.find('input[name=name]').val('');
 		formSelector.find('input[name=series]').val('');
 		formSelector.find('input[name=developer]').val('');
@@ -93,11 +97,60 @@ function registerAddGameForm() {
 		formSelector.find('input[name=rating]').val('');
 		formSelector.find('textarea[name=summary]').val('');
 		formSelector.find('input[name=executable]').val('');
+
 		formSelector.find('input[name=cover]').val('');
 		formSelector.find('input[name=background]').val('');
 
 		$('#fill-with-igdb-btn').prop('disabled', true);
 		$('#add-game-submit-btn').prop('disabled', true);
+		$('#background-picker').clear();
+	});
+
+	$('#add-custom-background-btn').click((event) => {
+		event.preventDefault();
+
+		let screenshot: string = openImageDialog();
+		if (screenshot) {
+			screenshot = 'file://' + screenshot;
+			let currentScreenshotHtml: string = '<img src="' + screenshot + '" class="selected-screenshot manual-screenshot">';
+			let currentScreenshot: JQuery = $(currentScreenshotHtml).click(function () {
+				$(this).parent().find('img.selected-screenshot').removeClass('selected-screenshot');
+				$(this).addClass('selected-screenshot');
+				formSelector.find('input[name=background]').val(screenshot);
+			});
+			$('#background-picker').find('img.selected-screenshot').removeClass('selected-screenshot');
+			formSelector.find('input[name=background]').val(screenshot);
+			if ($('#background-picker').find('.manual-screenshot').length) {
+				$('#background-picker').find('.manual-screenshot').replaceWith(currentScreenshot)
+			}
+			else {
+				$('#background-picker').prepend(currentScreenshot);
+			}
+		}
+	});
+}
+
+function registerIgdbResearchForm() {
+	$('#igdb-new-research-btn').click(function(event) {
+		event.preventDefault();
+
+		let formSelector: JQuery = $('#igdb-research-form');
+		let research: any = formSelector.find('input[name=name]').val();
+		let resultsNbStr: any = formSelector.find('input[name=results]').val();
+		let resultsNb: number = parseInt(resultsNbStr);
+		ipcRenderer.send('client.search-igdb-games', research, resultsNb);
+		$(this).loading();
+		$('#submit-igdb-research-btn').prop('disabled', true);
+		formSelector.find('input[name=game-id]').val('');
+	});
+
+	$('#submit-igdb-research-btn').click(function(event) {
+		event.preventDefault();
+
+		let gameIdStr: any = $('#igdb-research-form').find('input[name=game-id]').val();
+		let gameId: number = parseInt(gameIdStr);
+		$(this).loading();
+		ipcRenderer.send('client.fill-igdb-game', gameId);
 	});
 }
 
@@ -129,13 +182,12 @@ export function launchDom() {
 	registerModalOverlay();
 	registerGameCover();
 	registerAddGameForm();
+	registerIgdbResearchForm();
 	registerContextMenu();
 
 	$('input[type=number]').each(function() {
 		$(this).numberPicker();
 	});
 
-	$('#selected-game-cover').blurPicture(125, () => {
-		console.log('nutting');
-	});
+	$('#selected-game-cover').blurPicture(125, () => {}).hide();
 }

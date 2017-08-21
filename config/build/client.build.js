@@ -10,7 +10,7 @@ module.exports = {
 	resolve: {
 		extensions: ['.ts', '.js', '.json']
 	},
-	target: "electron-renderer",
+	target: 'electron-renderer',
 	module: {
 		loaders: [
 			{

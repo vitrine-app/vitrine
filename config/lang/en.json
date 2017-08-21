@@ -1,5 +1,7 @@
 {
   "welcomeMessage": "Welcome to %1!",
+  "play": "Play",
+  "timePlayed": "Time played:",
   "addGame": "Add %1",
   "getGame": "Get game",
   "loading": "Loading...",
@@ -7,7 +9,7 @@
   "removeGame": "Remove game",
   "potentialGamesAdd": "You can add %1 game(s)",
   "addGameLabel": "Add game",
-  "fillWithIGDB": "Fill with IGDB",
+  "fillWithIgdb": "Fill details",
   "submitNewGame": "Add",
   "gameName": "Game name",
   "gamesSeries": "Games series",
@@ -19,7 +21,10 @@
   "summary": "Summary",
   "executable": "Executable",
   "lineArguments": "Command line arguments",
+  "backgroundImage": "Background image",
+  "addCustomBgImage": "Custom background image",
   "executables": "Executables",
+  "images": "Images",
   "allFiles": "All files",
   "error": "An error occured:",
   "hoursPlur": "hours",
@@ -27,5 +32,6 @@
   "minutesPlur": "minutes",
   "minutesSing": "minute",
   "secondsPlur": "seconds",
-  "secondsSing": "second"
+  "secondsSing": "second",
+  "resultsNumber": "Results number"
 }

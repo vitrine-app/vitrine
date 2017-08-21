@@ -1,7 +1,7 @@
 import { execFile } from 'child_process';
 import * as path from 'path';
 
-import { PlayableGame } from '../models/PlayableGame';
+import { GameSource, PlayableGame } from '../models/PlayableGame';
 import { getEnvFolder } from './helpers';
 
 class GameLauncher {
@@ -14,15 +14,21 @@ class GameLauncher {
 	}
 
 	public launch(callback: Function) {
-		if (this.game.details.steamId)
-			this.launchSteamGame(callback);
-		else
-			this.launchStandardGame(callback);
+		switch (this.game.source) {
+			case GameSource.STEAM: {
+				this.launchSteamGame(callback);
+				break;
+			}
+			case GameSource.LOCAL: {
+				this.launchStandardGame(callback);
+				break;
+			}
+		}
 	}
 
 	private launchStandardGame(callback: Function) {
 		let beginTime: Date = new Date();
-		let gameProcess = execFile(this.scriptPath, this.game.commandLine, (error) => {
+		let gameProcess = execFile(this.scriptPath, this.game.commandLine, null,(error) => {
 			if (error)
 				callback(error, null);
 		});
@@ -34,17 +40,17 @@ class GameLauncher {
 	}
 
 	private launchSteamGame(callback: Function) {
-		let inWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
+		let inWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], null,(error) => {
 			if (error)
 				callback(error, null);
 		});
-		execFile(this.scriptPath, this.game.commandLine, (error) => {
+		execFile(this.scriptPath, this.game.commandLine, null, (error) => {
 			if (error)
 				callback(error, null);
 		});
 		inWatcherProcess.on('exit', () => {
 			let beginTime: Date = new Date();
-			let outWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], (error) => {
+			let outWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], null, (error) => {
 				if (error)
 					callback(error, null);
 			});

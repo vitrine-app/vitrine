@@ -4,8 +4,16 @@ import * as path from 'path';
 import { PotentialGame } from './PotentialGame';
 import { getEnvFolder } from '../server/helpers';
 
+export enum GameSource {
+	LOCAL,
+	STEAM,
+	BATTLE_NET,
+	ORIGIN
+}
+
 export class PlayableGame extends PotentialGame {
 	public timePlayed: number;
+	public source: GameSource;
 
 	constructor(name: string, details?: any) {
 		super(name, details);

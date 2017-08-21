@@ -6,7 +6,6 @@ import {levenshteinDistanceCmp, nameArray} from '../helpers';
 class IgdbWrapper {
 	private apiKey: string;
 	private client: any;
-	private operating: boolean;
 	private levenshteinRefiner: number;
 	private callback: any;
 	private game: any;
@@ -14,15 +13,13 @@ class IgdbWrapper {
 	constructor() {
 		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
 		this.client = igdb.default(this.apiKey);
-		this.operating = false;
 		this.levenshteinRefiner = 5;
 
 		this.game = null;
 		this.callback = null;
 	}
 
-	public getGame(name: string, callback: Function) {
-		this.operating = true;
+	/*public getGame(name: string, callback: Function) {
 		this.refinerSwitch(name);
 		this.client.games({
 			limit: this.levenshteinRefiner,
@@ -32,33 +29,65 @@ class IgdbWrapper {
 			let gameId: number = getClosest.custom(name, gamesNames, levenshteinDistanceCmp);
 
 			this.findGameById(response.body[gameId].id, (error, game) => {
-				if (error && !game) {
+				if (error && !game)
 					callback(error, null);
-				}
-
-				this.game = game;
-				this.callback = callback;
-
-				if (this.game) {
+				else {
+					this.game = game;
+					this.callback = callback;
 					this.basicFormatting();
 					this.findCompanyById(game.developers, this.addDeveloperCallback.bind(this));
 				}
+
 			});
 		}).catch((error) => {
 			if (error)
-				this.callback(error, null);
+				callback(error, null);
+		});
+	}*/
+
+	public findGameById(id: number, callback: Function) {
+		this.client.games({
+			ids: [id]
+		}, [
+			'name',
+			'summary',
+			'collection',
+			'total_rating',
+			'developers',
+			'publishers',
+			'genres',
+			'first_release_date',
+			'screenshots',
+			'cover'
+		]).then((response) => {
+			this.game = response.body[0];
+			this.callback = callback;
+			this.basicFormatting();
+			this.findCompanyById(this.game.developers, this.addDeveloperCallback.bind(this));
+		}).catch((error) => {
+			callback(error, null);
 		});
 	}
 
-	private refinerSwitch(name: string) {
-		if (name === 'Magicka')
-			this.levenshteinRefiner = 13;
-		else if (name === 'Sanctum')
-			this.levenshteinRefiner = 11;
-		else if (name === 'Assassin\'s Creed')
-			this.levenshteinRefiner = 7;
-		else if (name === 'Warframe')
-			this.levenshteinRefiner = 6;
+	public searchGames(name: string, callback: Function, resultsNb?: number) {
+		this.client.games({
+			limit: (resultsNb) ? (resultsNb) : (this.levenshteinRefiner),
+			search: name
+		}, ['name', 'cover']).then((response) => {
+			let counter: number = 0;
+			response.body.forEach((game: any) => {
+				if (game.cover)
+					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small');
+				else // TODO: Change default image
+					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small/nocover_qhhlj6.jpg';
+				counter++;
+				if (counter === response.body.length)
+					callback(null, response.body);
+			});
+		}).catch((error) => {
+			if (error)
+				callback(error, null);
+		});
 	}
 
 	private basicFormatting() {
@@ -82,28 +111,6 @@ class IgdbWrapper {
 		}
 		else
 			this.game.screenshots = [];
-	}
-
-	private findGameById(id: number, callback: Function) {
-		this.client.games({
-			ids: [id]
-		}, [
-			'name',
-			'summary',
-			'collection',
-			'total_rating',
-			'developers',
-			'publishers',
-			'genres',
-			'first_release_date',
-			'screenshots',
-			'cover'
-		]).then((response) => {
-			let firstGame = response.body[0];
-			callback(null, firstGame);
-		}).catch((error) => {
-			callback(error, null);
-		});
 	}
 
 	private findCompanyById(array: number[], callback: Function) {
@@ -175,17 +182,27 @@ class IgdbWrapper {
 		this.game.genres = genresArray;
 
 		this.callback(null, this.game);
-		this.operating = false;
 	}
 }
 
-export function getIgdbWrapper(gameName: string) {
+export function getIgdbWrapperFiller(gameId: number) {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper().getGame(gameName, (error, game) => {
+		new IgdbWrapper().findGameById(gameId, (error, game) => {
 			if (error)
 				reject(error);
 			else
 				resolve(game);
 		});
+	});
+}
+
+export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number) {
+	return new Promise((resolve, reject) => {
+		new IgdbWrapper().searchGames(gameName,(error, game) => {
+			if (error)
+				reject(error);
+			else
+				resolve(game);
+		}, resultsNb);
 	});
 }
