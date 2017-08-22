@@ -15,19 +15,19 @@ export function uuidV5(name: string) {
 
 export function downloadFile(url: string, path: string, isHttps: boolean, callback: Function) {
 	if (!url) {
-		callback();
+		callback(false);
 		return;
 	}
 	let file = fs.createWriteStream(path);
 	if (url.startsWith('file://')) {
 		fs.createReadStream(url.substr(7)).pipe(file);
-		callback();
+		callback(true);
 	}
 	else {
 		let protocol: any = (isHttps) ? (https) : (http);
 		protocol.get(url, (response) => {
 			response.pipe(file);
-			callback();
+			callback(true);
 		});
 	}
 }

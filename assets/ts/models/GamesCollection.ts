@@ -60,9 +60,13 @@ export class GamesCollection<T> {
 			(<any>this._games).sort(alphabeticSort);
 	}
 
-	public forEach(callback: Function) {
-		this._games.forEach(function(game: any) {
-			callback(game);
+	public forEach(loopCallBack: Function, endCallBack?: Function) {
+		let counter: number = 0;
+		this._games.forEach((game: any) => {
+			loopCallBack(game);
+			counter++;
+			if (counter === this._games.length && endCallBack)
+				endCallBack();
 		})
 	}
 }
