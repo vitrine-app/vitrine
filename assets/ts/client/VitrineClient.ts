@@ -5,7 +5,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
-import {formatTimePlayed, urlify} from './helpers';
+import { formatTimePlayed, urlify } from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;

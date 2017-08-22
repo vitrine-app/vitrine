@@ -177,7 +177,8 @@ export class VitrineServer {
 			minWidth: width,
 			minHeight: height,
 			icon: this.iconPath,
-			show: false
+			show: false,
+			frame: false
 		});
 
 		this.windowsList.mainWindow.setMenu(null);

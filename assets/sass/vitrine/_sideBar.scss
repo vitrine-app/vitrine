@@ -1,5 +1,5 @@
 #sidebar-container {
-	height: 100%;
+	height: 97%;
 	padding: 0;
 	position: absolute;
 	background-color: $body-bg;
@@ -10,7 +10,9 @@
 
 		#potential-games-area {
 			text-align: center;
-			padding: 20px;
+			#add-potential-games-btn {
+				margin: 20px;
+			}
 		}
 
 		hr {
