@@ -33,7 +33,7 @@ export class VitrineServer {
 	}
 
 	public run(devTools?: boolean) {
-		if (devTools && !getEnvData().env)
+		if (devTools/* && !getEnvData().env*/)
 			this.devTools = devTools;
 
 		app.on('ready', () => {

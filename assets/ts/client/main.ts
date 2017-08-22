@@ -1,7 +1,7 @@
 import * as jQuery from 'jquery';
 (<any>window).jQuery = (<any>window).$ = jQuery;
 import 'bootstrap-sass';
-import 'electron-titlebar';
+import 'electron-titlebar-absolute';
 import 'bootstrap-datepicker';
 import 'jquery-contextmenu';
 
