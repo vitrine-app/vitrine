@@ -6,10 +6,20 @@
   "author": "Paul Roman",
   "license": "MIT",
   "build": {
-    "appId": "com.vitrine",
+    "appId": "com.github.paul-roman.vitrine",
     "productName": "Vitrine",
     "win": {
       "target": "nsis"
+    },
+    "nsis": {
+      "artifactName": "${productName}_${version}_Setup.${ext}",
+      "multiLanguageInstaller": true,
+      "publish": {
+        "provider": "github",
+        "owner": "paul-roman",
+        "repo": "vitrine",
+        "vPrefixedTagName": true
+      }
     },
     "files": [
       "!.circleci",
@@ -24,7 +34,7 @@
     "extraResources": [
       "games",
       "config",
-      "scripts"
+      "scripts\\*.exe"
     ],
     "extraMetadata": {
       "env": "prod"
@@ -82,6 +92,6 @@
     "run-style-electron": "npm run build-css && electron .",
     "test": "echo \"Error: no test specified\" && exit 0",
     "pack": "webpack && npm run build-prod && build --dir",
-    "dist": "webpack && npm run build-prod && build --publish onTagOrDraft"
+    "release": "webpack && npm run build-prod && build --publish always"
   }
 }

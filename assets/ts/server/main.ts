@@ -1,6 +1,6 @@
-import { Vitrine } from './Vitrine';
+import { VitrineServer } from './VitrineServer';
 
-let vitrineApp = new Vitrine();
-vitrineApp.registerEvents();
+let vitrineServer = new VitrineServer();
+vitrineServer.registerEvents();
 
-vitrineApp.run(true);
+vitrineServer.run(true);
