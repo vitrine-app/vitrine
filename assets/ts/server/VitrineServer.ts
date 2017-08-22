@@ -10,9 +10,10 @@ import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import {getIgdbWrapperFiller, getIgdbWrapperSearcher} from './api/IgdbWrapper';
+import { getEnvData } from '../models/env';
 import { downloadFile, getEnvFolder, uuidV5 } from './helpers';
 
-export class Vitrine {
+export class VitrineServer {
 	private windowsList;
 	private mainEntryPoint: string;
 	private loadingEntryPoint: string;
@@ -26,13 +27,13 @@ export class Vitrine {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
-		this.iconPath = path.resolve(__dirname, '../build/icon.png');
+		this.iconPath = path.resolve(__dirname, '../build/icon.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
 	}
 
 	public run(devTools?: boolean) {
-		if (devTools)
+		if (devTools && !getEnvData().env)
 			this.devTools = devTools;
 
 		app.on('ready', () => {

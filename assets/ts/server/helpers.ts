@@ -5,9 +5,7 @@ import * as path from 'path';
 import * as uuid from 'uuid/v5';
 import * as Levenshtein from 'levenshtein';
 
-import * as data from '../../../package.json';
-
-let isEnvProd: boolean = ((<any>data).env) ? (true) : (false);
+import { getEnvData } from '../models/env';
 
 export function uuidV5(name: string) {
 	let dnsNamespace: string = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
@@ -35,7 +33,7 @@ export function downloadFile(url: string, path: string, isHttps: boolean, callba
 }
 
 export function getEnvFolder(folder: string) {
-	return path.resolve(__dirname, (isEnvProd) ? ('../../' + folder) : ('../' + folder));
+	return path.resolve(__dirname, (getEnvData().env) ? ('../../' + folder) : ('../' + folder));
 }
 
 export function nameArray(array: any[]) {
