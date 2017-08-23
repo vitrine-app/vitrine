@@ -10,8 +10,8 @@ import { GameSource, PlayableGame} from '../models/PlayableGame';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
-import {getIgdbWrapperFiller, getIgdbWrapperSearcher} from './api/IgdbWrapper';
-import { downloadFile, getEnvFolder, uuidV5 } from './helpers';
+import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
+import { downloadFile, getEnvFolder, getGamesFolder, uuidV5 } from './helpers';
 
 export class VitrineServer {
 	private windowsList;
@@ -33,7 +33,7 @@ export class VitrineServer {
 	}
 
 	public run(devTools?: boolean) {
-		if (devTools/* && !getEnvData().env*/)
+		if (devTools)
 			this.devTools = devTools;
 
 		app.on('ready', () => {
@@ -170,7 +170,7 @@ export class VitrineServer {
 
 	private removeGame(event: Electron.Event, gameId: string) {
 		this.playableGames.removeGame(gameId, (error) => {
-			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
+			let gameDirectory: string = path.resolve(getGamesFolder(), gameId);
 			rimraf(gameDirectory, () => {
 				event.sender.send('server.remove-playable-game', error, gameId);
 			});
@@ -210,7 +210,7 @@ export class VitrineServer {
 	}
 
 	private registerGame(event: any, game: PlayableGame) {
-		let gameDirectory = path.resolve(getEnvFolder('games'), game.uuid);
+		let gameDirectory = path.resolve(getGamesFolder(), game.uuid);
 		let configFilePath = path.resolve(gameDirectory, 'config.json');
 
 		if (fs.existsSync(configFilePath))

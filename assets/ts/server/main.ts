@@ -1,6 +1,7 @@
+import { VitrinePipeline } from './VitrinePipeline';
 import { VitrineServer } from './VitrineServer';
 
-let vitrineServer = new VitrineServer();
-vitrineServer.registerEvents();
+let serverInstance: VitrineServer = new VitrineServer();
+let pipelineInstance: VitrinePipeline = new VitrinePipeline(serverInstance);
 
-vitrineServer.run(true);
+pipelineInstance.launch(true);
