@@ -12,6 +12,7 @@
       "target": "nsis"
     },
     "nsis": {
+      "oneClick": false,
       "artifactName": "${productName}_${version}_Setup.${ext}",
       "multiLanguageInstaller": true,
       "publish": {
@@ -97,6 +98,7 @@
     "run-style-electron": "npm run build-css && electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 10000",
     "pack": "webpack && npm run build-prod && build --dir",
-    "release": "webpack && npm run build-prod && build --publish always"
+    "dist": "npm test && webpack && npm run build-prod && build",
+    "release": "npm test && webpack && npm run build-prod && build --publish always"
   }
 }

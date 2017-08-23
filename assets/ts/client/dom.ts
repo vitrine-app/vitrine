@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from 'electron';
 import * as formToObject from 'form-to-object';
 
 import { languageInstance } from './Language';
-import {extendJQuery, openExecutableDialog, openImageDialog, urlify} from './helpers';
+import {displayRemoveGameModal, extendJQuery, openExecutableDialog, openImageDialog, urlify} from './helpers';
 
 function registerModalOverlay() {
 	$(document).on('show.bs.modal', '.modal', function() {
@@ -155,7 +155,7 @@ function registerIgdbResearchForm() {
 }
 
 function registerContextMenu() {
-	(<any>$).contextMenu({
+	$.contextMenu({
 		selector: '.games-list li.play-game-link',
 		items: [
 			{
@@ -169,7 +169,8 @@ function registerContextMenu() {
 				name: languageInstance.replaceJs('removeGame'),
 				callback() {
 					let gameId: string = $(this).attr('game-id');
-					ipcRenderer.send('client.remove-game', gameId);
+					let gameName: string = $(this)[0].innerHTML;
+					displayRemoveGameModal(gameId, gameName);
 				}
 			}
 		]

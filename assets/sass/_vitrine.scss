@@ -3,10 +3,12 @@
 
 @import 'vitrine/error';
 @import 'vitrine/sideBar';
-@import 'vitrine/_titleBar.scss';
+@import 'vitrine/titleBar';
+
 @import 'vitrine/addGameModal';
 @import 'vitrine/addGamesModal';
 @import 'vitrine/igdbResearchModal';
+@import 'vitrine/removeGameModal';
 @import 'vitrine/gameContainer';
 @import 'vitrine/blurPicture';
 

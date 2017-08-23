@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 
 import { languageInstance } from './Language';
 
@@ -188,4 +188,15 @@ export function openImageDialog() {
 
 export function urlify(imgPath: string) {
 	return 'url(' + imgPath.replace(/\\/g, '\\\\') + ')';
+}
+
+export function displayRemoveGameModal(gameId: string, gameName: string) {
+	$('#remove-game-modal').find('#remove-game-disclaimer').html(languageInstance.replaceJs('removeGameText', gameName));
+	$('#remove-game-modal').modal('show');
+	$('#remove-game-btn').click(function(event) {
+		event.preventDefault();
+
+		ipcRenderer.send('client.remove-game', gameId);
+		$('#remove-game-modal').modal('hide');
+	});
 }

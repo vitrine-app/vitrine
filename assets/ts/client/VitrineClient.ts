@@ -5,7 +5,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
-import { formatTimePlayed, urlify } from './helpers';
+import { displayRemoveGameModal, formatTimePlayed, urlify } from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -281,7 +281,7 @@ export class VitrineClient {
 
 	private registerKeyboardEvents() {
 		$(document).keydown((event) => {
-			if (!this.playableGames.games.length)
+			if (!this.playableGames.games.length || !this.clickedGame)
 				return;
 			switch (event.which) {
 				case 13: {
@@ -289,7 +289,7 @@ export class VitrineClient {
 					break;
 				}
 				case 46: {
-					ipcRenderer.send('client.remove-game', this.clickedGame.uuid);
+					displayRemoveGameModal(this.clickedGame.uuid, this.clickedGame.name);
 					break;
 				}
 				case 38: {
@@ -305,6 +305,10 @@ export class VitrineClient {
 					break;
 				}
 			}
+		});
+		$('.modal').keydown((event) => {
+			if (event.which === 27)
+				$(this).modal('hide');
 		});
 	}
 }
