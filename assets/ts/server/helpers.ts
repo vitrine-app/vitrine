@@ -35,3 +35,9 @@ export function downloadFile(url: string, path: string, isHttps: boolean, callba
 export function getEnvFolder(folder: string) {
 	return path.resolve(__dirname, (getEnvData().env) ? ('../../' + folder) : ('../' + folder));
 }
+
+// TODO: Remove this temporary helper
+export function getGamesFolder() {
+	let gamesPath: string  = path.resolve(process.env.APPDATA, 'vitrine', 'data', 'games');
+	return (getEnvData().env) ? (gamesPath) : (path.resolve(__dirname, '..', 'games'));
+}

@@ -1,8 +1,9 @@
 <div id="electron-titlebar" class="drag" style="height: 29px;">
-	<img class="app-icon" src="../build/icon.ico">
+	<img class="app-icon" src="img/vitrine.ico">
 	<span class="app-title">Vitrine</span>
 </div>
 <div id="app" class="container-fluid">
+	<div component="taskbar"></div>
 	<div component="sidebar" id="sidebar-container" class="col-sm-4 col-lg-2"></div>
 	<div class="row full-height">
 		<div component="game-container" id="game-container" class="col-sm-8 col-lg-10 col-sm-offset-4 col-lg-offset-2"></div>
@@ -12,4 +13,5 @@
 	<div component="add-games-modal"></div>
 	<div component="igdb-research-modal"></div>
 	<div component="remove-game-modal"></div>
+	<div component="update-modal"></div>
 </div>

@@ -6,7 +6,8 @@
 	width: 16%;
 
 	#sidebar-content {
-		height: 96%;
+		height: 100%;
+		overflow-y: auto;
 
 		#potential-games-area {
 			text-align: center;
@@ -21,8 +22,6 @@
 		}
 
 		.games-list {
-			overflow-y: auto;
-
 			ul {
 				height: 98%;
 				list-style-type: none;

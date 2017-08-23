@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
 
 import { GamesCollection } from '../models/GamesCollection';
@@ -9,9 +10,8 @@ import { GameSource, PlayableGame} from '../models/PlayableGame';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
-import {getIgdbWrapperFiller, getIgdbWrapperSearcher} from './api/IgdbWrapper';
-import { getEnvData } from '../models/env';
-import { downloadFile, getEnvFolder, uuidV5 } from './helpers';
+import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
+import { downloadFile, getEnvFolder, getGamesFolder, uuidV5 } from './helpers';
 
 export class VitrineServer {
 	private windowsList;
@@ -27,17 +27,18 @@ export class VitrineServer {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
-		this.iconPath = path.resolve(__dirname, '../build/icon.ico');
+		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
 	}
 
 	public run(devTools?: boolean) {
-		if (devTools/* && !getEnvData().env*/)
+		if (devTools)
 			this.devTools = devTools;
 
 		app.on('ready', () => {
 			this.createLoadingWindow();
+			this.handleUpdates();
 			this.createMainWindow();
 		});
 		app.on('window-all-closed', () => {
@@ -53,6 +54,7 @@ export class VitrineServer {
 
 	public registerEvents() {
 		ipcMain.on('client.ready', this.ready.bind(this));
+		ipcMain.on('client.update-app', this.updateApp.bind(this));
 		ipcMain.on('client.fill-igdb-game', this.fillIgdbGame.bind(this));
 		ipcMain.on('client.search-igdb-games', this.searchIgdbGames.bind(this));
 		ipcMain.on('client.add-game', this.addGame.bind(this));
@@ -80,6 +82,21 @@ export class VitrineServer {
 		}).catch((error) => {
 			throw error;
 		});
+	}
+
+	private updateApp(event: Electron.Event) {
+		autoUpdater.quitAndInstall(true, true);
+	}
+
+	private handleUpdates() {
+		autoUpdater.allowPrerelease = true;
+		autoUpdater.signals.progress((progress) => {
+			this.windowsList.mainWindow.webContents.send('server.update-progress', progress)
+		});
+		autoUpdater.signals.updateDownloaded((version) => {
+			this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version)
+		});
+		autoUpdater.checkForUpdates();
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
@@ -153,7 +170,7 @@ export class VitrineServer {
 
 	private removeGame(event: Electron.Event, gameId: string) {
 		this.playableGames.removeGame(gameId, (error) => {
-			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
+			let gameDirectory: string = path.resolve(getGamesFolder(), gameId);
 			rimraf(gameDirectory, () => {
 				event.sender.send('server.remove-playable-game', error, gameId);
 			});
@@ -193,7 +210,7 @@ export class VitrineServer {
 	}
 
 	private registerGame(event: any, game: PlayableGame) {
-		let gameDirectory = path.resolve(getEnvFolder('games'), game.uuid);
+		let gameDirectory = path.resolve(getGamesFolder(), game.uuid);
 		let configFilePath = path.resolve(gameDirectory, 'config.json');
 
 		if (fs.existsSync(configFilePath))

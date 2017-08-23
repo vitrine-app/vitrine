@@ -1,0 +1,15 @@
+#taskbar {
+	background-color: $body-bg;
+	width: 100%;
+	height: 40px;
+	border-top: solid 1px #1F1E1E;
+	padding-left: 15px;
+
+	#update-bar {
+		width: 250px;
+		height: 13px;
+		margin-top: 13px;
+		margin-bottom: 13px;
+		display: none;
+	}
+}
