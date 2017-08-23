@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A modern game library using Electron, NodeJS and IGDB.",
   "main": "public/server.js",
   "author": "Paul Roman",
@@ -28,7 +28,7 @@
       "!assets",
       "!config/build",
       "!.gitignore",
-      "!LICENSE",
+      "!LICENSE.md",
       "!README.md",
       "!tsconfig.json",
       "!webpack.config.js"
