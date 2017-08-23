@@ -9,7 +9,8 @@
     "appId": "com.github.paul-roman.vitrine",
     "productName": "Vitrine",
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "public\\img\\vitrine.ico"
     },
     "nsis": {
       "oneClick": false,

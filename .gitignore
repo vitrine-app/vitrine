@@ -1,7 +1,7 @@
 /node_modules
 /.idea/workspace.xml
 /public/*
-!/public/.file
+!/public/img
 /games/*
 /dist
 /assets/sass/vitrine/_bootstrapDatepicker.scss

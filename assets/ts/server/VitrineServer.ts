@@ -27,7 +27,7 @@ export class VitrineServer {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
-		this.iconPath = path.resolve(__dirname, '../build/icon.ico');
+		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
 	}
