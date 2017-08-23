@@ -15,35 +15,23 @@ export function uuidV5(name: string) {
 
 export function downloadFile(url: string, path: string, isHttps: boolean, callback: Function) {
 	if (!url) {
-		callback();
+		callback(false);
 		return;
 	}
 	let file = fs.createWriteStream(path);
 	if (url.startsWith('file://')) {
 		fs.createReadStream(url.substr(7)).pipe(file);
-		callback();
+		callback(true);
 	}
 	else {
 		let protocol: any = (isHttps) ? (https) : (http);
 		protocol.get(url, (response) => {
 			response.pipe(file);
-			callback();
+			callback(true);
 		});
 	}
 }
 
 export function getEnvFolder(folder: string) {
 	return path.resolve(__dirname, (getEnvData().env) ? ('../../' + folder) : ('../' + folder));
-}
-
-export function nameArray(array: any[]) {
-	let namesArray: string[] = [];
-
-	for (let i in array)
-		namesArray.push(array[i].name)
-	return namesArray;
-}
-
-export function levenshteinDistanceCmp(node: any, baseItem: any) {
-	return new Levenshtein(node, baseItem).distance;
 }

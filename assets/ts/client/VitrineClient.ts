@@ -5,7 +5,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
-import {formatTimePlayed, urlify} from './helpers';
+import { displayRemoveGameModal, formatTimePlayed, urlify } from './helpers';
 
 export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -26,6 +26,7 @@ export class VitrineClient {
 	public run() {
 		this.clickedGame = null;
 		ipcRenderer.send('client.ready');
+		this.registerKeyboardEvents();
 	}
 
 	public registerEvents() {
@@ -130,9 +131,12 @@ export class VitrineClient {
 
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
 		this.playableGames.games = games;
-		this.renderPlayableGames();
-		if (this.playableGames.games.length)
-			this.updateGameUi(this.playableGames.games[0]);
+		this.renderPlayableGames(() => {
+			if (this.playableGames.games.length)
+				this.updateGameUi(this.playableGames.games[0]);
+			else
+				this.updateGameUi(null);
+		});
 	}
 
 	private addPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
@@ -141,7 +145,9 @@ export class VitrineClient {
 			$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
 		}
 		this.playableGames.addGame(playableGame);
-		this.renderPlayableGames();
+		this.renderPlayableGames(() => {
+			this.updateGameUi(playableGame);
+		});
 	}
 
 	private removePlayableGame(event: Electron.Event, error: string, gameId: string) {
@@ -150,11 +156,12 @@ export class VitrineClient {
 		this.playableGames.removeGame(gameId, (error, game: PlayableGame, index: number) => {
 			if (error)
 				throw new Error(error);
-			this.renderPlayableGames();
-			if (this.playableGames.games.length)
-				this.updateGameUi(this.playableGames.games[index - 1]);
-			else
-				this.updateGameUi(null);
+			this.renderPlayableGames(() => {
+				if (this.playableGames.games.length)
+					this.updateGameUi(this.playableGames.games[index]);
+				else
+					this.updateGameUi(null);
+			});
 		});
 	}
 
@@ -196,9 +203,13 @@ export class VitrineClient {
 		});
 	}
 
-	private renderPlayableGames() {
+	private renderPlayableGames(callback?: Function) {
 		$('#playable-games-list').clear();
 
+		if (!this.playableGames.games.length) {
+			this.updateGameUi(null);
+			return;
+		}
 		this.playableGames.sort();
 		this.playableGames.forEach((playableGame: PlayableGame) => {
 			let gameLiHtml: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
@@ -215,35 +226,89 @@ export class VitrineClient {
 				ipcRenderer.send('client.launch-game', playableGame.uuid);
 			});
 			$('#playable-games-list').append(gameLi);
+		}, () => {
+			if (callback)
+				callback();
 		});
 	}
 
 	private updateGameUi(game: PlayableGame) {
 		if (!game) {
-			console.log('no more games');
+			$('#game-core').fadeOut(100);
+			$('#game-background').beforeCss('#game-background', {
+				'background-image': 'none'
+			});
+			$('#no-game-showcase').fadeIn(100);
 			return;
 		}
 		$('li.play-game-link').removeClass('selected-game');
 		$('li.play-game-link[game-id="' + game.uuid + '"]').addClass('selected-game');
 
-		$('#game-title').html(game.name);
-		$('#game-play').addClass('game-infos-visible').find('button').off('click').click(() => {
-			ipcRenderer.send('client.launch-game', game.uuid);
-		});
-		if (game.timePlayed)
-			$('#game-play').find('p').html(languageInstance.replaceJs('timePlayed') + ' ' + formatTimePlayed(game.timePlayed));
-		$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
+		if (!$('#game-core').is(':visible'))
+			$('#no-game-showcase').fadeOut(100);
 
-		$('#game-background').beforeCss('#game-background', {
-			'background-image': urlify(game.details.backgroundScreen)
+		$('#game-core').fadeOut(100, () => {
+			$('#game-title').html(game.name);
+			$('#game-play').addClass('game-infos-visible').find('button').off('click').click(() => {
+				ipcRenderer.send('client.launch-game', game.uuid);
+			});
+			if (game.timePlayed)
+				$('#game-play').find('p').html(languageInstance.replaceJs('timePlayed') + ' ' + formatTimePlayed(game.timePlayed));
+			$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
+
+			if (game.details.backgroundScreen) {
+				$('#game-background').beforeCss('#game-background', {
+					'background-image': urlify(game.details.backgroundScreen)
+				});
+			}
+			else {
+				$('#game-background').beforeCss('#game-background', {
+					'background-image': 'none'
+				});
+			}
+			$('#selected-game-cover').css({
+				'display': 'block'
+			}).find('.image').css({
+				'background-image': urlify(game.details.cover)
+			}).parent().updateBlurClickCallback(() => {
+				ipcRenderer.send('client.launch-game', game.uuid);
+			});
+			$('#game-core').fadeIn(100);
 		});
-		$('#selected-game-cover').css({
-			'display': 'block'
-		}).find('.image').css({
-			'background-image': urlify(game.details.cover)
-		}).parent().updateBlurClickCallback(() => {
-			ipcRenderer.send('client.launch-game', game.uuid);
-		});
+
 		this.clickedGame = game;
+	}
+
+	private registerKeyboardEvents() {
+		$(document).keydown((event) => {
+			if (!this.playableGames.games.length || !this.clickedGame)
+				return;
+			switch (event.which) {
+				case 13: {
+					ipcRenderer.send('client.launch-game', this.clickedGame.uuid);
+					break;
+				}
+				case 46: {
+					displayRemoveGameModal(this.clickedGame.uuid, this.clickedGame.name);
+					break;
+				}
+				case 38: {
+					let index: number = this.playableGames.games.indexOf(this.clickedGame);
+					if (index)
+						this.updateGameUi(this.playableGames.games[index - 1]);
+					break;
+				}
+				case 40: {
+					let index: number = this.playableGames.games.indexOf(this.clickedGame);
+					if (index !== this.playableGames.games.length - 1)
+						this.updateGameUi(this.playableGames.games[index + 1]);
+					break;
+				}
+			}
+		});
+		$('.modal').keydown((event) => {
+			if (event.which === 27)
+				$(this).modal('hide');
+		});
 	}
 }

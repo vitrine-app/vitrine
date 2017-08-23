@@ -1,7 +1,12 @@
 <div id="game-background" class="full-height">
+	<div id="no-game-showcase">
+		<h1>{{ welcomeMessage, Vitrine }}</h1>
+		<hr>
+		<p>{{ desc }}</p>
+	</div>
 	<div id="game-core" class="row">
 		<div class="col-md-8">
-			<h1 id="game-title">{{ welcomeMessage, Vitrine }}</h1>
+			<h1 id="game-title"></h1>
 			<hr>
 			<div id="game-play" class="selected-game-infos">
 				<button class="btn btn-primary"><i class="fa fa-play"></i> {{ play }}</button>

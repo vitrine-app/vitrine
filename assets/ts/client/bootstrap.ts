@@ -6,7 +6,3 @@ export function adaptComponent() {
 	});
 	$('body').html(htmlBody);
 }
-
-export function loadTitleBar() {
-	require('electron-titlebar/index.js');
-}

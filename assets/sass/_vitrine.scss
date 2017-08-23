@@ -3,11 +3,25 @@
 
 @import 'vitrine/error';
 @import 'vitrine/sideBar';
+@import 'vitrine/titleBar';
+
 @import 'vitrine/addGameModal';
 @import 'vitrine/addGamesModal';
 @import 'vitrine/igdbResearchModal';
+@import 'vitrine/removeGameModal';
 @import 'vitrine/gameContainer';
 @import 'vitrine/blurPicture';
+
+body {
+	overflow-y: hidden;
+}
+
+#app {
+	padding: 29px 0 0;
+	height: 100%;
+	user-select: none;
+	overflow-x: hidden;
+}
 
 .full-height {
 	height: 100%;
@@ -17,12 +31,6 @@
 	padding: 0;
 }
 
-#app {
-	padding: 0;
-	height: 100%;
-	user-select: none;
-	overflow-x: hidden;
-}
 ::-webkit-scrollbar {
 	width: 8px;
 }

@@ -33,7 +33,7 @@ export class VitrineServer {
 	}
 
 	public run(devTools?: boolean) {
-		if (devTools && !getEnvData().env)
+		if (devTools/* && !getEnvData().env*/)
 			this.devTools = devTools;
 
 		app.on('ready', () => {
@@ -177,7 +177,8 @@ export class VitrineServer {
 			minWidth: width,
 			minHeight: height,
 			icon: this.iconPath,
-			show: false
+			show: false,
+			frame: false
 		});
 
 		this.windowsList.mainWindow.setMenu(null);
@@ -203,10 +204,12 @@ export class VitrineServer {
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
 		let backgroundScreen: string = (game.details.steamId) ? (game.details.screenshots[0]) : (game.details.background);
 
-		downloadFile(game.details.cover, coverPath, true, () => {
-			game.details.cover = coverPath;
-			downloadFile(backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,() => {
-				game.details.backgroundScreen = screenPath;
+		downloadFile(game.details.cover, coverPath, true, (success: boolean) => {
+			if (success)
+				game.details.cover = coverPath;
+			downloadFile(backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'), screenPath, true,(success: boolean) => {
+				if (success)
+					game.details.backgroundScreen = screenPath;
 				if (game.details.steamId)
 					delete game.details.screenshots;
 				else
