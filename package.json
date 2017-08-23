@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A modern game library using Electron, NodeJS and IGDB.",
   "main": "public/server.js",
   "author": "Paul Roman",
