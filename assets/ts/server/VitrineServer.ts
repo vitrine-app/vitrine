@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
 
 import { GamesCollection } from '../models/GamesCollection';
@@ -10,7 +11,6 @@ import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import {getIgdbWrapperFiller, getIgdbWrapperSearcher} from './api/IgdbWrapper';
-import { getEnvData } from '../models/env';
 import { downloadFile, getEnvFolder, uuidV5 } from './helpers';
 
 export class VitrineServer {
@@ -38,6 +38,7 @@ export class VitrineServer {
 
 		app.on('ready', () => {
 			this.createLoadingWindow();
+			this.handleUpdates();
 			this.createMainWindow();
 		});
 		app.on('window-all-closed', () => {
@@ -53,6 +54,7 @@ export class VitrineServer {
 
 	public registerEvents() {
 		ipcMain.on('client.ready', this.ready.bind(this));
+		ipcMain.on('client.update-app', this.updateApp.bind(this));
 		ipcMain.on('client.fill-igdb-game', this.fillIgdbGame.bind(this));
 		ipcMain.on('client.search-igdb-games', this.searchIgdbGames.bind(this));
 		ipcMain.on('client.add-game', this.addGame.bind(this));
@@ -80,6 +82,21 @@ export class VitrineServer {
 		}).catch((error) => {
 			throw error;
 		});
+	}
+
+	private updateApp(event: Electron.Event) {
+		autoUpdater.quitAndInstall(true, true);
+	}
+
+	private handleUpdates() {
+		autoUpdater.allowPrerelease = true;
+		autoUpdater.signals.progress((progress) => {
+			this.windowsList.mainWindow.webContents.send('server.update-progress', progress)
+		});
+		autoUpdater.signals.updateDownloaded((version) => {
+			this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version)
+		});
+		autoUpdater.checkForUpdates();
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {

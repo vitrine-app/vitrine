@@ -48,6 +48,7 @@
     "dateformat": "^2.0.0",
     "download-file": "^0.1.5",
     "electron-titlebar-absolute": "0.0.4",
+    "electron-updater": "^2.8.7",
     "font-awesome": "^4.7.0",
     "form-to-object": "^5.0.0",
     "glob": "^7.1.2",

@@ -1,4 +1,5 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, shell } from 'electron';
+import { ProgressInfo } from 'electron-updater/node_modules/electron-builder-http';
 import * as dateFormat from 'dateformat';
 
 import { GamesCollection } from '../models/GamesCollection';
@@ -30,6 +31,8 @@ export class VitrineClient {
 	}
 
 	public registerEvents() {
+		ipcRenderer.on('server.update-progress', this.updateProgress.bind(this));
+		ipcRenderer.on('server.update-downloaded', this.updateDownloaded.bind(this));
 		ipcRenderer.on('server.server-error', this.serverError.bind(this));
 		ipcRenderer.on('server.send-igdb-game', this.getIgdbGame.bind(this));
 		ipcRenderer.on('server.send-igdb-searches', this.getIgdbSearches.bind(this));
@@ -39,6 +42,31 @@ export class VitrineClient {
 		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
 		ipcRenderer.on('server.remove-playable-game', this.removePlayableGame.bind(this));
 		ipcRenderer.on('server.stop-game', this.stopGame.bind(this));
+	}
+
+	private updateProgress(event: Electron.Event, progress: ProgressInfo) {
+		if (!$('#update-bar').is(':visible'))
+			$('#update-bar').show();
+		let percentage: number = Math.round(progress.percent);
+		$('#update-bar .progress-bar').css({
+			'width': percentage + '%'
+		});
+	}
+
+	private updateDownloaded(event: Electron.Event, version: string) {
+		let changeLogsHtml: string = '<a href="#">' + languageInstance.replaceJs('changeLogs') + '</a>';
+		$('#update-app-disclaimer').html(languageInstance.replaceJs('updateText', version));
+		$('#app-change-logs').html(changeLogsHtml).click((event) => {
+			event.preventDefault();
+
+			let releaseUrl: string = 'https://github.com/paul-roman/vitrine/releases/tag/v' + version;
+			shell.openExternal(releaseUrl);
+		});
+		$('#update-app-btn').click(function() {
+			$(this).loading();
+			ipcRenderer.send('client.update-app');
+		});
+		$('#update-modal').modal('show');
 	}
 
 	private serverError(event: Electron.Event, error: string) {

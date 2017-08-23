@@ -2,13 +2,15 @@
 @import 'vitrine/bootstrapNumberPicker';
 
 @import 'vitrine/error';
-@import 'vitrine/sideBar';
 @import 'vitrine/titleBar';
+@import 'vitrine/taskBar';
+@import 'vitrine/sideBar';
 
 @import 'vitrine/addGameModal';
 @import 'vitrine/addGamesModal';
 @import 'vitrine/igdbResearchModal';
-@import 'vitrine/removeGameModal';
+@import 'vitrine/sampleModals';
+
 @import 'vitrine/gameContainer';
 @import 'vitrine/blurPicture';
 
@@ -20,7 +22,7 @@ body {
 	padding: 29px 0 0;
 	height: 100%;
 	user-select: none;
-	overflow-x: hidden;
+	overflow: hidden;
 }
 
 .full-height {

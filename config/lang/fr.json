@@ -37,5 +37,8 @@
   "secondsPlur": "secondes",
   "secondsSing": "seconde",
   "resultsNumber": "Résultats",
-  "removeGameText": "Voulez vous vraiment supprimer <strong>%1</strong> de Vitrine ? Le jeu restera accessible depuis votre ordinateur."
+  "removeGameText": "Voulez vous vraiment supprimer <strong>%1</strong> de Vitrine ?<br>Le jeu restera accessible depuis votre ordinateur.",
+  "update": "Mettre à jour",
+  "updateText": "Une nouvelle version de Vitrine est disponible (<strong>%1</strong>) !<br>Voulez-vous redémarrer le logiciel pour l'installer ?",
+  "changeLogs": "Voir les notes de mise à jour"
 }
