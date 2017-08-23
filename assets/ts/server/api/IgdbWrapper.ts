@@ -1,7 +1,4 @@
 import * as igdb from 'igdb-api-node';
-import * as getClosest from 'get-closest';
-
-import {levenshteinDistanceCmp, nameArray} from '../helpers';
 
 class IgdbWrapper {
 	private apiKey: string;
@@ -18,32 +15,6 @@ class IgdbWrapper {
 		this.game = null;
 		this.callback = null;
 	}
-
-	/*public getGame(name: string, callback: Function) {
-		this.refinerSwitch(name);
-		this.client.games({
-			limit: this.levenshteinRefiner,
-			search: name
-		}, ['name']).then((response) => {
-			let gamesNames: string[] = nameArray(response.body);
-			let gameId: number = getClosest.custom(name, gamesNames, levenshteinDistanceCmp);
-
-			this.findGameById(response.body[gameId].id, (error, game) => {
-				if (error && !game)
-					callback(error, null);
-				else {
-					this.game = game;
-					this.callback = callback;
-					this.basicFormatting();
-					this.findCompanyById(game.developers, this.addDeveloperCallback.bind(this));
-				}
-
-			});
-		}).catch((error) => {
-			if (error)
-				callback(error, null);
-		});
-	}*/
 
 	public findGameById(id: number, callback: Function) {
 		this.client.games({

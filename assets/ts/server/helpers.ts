@@ -35,15 +35,3 @@ export function downloadFile(url: string, path: string, isHttps: boolean, callba
 export function getEnvFolder(folder: string) {
 	return path.resolve(__dirname, (getEnvData().env) ? ('../../' + folder) : ('../' + folder));
 }
-
-export function nameArray(array: any[]) {
-	let namesArray: string[] = [];
-
-	for (let i in array)
-		namesArray.push(array[i].name)
-	return namesArray;
-}
-
-export function levenshteinDistanceCmp(node: any, baseItem: any) {
-	return new Levenshtein(node, baseItem).distance;
-}

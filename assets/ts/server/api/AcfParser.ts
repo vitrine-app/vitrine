@@ -19,9 +19,8 @@ export class AcfParser {
 			let name = this.readField();
 			this.deleteSpaces();
 
-			if (this.acfFd[this.c] === '"') {
+			if (this.acfFd[this.c] === '"')
 				tree[name] = this.readField();
-			}
 			else if (this.acfFd[this.c] === '{') {
 				this.c++;
 				this.deleteSpaces();
