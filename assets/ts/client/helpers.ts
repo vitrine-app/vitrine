@@ -2,7 +2,7 @@ import { remote, ipcRenderer } from 'electron';
 
 import { languageInstance } from './Language';
 
-function openDialog(options: any) {
+function openDialog(options: any): string {
 	let dialogRet: string[] = remote.dialog.showOpenDialog(options);
 	if (!dialogRet || !dialogRet.length)
 		return null;
@@ -123,7 +123,7 @@ export function extendJQuery() {
 	});
 }
 
-export function formatTimePlayed(timePlayed: number) {
+export function formatTimePlayed(timePlayed: number): string {
 	if (timePlayed < 60) {
 		let secondsStr: string;
 		if (timePlayed == 1)
@@ -158,7 +158,7 @@ export function formatTimePlayed(timePlayed: number) {
 	return hours + ' ' + hoursStr + (minutesStr) ? (minutes + ' ' + minutesStr) : ('');
 }
 
-export function openExecutableDialog() {
+export function openExecutableDialog(): string {
 	return openDialog({
 		properties: ['openFile'],
 		filters: [
@@ -174,7 +174,7 @@ export function openExecutableDialog() {
 	});
 }
 
-export function openImageDialog() {
+export function openImageDialog(): string {
 	return openDialog({
 		properties: ['openFile'],
 		filters: [
@@ -186,7 +186,7 @@ export function openImageDialog() {
 	});
 }
 
-export function urlify(imgPath: string) {
+export function urlify(imgPath: string): string {
 	return 'url(' + imgPath.replace(/\\/g, '\\\\') + ')';
 }
 
