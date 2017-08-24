@@ -56,8 +56,7 @@ class IgdbWrapper {
 					callback(null, response.body);
 			});
 		}).catch((error) => {
-			if (error)
-				callback(error, null);
+			callback(error, null);
 		});
 	}
 

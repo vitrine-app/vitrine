@@ -156,14 +156,12 @@ export class VitrineServer {
 				this.gameLaunched = false;
 				console.log('You played', secondsPlayed, 'seconds.');
 				game.addPlayTime(secondsPlayed, (error) => {
-					if (error)
-						return VitrineServer.throwServerError(event, error);
+					return VitrineServer.throwServerError(event, error);
 				});
 				event.sender.send('server.stop-game', gameId, game.timePlayed);
 			}).catch((error) => {
-				if (error)
-					return VitrineServer.throwServerError(event, error);
 				this.gameLaunched = false;
+				return VitrineServer.throwServerError(event, error);
 			});
 		});
 	}
@@ -231,9 +229,9 @@ export class VitrineServer {
 					delete game.details.screenshots;
 				else
 					delete game.details.background;
-				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (err) => {
-					if (err)
-						throw err;
+				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (error) => {
+					if (error)
+						throw error;
 					if (game.details.steamId)
 						event.sender.send('server.remove-potential-game', game.uuid);
 					event.sender.send('server.add-playable-game', game);

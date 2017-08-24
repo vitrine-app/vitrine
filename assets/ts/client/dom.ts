@@ -24,7 +24,7 @@ function registerGameCover() {
 		mouseleave() {
 			$('#game-cover-image').removeClass('cover-hovered');
 			$('#game-cover-component').removeClass('cover-hovered');
-			(<any>$('#cover-play-btn')).removeClass('play-btn-visible');
+			$('#cover-play-btn').removeClass('play-btn-visible');
 		}
 	};
 

@@ -12,10 +12,13 @@ export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private clickedGame: PlayableGame;
+	private releaseUrl: string;
 
 	public constructor() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
+		this.releaseUrl = 'https://github.com/paul-roman/vitrine/releases/tag/v';
+
 		window.onerror = function(error, url, line) {
 			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
 				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
@@ -58,9 +61,7 @@ export class VitrineClient {
 		$('#update-app-disclaimer').html(languageInstance.replaceJs('updateText', version));
 		$('#app-change-logs').html(changeLogsHtml).click((event) => {
 			event.preventDefault();
-
-			let releaseUrl: string = 'https://github.com/paul-roman/vitrine/releases/tag/v' + version;
-			shell.openExternal(releaseUrl);
+			shell.openExternal(this.releaseUrl + version);
 		});
 		$('#update-app-btn').click(function() {
 			$(this).loading();
@@ -70,9 +71,7 @@ export class VitrineClient {
 	}
 
 	private serverError(event: Electron.Event, error: string) {
-		if (error) {
-			throw new Error(error);
-		}
+		throw new Error(error);
 	}
 
 	private getIgdbGame(event: Electron.Event, error: string, game: any) {

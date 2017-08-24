@@ -1,5 +1,5 @@
 import * as jQuery from 'jquery';
-(<any>window).jQuery = (<any>window).$ = jQuery;
+window.jQuery = window.$ = jQuery;
 import 'bootstrap-sass';
 import 'electron-titlebar-absolute';
 import 'bootstrap-datepicker';
