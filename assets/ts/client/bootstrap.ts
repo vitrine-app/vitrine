@@ -1,6 +1,6 @@
 import { languageInstance } from './Language';
 
-export function adaptComponent() {
+export function adaptComponent(): string | void {
 	let htmlBody: string = $('body').html().replace(/{{(.*?)}}/g, (match, p1) => {
 		return languageInstance.replaceHtml(p1.trim());
 	});

@@ -5,7 +5,7 @@ import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from '../../../assets/ts
 
 describe('IgdbWrapper searcher', () => {
 	let gamesArray: any;
-	it('Should return a 2 games length array', (done) => {
+	it('Should return a 2 games length array', (done: Function) => {
 		getIgdbWrapperSearcher('Super Mario Galaxy', 2).then((games: any) => {
 			expect(games).to.be.a('array');
 
@@ -24,7 +24,7 @@ describe('IgdbWrapper searcher', () => {
 });
 
 describe('IgdbWrapper filler', () => {
-	it('Should return a game object', (done) => {
+	it('Should return a game object', (done: Function) => {
 		getIgdbWrapperFiller(340).then((game: any) => {
 			expect(game).to.be.a('object');
 

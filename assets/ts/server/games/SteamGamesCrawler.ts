@@ -76,7 +76,7 @@ class SteamGamesCrawler {
 		});
 	}
 
-	private static isGameAlreadyAdded(name: string) {
+	private static isGameAlreadyAdded(name: string): boolean {
 		let gameId: string = uuidV5(name);
 
 		let gameDirectory = path.resolve(getGamesFolder(), gameId);
@@ -86,7 +86,7 @@ class SteamGamesCrawler {
 	}
 }
 
-export function getSteamCrawler() {
+export function getSteamCrawler(): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new SteamGamesCrawler().search((error, potentialGames: PotentialGame[]) => {
 			if (error)

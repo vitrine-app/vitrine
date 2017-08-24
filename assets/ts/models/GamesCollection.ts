@@ -1,4 +1,4 @@
-function alphabeticSort(nodeA: any, nodeB: any) {
+function alphabeticSort(nodeA: any, nodeB: any): boolean {
 	return nodeA.name > nodeB.name;
 }
 

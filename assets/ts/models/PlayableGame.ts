@@ -30,7 +30,7 @@ export class PlayableGame extends PotentialGame {
 		});
 	}
 
-	public static toPlayableGame(game: PotentialGame) {
+	public static toPlayableGame(game: PotentialGame): PlayableGame {
 		let playableGame: PlayableGame =  new PlayableGame(game.name, game.details);
 		playableGame.uuid = game.uuid;
 		playableGame.commandLine = game.commandLine;

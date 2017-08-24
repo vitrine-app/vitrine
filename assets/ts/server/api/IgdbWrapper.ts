@@ -156,7 +156,7 @@ class IgdbWrapper {
 	}
 }
 
-export function getIgdbWrapperFiller(gameId: number) {
+export function getIgdbWrapperFiller(gameId: number): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new IgdbWrapper().findGameById(gameId, (error, game) => {
 			if (error)
@@ -167,7 +167,7 @@ export function getIgdbWrapperFiller(gameId: number) {
 	});
 }
 
-export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number) {
+export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new IgdbWrapper().searchGames(gameName,(error, game) => {
 			if (error)

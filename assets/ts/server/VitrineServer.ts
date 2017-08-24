@@ -118,7 +118,7 @@ export class VitrineServer {
 	private addGame(event: Electron.Event, gameId: string) {
 		this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
 			if (error)
-				return this.throwServerError(event, error);
+				return VitrineServer.throwServerError(event, error);
 			let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
 			addedGame.source = GameSource.STEAM;
 			delete addedGame.details.id;
@@ -146,9 +146,9 @@ export class VitrineServer {
 	private launchGame(event: Electron.Event, gameId: string)  {
 		this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
 			if (error)
-				return this.throwServerError(event, error);
+				return VitrineServer.throwServerError(event, error);
 			if (game.uuid !== uuidV5(game.name))
-				return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
+				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
@@ -157,12 +157,12 @@ export class VitrineServer {
 				console.log('You played', secondsPlayed, 'seconds.');
 				game.addPlayTime(secondsPlayed, (error) => {
 					if (error)
-						return this.throwServerError(event, error);
+						return VitrineServer.throwServerError(event, error);
 				});
 				event.sender.send('server.stop-game', gameId, game.timePlayed);
 			}).catch((error) => {
 				if (error)
-					return this.throwServerError(event, error);
+					return VitrineServer.throwServerError(event, error);
 				this.gameLaunched = false;
 			});
 		});
@@ -243,7 +243,7 @@ export class VitrineServer {
 		});
 	}
 
-	private throwServerError(event: any, error: string | Error) {
+	private static throwServerError(event: any, error: string | Error) {
 		return event.sender.send('server.server-error', error);
 	}
 }

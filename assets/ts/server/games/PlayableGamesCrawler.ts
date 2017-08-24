@@ -52,7 +52,7 @@ class PlayableGamesCrawler {
 	}
 }
 
-export function getPlayableGamesCrawler() {
+export function getPlayableGamesCrawler(): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new PlayableGamesCrawler().search((error, playableGames: PlayableGame[]) => {
 			if (error)
