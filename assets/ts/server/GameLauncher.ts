@@ -8,7 +8,7 @@ class GameLauncher {
 	private scriptPath: string;
 	private watcherPath: string;
 
-	constructor(private game: PlayableGame) {
+	public constructor(private game: PlayableGame) {
 		this.scriptPath = path.resolve(getEnvFolder('scripts'), 'gameLauncher.exe');
 		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
 	}

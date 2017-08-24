@@ -15,7 +15,7 @@ export class PlayableGame extends PotentialGame {
 	public timePlayed: number;
 	public source: GameSource;
 
-	constructor(name: string, details?: any) {
+	public constructor(name: string, details?: any) {
 		super(name, details);
 		this.timePlayed = 0;
 	}

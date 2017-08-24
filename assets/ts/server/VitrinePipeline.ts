@@ -7,7 +7,7 @@ import { getEnvData } from '../models/env';
 export class VitrinePipeline {
 	private prod: boolean;
 
-	constructor(private serverInstance: VitrineServer) {
+	public constructor(private serverInstance: VitrineServer) {
 		this.prod = (getEnvData().env) ? (true) : (false);
 	}
 

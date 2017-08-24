@@ -23,7 +23,7 @@ export class VitrineServer {
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
 
-	constructor() {
+	public constructor() {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');

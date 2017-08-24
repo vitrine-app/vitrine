@@ -15,7 +15,7 @@ class SteamGamesCrawler {
 	private potentialGames: PotentialGame[];
 	private callback: Function;
 
-	constructor() {
+	public constructor() {
 		this.configFilePath = path.resolve(getEnvFolder('config'), 'steam.json');
 		this.configFile = JSON.parse(fs.readFileSync(this.configFilePath).toString());
 		this.manifestRegEx = 'appmanifest_*.acf';

@@ -10,7 +10,7 @@ class PlayableGamesCrawler {
 	private gamesDirectory: string;
 	private callback: Function;
 
-	constructor() {
+	public constructor() {
 		this.playableGames = [];
 		this.gamesDirectory = getGamesFolder();
 	}

@@ -5,7 +5,7 @@ function alphabeticSort(nodeA: any, nodeB: any) {
 export class GamesCollection<T> {
 	private _games: T[];
 
-	constructor() {
+	public constructor() {
 		this._games = [];
 	}
 

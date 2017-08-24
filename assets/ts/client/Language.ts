@@ -6,7 +6,7 @@ import { getEnvFolder } from '../server/helpers';
 class Language {
 	private dict: any;
 
-	constructor(private lang: string) {
+	public constructor(private lang: string) {
 		let filePath: string = path.resolve(getEnvFolder('config'), 'lang', lang + '.json');
 		this.dict = JSON.parse(fs.readFileSync(filePath).toString());
 	}

@@ -13,7 +13,7 @@ export class VitrineClient {
 	private playableGames: GamesCollection<PlayableGame>;
 	private clickedGame: PlayableGame;
 
-	constructor() {
+	public constructor() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 		window.onerror = function(error, url, line) {
