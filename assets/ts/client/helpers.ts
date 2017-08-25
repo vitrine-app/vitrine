@@ -15,12 +15,12 @@ export function extendJQuery() {
 			return this.html('');
 		},
 		beforeCss(selector: string, props: object) {
-			$('head style').remove();
+			$('head style#before-styling').remove();
 			let rawStyling: string = '';
 			Object.keys(props).forEach((key) => {
 				rawStyling += key + ': ' + props[key] + ';';
 			});
-			$('head').append('<style>' + selector + ':before{' + rawStyling + '}</style>');
+			$('head').append('<style id="before-styling">' + selector + ':before{' + rawStyling + '}</style>');
 			return this;
 		},
 		animateCss(animationName: string, animationDuration?: number) {

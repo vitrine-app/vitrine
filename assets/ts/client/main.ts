@@ -7,8 +7,9 @@ import 'jquery-contextmenu';
 
 import { VitrineClient } from './VitrineClient';
 import { launchDom } from './dom';
-import { adaptComponent } from './bootstrap';
+import { adaptComponent, launchStyling } from './bootstrap';
 
+launchStyling();
 adaptComponent();
 
 let vitrineClient: VitrineClient = new VitrineClient();
