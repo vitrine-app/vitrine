@@ -48,9 +48,9 @@ class IgdbWrapper {
 			let counter: number = 0;
 			response.body.forEach((game: any) => {
 				if (game.cover)
-					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small');
+					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small_2x');
 				else // TODO: Change default image
-					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small/nocover_qhhlj6.jpg';
+					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
 				counter++;
 				if (counter === response.body.length)
 					callback(null, response.body);
@@ -168,11 +168,11 @@ export function getIgdbWrapperFiller(gameId: number): Promise<any> {
 
 export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper().searchGames(gameName,(error, game) => {
+		new IgdbWrapper().searchGames(gameName,(error, games) => {
 			if (error)
 				reject(error);
 			else
-				resolve(game);
+				resolve(games);
 		}, resultsNb);
 	});
 }

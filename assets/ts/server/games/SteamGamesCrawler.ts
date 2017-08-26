@@ -5,7 +5,7 @@ import * as glob from 'glob';
 import { AcfParser } from '../api/AcfParser';
 import { PotentialGame } from '../../models/PotentialGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getIgdbWrapperFiller } from '../api/IgdbWrapper';
+import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 import { getEnvFolder, getGamesFolder, uuidV5} from '../helpers';
 
 class SteamGamesCrawler {
@@ -54,7 +54,8 @@ class SteamGamesCrawler {
 				counter++;
 				return;
 			}
-			getIgdbWrapperFiller(gameManifest.name).then((game: any) => {
+			getIgdbWrapperSearcher(gameManifest.name, 1).then((game: any) => {
+				game = game[0];
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				potentialGame.commandLine = [

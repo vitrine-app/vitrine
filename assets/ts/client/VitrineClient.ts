@@ -208,24 +208,25 @@ export class VitrineClient {
 		}
 		this.potentialGames.sort();
 		let counter: number = 0;
-		let gamesListHtml: string = '<div class="row potential-games-row">';
+		let gamesList: JQuery = $('<div class="row potential-games-row"></div>');
 		this.potentialGames.forEach((potentialGame: PotentialGame) => {
-			gamesListHtml += '<div class="col-md-3 potential-game">'
-				+ '<div class="potential-game-cover" style="background-image: url(' + potentialGame.details.cover + ')"></div>'
-				+ potentialGame.name
+			let gameHtml: string = '<div class="col-md-3">'
+				+ '<div class="potential-game-cover"><div class="image" style="background-image: url(' + potentialGame.details.cover + ')"></div>'
+				+ '<i class="fa fa-plus-circle icon animated"></i></div>'
+				+ '<span class="potential-game-name">' + potentialGame.name + '</span>'
 				+ '</div>';
+			let game: JQuery = $(gameHtml);
+			game.find('div.potential-game-cover').blurPicture(55, () => {
+				console.log(potentialGame);
+			});
+			gamesList.append(game);
 			counter++;
-			if (counter % 4 === 0 || counter === this.potentialGames.games.length) {
-				gamesListHtml += '</div>';
-				if (counter === this.potentialGames.games.length) {
-					$('#add-games-modal').find('.modal-body').clear().html(gamesListHtml);
-					let buttonHtml: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
-						languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
-						'</button>';
-					$('#potential-games-area').html(buttonHtml);
-				}
-				else
-					gamesListHtml += '<div class="row potential-games-row">';
+			if (counter === this.potentialGames.games.length) {
+				$('#add-games-modal').find('.modal-body').clear().append(gamesList);
+				let buttonHtml: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
+					languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
+					'</button>';
+				$('#potential-games-area').html(buttonHtml);
 			}
 		});
 	}

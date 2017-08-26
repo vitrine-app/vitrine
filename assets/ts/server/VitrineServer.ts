@@ -11,7 +11,7 @@ import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
-import { downloadFile, getEnvFolder, getGamesFolder, uuidV5 } from './helpers';
+import { downloadFile, getGamesFolder, uuidV5 } from './helpers';
 
 export class VitrineServer {
 	private windowsList;
