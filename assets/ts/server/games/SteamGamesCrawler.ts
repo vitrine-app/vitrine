@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import * as glob from 'glob';
 
 import { AcfParser } from '../api/AcfParser';
-import { PotentialGame } from '../../models/PotentialGame';
+import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getIgdbWrapperFiller } from '../api/IgdbWrapper';
+import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 import { getEnvFolder, getGamesFolder, uuidV5} from '../helpers';
 
 class SteamGamesCrawler {
@@ -15,7 +15,7 @@ class SteamGamesCrawler {
 	private potentialGames: PotentialGame[];
 	private callback: Function;
 
-	constructor() {
+	public constructor() {
 		this.configFilePath = path.resolve(getEnvFolder('config'), 'steam.json');
 		this.configFile = JSON.parse(fs.readFileSync(this.configFilePath).toString());
 		this.manifestRegEx = 'appmanifest_*.acf';
@@ -54,9 +54,11 @@ class SteamGamesCrawler {
 				counter++;
 				return;
 			}
-			getIgdbWrapperFiller(gameManifest.name).then((game: any) => {
+			getIgdbWrapperSearcher(gameManifest.name, 1).then((game: any) => {
+				game = game[0];
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
+				potentialGame.source = GameSource.STEAM;
 				potentialGame.commandLine = [
 					path.resolve(this.configFile.installFolder, 'steam.exe'),
 					this.configFile.launchCommand.replace('%id', gameManifest.appid)
@@ -70,13 +72,12 @@ class SteamGamesCrawler {
 					this.callback(null, potentialGames);
 				}
 			}).catch((error) => {
-				if (error)
-					this.callback(error, null);
+				this.callback(error, null);
 			});
 		});
 	}
 
-	private static isGameAlreadyAdded(name: string) {
+	private static isGameAlreadyAdded(name: string): boolean {
 		let gameId: string = uuidV5(name);
 
 		let gameDirectory = path.resolve(getGamesFolder(), gameId);
@@ -86,7 +87,7 @@ class SteamGamesCrawler {
 	}
 }
 
-export function getSteamCrawler() {
+export function getSteamCrawler(): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new SteamGamesCrawler().search((error, potentialGames: PotentialGame[]) => {
 			if (error)

@@ -3,14 +3,14 @@ import * as path from 'path';
 
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getEnvFolder, getGamesFolder } from '../helpers';
+import { getGamesFolder } from '../helpers';
 
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];
 	private gamesDirectory: string;
 	private callback: Function;
 
-	constructor() {
+	public constructor() {
 		this.playableGames = [];
 		this.gamesDirectory = getGamesFolder();
 	}
@@ -52,7 +52,7 @@ class PlayableGamesCrawler {
 	}
 }
 
-export function getPlayableGamesCrawler() {
+export function getPlayableGamesCrawler(): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new PlayableGamesCrawler().search((error, playableGames: PlayableGame[]) => {
 			if (error)

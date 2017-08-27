@@ -1,11 +1,11 @@
-function alphabeticSort(nodeA: any, nodeB: any) {
+function alphabeticSort(nodeA: any, nodeB: any): boolean {
 	return nodeA.name > nodeB.name;
 }
 
 export class GamesCollection<T> {
 	private _games: T[];
 
-	constructor() {
+	public constructor() {
 		this._games = [];
 	}
 

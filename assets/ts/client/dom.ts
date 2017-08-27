@@ -24,7 +24,7 @@ function registerGameCover() {
 		mouseleave() {
 			$('#game-cover-image').removeClass('cover-hovered');
 			$('#game-cover-component').removeClass('cover-hovered');
-			(<any>$('#cover-play-btn')).removeClass('play-btn-visible');
+			$('#cover-play-btn').removeClass('play-btn-visible');
 		}
 	};
 
@@ -100,6 +100,7 @@ function registerAddGameForm() {
 
 		formSelector.find('input[name=cover]').val('');
 		formSelector.find('input[name=background]').val('');
+		formSelector.find('input[name=source]').val('');
 
 		$('#fill-with-igdb-btn').prop('disabled', true);
 		$('#add-game-submit-btn').prop('disabled', true);

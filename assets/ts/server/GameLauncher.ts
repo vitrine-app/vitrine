@@ -1,26 +1,27 @@
 import { execFile } from 'child_process';
 import * as path from 'path';
 
-import { GameSource, PlayableGame } from '../models/PlayableGame';
+import { GameSource } from '../models/PotentialGame';
+import { PlayableGame } from '../models/PlayableGame';
 import { getEnvFolder } from './helpers';
 
 class GameLauncher {
 	private scriptPath: string;
 	private watcherPath: string;
 
-	constructor(private game: PlayableGame) {
+	public constructor(private game: PlayableGame) {
 		this.scriptPath = path.resolve(getEnvFolder('scripts'), 'gameLauncher.exe');
 		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
 	}
 
 	public launch(callback: Function) {
-		switch (this.game.source) {
-			case GameSource.STEAM: {
-				this.launchSteamGame(callback);
-				break;
-			}
+		switch (+this.game.source) {
 			case GameSource.LOCAL: {
 				this.launchStandardGame(callback);
+				break;
+			}
+			case GameSource.STEAM: {
+				this.launchSteamGame(callback);
 				break;
 			}
 		}
@@ -63,7 +64,7 @@ class GameLauncher {
 	}
 }
 
-export function getGameLauncher(game: PlayableGame) {
+export function getGameLauncher(game: PlayableGame): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new GameLauncher(game).launch((error, minutesPlayed) => {
 			if (error)

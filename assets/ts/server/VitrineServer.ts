@@ -3,15 +3,16 @@ import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
+import { sync as mkDir } from 'mkdirp';
 
 import { GamesCollection } from '../models/GamesCollection';
-import { PotentialGame } from '../models/PotentialGame';
-import { GameSource, PlayableGame} from '../models/PlayableGame';
+import { GameSource, PotentialGame } from '../models/PotentialGame';
+import { PlayableGame} from '../models/PlayableGame';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
-import { downloadFile, getEnvFolder, getGamesFolder, uuidV5 } from './helpers';
+import { downloadFile, getGamesFolder, uuidV5 } from './helpers';
 
 export class VitrineServer {
 	private windowsList;
@@ -23,7 +24,7 @@ export class VitrineServer {
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
 
-	constructor() {
+	public constructor() {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
@@ -67,12 +68,7 @@ export class VitrineServer {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
-		getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
-			this.potentialGames = games;
-			event.sender.send('server.add-potential-games', this.potentialGames.games);
-		}).catch((error) => {
-			throw error;
-		});
+		this.searchSteamGames(event);
 
 		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 			this.playableGames = games;
@@ -118,7 +114,7 @@ export class VitrineServer {
 	private addGame(event: Electron.Event, gameId: string) {
 		this.potentialGames.getGame(gameId, (error, potentialSteamGame) => {
 			if (error)
-				return this.throwServerError(event, error);
+				return VitrineServer.throwServerError(event, error);
 			let addedGame: PlayableGame = PlayableGame.toPlayableGame(potentialSteamGame);
 			addedGame.source = GameSource.STEAM;
 			delete addedGame.details.id;
@@ -129,26 +125,29 @@ export class VitrineServer {
 	private addGameManual(event: Electron.Event, gameForm: any) {
 		let gameName: string = gameForm.name;
 		let programName: string = gameForm.executable;
-		let game: PlayableGame = new PlayableGame(gameName, gameForm);
-		game.source = GameSource.LOCAL;
+		let addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
+		addedGame.source = gameForm.source;
 
-		game.commandLine.push(programName);
-		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
-		game.details.rating = parseInt(game.details.rating);
-		game.details.genres = game.details.genres.split(', ');
-		game.details.releaseDate = new Date(game.details.date).getTime();
+		addedGame.commandLine.push(programName);
+		addedGame.commandLine = addedGame.commandLine.concat(gameForm.arguments.split(' '));
+		addedGame.details.rating = parseInt(addedGame.details.rating);
+		addedGame.details.genres = addedGame.details.genres.split(', ');
+		addedGame.details.releaseDate = new Date(addedGame.details.date).getTime();
 
-		delete game.details.date;
-		delete game.details.arguments;
-		this.registerGame(event, game);
+		if (addedGame.source == GameSource.STEAM)
+			addedGame.details.steamId = parseInt(addedGame.commandLine[1].match(/\d+/g)[0]);
+
+		delete addedGame.details.date;
+		delete addedGame.details.arguments;
+		this.registerGame(event, addedGame);
 	}
 
 	private launchGame(event: Electron.Event, gameId: string)  {
 		this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
 			if (error)
-				return this.throwServerError(event, error);
+				return VitrineServer.throwServerError(event, error);
 			if (game.uuid !== uuidV5(game.name))
-				return this.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
+				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
@@ -156,14 +155,12 @@ export class VitrineServer {
 				this.gameLaunched = false;
 				console.log('You played', secondsPlayed, 'seconds.');
 				game.addPlayTime(secondsPlayed, (error) => {
-					if (error)
-						return this.throwServerError(event, error);
+					return VitrineServer.throwServerError(event, error);
 				});
 				event.sender.send('server.stop-game', gameId, game.timePlayed);
 			}).catch((error) => {
-				if (error)
-					return this.throwServerError(event, error);
 				this.gameLaunched = false;
+				return VitrineServer.throwServerError(event, error);
 			});
 		});
 	}
@@ -174,6 +171,15 @@ export class VitrineServer {
 			rimraf(gameDirectory, () => {
 				event.sender.send('server.remove-playable-game', error, gameId);
 			});
+		});
+	}
+
+	private searchSteamGames(event: Electron.Event) {
+		getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
+			this.potentialGames = games;
+			event.sender.send('server.add-potential-games', this.potentialGames.games);
+		}).catch((error) => {
+			throw error;
 		});
 	}
 
@@ -215,11 +221,11 @@ export class VitrineServer {
 
 		if (fs.existsSync(configFilePath))
 			return;
-		fs.mkdirSync(gameDirectory);
+		mkDir(gameDirectory);
 
 		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
-		let backgroundScreen: string = (game.details.steamId) ? (game.details.screenshots[0]) : (game.details.background);
+		let backgroundScreen: string = game.details.background;
 
 		downloadFile(game.details.cover, coverPath, true, (success: boolean) => {
 			if (success)
@@ -231,19 +237,17 @@ export class VitrineServer {
 					delete game.details.screenshots;
 				else
 					delete game.details.background;
-				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (err) => {
-					if (err)
-						throw err;
-					if (game.details.steamId)
-						event.sender.send('server.remove-potential-game', game.uuid);
-					event.sender.send('server.add-playable-game', game);
-					this.playableGames.addGame(game);
-				});
+				fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
+				if (game.source !== GameSource.LOCAL)
+					this.searchSteamGames(event);
+				event.sender.send('server.add-playable-game', game);
+				this.playableGames.addGame(game);
+
 			});
 		});
 	}
 
-	private throwServerError(event: any, error: string | Error) {
+	private static throwServerError(event: any, error: string | Error) {
 		return event.sender.send('server.server-error', error);
 	}
 }

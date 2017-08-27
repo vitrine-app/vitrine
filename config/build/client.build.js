@@ -8,14 +8,29 @@ module.exports = {
 		__filename: false
 	},
 	resolve: {
-		extensions: ['.ts', '.js', '.json']
+		extensions: ['.ts', '.js']
 	},
 	target: 'electron-renderer',
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.ts?$/,
 				loader: 'awesome-typescript-loader'
+			},
+			{
+				test: /\.(css|scss)?$/,
+				use: [
+					{
+						loader: 'css-loader'
+					},
+					{
+						loader: 'sass-loader'
+					}
+				]
+			},
+			{
+				test: /\.(woff|woff2|eot|ttf|otf|svg)(.*?)?$/,
+				loader: 'base64-font-loader'
 			}
 		]
 	}

@@ -3,7 +3,7 @@ import { ProgressInfo } from 'electron-updater/node_modules/electron-builder-htt
 import * as dateFormat from 'dateformat';
 
 import { GamesCollection } from '../models/GamesCollection';
-import { PotentialGame } from '../models/PotentialGame';
+import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
 import { displayRemoveGameModal, formatTimePlayed, urlify } from './helpers';
@@ -12,13 +12,16 @@ export class VitrineClient {
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private clickedGame: PlayableGame;
+	private releaseUrl: string;
 
-	constructor() {
+	public constructor() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
-		window.onerror = function(error, url, line) {
+		this.releaseUrl = 'https://github.com/paul-roman/vitrine/releases/tag/v';
+
+		window.onerror = function(message: string, filename?: string, line?: number, col?: number, error?: Error) {
 			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
-				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
+				+ '<pre>' + filename + ':' + line + ':' + col + '</pre><p>' + message.replace('Uncaught Error: ', '') + '</p>';
 			$('#error-message').clear().html(errorHtml);
 			$('#error-modal').modal('show');
 		}
@@ -58,9 +61,7 @@ export class VitrineClient {
 		$('#update-app-disclaimer').html(languageInstance.replaceJs('updateText', version));
 		$('#app-change-logs').html(changeLogsHtml).click((event) => {
 			event.preventDefault();
-
-			let releaseUrl: string = 'https://github.com/paul-roman/vitrine/releases/tag/v' + version;
-			shell.openExternal(releaseUrl);
+			shell.openExternal(this.releaseUrl + version);
 		});
 		$('#update-app-btn').click(function() {
 			$(this).loading();
@@ -70,9 +71,7 @@ export class VitrineClient {
 	}
 
 	private serverError(event: Electron.Event, error: string) {
-		if (error) {
-			throw new Error(error);
-		}
+		throw new Error(error);
 	}
 
 	private getIgdbGame(event: Electron.Event, error: string, game: any) {
@@ -82,7 +81,7 @@ export class VitrineClient {
 		$('#submit-igdb-research-btn').html(languageInstance.replaceJs('submitNewGame'));
 		$('#igdb-research-modal').modal('hide');
 
-		let formSelector = $('#add-game-form');
+		let formSelector: JQuery = $('#add-game-form');
 
 		formSelector.find('input[name=name]').val(game.name);
 		formSelector.find('input[name=series]').val(game.series);
@@ -112,6 +111,12 @@ export class VitrineClient {
 			'background-image': urlify(game.cover)
 		});
 		formSelector.find('input[name=cover]').val(game.cover);
+		if (!formSelector.find('input[name=source]').val())
+			formSelector.find('input[name=source]').val(GameSource.LOCAL);
+		if ($('#add-games-modal').is(':visible'))
+			$('#add-games-modal').modal('hide');
+		if (!$('#add-game-modal').is(':visible'))
+			$('#add-game-modal').modal('show');
 	}
 
 	private getIgdbSearches(event: Electron.Event, error: string, games: any) {
@@ -144,7 +149,7 @@ export class VitrineClient {
 
 	private addPotentialGames(event: Electron.Event, games: PotentialGame[]) {
 		this.potentialGames.games = games;
-		this.renderPotentialGames();
+		this.renderPotentialGames(event);
 	}
 
 	private removePotentialGame(event: Electron.Event, gameId: string)  {
@@ -152,7 +157,7 @@ export class VitrineClient {
 			if (error)
 				throw new Error(error);
 			else if (game) {
-				this.renderPotentialGames();
+				this.renderPotentialGames(event);
 			}
 		});
 	}
@@ -168,10 +173,8 @@ export class VitrineClient {
 	}
 
 	private addPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
-		if (!playableGame.details.steamId) {
-			$('#add-game-modal').modal('hide');
-			$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
-		}
+		$('#add-game-modal').modal('hide');
+		$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
 		this.playableGames.addGame(playableGame);
 		this.renderPlayableGames(() => {
 			this.updateGameUi(playableGame);
@@ -202,31 +205,41 @@ export class VitrineClient {
 		});
 	}
 
-	private renderPotentialGames() {
+	private renderPotentialGames(event: Electron.Event) {
 		if (!this.potentialGames.games.length) {
 			$('#potential-games-area').clear();
 			return;
 		}
 		this.potentialGames.sort();
 		let counter: number = 0;
-		let gamesListHtml: string = '<div class="row potential-games-row">';
+		let gamesList: JQuery = $('<div class="row potential-games-row"></div>');
 		this.potentialGames.forEach((potentialGame: PotentialGame) => {
-			gamesListHtml += '<div class="col-md-3 potential-game">'
-				+ '<div class="potential-game-cover" style="background-image: url(' + potentialGame.details.cover + ')"></div>'
-				+ potentialGame.name
+			let gameHtml: string = '<div class="col-md-3">'
+				+ '<div class="potential-game-cover"><div class="image" style="background-image: url(' + potentialGame.details.cover + ')"></div>'
+				+ '<i class="fa fa-plus-circle icon animated"></i></div>'
+				+ '<span class="potential-game-name">' + potentialGame.name + '</span>'
 				+ '</div>';
+			let game: JQuery = $(gameHtml);
+			game.find('div.potential-game-cover').blurPicture(55, function() {
+				$(this).find('.image').off().addClass('cover-hovered');
+				$(this).find('.icon').off().removeClass('fa-plus-circle').addClass('fa-spinner fa-spin cover-hovered');
+				event.sender.send('client.fill-igdb-game', potentialGame.details.id);
+				let formSelector: JQuery = $('#add-game-form');
+				let exePath: string = potentialGame.commandLine.shift();
+				formSelector.find('input[name=executable]').val(exePath);
+				formSelector.find('input[name=arguments]').val(potentialGame.commandLine.join(' '));
+				formSelector.find('input[name=source]').val(potentialGame.source);
+				$('#fill-with-igdb-btn').prop('disabled', false);
+				$('#add-game-submit-btn').prop('disabled', false);
+			});
+			gamesList.append(game);
 			counter++;
-			if (counter % 4 === 0 || counter === this.potentialGames.games.length) {
-				gamesListHtml += '</div>';
-				if (counter === this.potentialGames.games.length) {
-					$('#add-games-modal').find('.modal-body').clear().html(gamesListHtml);
-					let buttonHtml: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
-						languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
-						'</button>';
-					$('#potential-games-area').html(buttonHtml);
-				}
-				else
-					gamesListHtml += '<div class="row potential-games-row">';
+			if (counter === this.potentialGames.games.length) {
+				$('#add-games-modal').find('.modal-body').clear().append(gamesList);
+				let buttonHtml: string = '<button id="add-potential-games-btn" class="btn btn-primary" data-toggle="modal" data-target="#add-games-modal">' +
+					languageInstance.replaceJs('potentialGamesAdd', this.potentialGames.games.length) +
+					'</button>';
+				$('#potential-games-area').html(buttonHtml);
 			}
 		});
 	}
@@ -280,6 +293,7 @@ export class VitrineClient {
 			$('#game-play').addClass('game-infos-visible').find('button').off('click').click(() => {
 				ipcRenderer.send('client.launch-game', game.uuid);
 			});
+			$('#game-play').find('p').clear();
 			if (game.timePlayed)
 				$('#game-play').find('p').html(languageInstance.replaceJs('timePlayed') + ' ' + formatTimePlayed(game.timePlayed));
 			$('#game-desc').addClass('game-infos-visible').html(game.details.summary);

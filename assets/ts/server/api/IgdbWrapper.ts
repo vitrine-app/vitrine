@@ -7,7 +7,7 @@ class IgdbWrapper {
 	private callback: any;
 	private game: any;
 
-	constructor() {
+	public constructor() {
 		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
 		this.client = igdb.default(this.apiKey);
 		this.levenshteinRefiner = 5;
@@ -48,16 +48,15 @@ class IgdbWrapper {
 			let counter: number = 0;
 			response.body.forEach((game: any) => {
 				if (game.cover)
-					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small');
+					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small_2x');
 				else // TODO: Change default image
-					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small/nocover_qhhlj6.jpg';
+					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
 				counter++;
 				if (counter === response.body.length)
 					callback(null, response.body);
 			});
 		}).catch((error) => {
-			if (error)
-				callback(error, null);
+			callback(error, null);
 		});
 	}
 
@@ -156,7 +155,7 @@ class IgdbWrapper {
 	}
 }
 
-export function getIgdbWrapperFiller(gameId: number) {
+export function getIgdbWrapperFiller(gameId: number): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new IgdbWrapper().findGameById(gameId, (error, game) => {
 			if (error)
@@ -167,13 +166,13 @@ export function getIgdbWrapperFiller(gameId: number) {
 	});
 }
 
-export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number) {
+export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper().searchGames(gameName,(error, game) => {
+		new IgdbWrapper().searchGames(gameName,(error, games) => {
 			if (error)
 				reject(error);
 			else
-				resolve(game);
+				resolve(games);
 		}, resultsNb);
 	});
 }

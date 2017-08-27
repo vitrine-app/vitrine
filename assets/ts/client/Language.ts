@@ -6,12 +6,12 @@ import { getEnvFolder } from '../server/helpers';
 class Language {
 	private dict: any;
 
-	constructor(private lang: string) {
+	public constructor(private lang: string) {
 		let filePath: string = path.resolve(getEnvFolder('config'), 'lang', lang + '.json');
 		this.dict = JSON.parse(fs.readFileSync(filePath).toString());
 	}
 
-	public replaceHtml(key: string, arg?: any) {
+	public replaceHtml(key: string, arg?: any): string {
 		let keyArray: string[] = key.split(',');
 		if (keyArray.length === 1)
 			return this.dict[key];
@@ -23,7 +23,7 @@ class Language {
 		return ret;
 	}
 
-	public replaceJs(key: string, arg?: any) {
+	public replaceJs(key: string, arg?: any): string {
 		if (!arg)
 			return this.dict[key];
 		return this.dict[key].replace('%1', arg);
