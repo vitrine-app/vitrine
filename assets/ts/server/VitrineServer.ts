@@ -237,14 +237,12 @@ export class VitrineServer {
 					delete game.details.screenshots;
 				else
 					delete game.details.background;
-				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (error) => {
-					if (error)
-						throw error;
-					if (game.source !== GameSource.LOCAL)
-						this.searchSteamGames(event);
-					event.sender.send('server.add-playable-game', game);
-					this.playableGames.addGame(game);
-				});
+				fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
+				if (game.source !== GameSource.LOCAL)
+					this.searchSteamGames(event);
+				event.sender.send('server.add-playable-game', game);
+				this.playableGames.addGame(game);
+
 			});
 		});
 	}

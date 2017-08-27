@@ -293,6 +293,7 @@ export class VitrineClient {
 			$('#game-play').addClass('game-infos-visible').find('button').off('click').click(() => {
 				ipcRenderer.send('client.launch-game', game.uuid);
 			});
+			$('#game-play').find('p').clear();
 			if (game.timePlayed)
 				$('#game-play').find('p').html(languageInstance.replaceJs('timePlayed') + ' ' + formatTimePlayed(game.timePlayed));
 			$('#game-desc').addClass('game-infos-visible').html(game.details.summary);
