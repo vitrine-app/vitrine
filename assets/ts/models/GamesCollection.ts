@@ -1,7 +1,3 @@
-function alphabeticSort(nodeA: any, nodeB: any): boolean {
-	return nodeA.name > nodeB.name;
-}
-
 export class GamesCollection<T> {
 	private _games: T[];
 
@@ -57,7 +53,7 @@ export class GamesCollection<T> {
 
 	public sort() {
 		if (this._games.length)
-			(<any>this._games).sort(alphabeticSort);
+			this._games.sort(this.alphabeticSort);
 	}
 
 	public forEach(loopCallBack: Function, endCallBack?: Function) {
@@ -68,5 +64,9 @@ export class GamesCollection<T> {
 			if (counter === this._games.length && endCallBack)
 				endCallBack();
 		})
+	}
+
+	private alphabeticSort(nodeA: T, nodeB: T): number {
+		return ((<any>nodeA).name > (<any>nodeB).name) ? (1) : (-1);
 	}
 }

@@ -85,7 +85,7 @@
     "cheerio": "^1.0.0-rc.2",
     "css-loader": "^0.28.5",
     "electron": "^1.7.6",
-    "electron-builder": "^19.26.0",
+    "electron-builder": "^19.25.2",
     "html-minifier": "^3.5.3",
     "mocha": "^3.5.0",
     "node-sass": "^4.5.3",

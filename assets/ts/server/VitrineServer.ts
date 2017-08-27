@@ -68,10 +68,10 @@ export class VitrineServer {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
-		this.searchSteamGames(event);
 
 		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 			this.playableGames = games;
+			this.searchSteamGames(event);
 			event.sender.send('server.add-playable-games', this.playableGames.games);
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
@@ -175,7 +175,7 @@ export class VitrineServer {
 	}
 
 	private searchSteamGames(event: Electron.Event) {
-		getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
+		getSteamCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 			this.potentialGames = games;
 			event.sender.send('server.add-potential-games', this.potentialGames.games);
 		}).catch((error) => {

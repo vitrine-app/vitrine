@@ -7,19 +7,22 @@ import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 import { getEnvFolder, getGamesFolder, uuidV5} from '../helpers';
+import { PlayableGame } from '../../models/PlayableGame';
 
 class SteamGamesCrawler {
 	private configFilePath: string;
 	private configFile: any;
 	private manifestRegEx: string;
 	private potentialGames: PotentialGame[];
+	private playableGames: PlayableGame[];
 	private callback: Function;
 
-	public constructor() {
+	public constructor(playableGames?: PlayableGame[]) {
 		this.configFilePath = path.resolve(getEnvFolder('config'), 'steam.json');
 		this.configFile = JSON.parse(fs.readFileSync(this.configFilePath).toString());
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.potentialGames = [];
+		this.playableGames = (playableGames) ? (playableGames) : ([]);
 	}
 
 	public search(callback: Function): void {
@@ -54,6 +57,12 @@ class SteamGamesCrawler {
 				counter++;
 				return;
 			}
+			for (let playableGame of this.playableGames) {
+				if (gameManifest.appid == playableGame.details.steamId) {
+					counter++;
+					return;
+				}
+			}
 			getIgdbWrapperSearcher(gameManifest.name, 1).then((game: any) => {
 				game = game[0];
 				delete game.name;
@@ -87,9 +96,9 @@ class SteamGamesCrawler {
 	}
 }
 
-export function getSteamCrawler(): Promise<any> {
+export function getSteamCrawler(playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamGamesCrawler().search((error, potentialGames: PotentialGame[]) => {
+		new SteamGamesCrawler(playableGames).search((error, potentialGames: PotentialGame[]) => {
 			if (error)
 				reject(error);
 			else
