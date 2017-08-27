@@ -3,7 +3,7 @@ import { ProgressInfo } from 'electron-updater/node_modules/electron-builder-htt
 import * as dateFormat from 'dateformat';
 
 import { GamesCollection } from '../models/GamesCollection';
-import { PotentialGame } from '../models/PotentialGame';
+import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { languageInstance } from './Language';
 import { displayRemoveGameModal, formatTimePlayed, urlify } from './helpers';
@@ -81,7 +81,7 @@ export class VitrineClient {
 		$('#submit-igdb-research-btn').html(languageInstance.replaceJs('submitNewGame'));
 		$('#igdb-research-modal').modal('hide');
 
-		let formSelector = $('#add-game-form');
+		let formSelector: JQuery = $('#add-game-form');
 
 		formSelector.find('input[name=name]').val(game.name);
 		formSelector.find('input[name=series]').val(game.series);
@@ -111,6 +111,12 @@ export class VitrineClient {
 			'background-image': urlify(game.cover)
 		});
 		formSelector.find('input[name=cover]').val(game.cover);
+		if (!formSelector.find('input[name=source]').val())
+			formSelector.find('input[name=source]').val(GameSource.LOCAL);
+		if ($('#add-games-modal').is(':visible'))
+			$('#add-games-modal').modal('hide');
+		if (!$('#add-game-modal').is(':visible'))
+			$('#add-game-modal').modal('show');
 	}
 
 	private getIgdbSearches(event: Electron.Event, error: string, games: any) {
@@ -142,8 +148,9 @@ export class VitrineClient {
 	}
 
 	private addPotentialGames(event: Electron.Event, games: PotentialGame[]) {
+		console.log(games);
 		this.potentialGames.games = games;
-		this.renderPotentialGames();
+		this.renderPotentialGames(event);
 	}
 
 	private removePotentialGame(event: Electron.Event, gameId: string)  {
@@ -151,7 +158,7 @@ export class VitrineClient {
 			if (error)
 				throw new Error(error);
 			else if (game) {
-				this.renderPotentialGames();
+				this.renderPotentialGames(event);
 			}
 		});
 	}
@@ -201,7 +208,7 @@ export class VitrineClient {
 		});
 	}
 
-	private renderPotentialGames() {
+	private renderPotentialGames(event: Electron.Event) {
 		if (!this.potentialGames.games.length) {
 			$('#potential-games-area').clear();
 			return;
@@ -216,8 +223,18 @@ export class VitrineClient {
 				+ '<span class="potential-game-name">' + potentialGame.name + '</span>'
 				+ '</div>';
 			let game: JQuery = $(gameHtml);
-			game.find('div.potential-game-cover').blurPicture(55, () => {
+			game.find('div.potential-game-cover').blurPicture(55, function() {
+				$(this).find('.image').off().addClass('cover-hovered');
+				$(this).find('.icon').off().removeClass('fa-plus-circle').addClass('fa-spinner fa-spin cover-hovered');
+				event.sender.send('client.fill-igdb-game', potentialGame.details.id);
 				console.log(potentialGame);
+				let formSelector: JQuery = $('#add-game-form');
+				let exePath: string = potentialGame.commandLine.shift();
+				formSelector.find('input[name=executable]').val(exePath);
+				formSelector.find('input[name=arguments]').val(potentialGame.commandLine.join(' '));
+				formSelector.find('input[name=source]').val(potentialGame.source);
+				$('#fill-with-igdb-btn').prop('disabled', false);
+				$('#add-game-submit-btn').prop('disabled', false);
 			});
 			gamesList.append(game);
 			counter++;

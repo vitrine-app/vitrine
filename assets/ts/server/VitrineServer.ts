@@ -3,10 +3,11 @@ import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
+import { sync as mkDir } from 'mkdirp';
 
 import { GamesCollection } from '../models/GamesCollection';
-import { PotentialGame } from '../models/PotentialGame';
-import { GameSource, PlayableGame} from '../models/PlayableGame';
+import { GameSource, PotentialGame } from '../models/PotentialGame';
+import { PlayableGame} from '../models/PlayableGame';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
@@ -67,12 +68,7 @@ export class VitrineServer {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
-		getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
-			this.potentialGames = games;
-			event.sender.send('server.add-potential-games', this.potentialGames.games);
-		}).catch((error) => {
-			throw error;
-		});
+		this.searchSteamGames(event);
 
 		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 			this.playableGames = games;
@@ -130,7 +126,7 @@ export class VitrineServer {
 		let gameName: string = gameForm.name;
 		let programName: string = gameForm.executable;
 		let game: PlayableGame = new PlayableGame(gameName, gameForm);
-		game.source = GameSource.LOCAL;
+		game.source = gameForm.source;
 
 		game.commandLine.push(programName);
 		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
@@ -175,6 +171,15 @@ export class VitrineServer {
 		});
 	}
 
+	private searchSteamGames(event: Electron.Event) {
+		getSteamCrawler().then((games: GamesCollection<PotentialGame>) => {
+			this.potentialGames = games;
+			event.sender.send('server.add-potential-games', this.potentialGames.games);
+		}).catch((error) => {
+			throw error;
+		});
+	}
+
 	private createLoadingWindow() {
 		this.windowsList.loadingWindow = new BrowserWindow({
 			height: 300,
@@ -213,7 +218,7 @@ export class VitrineServer {
 
 		if (fs.existsSync(configFilePath))
 			return;
-		fs.mkdirSync(gameDirectory);
+		mkDir(gameDirectory);
 
 		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
@@ -236,6 +241,8 @@ export class VitrineServer {
 						event.sender.send('server.remove-potential-game', game.uuid);
 					event.sender.send('server.add-playable-game', game);
 					this.playableGames.addGame(game);
+					if (game.source !== GameSource.LOCAL)
+						this.searchSteamGames(event);
 				});
 			});
 		});

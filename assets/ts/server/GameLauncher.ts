@@ -1,7 +1,8 @@
 import { execFile } from 'child_process';
 import * as path from 'path';
 
-import { GameSource, PlayableGame } from '../models/PlayableGame';
+import { GameSource } from '../models/PotentialGame';
+import { PlayableGame } from '../models/PlayableGame';
 import { getEnvFolder } from './helpers';
 
 class GameLauncher {
@@ -14,13 +15,14 @@ class GameLauncher {
 	}
 
 	public launch(callback: Function) {
+		console.log(this.game.source);
 		switch (this.game.source) {
-			case GameSource.STEAM: {
-				this.launchSteamGame(callback);
-				break;
-			}
 			case GameSource.LOCAL: {
 				this.launchStandardGame(callback);
+				break;
+			}
+			case GameSource.STEAM: {
+				this.launchSteamGame(callback);
 				break;
 			}
 		}

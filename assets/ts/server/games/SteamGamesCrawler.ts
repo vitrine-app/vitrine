@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as glob from 'glob';
 
 import { AcfParser } from '../api/AcfParser';
-import { PotentialGame } from '../../models/PotentialGame';
+import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 import { getEnvFolder, getGamesFolder, uuidV5} from '../helpers';
@@ -58,6 +58,7 @@ class SteamGamesCrawler {
 				game = game[0];
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
+				potentialGame.source = GameSource.STEAM;
 				potentialGame.commandLine = [
 					path.resolve(this.configFile.installFolder, 'steam.exe'),
 					this.configFile.launchCommand.replace('%id', gameManifest.appid)
