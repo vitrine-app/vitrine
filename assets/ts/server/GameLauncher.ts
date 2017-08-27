@@ -15,8 +15,7 @@ class GameLauncher {
 	}
 
 	public launch(callback: Function) {
-		console.log(this.game.source);
-		switch (this.game.source) {
+		switch (+this.game.source) {
 			case GameSource.LOCAL: {
 				this.launchStandardGame(callback);
 				break;

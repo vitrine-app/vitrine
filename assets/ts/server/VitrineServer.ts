@@ -125,18 +125,21 @@ export class VitrineServer {
 	private addGameManual(event: Electron.Event, gameForm: any) {
 		let gameName: string = gameForm.name;
 		let programName: string = gameForm.executable;
-		let game: PlayableGame = new PlayableGame(gameName, gameForm);
-		game.source = gameForm.source;
+		let addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
+		addedGame.source = gameForm.source;
 
-		game.commandLine.push(programName);
-		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
-		game.details.rating = parseInt(game.details.rating);
-		game.details.genres = game.details.genres.split(', ');
-		game.details.releaseDate = new Date(game.details.date).getTime();
+		addedGame.commandLine.push(programName);
+		addedGame.commandLine = addedGame.commandLine.concat(gameForm.arguments.split(' '));
+		addedGame.details.rating = parseInt(addedGame.details.rating);
+		addedGame.details.genres = addedGame.details.genres.split(', ');
+		addedGame.details.releaseDate = new Date(addedGame.details.date).getTime();
 
-		delete game.details.date;
-		delete game.details.arguments;
-		this.registerGame(event, game);
+		if (addedGame.source == GameSource.STEAM)
+			addedGame.details.steamId = parseInt(addedGame.commandLine[1].match(/\d+/g)[0]);
+
+		delete addedGame.details.date;
+		delete addedGame.details.arguments;
+		this.registerGame(event, addedGame);
 	}
 
 	private launchGame(event: Electron.Event, gameId: string)  {
@@ -222,7 +225,7 @@ export class VitrineServer {
 
 		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
-		let backgroundScreen: string = (game.details.steamId) ? (game.details.screenshots[0]) : (game.details.background);
+		let backgroundScreen: string = game.details.background;
 
 		downloadFile(game.details.cover, coverPath, true, (success: boolean) => {
 			if (success)
@@ -237,12 +240,10 @@ export class VitrineServer {
 				fs.writeFile(configFilePath, JSON.stringify(game, null, 2), (error) => {
 					if (error)
 						throw error;
-					if (game.details.steamId)
-						event.sender.send('server.remove-potential-game', game.uuid);
-					event.sender.send('server.add-playable-game', game);
-					this.playableGames.addGame(game);
 					if (game.source !== GameSource.LOCAL)
 						this.searchSteamGames(event);
+					event.sender.send('server.add-playable-game', game);
+					this.playableGames.addGame(game);
 				});
 			});
 		});

@@ -19,9 +19,9 @@ export class VitrineClient {
 		this.playableGames = new GamesCollection();
 		this.releaseUrl = 'https://github.com/paul-roman/vitrine/releases/tag/v';
 
-		window.onerror = function(error, url, line) {
+		window.onerror = function(message: string, filename?: string, line?: number, col?: number, error?: Error) {
 			let errorHtml: string = '<h4>' + languageInstance.replaceJs('error') + '</h4><hr>'
-				+ '<pre>' + url + ':' + line + '</pre><p>' + error.replace('Uncaught Error: ', '') + '</p>';
+				+ '<pre>' + filename + ':' + line + ':' + col + '</pre><p>' + message.replace('Uncaught Error: ', '') + '</p>';
 			$('#error-message').clear().html(errorHtml);
 			$('#error-modal').modal('show');
 		}
@@ -148,7 +148,6 @@ export class VitrineClient {
 	}
 
 	private addPotentialGames(event: Electron.Event, games: PotentialGame[]) {
-		console.log(games);
 		this.potentialGames.games = games;
 		this.renderPotentialGames(event);
 	}
@@ -174,10 +173,8 @@ export class VitrineClient {
 	}
 
 	private addPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
-		if (!playableGame.details.steamId) {
-			$('#add-game-modal').modal('hide');
-			$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
-		}
+		$('#add-game-modal').modal('hide');
+		$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
 		this.playableGames.addGame(playableGame);
 		this.renderPlayableGames(() => {
 			this.updateGameUi(playableGame);
@@ -227,7 +224,6 @@ export class VitrineClient {
 				$(this).find('.image').off().addClass('cover-hovered');
 				$(this).find('.icon').off().removeClass('fa-plus-circle').addClass('fa-spinner fa-spin cover-hovered');
 				event.sender.send('client.fill-igdb-game', potentialGame.details.id);
-				console.log(potentialGame);
 				let formSelector: JQuery = $('#add-game-form');
 				let exePath: string = potentialGame.commandLine.shift();
 				formSelector.find('input[name=executable]').val(exePath);
