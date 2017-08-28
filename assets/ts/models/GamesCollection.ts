@@ -1,8 +1,10 @@
 export class GamesCollection<T> {
 	private _games: T[];
+	private evaluatedKey: string;
 
 	public constructor() {
 		this._games = [];
+		this.evaluatedKey = 'name';
 	}
 
 	get games(): T[] {
@@ -67,6 +69,6 @@ export class GamesCollection<T> {
 	}
 
 	private alphabeticSort(nodeA: T, nodeB: T): number {
-		return ((<any>nodeA).name > (<any>nodeB).name) ? (1) : (-1);
+		return (nodeA[this.evaluatedKey] > nodeB[this.evaluatedKey]) ? (1) : (-1);
 	}
 }
