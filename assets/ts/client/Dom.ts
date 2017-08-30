@@ -238,11 +238,15 @@ export class Dom {
 		formSelector.find('input[name=executable]').val(execProgram);
 		formSelector.find('input[name=arguments]').val(execDetails.join(' '));
 
+		$('#edit-game-executable-btn').click(() => {
+			this.registerOpenExecutableDialog(formSelector, $('#edit-game-submit-btn'));
+		});
+
 		this.registerCoverClickEvent($('#edit-game-cover'), formSelector).find('.image').css({
 			'background-image': urlify(game.details.cover)
 		});
 
-		$('#add-background-picker *:not(".manual-screenshot")').remove();
+		$('#edit-background-picker').clear();
 		let currentScreenshotHtml: string = '<img src="' + game.details.backgroundScreen + '" class="selected-screenshot">';
 		let currentScreenshot: JQuery = $(currentScreenshotHtml).click(function() {
 			$(this).parent().find('img.selected-screenshot').removeClass('selected-screenshot');
