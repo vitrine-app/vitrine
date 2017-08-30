@@ -2,7 +2,28 @@ import { ipcRenderer, remote } from 'electron';
 import * as formToObject from 'form-to-object';
 
 import { languageInstance } from './Language';
-import {displayRemoveGameModal, extendJQuery, openExecutableDialog, openImageDialog, urlify} from './helpers';
+import { displayRemoveGameModal, extendJQuery, openExecutableDialog, openImageDialog, urlify } from './helpers';
+
+function registerOpenExecutableDialog(formSelector: JQuery, submitBtn: JQuery) {
+	let dialogRet: string = openExecutableDialog();
+	if (dialogRet)
+		formSelector.find('input[name=executable]').val(dialogRet);
+	if (formSelector.find('input[name=name]').val())
+		submitBtn.prop('disabled', false);
+}
+
+function registerCoverClickEvent(coverSelector: JQuery, formSelector: JQuery) {
+	coverSelector.blurPicture(55, function() {
+		let cover: string = openImageDialog();
+		if (cover) {
+			cover = 'file://' + cover;
+			this.find('.image').css({
+				'background-image': urlify(cover)
+			});
+			formSelector.find('input[name=cover]').val(cover);
+		}
+	});
+}
 
 function registerModalOverlay() {
 	$(document).on('show.bs.modal', '.modal', function() {
@@ -34,16 +55,7 @@ function registerGameCover() {
 
 function registerAddGameForm() {
 	let formSelector = $('#add-game-form');
-	$('#add-game-cover').blurPicture(55, function() {
-		let cover: string = openImageDialog();
-		if (cover) {
-			cover = 'file://' + cover;
-			this.find('.image').css({
-				'background-image': urlify(cover)
-			});
-			formSelector.find('input[name=cover]').val(cover);
-		}
-	});
+	registerCoverClickEvent($('#add-game-cover'), formSelector);
 
 	formSelector.find('input[name=name]').on('input', function() {
 		if ($(this).val())
@@ -73,11 +85,7 @@ function registerAddGameForm() {
 	});
 
 	$('#add-game-executable-btn').click(() => {
-		let dialogRet: string = openExecutableDialog();
-		if (dialogRet)
-			$('#add-game-form').find('input[name=executable]').val(dialogRet);
-		if (formSelector.find('input[name=name]').val())
-			$('#add-game-submit-btn').prop('disabled', false);
+		registerOpenExecutableDialog(formSelector, $('#add-game-submit-btn'));
 	});
 
 	$('#add-game-submit-btn').click(() => {
@@ -104,7 +112,7 @@ function registerAddGameForm() {
 
 		$('#fill-with-igdb-btn').prop('disabled', true);
 		$('#add-game-submit-btn').prop('disabled', true);
-		$('#background-picker').clear();
+		$('#add-background-picker').clear();
 	});
 
 	$('#add-custom-background-btn').click((event) => {
@@ -119,13 +127,13 @@ function registerAddGameForm() {
 				$(this).addClass('selected-screenshot');
 				formSelector.find('input[name=background]').val(screenshot);
 			});
-			$('#background-picker').find('img.selected-screenshot').removeClass('selected-screenshot');
+			$('#add-background-picker').find('img.selected-screenshot').removeClass('selected-screenshot');
 			formSelector.find('input[name=background]').val(screenshot);
-			if ($('#background-picker').find('.manual-screenshot').length) {
-				$('#background-picker').find('.manual-screenshot').replaceWith(currentScreenshot)
+			if ($('#add-background-picker').find('.manual-screenshot').length) {
+				$('#add-background-picker').find('.manual-screenshot').replaceWith(currentScreenshot)
 			}
 			else {
-				$('#background-picker').prepend(currentScreenshot);
+				$('#add-background-picker').prepend(currentScreenshot);
 			}
 		}
 	});

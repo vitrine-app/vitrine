@@ -55,7 +55,7 @@ export class GamesCollection<T> {
 
 	public sort() {
 		if (this._games.length)
-			this._games.sort(this.alphabeticSort);
+			this._games.sort(this.alphabeticSort.bind(this));
 	}
 
 	public forEach(loopCallBack: Function, endCallBack?: Function) {

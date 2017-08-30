@@ -92,17 +92,16 @@ export class VitrineClient {
 		formSelector.find('input[name=rating]').val(game.rating);
 		formSelector.find('textarea[name=summary]').val(game.summary);
 
-		$('#background-picker *:not(".manual-screenshot")').remove();
-		$('#background-picker-group').show();
+		$('#add-background-picker *:not(".manual-screenshot")').remove();
 		game.screenshots.forEach((screenshot: string, index: number) => {
-			let isFirst: boolean = (!index && !$('#background-picker').find('.manual-screenshot').length) ? (true) : (false);
+			let isFirst: boolean = (!index && !$('#add-background-picker').find('.manual-screenshot').length) ? (true) : (false);
 			let currentScreenshotHtml: string = '<img src="' + screenshot + '" ' + ((isFirst) ? ('class="selected-screenshot"') : ('')) + '>';
 			let currentScreenshot: JQuery = $(currentScreenshotHtml).click(function() {
 				$(this).parent().find('img.selected-screenshot').removeClass('selected-screenshot');
 				$(this).addClass('selected-screenshot');
 				formSelector.find('input[name=background]').val(screenshot);
 			});
-			formSelector.find('#background-picker').append(currentScreenshot);
+			formSelector.find('#add-background-picker').append(currentScreenshot);
 			if (isFirst)
 				formSelector.find('input[name=background]').val(screenshot);
 		});

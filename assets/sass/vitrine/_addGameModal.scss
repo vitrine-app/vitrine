@@ -1,9 +1,9 @@
-#add-game-modal .modal-body {
+#add-game-modal .modal-body, #edit-game-modal .modal-body {
 	max-height: 82vh;
 	overflow-y: auto;
 
-	#add-game-form {
-		#background-picker {
+	#add-game-form, #edit-game-form {
+		#add-background-picker, #edit-background-picker {
 			overflow-x: auto;
 			overflow-y: hidden;
 			white-space: nowrap;
@@ -21,7 +21,7 @@
 				}
 			}
 		}
-		#add-custom-background-btn {
+		#add-custom-background-btn, #edit-custom-background-btn {
 			display: block;
 			margin-bottom: 8px;
 		}

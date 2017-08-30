@@ -1,4 +1,4 @@
-<div id="add-game-modal" class="modal fade" role="dialog">
+<div id="edit-game-modal" class="modal fade" role="dialog">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -8,13 +8,13 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-md-2">
-						<div id="add-game-cover">
+						<div id="edit-game-cover">
 							<div class="image"></div>
 							<i class="fa fa-folder-open-o icon animated"></i>
 						</div>
 					</div>
 					<div class="col-md-7 col-md-offset-1">
-						<form id="add-game-form">
+						<form id="edit-game-form">
 							<div class="form-group">
 								<label>{{ gameName }}</label>
 								<input class="form-control" name="name" placeholder="{{ gameName }}">
@@ -59,7 +59,7 @@
 								<div class="input-group">
 									<input class="form-control" name="executable" placeholder="{{ executable }}">
 									<span class="input-group-btn">
-										<button id="add-game-executable-btn" class="btn btn-default" type="button">
+										<button id="edit-game-executable-btn" class="btn btn-default" type="button">
 											<i class="fa fa-folder-open-o"></i>
 										</button>
 									</span>
@@ -72,10 +72,10 @@
 							<hr>
 							<div class="form-group">
 								<label>{{ backgroundImage }}</label>
-								<button id="add-custom-background-btn" class="btn btn-primary">
+								<button id="edit-custom-background-btn" class="btn btn-primary">
 									<i class="fa fa-plus"></i> {{ addCustomBgImage }}
 								</button>
-								<div id="add-background-picker"></div>
+								<div id="edit-background-picker"></div>
 							</div>
 							<input name="cover" hidden>
 							<input name="background" hidden>
@@ -85,8 +85,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="fill-with-igdb-btn" class="btn btn-primary" disabled>{{ fillWithIgdb }}</button>
-				<button id="add-game-submit-btn" class="btn btn-primary" disabled>{{ submitNewGame }}</button>
+				<button id="edit-game-submit-btn" class="btn btn-primary" disabled>{{ submitNewGame }}</button>
 			</div>
 		</div>
 	</div>
