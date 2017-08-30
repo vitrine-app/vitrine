@@ -4,6 +4,7 @@ import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
 import { sync as mkDir } from 'mkdirp';
+import * as moment from 'moment';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
@@ -132,7 +133,7 @@ export class VitrineServer {
 		addedGame.commandLine = addedGame.commandLine.concat(gameForm.arguments.split(' '));
 		addedGame.details.rating = parseInt(addedGame.details.rating);
 		addedGame.details.genres = addedGame.details.genres.split(', ');
-		addedGame.details.releaseDate = new Date(addedGame.details.date).getTime();
+		addedGame.details.releaseDate = moment(addedGame.details.date, 'DD/MM/YYYY').unix();
 
 		if (addedGame.source == GameSource.STEAM)
 			addedGame.details.steamId = parseInt(addedGame.commandLine[1].match(/\d+/g)[0]);

@@ -1,6 +1,6 @@
 import { ipcRenderer, shell } from 'electron';
 import { ProgressInfo } from 'electron-updater/node_modules/electron-builder-http';
-import * as dateFormat from 'dateformat';
+import * as moment from 'moment';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
@@ -47,6 +47,10 @@ export class VitrineClient {
 		ipcRenderer.on('server.stop-game', this.stopGame.bind(this));
 	}
 
+	public getPlayableGame(gameId: string, callback: Function) {
+		this.playableGames.getGame(gameId, callback);
+	}
+
 	private updateProgress(event: Electron.Event, progress: ProgressInfo) {
 		if (!$('#update-bar').is(':visible'))
 			$('#update-bar').show();
@@ -87,7 +91,7 @@ export class VitrineClient {
 		formSelector.find('input[name=series]').val(game.series);
 		formSelector.find('input[name=developer]').val(game.developer);
 		formSelector.find('input[name=publisher]').val(game.publisher);
-		formSelector.find('input[name=date]').datepicker('update', dateFormat(game.release_date, 'dd/mm/yyyy'));
+		formSelector.find('input[name=date]').datepicker('update', moment.unix(game.releaseDate / 1000).format('DD/MM/YYYY'));
 		formSelector.find('input[name=genres]').val(game.genres.join(', '));
 		formSelector.find('input[name=rating]').val(game.rating);
 		formSelector.find('textarea[name=summary]').val(game.summary);

@@ -11,6 +11,7 @@
   "loading": "Loading...",
   "playGame": "Play game",
   "removeGame": "Remove game",
+  "editGame": "Edit game",
   "potentialGamesAdd": "You can add %1 game(s)",
   "addGameLabel": "Add game",
   "fillWithIgdb": "Fill details",
