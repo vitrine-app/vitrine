@@ -43,6 +43,7 @@ export class VitrineClient {
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
 		ipcRenderer.on('server.remove-potential-game', this.removePotentialGame.bind(this));
 		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
+		ipcRenderer.on('server.edit-playable-game', this.editPlayableGame.bind(this));
 		ipcRenderer.on('server.remove-playable-game', this.removePlayableGame.bind(this));
 		ipcRenderer.on('server.stop-game', this.stopGame.bind(this));
 	}
@@ -183,6 +184,15 @@ export class VitrineClient {
 			this.updateGameUi(playableGame);
 		});
 	}
+
+	private editPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
+		$('#edit-game-modal').modal('hide');
+		$('#edit-game-submit-btn').html(languageInstance.replaceJs('editGame'));
+		this.playableGames.editGame(playableGame);
+		this.renderPlayableGames(() => {
+			this.updateGameUi(playableGame);
+		});
+	};
 
 	private removePlayableGame(event: Electron.Event, error: string, gameId: string) {
 		if (error)

@@ -17,6 +17,10 @@ export function downloadFile(url: string, path: string, isHttps: boolean, callba
 		callback(false);
 		return;
 	}
+	if (url === path) {
+		callback(true);
+		return;
+	}
 	let file = fs.createWriteStream(path);
 	if (url.startsWith('file://')) {
 		fs.createReadStream(url.substr(7)).pipe(file);

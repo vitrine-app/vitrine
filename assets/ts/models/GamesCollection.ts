@@ -19,8 +19,8 @@ export class GamesCollection<T> {
 		let counter: number = 0;
 		let found: boolean = false;
 
-		this._games.forEach((game: any) => {
-			if (game.uuid === gameId) {
+		this._games.forEach((game: T) => {
+			if (game['uuid'] === gameId) {
 				found = true;
 				callback(null, game);
 			}
@@ -33,6 +33,13 @@ export class GamesCollection<T> {
 
 	public addGame(game: T) {
 		this._games.push(game);
+	}
+
+	public editGame(game: T) {
+		this.getGame(game['uuid'], (error, currentGame: T) => {
+			if (!error)
+				currentGame = game;
+		});
 	}
 
 	public removeGame(gameId: string, callback: Function) {

@@ -89,7 +89,7 @@ export class Dom {
 
 		$('#add-game-submit-btn').click(() => {
 			let gameForm: any = formToObject($('#add-game-form')[0]);
-			ipcRenderer.send('client.add-game-manual', gameForm);
+			ipcRenderer.send('client.add-game', gameForm);
 			$('#add-game-submit-btn').loading();
 		});
 
@@ -224,6 +224,13 @@ export class Dom {
 	private openEditGameModal(game: PlayableGame) {
 		let formSelector: JQuery = $('#edit-game-form');
 
+		formSelector.find('input[name=name]').on('input', function() {
+			if ($(this).val() && formSelector.find('input[name=executable]').val())
+				$('#edit-game-submit-btn').prop('disabled', false);
+			else
+				$('#edit-game-submit-btn').prop('disabled', true);
+		});
+
 		formSelector.find('input[name=name]').val(game.name);
 		formSelector.find('input[name=series]').val(game.details.series);
 		formSelector.find('input[name=developer]').val(game.details.developer);
@@ -242,6 +249,7 @@ export class Dom {
 			this.registerOpenExecutableDialog(formSelector, $('#edit-game-submit-btn'));
 		});
 
+		formSelector.find('input[name=cover]').val(game.details.cover);
 		this.registerCoverClickEvent($('#edit-game-cover'), formSelector).find('.image').css({
 			'background-image': urlify(game.details.cover)
 		});
@@ -259,6 +267,12 @@ export class Dom {
 		$('#edit-custom-background-btn').click((event) => {
 			event.preventDefault();
 			this.registerCustomBackground($('#edit-background-picker'), formSelector);
+		});
+
+		$('#edit-game-submit-btn').click(() => {
+			let gameForm: any = formToObject($('#edit-game-form')[0]);
+			ipcRenderer.send('client.edit-game-manual', game.uuid, gameForm);
+			$('#edit-game-submit-btn').loading();
 		});
 
 		$('#edit-game-modal').modal('show');
