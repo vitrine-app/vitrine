@@ -73,12 +73,12 @@ export function extendJQuery() {
 			height = (height) ? (height) : (4.48);
 			this.addClass('blur-picture-container');
 			this.css({
-				'font-size': fontSize + 'px',
-				'width': width + 'em',
-				'height': height + 'em',
+				fontSize: fontSize + 'px',
+				width: width + 'em',
+				height: height + 'em',
 			}).find('.icon').css({
-				'left': (width / 2 - 0.3) + 'em',
-				'top': (height / 2 - 0.5) + 'em'
+				left: (width / 2 - 0.3) + 'em',
+				top: (height / 2 - 0.5) + 'em'
 			});
 			this.find('.image').mouseenter(() => {
 				this.find('.image').addClass('cover-hovered');

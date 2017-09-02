@@ -57,7 +57,7 @@ export class VitrineClient {
 			$('#update-bar').show();
 		let percentage: number = Math.round(progress.percent);
 		$('#update-bar .progress-bar').css({
-			'width': percentage + '%'
+			width: percentage + '%'
 		});
 	}
 
@@ -112,7 +112,7 @@ export class VitrineClient {
 		});
 
 		$('#add-game-cover').find('.image').css({
-			'background-image': urlify(game.cover)
+			backgroundImage: urlify(game.cover)
 		});
 		formSelector.find('input[name=cover]').val(game.cover);
 		if (!formSelector.find('input[name=source]').val())
@@ -318,13 +318,13 @@ export class VitrineClient {
 			}
 			else {
 				$('#game-background').beforeCss('#game-background', {
-					'background-image': 'none'
+					backgroundImage: 'none'
 				});
 			}
 			$('#selected-game-cover').css({
-				'display': 'block'
+				display: 'block'
 			}).find('.image').css({
-				'background-image': urlify(game.details.cover)
+				backgroundImage: urlify(game.details.cover)
 			}).parent().updateBlurClickCallback(() => {
 				ipcRenderer.send('client.launch-game', game.uuid);
 			});

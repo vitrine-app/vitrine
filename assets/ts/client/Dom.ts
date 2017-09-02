@@ -185,7 +185,7 @@ export class Dom {
 			if (cover) {
 				cover = 'file://' + cover;
 				this.find('.image').css({
-					'background-image': urlify(cover)
+					backgroundImage: urlify(cover)
 				});
 				formSelector.find('input[name=cover]').val(cover);
 			}
@@ -251,7 +251,7 @@ export class Dom {
 
 		formSelector.find('input[name=cover]').val(game.details.cover);
 		this.registerCoverClickEvent($('#edit-game-cover'), formSelector).find('.image').css({
-			'background-image': urlify(game.details.cover)
+			backgroundImage: urlify(game.details.cover)
 		});
 
 		$('#edit-background-picker').clear();
