@@ -1,9 +1,7 @@
-
-import * as http from 'http';
-import * as https from 'https';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as uuid from 'uuid/v5';
+import * as downloadFile from 'download-file';
 
 import { getEnvData } from '../models/env';
 
@@ -13,25 +11,32 @@ export function uuidV5(name: string): string {
 	return uuid(name, dnsNamespace);
 }
 
-export function downloadFile(url: string, path: string, isHttps: boolean, callback: Function) {
-	if (!url) {
-		callback(false);
-		return;
-	}
-	if (url === path) {
-		callback(true);
-		return;
-	}
-	let file = fs.createWriteStream(path);
-	if (url.startsWith('file://')) {
-		fs.createReadStream(url.substr(7)).pipe(file);
-		callback(true);
-		return;
-	}
-	let protocol: any = (isHttps) ? (https) : (http);
-	protocol.get(url, (response) => {
-		response.pipe(file);
-		callback(true);
+export function downloadImage(url: string, path: string): Promise<any> {
+	return new Promise((resolve, reject) => {
+		if (!url)
+			reject(new Error('URL is not valid'));
+		if (url === path)
+			resolve();
+		if (url.startsWith('file://')) {
+			fs.copy(url.substring(7), path).then(() => {
+				resolve();
+			}).catch((error) => {
+				reject(error);
+			});
+		}
+		else {
+			let filename: string = path.split('\\').pop();
+			path = path.substring(0, path.indexOf(filename));
+			downloadFile(url, {
+				directory: path,
+				filename: filename
+			}, (error) => {
+				if (error)
+					throw error;
+
+				resolve();
+			});
+		}
 	});
 }
 

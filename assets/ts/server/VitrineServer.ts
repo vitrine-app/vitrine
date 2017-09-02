@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -13,7 +13,7 @@ import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
-import { downloadFile, getGamesFolder, uuidV5 } from './helpers';
+import { downloadImage, getGamesFolder, uuidV5 } from './helpers';
 
 export class VitrineServer {
 	private windowsList;
@@ -227,12 +227,10 @@ export class VitrineServer {
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
 		let backgroundScreen: string = game.details.background.replace('t_screenshot_med', 't_screenshot_huge');
 
-		downloadFile(game.details.cover, coverPath, true, (success: boolean) => {
-			if (success)
-				game.details.cover = coverPath;
-			downloadFile(backgroundScreen, screenPath, true,(success: boolean) => {
-				if (success)
-					game.details.backgroundScreen = screenPath;
+		downloadImage(game.details.cover, coverPath).then(() => {
+			game.details.cover = coverPath;
+			downloadImage(backgroundScreen, screenPath).then(() => {
+				game.details.backgroundScreen = screenPath;
 				if (game.details.steamId)
 					delete game.details.screenshots;
 				else
@@ -248,7 +246,11 @@ export class VitrineServer {
 					event.sender.send('server.edit-playable-game', game);
 					this.playableGames.editGame(game);
 				}
+			}).catch((error: Error) => {
+				throw error;
 			});
+		}).catch((error: Error) => {
+			throw error;
 		});
 	}
 

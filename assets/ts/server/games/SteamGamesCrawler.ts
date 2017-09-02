@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
 import { AcfParser } from '../api/AcfParser';

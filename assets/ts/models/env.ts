@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 
 export function getEnvData(): any {
 	let packagePath: string = path.resolve(__dirname, '..', 'package.json');
