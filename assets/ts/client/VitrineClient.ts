@@ -205,8 +205,12 @@ export class VitrineClient {
 			if (error)
 				throw new Error(error);
 			this.renderPlayableGames(() => {
-				if (this.playableGames.games.length)
-					this.updateGameUi(this.playableGames.games[index]);
+				if (this.playableGames.games.length) {
+					if (index)
+						this.updateGameUi(this.playableGames.games[index - 1]);
+					else
+						this.updateGameUi(this.playableGames.games[index]);
+				}
 				else
 					this.updateGameUi(null);
 			});

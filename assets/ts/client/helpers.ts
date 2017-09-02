@@ -193,7 +193,7 @@ export function urlify(imgPath: string): string {
 export function displayRemoveGameModal(gameId: string, gameName: string) {
 	$('#remove-game-modal').find('#remove-game-disclaimer').html(languageInstance.replaceJs('removeGameText', gameName));
 	$('#remove-game-modal').modal('show');
-	$('#remove-game-btn').click(function(event) {
+	$('#remove-game-btn').off().click((event) => {
 		event.preventDefault();
 
 		ipcRenderer.send('client.remove-game', gameId);
