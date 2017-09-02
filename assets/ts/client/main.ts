@@ -6,7 +6,7 @@ import 'bootstrap-datepicker';
 import 'jquery-contextmenu';
 
 import { VitrineClient } from './VitrineClient';
-import { launchDom } from './dom';
+import { Dom } from './Dom';
 import { adaptComponent, launchStyling } from './bootstrap';
 
 launchStyling();
@@ -14,5 +14,5 @@ adaptComponent();
 
 let vitrineClient: VitrineClient = new VitrineClient();
 vitrineClient.registerEvents();
-launchDom();
+new Dom(vitrineClient);
 vitrineClient.run();

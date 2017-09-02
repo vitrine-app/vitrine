@@ -73,12 +73,12 @@ export function extendJQuery() {
 			height = (height) ? (height) : (4.48);
 			this.addClass('blur-picture-container');
 			this.css({
-				'font-size': fontSize + 'px',
-				'width': width + 'em',
-				'height': height + 'em',
+				fontSize: fontSize + 'px',
+				width: width + 'em',
+				height: height + 'em',
 			}).find('.icon').css({
-				'left': (width / 2 - 0.3) + 'em',
-				'top': (height / 2 - 0.5) + 'em'
+				left: (width / 2 - 0.3) + 'em',
+				top: (height / 2 - 0.5) + 'em'
 			});
 			this.find('.image').mouseenter(() => {
 				this.find('.image').addClass('cover-hovered');
@@ -193,7 +193,7 @@ export function urlify(imgPath: string): string {
 export function displayRemoveGameModal(gameId: string, gameName: string) {
 	$('#remove-game-modal').find('#remove-game-disclaimer').html(languageInstance.replaceJs('removeGameText', gameName));
 	$('#remove-game-modal').modal('show');
-	$('#remove-game-btn').click(function(event) {
+	$('#remove-game-btn').off().click((event) => {
 		event.preventDefault();
 
 		ipcRenderer.send('client.remove-game', gameId);

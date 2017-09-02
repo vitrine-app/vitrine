@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import * as fs from 'fs';
 
-import { downloadFile, uuidV5 } from '../../assets/ts/server/helpers';
+import { downloadImage, uuidV5 } from '../../assets/ts/server/helpers';
 
 describe('uuidV5 function', () => {
 	let uuid: string = uuidV5('dummy');
@@ -18,10 +18,11 @@ describe('downloadFile function', () => {
 	it('Should download a picture', (done: Function) => {
 		let url: string = 'http://sindikker.org/web/assets/images/dummy-user.jpg';
 		let path: string = './dummy.jpg';
-		downloadFile(url, path, false, (success) => {
-			expect(success).to.be.eq(true);
+		downloadImage(url, path).then(() => {
 			fs.unlinkSync(path);
 			done();
+		}).catch((error) => {
+			expect(error).to.be.eq(null);
 		});
 	});
 });

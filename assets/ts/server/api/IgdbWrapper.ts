@@ -100,10 +100,12 @@ class IgdbWrapper {
 	}
 
 	private findSeriesById(id: number, callback: Function) {
-		let ids = (Array.isArray(id)) ? (id) : ([id]);
-
+		if (!id) {
+			callback('');
+			return;
+		}
 		this.client.collections({
-			ids: ids
+			ids: [id]
 		}, ['name']).then((response) => {
 			callback(response.body[0]);
 		}).catch((error) => {

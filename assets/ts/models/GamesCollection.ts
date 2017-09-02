@@ -1,12 +1,10 @@
-function alphabeticSort(nodeA: any, nodeB: any): boolean {
-	return nodeA.name > nodeB.name;
-}
-
 export class GamesCollection<T> {
 	private _games: T[];
+	private evaluatedKey: string;
 
 	public constructor() {
 		this._games = [];
+		this.evaluatedKey = 'name';
 	}
 
 	get games(): T[] {
@@ -17,24 +15,33 @@ export class GamesCollection<T> {
 		this._games = games;
 	}
 
-	public getGame(gameId: string, callback: Function) {
-		let counter: number = 0;
-		let found: boolean = false;
+	public getGame(gameId: string): Promise<any> {
+		return new Promise((resolve, reject) => {
+			let counter: number = 0;
+			let found: boolean = false;
 
-		this._games.forEach((game: any) => {
-			if (game.uuid === gameId) {
-				found = true;
-				callback(null, game);
-			}
-			counter++;
-			if (counter === this._games.length && !found)
-				callback('Game not found.', null);
+			this._games.forEach((game: T) => {
+				if (game['uuid'] === gameId) {
+					found = true;
+					resolve(game);
+				}
+				counter++;
+				if (counter === this._games.length && !found)
+					reject(new Error('Game not found.'));
 
+			});
 		});
 	}
 
 	public addGame(game: T) {
 		this._games.push(game);
+	}
+
+	public editGame(game: T) {
+		this.getGame(game['uuid']).then((currentGame: T) => {
+			let index: number = this._games.indexOf(currentGame);
+			this._games[index] = game;
+		});
 	}
 
 	public removeGame(gameId: string, callback: Function) {
@@ -57,7 +64,7 @@ export class GamesCollection<T> {
 
 	public sort() {
 		if (this._games.length)
-			(<any>this._games).sort(alphabeticSort);
+			this._games.sort(this.alphabeticSort.bind(this));
 	}
 
 	public forEach(loopCallBack: Function, endCallBack?: Function) {
@@ -68,5 +75,9 @@ export class GamesCollection<T> {
 			if (counter === this._games.length && endCallBack)
 				endCallBack();
 		})
+	}
+
+	private alphabeticSort(nodeA: T, nodeB: T): number {
+		return (nodeA[this.evaluatedKey] > nodeB[this.evaluatedKey]) ? (1) : (-1);
 	}
 }

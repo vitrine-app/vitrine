@@ -1,6 +1,6 @@
 import { ipcRenderer, shell } from 'electron';
 import { ProgressInfo } from 'electron-updater/node_modules/electron-builder-http';
-import * as dateFormat from 'dateformat';
+import * as moment from 'moment';
 
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
@@ -43,8 +43,17 @@ export class VitrineClient {
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
 		ipcRenderer.on('server.remove-potential-game', this.removePotentialGame.bind(this));
 		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
+		ipcRenderer.on('server.edit-playable-game', this.editPlayableGame.bind(this));
 		ipcRenderer.on('server.remove-playable-game', this.removePlayableGame.bind(this));
 		ipcRenderer.on('server.stop-game', this.stopGame.bind(this));
+	}
+
+	public getPlayableGame(gameId: string, callback: Function) {
+		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
+			callback(null, game);
+		}).catch((error) => {
+			callback(error, null);
+		});
 	}
 
 	private updateProgress(event: Electron.Event, progress: ProgressInfo) {
@@ -52,7 +61,7 @@ export class VitrineClient {
 			$('#update-bar').show();
 		let percentage: number = Math.round(progress.percent);
 		$('#update-bar .progress-bar').css({
-			'width': percentage + '%'
+			width: percentage + '%'
 		});
 	}
 
@@ -87,28 +96,27 @@ export class VitrineClient {
 		formSelector.find('input[name=series]').val(game.series);
 		formSelector.find('input[name=developer]').val(game.developer);
 		formSelector.find('input[name=publisher]').val(game.publisher);
-		formSelector.find('input[name=date]').datepicker('update', dateFormat(game.release_date, 'dd/mm/yyyy'));
+		formSelector.find('input[name=date]').datepicker('update', moment.unix(game.releaseDate / 1000).format('DD/MM/YYYY'));
 		formSelector.find('input[name=genres]').val(game.genres.join(', '));
 		formSelector.find('input[name=rating]').val(game.rating);
 		formSelector.find('textarea[name=summary]').val(game.summary);
 
-		$('#background-picker *:not(".manual-screenshot")').remove();
-		$('#background-picker-group').show();
+		$('#add-background-picker *:not(".manual-screenshot")').remove();
 		game.screenshots.forEach((screenshot: string, index: number) => {
-			let isFirst: boolean = (!index && !$('#background-picker').find('.manual-screenshot').length) ? (true) : (false);
+			let isFirst: boolean = (!index && !$('#add-background-picker').find('.manual-screenshot').length) ? (true) : (false);
 			let currentScreenshotHtml: string = '<img src="' + screenshot + '" ' + ((isFirst) ? ('class="selected-screenshot"') : ('')) + '>';
 			let currentScreenshot: JQuery = $(currentScreenshotHtml).click(function() {
 				$(this).parent().find('img.selected-screenshot').removeClass('selected-screenshot');
 				$(this).addClass('selected-screenshot');
 				formSelector.find('input[name=background]').val(screenshot);
 			});
-			formSelector.find('#background-picker').append(currentScreenshot);
+			formSelector.find('#add-background-picker').append(currentScreenshot);
 			if (isFirst)
 				formSelector.find('input[name=background]').val(screenshot);
 		});
 
 		$('#add-game-cover').find('.image').css({
-			'background-image': urlify(game.cover)
+			backgroundImage: urlify(game.cover)
 		});
 		formSelector.find('input[name=cover]').val(game.cover);
 		if (!formSelector.find('input[name=source]').val())
@@ -181,6 +189,15 @@ export class VitrineClient {
 		});
 	}
 
+	private editPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
+		$('#edit-game-modal').modal('hide');
+		$('#edit-game-submit-btn').html(languageInstance.replaceJs('editGame'));
+		this.playableGames.editGame(playableGame);
+		this.renderPlayableGames(() => {
+			this.updateGameUi(playableGame);
+		});
+	};
+
 	private removePlayableGame(event: Electron.Event, error: string, gameId: string) {
 		if (error)
 			throw new Error(error);
@@ -188,8 +205,12 @@ export class VitrineClient {
 			if (error)
 				throw new Error(error);
 			this.renderPlayableGames(() => {
-				if (this.playableGames.games.length)
-					this.updateGameUi(this.playableGames.games[index]);
+				if (this.playableGames.games.length) {
+					if (index)
+						this.updateGameUi(this.playableGames.games[index - 1]);
+					else
+						this.updateGameUi(this.playableGames.games[index]);
+				}
 				else
 					this.updateGameUi(null);
 			});
@@ -197,11 +218,11 @@ export class VitrineClient {
 	}
 
 	private stopGame(event: Electron.Event, gameId: string, totalTimePlayed: number)  {
-		this.playableGames.getGame(gameId, (error: string, game: PlayableGame) => {
-			if (error)
-				throw new Error(error);
+		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
 			game.timePlayed = totalTimePlayed;
 			this.updateGameUi(game);
+		}).catch((error) => {
+			throw error;
 		});
 	}
 
@@ -256,12 +277,12 @@ export class VitrineClient {
 			let gameLiHtml: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
 			let self: VitrineClient = this;
 			let gameLi: JQuery = $(gameLiHtml).click(function() {
-				self.playableGames.getGame(playableGame.uuid, (error, game) => {
-					if (error)
-						throw new Error(error);
+				self.playableGames.getGame(playableGame.uuid).then((game: PlayableGame) => {
 					if (self.clickedGame && self.clickedGame.uuid === playableGame.uuid)
 						return;
 					self.updateGameUi(game);
+				}).catch((error) => {
+					throw new Error(error);
 				});
 			}).dblclick(() => {
 				ipcRenderer.send('client.launch-game', playableGame.uuid);
@@ -305,13 +326,13 @@ export class VitrineClient {
 			}
 			else {
 				$('#game-background').beforeCss('#game-background', {
-					'background-image': 'none'
+					backgroundImage: 'none'
 				});
 			}
 			$('#selected-game-cover').css({
-				'display': 'block'
+				display: 'block'
 			}).find('.image').css({
-				'background-image': urlify(game.details.cover)
+				backgroundImage: urlify(game.details.cover)
 			}).parent().updateBlurClickCallback(() => {
 				ipcRenderer.send('client.launch-game', game.uuid);
 			});

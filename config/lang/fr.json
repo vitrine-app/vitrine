@@ -11,6 +11,7 @@
   "loading": "Chargement...",
   "playGame": "Jouer",
   "removeGame": "Supprimer le jeu",
+  "editGame": "Éditer",
   "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
   "addGameLabel": "Ajouter un jeu",
   "fillWithIgdb": "Remplir les détails",

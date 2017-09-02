@@ -6,8 +6,9 @@
 	width: 16%;
 
 	#sidebar-content {
-		height: 100%;
+		height: 96%;
 		overflow-y: auto;
+		overflow-x: hidden;
 
 		#potential-games-area {
 			text-align: center;
