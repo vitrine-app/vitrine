@@ -37,8 +37,10 @@ export class GamesCollection<T> {
 
 	public editGame(game: T) {
 		this.getGame(game['uuid'], (error, currentGame: T) => {
-			if (!error)
-				currentGame = game;
+			if (!error) {
+				let index: number = this._games.indexOf(currentGame);
+				this._games[index] = game;
+			}
 		});
 	}
 

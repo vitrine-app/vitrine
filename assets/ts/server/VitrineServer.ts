@@ -121,8 +121,6 @@ export class VitrineServer {
 	}
 
 	private editGame(event: Electron.Event, gameId: string, gameForm: any) {
-		console.log(gameId);
-		console.log(gameForm);
 		this.playableGames.getGame(gameId, (error, editedGame: PlayableGame) => {
 			if (error)
 				throw new Error(error);
@@ -213,7 +211,7 @@ export class VitrineServer {
 		game.details.rating = parseInt(game.details.rating);
 		game.details.genres = game.details.genres.split(', ');
 		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix();
-		if (game.source == GameSource.STEAM)
+		if (!editing && game.source == GameSource.STEAM)
 			game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
 		delete game.details.date;
 		delete game.details.arguments;

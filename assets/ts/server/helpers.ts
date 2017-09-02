@@ -1,3 +1,4 @@
+
 import * as http from 'http';
 import * as https from 'https';
 import * as fs from 'fs';
@@ -25,14 +26,13 @@ export function downloadFile(url: string, path: string, isHttps: boolean, callba
 	if (url.startsWith('file://')) {
 		fs.createReadStream(url.substr(7)).pipe(file);
 		callback(true);
+		return;
 	}
-	else {
-		let protocol: any = (isHttps) ? (https) : (http);
-		protocol.get(url, (response) => {
-			response.pipe(file);
-			callback(true);
-		});
-	}
+	let protocol: any = (isHttps) ? (https) : (http);
+	protocol.get(url, (response) => {
+		response.pipe(file);
+		callback(true);
+	});
 }
 
 export function getEnvFolder(folder: string): string {
