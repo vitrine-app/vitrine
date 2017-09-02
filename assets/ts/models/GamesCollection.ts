@@ -15,19 +15,21 @@ export class GamesCollection<T> {
 		this._games = games;
 	}
 
-	public getGame(gameId: string, callback: Function) {
-		let counter: number = 0;
-		let found: boolean = false;
+	public getGame(gameId: string): Promise<any> {
+		return new Promise((resolve, reject) => {
+			let counter: number = 0;
+			let found: boolean = false;
 
-		this._games.forEach((game: T) => {
-			if (game['uuid'] === gameId) {
-				found = true;
-				callback(null, game);
-			}
-			counter++;
-			if (counter === this._games.length && !found)
-				callback('Game not found.', null);
+			this._games.forEach((game: T) => {
+				if (game['uuid'] === gameId) {
+					found = true;
+					resolve(game);
+				}
+				counter++;
+				if (counter === this._games.length && !found)
+					reject(new Error('Game not found.'));
 
+			});
 		});
 	}
 
@@ -36,11 +38,9 @@ export class GamesCollection<T> {
 	}
 
 	public editGame(game: T) {
-		this.getGame(game['uuid'], (error, currentGame: T) => {
-			if (!error) {
-				let index: number = this._games.indexOf(currentGame);
-				this._games[index] = game;
-			}
+		this.getGame(game['uuid']).then((currentGame: T) => {
+			let index: number = this._games.indexOf(currentGame);
+			this._games[index] = game;
 		});
 	}
 

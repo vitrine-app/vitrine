@@ -121,21 +121,20 @@ export class VitrineServer {
 	}
 
 	private editGame(event: Electron.Event, gameId: string, gameForm: any) {
-		this.playableGames.getGame(gameId, (error, editedGame: PlayableGame) => {
-			if (error)
-				throw new Error(error);
+		this.playableGames.getGame(gameId).then((editedGame: PlayableGame) => {
 			editedGame.name = gameForm.name;
 			editedGame.commandLine = [];
 			editedGame.details = gameForm;
 
 			this.registerGame(event, editedGame, gameForm, true);
+		}).catch((error) => {
+			if (error)
+				throw new Error(error);
 		});
 	}
 
 	private launchGame(event: Electron.Event, gameId: string)  {
-		this.playableGames.getGame(gameId, (error, game: PlayableGame) => {
-			if (error)
-				return VitrineServer.throwServerError(event, error);
+		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
 			if (game.uuid !== uuidV5(game.name))
 				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 			if (this.gameLaunched)
@@ -152,6 +151,8 @@ export class VitrineServer {
 				this.gameLaunched = false;
 				return VitrineServer.throwServerError(event, error);
 			});
+		}).catch((error) => {
+			return VitrineServer.throwServerError(event, error);
 		});
 	}
 

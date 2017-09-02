@@ -49,7 +49,11 @@ export class VitrineClient {
 	}
 
 	public getPlayableGame(gameId: string, callback: Function) {
-		this.playableGames.getGame(gameId, callback);
+		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
+			callback(null, game);
+		}).catch((error) => {
+			callback(error, null);
+		});
 	}
 
 	private updateProgress(event: Electron.Event, progress: ProgressInfo) {
@@ -210,11 +214,11 @@ export class VitrineClient {
 	}
 
 	private stopGame(event: Electron.Event, gameId: string, totalTimePlayed: number)  {
-		this.playableGames.getGame(gameId, (error: string, game: PlayableGame) => {
-			if (error)
-				throw new Error(error);
+		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
 			game.timePlayed = totalTimePlayed;
 			this.updateGameUi(game);
+		}).catch((error) => {
+			throw error;
 		});
 	}
 
@@ -269,12 +273,12 @@ export class VitrineClient {
 			let gameLiHtml: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
 			let self: VitrineClient = this;
 			let gameLi: JQuery = $(gameLiHtml).click(function() {
-				self.playableGames.getGame(playableGame.uuid, (error, game) => {
-					if (error)
-						throw new Error(error);
+				self.playableGames.getGame(playableGame.uuid).then((game: PlayableGame) => {
 					if (self.clickedGame && self.clickedGame.uuid === playableGame.uuid)
 						return;
 					self.updateGameUi(game);
+				}).catch((error) => {
+					throw new Error(error);
 				});
 			}).dblclick(() => {
 				ipcRenderer.send('client.launch-game', playableGame.uuid);
