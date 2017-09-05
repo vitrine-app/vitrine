@@ -11,14 +11,11 @@ export class VitrinePipeline {
 		this.prod = (getEnvData().env) ? (true) : (false);
 	}
 
-	public launch(devTools?: boolean) {
-		if (!devTools && !this.prod)
-			devTools = false;
-
+	public launch() {
 		this.createGamesFolder();
 
 		this.serverInstance.registerEvents();
-		this.serverInstance.run(devTools);
+		this.serverInstance.run(!this.prod);
 	}
 
 	private createGamesFolder() {

@@ -31,6 +31,7 @@ export class VitrineClient {
 		this.clickedGame = null;
 		ipcRenderer.send('client.ready');
 		this.registerKeyboardEvents();
+		$('#refresh-btn').find('i').addClass('fa-spin');
 	}
 
 	public registerEvents() {
@@ -156,6 +157,7 @@ export class VitrineClient {
 	}
 
 	private addPotentialGames(event: Electron.Event, games: PotentialGame[]) {
+		$('#refresh-btn').find('i').removeClass('fa-spin');
 		this.potentialGames.games = games;
 		this.renderPotentialGames(event);
 	}

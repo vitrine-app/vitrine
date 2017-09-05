@@ -22,6 +22,11 @@ export class Dom {
 		});
 
 		$('#selected-game-cover').blurPicture(125, () => {}).hide();
+
+		$('#refresh-btn').click(function() {
+			$(this).find('i').addClass('fa-spin');
+			ipcRenderer.send('client.refresh-potential-games');
+		});
 	}
 
 	private registerModalOverlay() {

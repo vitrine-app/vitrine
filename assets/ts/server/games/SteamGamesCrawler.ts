@@ -10,7 +10,6 @@ import { getEnvFolder, getGamesFolder, uuidV5} from '../helpers';
 import { PlayableGame } from '../../models/PlayableGame';
 
 class SteamGamesCrawler {
-	private configFilePath: string;
 	private configFile: any;
 	private manifestRegEx: string;
 	private potentialGames: PotentialGame[];
@@ -18,14 +17,14 @@ class SteamGamesCrawler {
 	private callback: Function;
 
 	public constructor(playableGames?: PlayableGame[]) {
-		this.configFilePath = path.resolve(getEnvFolder('config'), 'steam.json');
-		this.configFile = JSON.parse(fs.readFileSync(this.configFilePath).toString());
+		let configFilePath = path.resolve(getEnvFolder('config'), 'steam.json');
+		this.configFile = JSON.parse(fs.readFileSync(configFilePath).toString());
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.potentialGames = [];
 		this.playableGames = (playableGames) ? (playableGames) : ([]);
 	}
 
-	public search(callback: Function): void {
+	public search(callback: Function) {
 		this.callback = callback;
 		this.configFile.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
@@ -98,7 +97,7 @@ class SteamGamesCrawler {
 
 export function getSteamCrawler(playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamGamesCrawler(playableGames).search((error, potentialGames: PotentialGame[]) => {
+		new SteamGamesCrawler(playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)
 				reject(error);
 			else

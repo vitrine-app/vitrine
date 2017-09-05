@@ -14,6 +14,7 @@ import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
 import { downloadImage, getGamesFolder, uuidV5 } from './helpers';
+import { getOriginCrawler } from './games/OriginGamesCrawler';
 
 export class VitrineServer {
 	private windowsList;
@@ -63,16 +64,17 @@ export class VitrineServer {
 		ipcMain.on('client.edit-game-manual', this.editGame.bind(this));
 		ipcMain.on('client.launch-game', this.launchGame.bind(this));
 		ipcMain.on('client.remove-game', this.removeGame.bind(this));
+		ipcMain.on('client.refresh-potential-games', this.refreshPotentialGames.bind(this));
 	}
 
 	private ready(event: Electron.Event) {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
-
 		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 			this.playableGames = games;
 			this.searchSteamGames(event);
+			this.searchOriginGames(event);
 			event.sender.send('server.add-playable-games', this.playableGames.games);
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
@@ -167,10 +169,22 @@ export class VitrineServer {
 		});
 	}
 
+	private refreshPotentialGames(event: Electron.Event) {
+		this.searchSteamGames(event);
+	}
+
 	private searchSteamGames(event: Electron.Event) {
 		getSteamCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 			this.potentialGames = games;
 			event.sender.send('server.add-potential-games', this.potentialGames.games);
+		}).catch((error) => {
+			throw error;
+		});
+	}
+
+	private searchOriginGames(event: Electron.Event) {
+		getOriginCrawler().then((games: any) => {
+
 		}).catch((error) => {
 			throw error;
 		});
