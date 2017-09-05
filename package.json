@@ -61,6 +61,7 @@
     "jquery-contextmenu": "^2.5.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.18.1",
+    "removeduplicates": "^1.1.0",
     "rimraf": "^2.6.1",
     "sass-percentage-circle": "^0.2.0",
     "truncate": "^2.0.0",

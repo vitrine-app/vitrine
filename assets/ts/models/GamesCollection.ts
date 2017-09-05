@@ -37,6 +37,20 @@ export class GamesCollection<T> {
 		this._games.push(game);
 	}
 
+	public addGames(games: GamesCollection<T>, callback: Function) {
+	/*	let counter: number = 0;
+		games.games.forEach((game: T) => {
+			console.log(game['name']);
+			this.getGame(game['uuid']).catch(() => {
+				this.addGame(game);
+			});
+			if (counter === games.games.length)
+				callback();
+		});*/
+	this.games = this.games.concat(games.games);
+	callback();
+	}
+
 	public editGame(game: T) {
 		this.getGame(game['uuid']).then((currentGame: T) => {
 			let index: number = this._games.indexOf(currentGame);
@@ -79,5 +93,11 @@ export class GamesCollection<T> {
 
 	private alphabeticSort(nodeA: T, nodeB: T): number {
 		return (nodeA[this.evaluatedKey] > nodeB[this.evaluatedKey]) ? (1) : (-1);
+	}
+
+	private removeDuplicates(array: T[]) {
+		return array.filter((value, index, array) => {
+			return array.indexOf(value) == index;
+		});
 	}
 }

@@ -64,7 +64,7 @@ export class VitrineServer {
 		ipcMain.on('client.edit-game-manual', this.editGame.bind(this));
 		ipcMain.on('client.launch-game', this.launchGame.bind(this));
 		ipcMain.on('client.remove-game', this.removeGame.bind(this));
-		ipcMain.on('client.refresh-potential-games', this.refreshPotentialGames.bind(this));
+		ipcMain.on('client.refresh-potential-games', this.findPotentialGames.bind(this));
 	}
 
 	private ready(event: Electron.Event) {
@@ -73,8 +73,7 @@ export class VitrineServer {
 
 		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 			this.playableGames = games;
-			this.searchSteamGames(event);
-			this.searchOriginGames(event);
+			this.findPotentialGames(event);
 			event.sender.send('server.add-playable-games', this.playableGames.games);
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
@@ -169,22 +168,30 @@ export class VitrineServer {
 		});
 	}
 
-	private refreshPotentialGames(event: Electron.Event) {
-		this.searchSteamGames(event);
+	private findPotentialGames(event: Electron.Event) {
+		this.searchSteamGames(() => {
+			this.searchOriginGames(() => {
+				event.sender.send('server.add-potential-games', this.potentialGames.games);
+			});
+		});
 	}
 
-	private searchSteamGames(event: Electron.Event) {
+	private searchSteamGames(callback: Function) {
 		getSteamCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-			this.potentialGames = games;
-			event.sender.send('server.add-potential-games', this.potentialGames.games);
+			this.potentialGames.addGames(games, () => {
+				callback();
+			});
 		}).catch((error) => {
 			throw error;
 		});
 	}
 
-	private searchOriginGames(event: Electron.Event) {
-		getOriginCrawler().then((games: any) => {
-
+	private searchOriginGames(callback: Function) {
+		getOriginCrawler().then((games: GamesCollection<PotentialGame>) => {
+			this.potentialGames.addGames(games, () => {
+				console.log(games.games);
+				callback();
+			});
 		}).catch((error) => {
 			throw error;
 		});
@@ -254,7 +261,7 @@ export class VitrineServer {
 					delete game.details.background;
 				fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
 				if (!editing && game.source !== GameSource.LOCAL)
-					this.searchSteamGames(event);
+					this.findPotentialGames(event);
 				if (!editing) {
 					event.sender.send('server.add-playable-game', game);
 					this.playableGames.addGame(game);
