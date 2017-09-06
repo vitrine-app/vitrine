@@ -5,22 +5,25 @@ import * as Registry from 'winreg';
 import * as glob from 'glob';
 
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
+import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
-import { getEnvFolder } from '../helpers';
+import { getEnvFolder, getGamesFolder, uuidV5 } from '../helpers';
 
 class OriginGamesCrawler {
 	private configFile: any;
-	private potentialGames: PotentialGame[];
 	private regDetails: any[];
+	private potentialGames: PotentialGame[];
+	private playableGames: PlayableGame[];
 	private gamesFolder: string;
 	private callback: Function;
 
-	public constructor() {
+	public constructor(playableGames?: PlayableGame[]) {
 		let configFilePath = path.resolve(getEnvFolder('config'), 'origin.json');
 		this.configFile = JSON.parse(fs.readFileSync(configFilePath).toString());
 		this.potentialGames = [];
 		this.regDetails = [];
+		this.playableGames = (playableGames) ? (playableGames) : ([]);
 	}
 
 	public search(callback: Function) {
@@ -75,6 +78,18 @@ class OriginGamesCrawler {
 		let counter: number = 0;
 		files.forEach((gameFolder: string) => {
 			let gameName: string = gameFolder.split('/').pop();
+
+			if (OriginGamesCrawler.isGameAlreadyAdded(gameName)) {
+				counter++;
+				return;
+			}
+			for (let playableGame of this.playableGames) {
+				if (gameName == playableGame.name) {
+					counter++;
+					return;
+				}
+			}
+
 			this.getRegExe(gameFolder, (error: Error, gamePath: string) => {
 				if (error)
 					this.callback(error, null);
@@ -114,11 +129,20 @@ class OriginGamesCrawler {
 				callback(new Error('Registry not matching.'), null);
 		});
 	}
+
+	private static isGameAlreadyAdded(name: string): boolean {
+		let gameId: string = uuidV5(name);
+
+		let gameDirectory = path.resolve(getGamesFolder(), gameId);
+		let configFilePath = path.resolve(gameDirectory, 'config.json');
+
+		return fs.existsSync(configFilePath);
+	}
 }
 
-export function getOriginCrawler(): Promise<any> {
+export function getOriginCrawler(playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new OriginGamesCrawler().search((error, potentialGames: GamesCollection<PotentialGame>) => {
+		new OriginGamesCrawler(playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)
 				reject(error);
 			else

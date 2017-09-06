@@ -28,7 +28,6 @@ export class GamesCollection<T> {
 				counter++;
 				if (counter === this._games.length && !found)
 					reject(new Error('Game not found.'));
-
 			});
 		});
 	}
@@ -38,17 +37,8 @@ export class GamesCollection<T> {
 	}
 
 	public addGames(games: GamesCollection<T>, callback: Function) {
-	/*	let counter: number = 0;
-		games.games.forEach((game: T) => {
-			console.log(game['name']);
-			this.getGame(game['uuid']).catch(() => {
-				this.addGame(game);
-			});
-			if (counter === games.games.length)
-				callback();
-		});*/
-	this.games = this.games.concat(games.games);
-	callback();
+		this.games = this.removeDuplicates(this.games.concat(games.games));
+		callback();
 	}
 
 	public editGame(game: T) {
@@ -72,7 +62,6 @@ export class GamesCollection<T> {
 			counter++;
 			if (counter === this._games.length && !found)
 				callback('Game not found.', null, null);
-
 		});
 	}
 

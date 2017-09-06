@@ -73,8 +73,8 @@ export class VitrineServer {
 
 		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 			this.playableGames = games;
-			this.findPotentialGames(event);
 			event.sender.send('server.add-playable-games', this.playableGames.games);
+			this.findPotentialGames(event);
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
 		}).catch((error) => {
@@ -169,6 +169,7 @@ export class VitrineServer {
 	}
 
 	private findPotentialGames(event: Electron.Event) {
+		this.potentialGames.games = [];
 		this.searchSteamGames(() => {
 			this.searchOriginGames(() => {
 				event.sender.send('server.add-potential-games', this.potentialGames.games);
@@ -178,6 +179,7 @@ export class VitrineServer {
 
 	private searchSteamGames(callback: Function) {
 		getSteamCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+			console.log(games);
 			this.potentialGames.addGames(games, () => {
 				callback();
 			});
@@ -187,9 +189,8 @@ export class VitrineServer {
 	}
 
 	private searchOriginGames(callback: Function) {
-		getOriginCrawler().then((games: GamesCollection<PotentialGame>) => {
+		getOriginCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 			this.potentialGames.addGames(games, () => {
-				console.log(games.games);
 				callback();
 			});
 		}).catch((error) => {
@@ -260,8 +261,8 @@ export class VitrineServer {
 				else
 					delete game.details.background;
 				fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
-				if (!editing && game.source !== GameSource.LOCAL)
-					this.findPotentialGames(event);
+				/*if (!editing && game.source !== GameSource.LOCAL)
+					this.findPotentialGames(event);*/
 				if (!editing) {
 					event.sender.send('server.add-playable-game', game);
 					this.playableGames.addGame(game);

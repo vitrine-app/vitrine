@@ -185,6 +185,9 @@ export class VitrineClient {
 	private addPlayableGame(event: Electron.Event, playableGame: PlayableGame) {
 		$('#add-game-modal').modal('hide');
 		$('#add-game-submit-btn').html(languageInstance.replaceJs('submitNewGame'));
+		this.potentialGames.removeGame(playableGame.uuid, () => {
+			this.renderPotentialGames(event);
+		});
 		this.playableGames.addGame(playableGame);
 		this.renderPlayableGames(() => {
 			this.updateGameUi(playableGame);
