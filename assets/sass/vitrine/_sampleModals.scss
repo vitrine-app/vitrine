@@ -16,3 +16,12 @@
 		padding-top: 24px;
 	}
 }
+
+#add-games-modal {
+	top: 6vh;
+
+	.modal-body {
+		overflow-y: auto;
+		height: 800px;
+	}
+}

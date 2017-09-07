@@ -8,7 +8,7 @@ class IgdbWrapper {
 	private game: any;
 
 	public constructor() {
-		this.apiKey = 'XBbCSfnCremsh2OsjrJlRE83AIbmp1ZMAbtjsn7puoI7G57gpl';
+		this.apiKey = 'cb14c151b2f67d505d13ee673d5acde4';
 		this.client = igdb.default(this.apiKey);
 		this.levenshteinRefiner = 5;
 
@@ -43,7 +43,7 @@ class IgdbWrapper {
 	public searchGames(name: string, callback: Function, resultsNb?: number) {
 		this.client.games({
 			limit: (resultsNb) ? (resultsNb) : (this.levenshteinRefiner),
-			search: name
+			search: name.replace('²', '2')
 		}, ['name', 'cover']).then((response) => {
 			let counter: number = 0;
 			response.body.forEach((game: any) => {

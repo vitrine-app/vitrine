@@ -100,10 +100,8 @@ export function getSteamCrawler(playableGames?: PlayableGame[]): Promise<any> {
 		new SteamGamesCrawler(playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)
 				reject(error);
-			else {
-				console.log(potentialGames);
+			else
 				resolve(potentialGames);
-			}
 		});
 	});
 }

@@ -179,7 +179,6 @@ export class VitrineServer {
 
 	private searchSteamGames(callback: Function) {
 		getSteamCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-			console.log(games);
 			this.potentialGames.addGames(games, () => {
 				callback();
 			});

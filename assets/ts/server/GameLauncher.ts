@@ -20,6 +20,10 @@ class GameLauncher {
 				this.launchStandardGame(callback);
 				break;
 			}
+			case GameSource.ORIGIN: {
+				this.launchStandardGame(callback);
+				break;
+			}
 			case GameSource.STEAM: {
 				this.launchSteamGame(callback);
 				break;
