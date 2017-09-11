@@ -200,3 +200,13 @@ export function displayRemoveGameModal(gameId: string, gameName: string) {
 		$('#remove-game-modal').modal('hide');
 	});
 }
+
+// TODO: remove duplicate helper
+export function beforeCss(selector: string, props: object) {
+	$('head style#before-styling').remove();
+	let rawStyling: string = '';
+	Object.keys(props).forEach((key) => {
+		rawStyling += key + ': ' + props[key] + ';';
+	});
+	$('head').append('<style id="before-styling">' + selector + ':before{' + rawStyling + '}</style>');
+}

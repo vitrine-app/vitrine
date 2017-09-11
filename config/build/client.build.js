@@ -1,5 +1,5 @@
 module.exports = {
-	entry: './assets/ts/client/main.ts',
+	entry: './assets/ts/client/REACT/main.tsx', //'./assets/ts/client/main.ts',
 	output: {
 		filename: 'public/client.js'
 	},
@@ -8,18 +8,21 @@ module.exports = {
 		__filename: false
 	},
 	resolve: {
-		extensions: ['.ts', '.js']
+		extensions: ['.ts', '.tsx', '.js']
 	},
 	target: 'electron-renderer',
 	module: {
 		rules: [
 			{
-				test: /\.ts?$/,
+				test: /\.(ts|tsx)?$/,
 				loader: 'ts-loader'
 			},
 			{
 				test: /\.(css|scss)?$/,
 				use: [
+					{
+						loader: 'style-loader'
+					},
 					{
 						loader: 'css-loader'
 					},

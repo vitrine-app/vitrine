@@ -2,8 +2,8 @@ export class GamesCollection<T> {
 	private _games: T[];
 	private evaluatedKey: string;
 
-	public constructor() {
-		this._games = [];
+	public constructor(games?: T[]) {
+		this._games = (games) ? (games) : ([]);
 		this.evaluatedKey = 'name';
 	}
 

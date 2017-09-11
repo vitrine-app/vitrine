@@ -1,0 +1,19 @@
+@import '../../bootstrapVariables';
+
+#taskbar {
+	background-color: $body-bg;
+	width: 100%;
+	height: 40px;
+	border-top: solid 1px rgba(31, 30, 30, 0.63);
+	border-bottom: solid 1px rgba(31, 30, 30, 0.63);
+	padding-left: 15px;
+	box-shadow: 0 0 9px rgba(0, 0, 0, 0.55);
+
+	#update-bar {
+		width: 250px;
+		height: 13px;
+		margin-top: 13px;
+		margin-bottom: 13px;
+		display: none;
+	}
+}
