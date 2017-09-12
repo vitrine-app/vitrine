@@ -22,7 +22,7 @@ export class BlurPicture extends React.Component<any, any> {
 				animationDuration: this.pulseDuration + 'ms'
 			},
 			imageStyle: {
-				backgroundImage: urlify(this.props.background)
+				backgroundImage: this.props.background
 			},
 			iconClassName: '',
 			iconStyle: {
@@ -50,7 +50,7 @@ export class BlurPicture extends React.Component<any, any> {
 	private mouseEnterHandler() {
 		this.setState({
 			imageStyle: {
-				backgroundImage: urlify(this.props.background),
+				backgroundImage: this.props.background,
 				filter: 'blur(4px)'
 			},
 			iconClassName: 'animated zoomIn',
@@ -64,7 +64,7 @@ export class BlurPicture extends React.Component<any, any> {
 	private mouseLeaveHandler() {
 		this.setState({
 			imageStyle: {
-				backgroundImage: urlify(this.props.background),
+				backgroundImage: this.props.background,
 				filter: ''
 			},
 			iconClassName: 'animated zoomOut',

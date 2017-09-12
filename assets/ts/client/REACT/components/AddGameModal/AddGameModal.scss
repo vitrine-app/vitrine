@@ -1,0 +1,66 @@
+@import '../../bootstrapVariables';
+
+#add-game-modal .modal-body {
+	max-height: 82vh;
+	overflow-y: auto;
+
+	#add-game-form {
+		#add-background-picker {
+			overflow-x: auto;
+			overflow-y: hidden;
+			white-space: nowrap;
+
+			img {
+				width: 400px;
+				height: 270px;
+				margin: 5px;
+				border-radius: $border-radius-base;
+				box-shadow: 0 0 6px rgba(0, 0, 0, 0.46);
+				filter: brightness(65%);
+
+				&.selected-screenshot {
+					filter: brightness(115%);
+				}
+			}
+		}
+		#add-custom-background-btn {
+			display: block;
+			margin-bottom: 8px;
+		}
+		hr {
+			border-top: 1px solid rgba(238, 238, 238, 0.15);
+		}
+		textarea {
+			resize: none;
+			height: 7em;
+		}
+	}
+
+	.datepicker {
+		background-color: $body-bg;
+
+		.datepicker-days table tr td:hover, table tr td span:hover, .datepicker-switch:hover, .prev:hover, .next:hover {
+			border-radius: $border-radius-base;
+			background-color: #3E372E !important;
+			color: #AFACA7 !important;
+		}
+
+		table tr td {
+			border-radius: $border-radius-base;
+
+			&.active, &.active:hover {
+				background-color: $brand-primary !important;
+				text-shadow: none !important;
+			}
+
+			span {
+				border-radius: $border-radius-base;
+
+				&.active, &:active:hover, &.focused, &.focused:hover {
+					background-color: $brand-primary !important;
+					text-shadow: none !important;
+				}
+			}
+		}
+	}
+}

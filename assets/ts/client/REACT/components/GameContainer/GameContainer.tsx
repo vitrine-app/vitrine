@@ -31,7 +31,7 @@ export class GameContainer extends React.Component<any, any> {
 						<BlurPicture
 							faIcon={ 'play' }
 							fontSize={ 125 }
-							background={ this.props.selectedGame.details.cover }
+							background={ urlify(this.props.selectedGame.details.cover) }
 							clickHandler={ this.gameCoverClickHandler.bind(this) }
 						/>
 					</div>

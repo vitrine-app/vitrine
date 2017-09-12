@@ -7,6 +7,7 @@ import { SideBar } from '../SideBar/SideBar';
 import { GameContainer } from '../GameContainer/GameContainer';
 import { PlayableGame } from '../../../../models/PlayableGame';
 import { GamesCollection } from '../../../../models/GamesCollection';
+import { AddGameModal } from '../AddGameModal/AddGameModal';
 
 export class Vitrine extends React.Component<any, any> {
 	public constructor() {
@@ -30,6 +31,7 @@ export class Vitrine extends React.Component<any, any> {
 				<GameContainer
 					selectedGame={ this.state.selectedGame }
 				/>
+				<AddGameModal/>
 			</div>
 		);
 	}
