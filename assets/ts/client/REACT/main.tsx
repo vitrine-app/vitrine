@@ -16,10 +16,13 @@ import { TitleBar } from './components/TitleBar/TitleBar';
 import { Vitrine } from './components/Vitrine/Vitrine';
 
 import './main.scss';
+import { extendJQuery } from '../helpers';
 
 class App extends React.Component {
 	public constructor() {
 		super();
+
+		extendJQuery();
 
 		let langFilesFolder: string = App.getEnvFolder('config/lang');
 		let enLocale: any = JSON.parse(fs.readFileSync(path.resolve(langFilesFolder, 'en.json')).toString());

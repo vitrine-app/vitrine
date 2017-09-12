@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
 import './GameContainer.scss';
+import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { beforeCss, urlify } from '../../../helpers';
 
 export class GameContainer extends React.Component<any, any> {
@@ -27,10 +28,12 @@ export class GameContainer extends React.Component<any, any> {
 						<p id="game-desc" className="selected-game-infos">{ this.props.selectedGame.details.summary }</p>
 					</div>
 					<div className="col-md-4">
-						<div id="selected-game-cover">
-							<div className="image"></div>
-							<i className="fa fa-play icon animated"></i>
-						</div>
+						<BlurPicture
+							faIcon={ 'play' }
+							fontSize={ 125 }
+							background={ this.props.selectedGame.details.cover }
+							clickHandler={ this.gameCoverClickHandler.bind(this) }
+						/>
 					</div>
 				</div>
 			);
@@ -57,5 +60,9 @@ export class GameContainer extends React.Component<any, any> {
 				</div>
 			</div>
 		);
+	}
+
+	private gameCoverClickHandler() {
+		console.log('hey hey!');
 	}
 }

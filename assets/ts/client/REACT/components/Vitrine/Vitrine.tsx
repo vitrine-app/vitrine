@@ -2,11 +2,9 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
 import './Vitrine.scss';
-
 import { TaskBar } from '../TaskBar/TaskBar';
 import { SideBar } from '../SideBar/SideBar';
 import { GameContainer } from '../GameContainer/GameContainer';
-
 import { PlayableGame } from '../../../../models/PlayableGame';
 import { GamesCollection } from '../../../../models/GamesCollection';
 
