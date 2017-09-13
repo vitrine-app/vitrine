@@ -17,6 +17,7 @@ import { Vitrine } from './components/Vitrine/Vitrine';
 
 import './main.scss';
 import { extendJQuery } from '../helpers';
+import { localizer } from './Localizer';
 
 class App extends React.Component {
 	public constructor() {
@@ -27,6 +28,9 @@ class App extends React.Component {
 		let langFilesFolder: string = App.getEnvFolder('config/lang');
 		let enLocale: any = JSON.parse(fs.readFileSync(path.resolve(langFilesFolder, 'en.json')).toString());
 		let frLocale: any = JSON.parse(fs.readFileSync(path.resolve(langFilesFolder, 'fr.json')).toString());
+		localizer.addLanguage('en', enLocale);
+		localizer.addLanguage('fr', frLocale);
+		localizer.setLanguage('fr');
 	}
 
 	public render() {

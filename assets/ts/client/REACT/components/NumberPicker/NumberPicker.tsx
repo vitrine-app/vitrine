@@ -7,7 +7,7 @@ export class NumberPicker extends React.Component<any, any> {
 		super(props);
 
 		this.state = {
-			value: ''
+			value: (this.props.value) ? (this.props.value) : ('')
 		};
 	}
 
@@ -43,40 +43,53 @@ export class NumberPicker extends React.Component<any, any> {
 	}
 
 	private increaseCounterHandler() {
-		let newValue: number;
-		if (!isNaN(this.state.value)) {
-			if (this.state.value < this.props.max)
-				newValue = parseInt(this.state.value) + 1;
+		let newVal: number;
+		let currentVal: number = parseInt(this.state.value);
+
+		if (currentVal || currentVal === 0) {
+			if (currentVal < this.props.max)
+				newVal = currentVal + 1;
 			else
-				return;
+				newVal = this.props.max;
 		}
 		else
-			newValue = this.props.min;
+			newVal = this.props.min;
+
 		this.setState({
-			value: newValue
+			value: newVal
 		}, () => {
 			this.props.onChange(this.state.value);
 		});
-
 	}
 	private decreaseCounterHandler() {
-		let newValue: number;
-		if (!isNaN(this.state.value)) {
-			if (this.state.value > this.props.min)
-				newValue = parseInt(this.state.value) - 1;
+		let newVal: number;
+		let currentVal: number = parseInt(this.state.value);
+
+		if (currentVal || currentVal === 0) {
+			if (currentVal >= this.props.min)
+				newVal = currentVal - 1;
 			else
-				return;
+				newVal = this.props.min;
 		}
 		else
-			newValue = this.props.min;
+			newVal = this.props.min;
+
 		this.setState({
-			value: newValue
+			value: newVal
 		}, () => {
 			this.props.onChange(this.state.value);
 		});
 	}
 
-	private inputChangeHandler() {
-		this.props.onChange(this.state.value);
+	private inputChangeHandler(event) {
+		let value: any = event.target.value;
+		if (isNaN(value))
+			return;
+
+		this.setState({
+			value: value
+		}, () => {
+			this.props.onChange(this.state.value);
+		});
 	}
 }

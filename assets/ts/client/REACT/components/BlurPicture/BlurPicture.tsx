@@ -22,7 +22,7 @@ export class BlurPicture extends React.Component<any, any> {
 				animationDuration: this.pulseDuration + 'ms'
 			},
 			imageStyle: {
-				backgroundImage: this.props.background
+				backgroundImage: urlify(this.props.background)
 			},
 			iconClassName: '',
 			iconStyle: {
@@ -41,37 +41,44 @@ export class BlurPicture extends React.Component<any, any> {
 				onClick={ this.clickHandler.bind(this) }
 				style={ this.state.divStyle }
 			>
-				<div className="image" style={ this.state.imageStyle }/>
-				<i className={'fa fa-' + this.props.faIcon + ' icon ' + this.state.iconClassName } style={ this.state.iconStyle }/>
+				<div className="image" style={{ ...this.state.imageStyle }}/>
+				<i
+					className={'fa fa-' + this.props.faIcon + ' icon ' + this.state.iconClassName }
+					style={{ ...this.state.iconStyle }}
+				/>
 			</div>
 		);
 	}
 
 	private mouseEnterHandler() {
+		let imageStyle: any = this.state.imageStyle;
+		let iconStyle: any = this.state.iconStyle;
+		imageStyle.filter = 'blur(4px)';
+		iconStyle.display = 'inline';
+
 		this.setState({
 			imageStyle: {
-				backgroundImage: this.props.background,
+				backgroundImage: urlify(this.props.background),
 				filter: 'blur(4px)'
 			},
 			iconClassName: 'animated zoomIn',
-			iconStyle: {
-				display: 'inline',
-				animationDuration: '75ms'
-			}
+			iconStyle: iconStyle
 		});
 	}
 
 	private mouseLeaveHandler() {
+		let imageStyle: any = this.state.imageStyle;
+		let iconStyle: any = this.state.iconStyle;
+		imageStyle.filter = '';
+		iconStyle.display = 'none';
+
 		this.setState({
 			imageStyle: {
-				backgroundImage: this.props.background,
+				backgroundImage: urlify(this.props.background),
 				filter: ''
 			},
 			iconClassName: 'animated zoomOut',
-			iconStyle: {
-				display: 'none',
-				animationDuration: '75ms'
-			}
+			iconStyle: iconStyle
 		});
 	}
 

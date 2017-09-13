@@ -5,6 +5,7 @@ import './Vitrine.scss';
 import { TaskBar } from '../TaskBar/TaskBar';
 import { SideBar } from '../SideBar/SideBar';
 import { GameContainer } from '../GameContainer/GameContainer';
+import { PotentialGame } from '../../../../models/PotentialGame';
 import { PlayableGame } from '../../../../models/PlayableGame';
 import { GamesCollection } from '../../../../models/GamesCollection';
 import { AddGameModal } from '../AddGameModal/AddGameModal';
@@ -14,7 +15,8 @@ export class Vitrine extends React.Component<any, any> {
 		super();
 
 		this.state = {
-			playableGames: new GamesCollection(),
+			playableGames: new GamesCollection<PlayableGame>(),
+			potentialGames: new GamesCollection<PotentialGame>(),
 			selectedGame: null
 		};
 	}
@@ -22,7 +24,9 @@ export class Vitrine extends React.Component<any, any> {
 	public render() {
 		return (
 			<div id="vitrine-app" className="container-fluid full-height">
-				<TaskBar/>
+				<TaskBar
+					potentialGames={ this.state.potentialGames }
+				/>
 				<SideBar
 					playableGames={ this.state.playableGames }
 					gameClickHandler={ this.sideBarGameClickHandler.bind(this) }
@@ -39,11 +43,20 @@ export class Vitrine extends React.Component<any, any> {
 	public componentDidMount() {
 		ipcRenderer.send('client.ready');
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
+		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
 	}
 
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
 		this.setState({
-			playableGames: new GamesCollection(games)
+			playableGames:  new GamesCollection<PlayableGame>(games)
+		});
+	}
+
+	private addPotentialGames(event: Electron.Event, potentialGames: PotentialGame[]) {
+		this.setState({
+			potentialGames: new GamesCollection<PotentialGame>(potentialGames)
+		}, () => {
+			console.log('potential games updated: ', this.state.potentialGames)
 		});
 	}
 

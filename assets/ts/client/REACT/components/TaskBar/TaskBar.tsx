@@ -2,8 +2,12 @@ import * as React from 'react';
 
 import './TaskBar.scss';
 
-export class TaskBar extends React.Component {
-	render() {
+export class TaskBar extends React.Component<any, any> {
+	public constructor(props: any) {
+		super(props);
+	}
+
+	public render() {
 		return (
 			<div>
 				<div id="taskbar">
@@ -14,6 +18,14 @@ export class TaskBar extends React.Component {
 							</button>
 							<button id="refresh-btn" className="btn btn-primary">
 								<i className="fa fa-refresh"/>
+							</button>
+						</div>
+						<div
+							className="col-md-1"
+							 style={{ display: (this.props.potentialGames.games.length) ? ('block') : ('none') }}
+						>
+							<button className="btn btn-primary">
+								You can add { this.props.potentialGames.games.length } games
 							</button>
 						</div>
 						<div className="col-md-2">

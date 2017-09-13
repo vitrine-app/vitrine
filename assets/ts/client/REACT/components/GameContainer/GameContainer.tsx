@@ -4,6 +4,7 @@ import { ipcRenderer } from 'electron';
 import './GameContainer.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { beforeCss, urlify } from '../../../helpers';
+import { localizer } from '../../Localizer';
 
 export class GameContainer extends React.Component<any, any> {
 	public constructor() {
@@ -21,7 +22,7 @@ export class GameContainer extends React.Component<any, any> {
 						<hr/>
 						<div id="game-play" className="selected-game-infos">
 							<button className="btn btn-primary">
-								<i className="fa fa-play"/> Play
+								<i className="fa fa-play"/> { localizer.f('play') }
 							</button>
 							<p></p>
 						</div>
@@ -31,7 +32,7 @@ export class GameContainer extends React.Component<any, any> {
 						<BlurPicture
 							faIcon={ 'play' }
 							fontSize={ 125 }
-							background={ urlify(this.props.selectedGame.details.cover) }
+							background={ this.props.selectedGame.details.cover }
 							clickHandler={ this.gameCoverClickHandler.bind(this) }
 						/>
 					</div>
@@ -44,9 +45,9 @@ export class GameContainer extends React.Component<any, any> {
 		else {
 			gameContainer = (
 				<div id="no-game-showcase">
-					<h1>Welcome to Vitrine</h1>
+					<h1>{ localizer.f('welcomeMessage') }</h1>
 					<hr/>
-					<p>Desc</p>
+					<p>{ localizer.f('desc') }</p>
 				</div>
 			);
 		}

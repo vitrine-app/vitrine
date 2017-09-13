@@ -1,7 +1,7 @@
 {
   "name": "Vitrine",
   "desc": "Vitrine est une bibliothèque moderne qui vous permet d'afficher et d'organiser vos jeux, quelle que soit leur provenance. Vitrine fonctionne actuellement avec Steam et avec tous les autres jeux sur votre PC. Vitrine vous aide également à trier vos jeux avec de nombreux détails, ainsi que le temps de jeu passé.<br>Pourquoi ne pas essayer ? La seule chose que vous avez à faire est d'ajouter un jeu, ou d'attendre que Vitrine scanne automatiquement Steam !",
-  "welcomeMessage": "Bienvenue sur %1 !",
+  "welcomeMessage": "Bienvenue sur Vitrine !",
   "cancel": "Annuler",
   "play": "Jouer",
   "timePlayed": "Temps de jeu :",
