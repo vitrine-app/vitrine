@@ -85,14 +85,20 @@ export class AddGameModal extends React.Component<any, any> {
 		});
 	}
 
-	private searchIgdbBtnClickHandler() {
-		ipcRenderer.send('client.search-igdb-games', this.state.name);
-	}
-
 	private changeBackgroundHandler(imageUrl: string) {
 		this.setState({
 			background: imageUrl
 		});
+	}
+
+	private searchIgdbBtnClickHandler() {
+		ipcRenderer.send('client.search-igdb-games', this.state.name);
+	}
+
+	private addGameBtnClickHandler() {
+		let gameInfos: any = { ...this.state };
+		delete gameInfos.potentialBackgrounds;
+		ipcRenderer.send('client.add-game', gameInfos);
 	}
 
 	public componentDidMount() {
@@ -300,7 +306,7 @@ export class AddGameModal extends React.Component<any, any> {
 									className="btn btn-primary"
 									disabled={!this.state.name || !this.state.executable}
 									type="button"
-									onClick={() => { console.log(this.state); }}
+									onClick={ this.addGameBtnClickHandler.bind(this) }
 								>
 									{ localizer.f('submitNewGame') }
 								</button>

@@ -22,8 +22,21 @@ export class Vitrine extends React.Component<any, any> {
 	}
 
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
+		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
+		currentPlayableGames.addGames(new GamesCollection<PlayableGame>(games), () => {
+			this.setState({
+				playableGames:  currentPlayableGames
+			});
+		});
+	}
+
+	private addPlayableGame(event: Electron.Event, game: PlayableGame) {
+		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
+		currentPlayableGames.addGame(game);
 		this.setState({
-			playableGames:  new GamesCollection<PlayableGame>(games)
+			playableGames: currentPlayableGames
+		}, () => {
+			$('#add-game-modal').modal('hide');
 		});
 	}
 
@@ -44,6 +57,7 @@ export class Vitrine extends React.Component<any, any> {
 	public componentDidMount() {
 		ipcRenderer.send('client.ready');
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
+		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
 		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
 	}
 

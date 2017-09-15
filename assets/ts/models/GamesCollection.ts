@@ -34,10 +34,12 @@ export class GamesCollection<T> {
 
 	public addGame(game: T) {
 		this._games.push(game);
+		this.sort();
 	}
 
 	public addGames(games: GamesCollection<T>, callback: Function) {
 		this.games = this.removeDuplicates(this.games.concat(games.games));
+		this.sort();
 		callback();
 	}
 
