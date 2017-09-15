@@ -2,6 +2,7 @@
 /.idea/workspace.xml
 /public/*
 !/public/img
+!/public/main.html
 /games/*
 /dist
 /assets/sass/vitrine/_bootstrapDatepicker.scss
