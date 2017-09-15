@@ -21,6 +21,32 @@ export class Vitrine extends React.Component<any, any> {
 		};
 	}
 
+	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
+		this.setState({
+			playableGames:  new GamesCollection<PlayableGame>(games)
+		});
+	}
+
+	private addPotentialGames(event: Electron.Event, potentialGames: PotentialGame[]) {
+		this.setState({
+			potentialGames: new GamesCollection<PotentialGame>(potentialGames)
+		});
+	}
+
+	private sideBarGameClickHandler(uuid: string) {
+		this.state.playableGames.getGame(uuid).then((selectedGame: PlayableGame) => {
+			this.setState({
+				selectedGame: selectedGame
+			});
+		});
+	}
+
+	public componentDidMount() {
+		ipcRenderer.send('client.ready');
+		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
+		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
+	}
+
 	public render() {
 		return (
 			<div id="vitrine-app" className="container-fluid full-height">
@@ -38,33 +64,5 @@ export class Vitrine extends React.Component<any, any> {
 				<AddGameModal/>
 			</div>
 		);
-	}
-
-	public componentDidMount() {
-		ipcRenderer.send('client.ready');
-		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
-		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
-	}
-
-	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
-		this.setState({
-			playableGames:  new GamesCollection<PlayableGame>(games)
-		});
-	}
-
-	private addPotentialGames(event: Electron.Event, potentialGames: PotentialGame[]) {
-		this.setState({
-			potentialGames: new GamesCollection<PotentialGame>(potentialGames)
-		}, () => {
-			console.log('potential games updated: ', this.state.potentialGames)
-		});
-	}
-
-	private sideBarGameClickHandler(uuid: string) {
-		this.state.playableGames.getGame(uuid).then((selectedGame: PlayableGame) => {
-			this.setState({
-				selectedGame: selectedGame
-			});
-		});
 	}
 }

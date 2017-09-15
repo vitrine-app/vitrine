@@ -4,6 +4,10 @@ import './SideBar.scss';
 import { PlayableGame } from '../../../../models/PlayableGame';
 
 export class SideBar extends React.Component<any, any> {
+	private clickGameHandler(event: any) {
+		this.props.gameClickHandler(event.target.id.replace('game-', ''));
+	}
+
 	public render() {
 		return (
 			<div id="sidebar-container" className="col-sm-4 col-lg-2">
@@ -26,9 +30,5 @@ export class SideBar extends React.Component<any, any> {
 				</div>
 			</div>
 		);
-	}
-
-	private clickGameHandler(event: any) {
-		this.props.gameClickHandler(event.target.id.replace('game-', ''));
 	}
 }

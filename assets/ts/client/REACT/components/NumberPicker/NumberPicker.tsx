@@ -11,6 +11,63 @@ export class NumberPicker extends React.Component<any, any> {
 		};
 	}
 
+	private increaseCounterHandler() {
+		let newVal: number;
+		let currentVal: number = parseInt(this.state.value);
+
+		if (isNaN(currentVal) || currentVal < this.props.min)
+			newVal = this.props.min;
+		else if (currentVal >= this.props.max)
+			newVal = this.props.max;
+		else
+			newVal = currentVal + 1;
+
+		this.setState({
+			value: newVal
+		}, () => {
+			if (this.props.onChange)
+				this.props.onChange(this.state.value);
+		});
+	}
+
+	private decreaseCounterHandler() {
+		let newVal: number;
+		let currentVal: number = parseInt(this.state.value);
+
+		if (isNaN(currentVal) || currentVal <= this.props.min)
+			newVal = this.props.min;
+		else if (currentVal > this.props.max)
+			newVal = this.props.max;
+		else
+			newVal = currentVal - 1;
+
+		this.setState({
+			value: newVal
+		}, () => {
+			if (this.props.onChange)
+				this.props.onChange(this.state.value);
+		});
+	}
+
+	private inputChangeHandler(event) {
+		let value: any = event.target.value;
+		if (isNaN(value))
+			return;
+
+		this.setState({
+			value: value
+		}, () => {
+			if (this.props.onChange)
+				this.props.onChange(this.state.value);
+		});
+	}
+
+	public componentWillReceiveProps(props: any) {
+		this.setState({
+			value: (props.value) ? (props.value) : ('')
+		});
+	}
+
 	public render() {
 		return (
 			<div className="input-group spinner">
@@ -40,56 +97,5 @@ export class NumberPicker extends React.Component<any, any> {
 				</div>
 			</div>
 		);
-	}
-
-	private increaseCounterHandler() {
-		let newVal: number;
-		let currentVal: number = parseInt(this.state.value);
-
-		if (currentVal || currentVal === 0) {
-			if (currentVal < this.props.max)
-				newVal = currentVal + 1;
-			else
-				newVal = this.props.max;
-		}
-		else
-			newVal = this.props.min;
-
-		this.setState({
-			value: newVal
-		}, () => {
-			this.props.onChange(this.state.value);
-		});
-	}
-	private decreaseCounterHandler() {
-		let newVal: number;
-		let currentVal: number = parseInt(this.state.value);
-
-		if (currentVal || currentVal === 0) {
-			if (currentVal >= this.props.min)
-				newVal = currentVal - 1;
-			else
-				newVal = this.props.min;
-		}
-		else
-			newVal = this.props.min;
-
-		this.setState({
-			value: newVal
-		}, () => {
-			this.props.onChange(this.state.value);
-		});
-	}
-
-	private inputChangeHandler(event) {
-		let value: any = event.target.value;
-		if (isNaN(value))
-			return;
-
-		this.setState({
-			value: value
-		}, () => {
-			this.props.onChange(this.state.value);
-		});
 	}
 }

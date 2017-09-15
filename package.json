@@ -48,7 +48,6 @@
   "dependencies": {
     "bootstrap-datepicker": "^1.7.1",
     "change-case": "^3.0.1",
-    "dateformat": "^2.0.0",
     "download-file": "^0.1.5",
     "electron-titlebar-absolute": "0.0.4",
     "electron-updater": "^2.8.7",
@@ -75,7 +74,6 @@
   "devDependencies": {
     "@types/bootstrap-datepicker": "0.0.9",
     "@types/chai": "^4.0.4",
-    "@types/dateformat": "^1.0.1",
     "@types/electron": "^1.6.10",
     "@types/fs-extra": "^4.0.1",
     "@types/glob": "^5.0.32",
@@ -113,7 +111,7 @@
   "scripts": {
     "compile-cpp": "cl scripts/regWatcher.cpp Advapi32.lib /EHsc && cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
     "build-html": "node scripts/htmlCompiler.js assets/html/main.html public/main.html && node scripts/htmlCompiler.js assets/html/loading.html public/loading.html",
-    "start": "webpack && npm run build-html && electron .",
+    "start": "webpack && electron .",
     "run-server-electron": "webpack --config config/build/server.build.js && electron .",
     "run-client-electron": "webpack --config config/build/client.build.js && electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 15000",

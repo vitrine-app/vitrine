@@ -11,6 +11,10 @@ export class GameContainer extends React.Component<any, any> {
 		super();
 	}
 
+	private gameCoverClickHandler() {
+		console.log('hey hey!');
+	}
+
 	public render() {
 		let gameContainer: JSX.Element;
 
@@ -61,9 +65,5 @@ export class GameContainer extends React.Component<any, any> {
 				</div>
 			</div>
 		);
-	}
-
-	private gameCoverClickHandler() {
-		console.log('hey hey!');
 	}
 }

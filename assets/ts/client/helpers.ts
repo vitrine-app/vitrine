@@ -187,7 +187,7 @@ export function openImageDialog(): string {
 }
 
 export function urlify(imgPath: string): string {
-	return (imgPath) ? ('url(' + imgPath.replace(/\\/g, '\\\\') + ')') : ('YEYEYEY');
+	return (imgPath) ? ('url(' + imgPath.replace(/\\/g, '\\\\') + ')') : ('');
 }
 
 export function displayRemoveGameModal(gameId: string, gameName: string) {

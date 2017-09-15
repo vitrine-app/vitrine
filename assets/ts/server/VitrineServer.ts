@@ -107,9 +107,9 @@ export class VitrineServer {
 
 	private searchIgdbGames(event: Electron.Event, gameName: string, resultsNb?: number) {
 		getIgdbWrapperSearcher(gameName, resultsNb).then((games: any) => {
-			event.sender.send('server.send-igdb-searches', null, games);
+			event.sender.send('server.send-igdb-searches', gameName, games);
 		}).catch((error) => {
-			event.sender.send('server.send-igdb-searches', error, null);
+			event.sender.send('server.server-error', error);
 		})
 	}
 

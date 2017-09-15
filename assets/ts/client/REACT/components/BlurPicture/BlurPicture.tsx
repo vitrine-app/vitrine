@@ -32,24 +32,6 @@ export class BlurPicture extends React.Component<any, any> {
 		};
 	}
 
-	public render() {
-		return (
-			<div
-				className={ 'blur-picture-container ' + this.state.divClassName }
-				onMouseEnter={ this.mouseEnterHandler.bind(this) }
-				onMouseLeave={ this.mouseLeaveHandler.bind(this) }
-				onClick={ this.clickHandler.bind(this) }
-				style={ this.state.divStyle }
-			>
-				<div className="image" style={{ ...this.state.imageStyle }}/>
-				<i
-					className={'fa fa-' + this.props.faIcon + ' icon ' + this.state.iconClassName }
-					style={{ ...this.state.iconStyle }}
-				/>
-			</div>
-		);
-	}
-
 	private mouseEnterHandler() {
 		let imageStyle: any = this.state.imageStyle;
 		let iconStyle: any = this.state.iconStyle;
@@ -94,5 +76,32 @@ export class BlurPicture extends React.Component<any, any> {
 		});
 
 		this.props.clickHandler();
+	}
+
+	public componentWillReceiveProps(props: any) {
+		this.setState({
+			imageStyle: {
+				backgroundImage: urlify(props.background),
+				filter: ''
+			}
+		});
+	}
+
+	public render() {
+		return (
+			<div
+				className={ 'blur-picture-container ' + this.state.divClassName }
+				onMouseEnter={ this.mouseEnterHandler.bind(this) }
+				onMouseLeave={ this.mouseLeaveHandler.bind(this) }
+				onClick={ this.clickHandler.bind(this) }
+				style={ this.state.divStyle }
+			>
+				<div className="image" style={{ ...this.state.imageStyle }}/>
+				<i
+					className={'fa fa-' + this.props.faIcon + ' icon ' + this.state.iconClassName }
+					style={{ ...this.state.iconStyle }}
+				/>
+			</div>
+		);
 	}
 }
