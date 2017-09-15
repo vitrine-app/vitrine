@@ -17,8 +17,9 @@ As it is in beta, Vitrine only currently supports Steam, but in the future it wi
 
 Vitrine is made possible thanks to a lot of different technologies:
 
-[![Node.js](https://image.ibb.co/gTMzRa/node.png)](https://nodejs.org)
 [![Electron](https://image.ibb.co/iaUm6a/electron.png)](https://electron.atom.io)
+[![Node.js](https://image.ibb.co/gTMzRa/node.png)](https://nodejs.org)
+[![React](https://image.ibb.co/kGLHr5/react.png)](https://facebook.github.io/react)
 [![Bootstrap](https://image.ibb.co/b3jxCF/bootstrap.png)](http://getbootstrap.com)
 [![IGDB](https://image.ibb.co/mhvLXF/igdb.png)](https://www.igdb.com)
 
