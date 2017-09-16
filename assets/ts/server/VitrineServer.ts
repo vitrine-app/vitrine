@@ -160,10 +160,10 @@ export class VitrineServer {
 	private removeGame(event: Electron.Event, gameId: string) {
 		this.playableGames.removeGame(gameId, (error) => {
 			if (error)
-				event.sender.send('server.remove-playable-game', error, null);
+				event.sender.send('server.server-error', error);
 			let gameDirectory: string = path.resolve(getGamesFolder(), gameId);
 			rimraf(gameDirectory, () => {
-				event.sender.send('server.remove-playable-game', null, gameId);
+				event.sender.send('server.remove-playable-game', gameId);
 			});
 		});
 	}

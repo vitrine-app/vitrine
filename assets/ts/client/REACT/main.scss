@@ -12,3 +12,6 @@ $fa-font-path: '~font-awesome/fonts';
 /* jQuery context menu */
 $context-menu-icon-font-path: '~jquery-contextmenu/dist/font/';
 @import '~jquery-contextmenu/src/sass/jquery.contextMenu';
+
+/* React context menu */
+@import 'contextMenus';

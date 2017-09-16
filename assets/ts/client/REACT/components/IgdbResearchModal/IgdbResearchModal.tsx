@@ -100,9 +100,9 @@ export class IgdbResearchModal extends React.Component<any, any> {
 									</div>
 								</div>
 								<div className="igdb-researches-list">
-									{ this.state.researches.map((research: any) =>
+									{ this.state.researches.map((research: any, index: number) =>
 										<div
-											key={ research.id }
+											key={ index }
 											className={ (this.state.selectedResearchId === research.id) ? ('row selected-igdb-research') : ('row') }
 											onClick={ this.clickResearchHandler.bind(this, research.id) }
 										>

@@ -60,9 +60,9 @@ export class ImagesCollection extends React.Component<any, any> {
 					<i className="fa fa-plus"/> { localizer.f('addCustomBgImage') }
 				</button>
 				<div className="images-container">
-					{ this.state.images.map((image: string) =>
+					{ this.state.images.map((image: string, index: number) =>
 						<img
-							key={ image }
+							key={ index }
 							src={ image }
 							className={ (this.state.selectedImage === image) ? ('selected-image') : ('') }
 							onClick={ this.imageClickHandler.bind(this, image) }

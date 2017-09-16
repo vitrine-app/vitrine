@@ -40,6 +40,27 @@ export class Vitrine extends React.Component<any, any> {
 		});
 	}
 
+	private removePlayableGame(event: Electron.Event, gameId: string) {
+		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
+		currentPlayableGames.removeGame(gameId, (error, game: PlayableGame, index: number) => {
+			if (error)
+				throw new Error(error);
+			let currentSelectedGame = this.state.selectedGame;
+			if (currentPlayableGames.games.length) {
+				if (index)
+					currentSelectedGame = currentPlayableGames.games[index - 1];
+				else
+					currentSelectedGame = currentPlayableGames.games[index];
+			}
+			else
+				currentSelectedGame = null;
+			this.setState({
+				playableGames: currentPlayableGames,
+				selectedGame: currentSelectedGame
+			});
+		});
+	}
+
 	private addPotentialGames(event: Electron.Event, potentialGames: PotentialGame[]) {
 		this.setState({
 			potentialGames: new GamesCollection<PotentialGame>(potentialGames)
@@ -58,6 +79,7 @@ export class Vitrine extends React.Component<any, any> {
 		ipcRenderer.send('client.ready');
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
 		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
+		ipcRenderer.on('server.remove-playable-game', this.removePlayableGame.bind(this));
 		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
 	}
 

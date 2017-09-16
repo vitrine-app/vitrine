@@ -8,7 +8,7 @@ class IgdbWrapper {
 	private game: any;
 
 	public constructor() {
-		this.apiKey = 'cb14c151b2f67d505d13ee673d5acde4';
+		this.apiKey = '68f4f0d8675a0f3341ee52bcabae1f46';
 		this.client = igdb.default(this.apiKey);
 		this.levenshteinRefiner = 5;
 

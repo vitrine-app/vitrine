@@ -15,6 +15,19 @@ export class GameContainer extends React.Component<any, any> {
 		console.log('hey hey!');
 	}
 
+	public componentWillReceiveProps(props: any) {
+		let currentBackgroundImage: string;
+		if (props.selectedGame && props.selectedGame.details.backgroundScreen)
+			currentBackgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+		else
+			currentBackgroundImage = 'none';
+
+		beforeCss('#game-background', {
+			'background-image': currentBackgroundImage
+		});
+
+	}
+
 	public render() {
 		let gameContainer: JSX.Element;
 
@@ -42,9 +55,6 @@ export class GameContainer extends React.Component<any, any> {
 					</div>
 				</div>
 			);
-			beforeCss('#game-background', {
-				'background-image': urlify(this.props.selectedGame.details.backgroundScreen)
-			});
 		}
 		else {
 			gameContainer = (
