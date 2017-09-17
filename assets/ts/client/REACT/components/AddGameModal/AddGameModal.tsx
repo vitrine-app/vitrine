@@ -15,8 +15,8 @@ import { openImageDialog } from '../../../helpers';
 export class AddGameModal extends React.Component<any, any> {
 	private emptyState: any;
 
-	public constructor() {
-		super();
+	public constructor(props: any) {
+		super(props);
 
 		this.emptyState = {
 			name: '',
@@ -32,7 +32,8 @@ export class AddGameModal extends React.Component<any, any> {
 			cover: '',
 			background: '',
 			potentialBackgrounds: [],
-			source: GameSource.LOCAL
+			source: GameSource.LOCAL,
+			isEditing: props.isEditing
 		};
 		this.state = this.emptyState;
 	}
@@ -130,11 +131,21 @@ export class AddGameModal extends React.Component<any, any> {
 			let executable: string = args.shift();
 
 			this.setState({
+				isEditing: props.isEditing,
 				name: gameToAdd.name,
 				cover: gameToAdd.details.cover,
 				source: gameToAdd.source,
 				executable: executable,
-				arguments: args.join(' ')
+				arguments: args.join(' '),
+				series: (gameToAdd.details.series) ? (gameToAdd.details.series) : (''),
+				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate / 1000).format('DD/MM/YYYY')) : (''),
+				developer: (gameToAdd.details.developer) ? (gameToAdd.details.developer) : (''),
+				publisher: (gameToAdd.details.publisher) ? (gameToAdd.details.publisher) : (''),
+				genres: (gameToAdd.details.genres) ? (gameToAdd.details.genres.join(', ')) : (''),
+				rating: (gameToAdd.details.rating) ? (gameToAdd.details.rating) : (''),
+				summary: (gameToAdd.details.summary) ? (gameToAdd.details.summary) : (''),
+				potentialBackgrounds: (gameToAdd.details.background) ? ([gameToAdd.details.background]) : ([]),
+				background: (gameToAdd.details.background) ? (gameToAdd.details.background) : ('')
 			});
 		}
 	}
@@ -148,7 +159,9 @@ export class AddGameModal extends React.Component<any, any> {
 						<div className="modal-content">
 							<div className="modal-header">
 								<button type="button" className="close" data-dismiss="modal">&times;</button>
-								<h4 className="modal-title">{ localizer.f('addGameLabel') }</h4>
+								<h4 className="modal-title">
+									{ (this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel')) }
+								</h4>
 							</div>
 							<div className="modal-body">
 								<div className="row">
@@ -327,7 +340,7 @@ export class AddGameModal extends React.Component<any, any> {
 									type="button"
 									onClick={ this.addGameBtnClickHandler.bind(this) }
 								>
-									{ localizer.f('submitNewGame') }
+									{ (this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame')) }
 								</button>
 							</div>
 						</div>

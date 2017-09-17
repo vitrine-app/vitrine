@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
-import { ContextMenuTrigger, ContextMenu, MenuItem } from 'react-contextmenu';
+import { ContextMenuTrigger } from 'react-contextmenu';
 
 import './SideBar.scss';
 import { PlayableGame } from '../../../../models/PlayableGame';
@@ -10,17 +10,10 @@ export class SideBar extends React.Component<any, any> {
 		this.props.gameClickHandler(event.target.id.replace('game-', ''));
 	}
 
-	private deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
-		let gameId: string = target.children[0].id.replace('game-', '');
-		ipcRenderer.send('client.remove-game', gameId);
-	}
-
 	public render(): JSX.Element {
 		return (
 			<div id="sidebar-container" className="col-sm-4 col-lg-2">
 				<div id="sidebar-content">
-					<div id="potential-games-area"></div>
-					<hr/>
 					<div className="games-list">
 						<ul id="playable-games-list" className="games-list">
 							{ this.props.playableGames.games.map((game: PlayableGame, index: number) =>
@@ -40,11 +33,6 @@ export class SideBar extends React.Component<any, any> {
 						</ul>
 					</div>
 				</div>
-				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem>Play</MenuItem>
-					<MenuItem>Edit</MenuItem>
-					<MenuItem onClick={ this.deleteGameContextClickHandler.bind(this) }>Delete</MenuItem>
-				</ContextMenu>
 			</div>
 		);
 	}

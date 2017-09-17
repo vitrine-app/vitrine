@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
+import { ContextMenu, MenuItem } from 'react-contextmenu';
 
 import './Vitrine.scss';
 import { TaskBar } from '../TaskBar/TaskBar';
@@ -19,7 +20,8 @@ export class Vitrine extends React.Component<any, any> {
 			playableGames: new GamesCollection<PlayableGame>(),
 			potentialGames: new GamesCollection<PotentialGame>(),
 			selectedGame: null,
-			potentialGameToAdd: null
+			potentialGameToAdd: null,
+			gameWillBeEdited: false
 		};
 	}
 
@@ -78,12 +80,24 @@ export class Vitrine extends React.Component<any, any> {
 		});
 	}
 
-	private potentialGameToAddUpdateHandler(potentialGame: PotentialGame) {
+	private potentialGameToAddUpdateHandler(potentialGame: PotentialGame, gameWillBeEdited: boolean) {
 		this.setState({
-			potentialGameToAdd: potentialGame
+			potentialGameToAdd: potentialGame,
+			gameWillBeEdited: gameWillBeEdited
 		}, () => {
 			$('#add-game-modal').modal('show');
 		});
+	}
+
+	private editGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+		let gameId: string = target.children[0].id.replace('game-', '');
+		this.state.playableGames.getGame(gameId).then((selectedGame: PlayableGame) => {
+			this.potentialGameToAddUpdateHandler(selectedGame, true);
+		});
+	}
+	private deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+		let gameId: string = target.children[0].id.replace('game-', '');
+		ipcRenderer.send('client.remove-game', gameId);
 	}
 
 	public componentDidMount() {
@@ -110,11 +124,17 @@ export class Vitrine extends React.Component<any, any> {
 				/>
 				<AddGameModal
 					potentialGameToAdd={ this.state.potentialGameToAdd }
+					isEditing={ this.state.gameWillBeEdited }
 				/>
 				<AddPotentialGamesModal
 					potentialGames={ this.state.potentialGames }
-					potentialGameUpdateCallback={ this.potentialGameToAddUpdateHandler.bind(this) }
+					potentialGameUpdateCallback={ this.potentialGameToAddUpdateHandler.bind(this, false) }
 				/>
+				<ContextMenu id="sidebar-games-context-menu">
+					<MenuItem>Play</MenuItem>
+					<MenuItem onClick={ this.editGameContextClickHandler.bind(this) }>Edit</MenuItem>
+					<MenuItem onClick={ this.deleteGameContextClickHandler.bind(this) }>Delete</MenuItem>
+				</ContextMenu>
 			</div>
 		);
 	}

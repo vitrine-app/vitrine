@@ -14,6 +14,7 @@
   "editGame": "Éditer",
   "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
   "addGameLabel": "Ajouter un jeu",
+  "editGameLabel": "Éditer un jeu",
   "fillWithIgdb": "Remplir les détails",
   "submitNewGame": "Ajouter",
   "gameName": "Nom du jeu",
