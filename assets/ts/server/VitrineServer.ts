@@ -251,17 +251,17 @@ export class VitrineServer {
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
 		let backgroundScreen: string = game.details.background.replace('t_screenshot_med', 't_screenshot_huge');
 
-		downloadImage(game.details.cover, coverPath).then(() => {
-			game.details.cover = coverPath;
-			downloadImage(backgroundScreen, screenPath).then(() => {
-				game.details.backgroundScreen = screenPath;
+		downloadImage(game.details.cover, coverPath).then((isStored: boolean) => {
+			game.details.cover = (isStored) ? (coverPath) : ('');
+			downloadImage(backgroundScreen, screenPath).then((isStored: boolean) => {
+				game.details.backgroundScreen = (isStored) ? (screenPath) : ('');
 				if (game.details.steamId)
 					delete game.details.screenshots;
 				else
 					delete game.details.background;
 				fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
-				/*if (!editing && game.source !== GameSource.LOCAL)
-					this.findPotentialGames(event);*/
+				if (!editing && game.source !== GameSource.LOCAL)
+					this.findPotentialGames(event);
 				if (!editing) {
 					event.sender.send('server.add-playable-game', game);
 					this.playableGames.addGame(game);

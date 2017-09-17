@@ -28,7 +28,7 @@ export class GameContainer extends React.Component<any, any> {
 
 	}
 
-	public render() {
+	public render(): JSX.Element {
 		let gameContainer: JSX.Element;
 
 		if (this.props.selectedGame) {

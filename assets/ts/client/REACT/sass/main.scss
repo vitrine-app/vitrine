@@ -1,5 +1,5 @@
 /* Bootstrap */
-@import 'bootstrapVariables';
+@import './bootstrapVariables';
 @import '~bootstrap-sass/assets/stylesheets/bootstrap';
 
 /* Font Awesome */
@@ -14,4 +14,4 @@ $context-menu-icon-font-path: '~jquery-contextmenu/dist/font/';
 @import '~jquery-contextmenu/src/sass/jquery.contextMenu';
 
 /* React context menu */
-@import 'contextMenus';
+@import './contextMenus';

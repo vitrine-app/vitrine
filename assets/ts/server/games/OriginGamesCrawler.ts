@@ -8,7 +8,8 @@ import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
-import { getEnvFolder, getGamesFolder, uuidV5 } from '../helpers';
+import { getEnvFolder } from '../../models/env';
+import { getGamesFolder, uuidV5 } from '../helpers';
 
 class OriginGamesCrawler {
 	private configFile: any;

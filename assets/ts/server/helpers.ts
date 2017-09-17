@@ -13,13 +13,11 @@ export function uuidV5(name: string): string {
 
 export function downloadImage(url: string, path: string): Promise<any> {
 	return new Promise((resolve, reject) => {
-		if (!url)
-			reject(new Error('URL is not valid'));
-		if (url === path)
-			resolve();
+		if (!url || url === path)
+			resolve(false);
 		if (url.startsWith('file://')) {
 			fs.copy(url.substring(7), path).then(() => {
-				resolve();
+				resolve(true);
 			}).catch((error) => {
 				reject(error);
 			});
@@ -33,15 +31,10 @@ export function downloadImage(url: string, path: string): Promise<any> {
 			}, (error) => {
 				if (error)
 					throw error;
-
-				resolve();
+				resolve(true);
 			});
 		}
 	});
-}
-
-export function getEnvFolder(folder: string): string {
-	return path.resolve(__dirname, (getEnvData().env) ? ('../../' + folder) : ('../' + folder));
 }
 
 // TODO: Remove this temporary helper

@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { GameSource } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
-import { getEnvFolder } from './helpers';
+import { getEnvFolder } from '../models/env';
 
 class GameLauncher {
 	private scriptPath: string;

@@ -9,6 +9,7 @@ import { PotentialGame } from '../../../../models/PotentialGame';
 import { PlayableGame } from '../../../../models/PlayableGame';
 import { GamesCollection } from '../../../../models/GamesCollection';
 import { AddGameModal } from '../AddGameModal/AddGameModal';
+import { AddPotentialGamesModal } from '../AddPotentialGamesModal/AddPotentialGamesModal';
 
 export class Vitrine extends React.Component<any, any> {
 	public constructor() {
@@ -17,7 +18,8 @@ export class Vitrine extends React.Component<any, any> {
 		this.state = {
 			playableGames: new GamesCollection<PlayableGame>(),
 			potentialGames: new GamesCollection<PotentialGame>(),
-			selectedGame: null
+			selectedGame: null,
+			potentialGameToAdd: null
 		};
 	}
 
@@ -37,6 +39,7 @@ export class Vitrine extends React.Component<any, any> {
 			playableGames: currentPlayableGames
 		}, () => {
 			$('#add-game-modal').modal('hide');
+			$('#add-potential-games-modal').modal('hide');
 		});
 	}
 
@@ -75,6 +78,14 @@ export class Vitrine extends React.Component<any, any> {
 		});
 	}
 
+	private potentialGameToAddUpdateHandler(potentialGame: PotentialGame) {
+		this.setState({
+			potentialGameToAdd: potentialGame
+		}, () => {
+			$('#add-game-modal').modal('show');
+		});
+	}
+
 	public componentDidMount() {
 		ipcRenderer.send('client.ready');
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
@@ -83,7 +94,7 @@ export class Vitrine extends React.Component<any, any> {
 		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
 	}
 
-	public render() {
+	public render(): JSX.Element {
 		return (
 			<div id="vitrine-app" className="container-fluid full-height">
 				<TaskBar
@@ -97,7 +108,13 @@ export class Vitrine extends React.Component<any, any> {
 				<GameContainer
 					selectedGame={ this.state.selectedGame }
 				/>
-				<AddGameModal/>
+				<AddGameModal
+					potentialGameToAdd={ this.state.potentialGameToAdd }
+				/>
+				<AddPotentialGamesModal
+					potentialGames={ this.state.potentialGames }
+					potentialGameUpdateCallback={ this.potentialGameToAddUpdateHandler.bind(this) }
+				/>
 			</div>
 		);
 	}

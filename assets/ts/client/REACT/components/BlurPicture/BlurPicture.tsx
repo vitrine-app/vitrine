@@ -87,7 +87,7 @@ export class BlurPicture extends React.Component<any, any> {
 		});
 	}
 
-	public render() {
+	public render(): JSX.Element {
 		return (
 			<div
 				className={ 'blur-picture-container ' + this.state.divClassName }

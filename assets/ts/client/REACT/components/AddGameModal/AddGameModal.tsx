@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ipcRenderer, remote } from 'electron';
 import * as moment from 'moment';
 
-import { GameSource } from '../../../../models/PotentialGame';
+import { PotentialGame, GameSource } from '../../../../models/PotentialGame';
 
 import './AddGameModal.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
@@ -35,6 +35,23 @@ export class AddGameModal extends React.Component<any, any> {
 			source: GameSource.LOCAL
 		};
 		this.state = this.emptyState;
+	}
+
+	private fillIgdbGame(event: Electron.Event, error: string, gameInfos: any) {
+		$('#igdb-research-modal').modal('hide');
+		this.setState({
+			name: gameInfos.name,
+			series: gameInfos.series,
+			date: moment.unix(gameInfos.releaseDate / 1000).format('DD/MM/YYYY'),
+			developer: gameInfos.developer,
+			publisher: gameInfos.publisher,
+			genres: gameInfos.genres.join(', '),
+			rating: gameInfos.rating,
+			summary: gameInfos.summary,
+			cover: gameInfos.cover,
+			potentialBackgrounds: gameInfos.screenshots,
+			background: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
+		});
 	}
 
 	private hideModalHandler() {
@@ -103,24 +120,26 @@ export class AddGameModal extends React.Component<any, any> {
 
 	public componentDidMount() {
 		$('#add-game-modal').on('hidden.bs.modal', this.hideModalHandler.bind(this));
-		ipcRenderer.on('server.send-igdb-game', (event: Electron.Event, error: string, gameInfos: any) => {
-			$('#igdb-research-modal').modal('hide');
-			this.setState({
-				name: gameInfos.name,
-				series: gameInfos.series,
-				date: moment.unix(gameInfos.releaseDate / 1000).format('DD/MM/YYYY'),
-				developer: gameInfos.developer,
-				publisher: gameInfos.publisher,
-				genres: gameInfos.genres.join(', '),
-				rating: gameInfos.rating,
-				summary: gameInfos.summary,
-				cover: gameInfos.cover,
-				potentialBackgrounds: gameInfos.screenshots
-			});
-		});
+		ipcRenderer.on('server.send-igdb-game', this.fillIgdbGame.bind(this));
 	}
 
-	public render() {
+	public componentWillReceiveProps(props: any) {
+		if (props.potentialGameToAdd) {
+			let gameToAdd: PotentialGame = props.potentialGameToAdd;
+			let args: string[] = gameToAdd.commandLine.slice();
+			let executable: string = args.shift();
+
+			this.setState({
+				name: gameToAdd.name,
+				cover: gameToAdd.details.cover,
+				source: gameToAdd.source,
+				executable: executable,
+				arguments: args.join(' ')
+			});
+		}
+	}
+
+	public render(): JSX.Element {
 		return (
 			<div>
 				<IgdbResearchModal/>

@@ -55,7 +55,7 @@ export class IgdbResearchModal extends React.Component<any, any> {
 		});
 	}
 
-	public render() {
+	public render(): JSX.Element {
 		return (
 			<div id="igdb-research-modal" className="modal fade" role="dialog">
 				<div className="modal-dialog">

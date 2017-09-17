@@ -15,7 +15,7 @@ export class SideBar extends React.Component<any, any> {
 		ipcRenderer.send('client.remove-game', gameId);
 	}
 
-	public render() {
+	public render(): JSX.Element {
 		return (
 			<div id="sidebar-container" className="col-sm-4 col-lg-2">
 				<div id="sidebar-content">

@@ -7,7 +7,7 @@ export class TaskBar extends React.Component<any, any> {
 		super(props);
 	}
 
-	public render() {
+	public render(): JSX.Element {
 		return (
 			<div>
 				<div id="taskbar">
@@ -24,7 +24,7 @@ export class TaskBar extends React.Component<any, any> {
 							className="col-md-1"
 							 style={{ display: (this.props.potentialGames.games.length) ? ('block') : ('none') }}
 						>
-							<button className="btn btn-primary">
+							<button className="btn btn-primary" data-toggle="modal" data-target="#add-potential-games-modal">
 								You can add { this.props.potentialGames.games.length } games
 							</button>
 						</div>
