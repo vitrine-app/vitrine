@@ -50,7 +50,7 @@ export class VitrineClient {
 	}
 
 	public getPlayableGame(gameId: string, callback: Function) {
-		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
+		this.playableGames.getGame(gameId).then(([game]) => {
 			callback(null, game);
 		}).catch((error) => {
 			callback(error, null);
@@ -223,7 +223,7 @@ export class VitrineClient {
 	}
 
 	private stopGame(event: Electron.Event, gameId: string, totalTimePlayed: number)  {
-		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
+		this.playableGames.getGame(gameId).then(([game]) => {
 			game.timePlayed = totalTimePlayed;
 			this.updateGameUi(game);
 		}).catch((error) => {
@@ -282,7 +282,7 @@ export class VitrineClient {
 			let gameLiHtml: string = '<li game-id="' + playableGame.uuid + '" class="play-game-link">' + playableGame.name + '</li>';
 			let self: VitrineClient = this;
 			let gameLi: JQuery = $(gameLiHtml).click(function() {
-				self.playableGames.getGame(playableGame.uuid).then((game: PlayableGame) => {
+				self.playableGames.getGame(playableGame.uuid).then(([game]) => {
 					if (self.clickedGame && self.clickedGame.uuid === playableGame.uuid)
 						return;
 					self.updateGameUi(game);

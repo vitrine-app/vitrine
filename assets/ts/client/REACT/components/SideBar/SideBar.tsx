@@ -6,8 +6,22 @@ import './SideBar.scss';
 import { PlayableGame } from '../../../../models/PlayableGame';
 
 export class SideBar extends React.Component<any, any> {
+	public constructor(props: any) {
+		super(props);
+
+		this.state = {
+			playableGames: props.playableGames
+		}
+	}
+
 	private clickGameHandler(event: any) {
 		this.props.gameClickHandler(event.target.id.replace('game-', ''));
+	}
+
+	public componentWillReceiveProps(props: any) {
+		this.setState({
+			playableGames: props.playableGames
+		});
 	}
 
 	public render(): JSX.Element {
@@ -16,7 +30,7 @@ export class SideBar extends React.Component<any, any> {
 				<div id="sidebar-content">
 					<div className="games-list">
 						<ul id="playable-games-list" className="games-list">
-							{ this.props.playableGames.games.map((game: PlayableGame, index: number) =>
+							{ this.state.playableGames.games.map((game: PlayableGame, index: number) =>
 								<ContextMenuTrigger
 									id="sidebar-games-context-menu"
 									key={ index }

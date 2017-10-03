@@ -13,10 +13,15 @@ export function uuidV5(name: string): string {
 
 export function downloadImage(url: string, path: string): Promise<any> {
 	return new Promise((resolve, reject) => {
-		if (!url || url === path)
+		if (!url)
 			resolve(false);
 		if (url.startsWith('file://')) {
-			fs.copy(url.substring(7), path).then(() => {
+			url = url.substring(7);
+			if (url === path) {
+				resolve(true);
+				return;
+			}
+			fs.copy(url, path).then(() => {
 				resolve(true);
 			}).catch((error) => {
 				reject(error);

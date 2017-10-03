@@ -23,7 +23,7 @@ export class GamesCollection<T> {
 			this._games.forEach((game: T) => {
 				if (game['uuid'] === gameId) {
 					found = true;
-					resolve(game);
+					resolve([game, counter]);
 				}
 				counter++;
 				if (counter === this._games.length && !found)
@@ -43,10 +43,13 @@ export class GamesCollection<T> {
 		callback();
 	}
 
-	public editGame(game: T) {
-		this.getGame(game['uuid']).then((currentGame: T) => {
-			let index: number = this._games.indexOf(currentGame);
-			this._games[index] = game;
+	public editGame(game: T, callback?: Function) {
+		this.getGame(game['uuid']).then(([currentGame]) => {
+			Object.assign(currentGame, game);
+			if (callback)
+				callback();
+		}).catch((error: Error) => {
+			throw error;
 		});
 	}
 

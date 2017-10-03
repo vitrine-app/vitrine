@@ -44,8 +44,15 @@ export class ImagesCollection extends React.Component<any, any> {
 	}
 
 	public componentWillReceiveProps(props: any) {
+		let images: string[] = [];
+		let selectedImage: string = '';
+		if (props.images) {
+			images = props.images;
+			selectedImage = (this.state.selectedImage) ? (this.state.selectedImage) : (props.images[0]);
+		}
 		this.setState({
-			images: (props.images) ? (props.images) : ([])
+			images: images,
+			selectedImage: selectedImage
 		});
 	}
 

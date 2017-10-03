@@ -45,6 +45,17 @@ export class Vitrine extends React.Component<any, any> {
 		});
 	}
 
+	private editPlayableGame(event: Electron.Event, game: PlayableGame) {
+		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
+		currentPlayableGames.editGame(game, () => {
+			this.setState({
+				playableGames: currentPlayableGames
+			}, () => {
+				$('#add-game-modal').modal('hide');
+			});
+		});
+	}
+
 	private removePlayableGame(event: Electron.Event, gameId: string) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.removeGame(gameId, (error, game: PlayableGame, index: number) => {
@@ -73,14 +84,17 @@ export class Vitrine extends React.Component<any, any> {
 	}
 
 	private sideBarGameClickHandler(uuid: string) {
-		this.state.playableGames.getGame(uuid).then((selectedGame: PlayableGame) => {
+		this.state.playableGames.getGame(uuid).then(([selectedGame]) => {
 			this.setState({
 				selectedGame: selectedGame
 			});
+		}).catch((error: Error) => {
+			throw error;
 		});
 	}
 
-	private potentialGameToAddUpdateHandler(potentialGame: PotentialGame, gameWillBeEdited: boolean) {
+	private potentialGameToAddUpdateHandler(potentialGame: PotentialGame, gameWillBeEdited?: boolean) {
+		gameWillBeEdited = (gameWillBeEdited) ? (true) : (false);
 		this.setState({
 			potentialGameToAdd: potentialGame,
 			gameWillBeEdited: gameWillBeEdited
@@ -91,8 +105,10 @@ export class Vitrine extends React.Component<any, any> {
 
 	private editGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameId: string = target.children[0].id.replace('game-', '');
-		this.state.playableGames.getGame(gameId).then((selectedGame: PlayableGame) => {
+		this.state.playableGames.getGame(gameId).then(([selectedGame]) => {
 			this.potentialGameToAddUpdateHandler(selectedGame, true);
+		}).catch((error: Error) => {
+			throw error;
 		});
 	}
 	private deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
@@ -104,6 +120,7 @@ export class Vitrine extends React.Component<any, any> {
 		ipcRenderer.send('client.ready');
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
 		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
+		ipcRenderer.on('server.edit-playable-game', this.editPlayableGame.bind(this));
 		ipcRenderer.on('server.remove-playable-game', this.removePlayableGame.bind(this));
 		ipcRenderer.on('server.add-potential-games', this.addPotentialGames.bind(this));
 	}
@@ -128,7 +145,7 @@ export class Vitrine extends React.Component<any, any> {
 				/>
 				<AddPotentialGamesModal
 					potentialGames={ this.state.potentialGames }
-					potentialGameUpdateCallback={ this.potentialGameToAddUpdateHandler.bind(this, false) }
+					potentialGameUpdateCallback={ this.potentialGameToAddUpdateHandler.bind(this) }
 				/>
 				<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem>Play</MenuItem>

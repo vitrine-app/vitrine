@@ -30,7 +30,7 @@ export class AddGameModal extends React.Component<any, any> {
 			executable: '',
 			arguments: '',
 			cover: '',
-			background: '',
+			backgroundScreen: '',
 			potentialBackgrounds: [],
 			source: GameSource.LOCAL,
 			isEditing: props.isEditing
@@ -51,7 +51,7 @@ export class AddGameModal extends React.Component<any, any> {
 			summary: gameInfos.summary,
 			cover: gameInfos.cover,
 			potentialBackgrounds: gameInfos.screenshots,
-			background: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
+			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
 		});
 	}
 
@@ -105,7 +105,7 @@ export class AddGameModal extends React.Component<any, any> {
 
 	private changeBackgroundHandler(imageUrl: string) {
 		this.setState({
-			background: imageUrl
+			backgroundScreen: imageUrl
 		});
 	}
 
@@ -116,7 +116,16 @@ export class AddGameModal extends React.Component<any, any> {
 	private addGameBtnClickHandler() {
 		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
-		ipcRenderer.send('client.add-game', gameInfos);
+		delete gameInfos.isEditing;
+		if (gameInfos.cover && !gameInfos.cover.startsWith('http'))
+			gameInfos.cover = 'file://' + gameInfos.cover;
+		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http'))
+			gameInfos.backgroundScreen = 'file://' + gameInfos.backgroundScreen;
+
+		if (this.state.isEditing)
+			ipcRenderer.send('client.edit-game',this.props.potentialGameToAdd.uuid, gameInfos);
+		else
+			ipcRenderer.send('client.add-game', gameInfos);
 	}
 
 	public componentDidMount() {
@@ -144,8 +153,8 @@ export class AddGameModal extends React.Component<any, any> {
 				genres: (gameToAdd.details.genres) ? (gameToAdd.details.genres.join(', ')) : (''),
 				rating: (gameToAdd.details.rating) ? (gameToAdd.details.rating) : (''),
 				summary: (gameToAdd.details.summary) ? (gameToAdd.details.summary) : (''),
-				potentialBackgrounds: (gameToAdd.details.background) ? ([gameToAdd.details.background]) : ([]),
-				background: (gameToAdd.details.background) ? (gameToAdd.details.background) : ('')
+				potentialBackgrounds: (gameToAdd.details.backgroundScreen) ? ([gameToAdd.details.backgroundScreen]) : ([]),
+				backgroundScreen: (gameToAdd.details.backgroundScreen) ? (gameToAdd.details.backgroundScreen) : ('')
 			});
 		}
 	}
@@ -311,7 +320,7 @@ export class AddGameModal extends React.Component<any, any> {
 											/>
 											<input
 												name="background"
-												value={ this.state.background }
+												value={ this.state.backgroundScreen }
 												onChange={ this.inputChangeHandler.bind(this) }
 												hidden
 											/>

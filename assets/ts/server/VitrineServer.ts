@@ -61,7 +61,7 @@ export class VitrineServer {
 		ipcMain.on('client.fill-igdb-game', this.fillIgdbGame.bind(this));
 		ipcMain.on('client.search-igdb-games', this.searchIgdbGames.bind(this));
 		ipcMain.on('client.add-game', this.addGame.bind(this));
-		ipcMain.on('client.edit-game-manual', this.editGame.bind(this));
+		ipcMain.on('client.edit-game', this.editGame.bind(this));
 		ipcMain.on('client.launch-game', this.launchGame.bind(this));
 		ipcMain.on('client.remove-game', this.removeGame.bind(this));
 		ipcMain.on('client.refresh-potential-games', this.findPotentialGames.bind(this));
@@ -122,20 +122,19 @@ export class VitrineServer {
 	}
 
 	private editGame(event: Electron.Event, gameId: string, gameForm: any) {
-		this.playableGames.getGame(gameId).then((editedGame: PlayableGame) => {
+		this.playableGames.getGame(gameId).then(([editedGame]) => {
 			editedGame.name = gameForm.name;
 			editedGame.commandLine = [];
 			editedGame.details = gameForm;
 
 			this.registerGame(event, editedGame, gameForm, true);
 		}).catch((error) => {
-			if (error)
-				throw new Error(error);
+			throw new Error(error);
 		});
 	}
 
 	private launchGame(event: Electron.Event, gameId: string)  {
-		this.playableGames.getGame(gameId).then((game: PlayableGame) => {
+		this.playableGames.getGame(gameId).then(([game]) => {
 			if (game.uuid !== uuidV5(game.name))
 				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 			if (this.gameLaunched)
@@ -249,7 +248,7 @@ export class VitrineServer {
 
 		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
-		let backgroundScreen: string = game.details.background.replace('t_screenshot_med', 't_screenshot_huge');
+		let backgroundScreen: string = game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge');
 
 		downloadImage(game.details.cover, coverPath).then((isStored: boolean) => {
 			game.details.cover = (isStored) ? (coverPath) : ('');
@@ -267,8 +266,9 @@ export class VitrineServer {
 					this.playableGames.addGame(game);
 				}
 				else {
-					event.sender.send('server.edit-playable-game', game);
-					this.playableGames.editGame(game);
+					this.playableGames.editGame(game, () => {
+						event.sender.send('server.edit-playable-game', game);
+					});
 				}
 			}).catch((error: Error) => {
 				throw error;

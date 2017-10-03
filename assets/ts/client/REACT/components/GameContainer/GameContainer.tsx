@@ -7,8 +7,12 @@ import { beforeCss, urlify } from '../../../helpers';
 import { localizer } from '../../Localizer';
 
 export class GameContainer extends React.Component<any, any> {
-	public constructor() {
-		super();
+	public constructor(props: any) {
+		super(props);
+
+		this.state = {
+			selectedGame: props.selectedGame
+		}
 	}
 
 	private gameCoverClickHandler() {
@@ -17,8 +21,12 @@ export class GameContainer extends React.Component<any, any> {
 
 	public componentWillReceiveProps(props: any) {
 		let currentBackgroundImage: string;
-		if (props.selectedGame && props.selectedGame.details.backgroundScreen)
+		if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
 			currentBackgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+			this.setState({
+				selectedGame: props.selectedGame
+			});
+		}
 		else
 			currentBackgroundImage = 'none';
 
@@ -31,11 +39,11 @@ export class GameContainer extends React.Component<any, any> {
 	public render(): JSX.Element {
 		let gameContainer: JSX.Element;
 
-		if (this.props.selectedGame) {
+		if (this.state.selectedGame) {
 			gameContainer = (
 				<div id="game-core" className="row">
 					<div className="col-md-8">
-						<h1 id="game-title">{ this.props.selectedGame.name }</h1>
+						<h1 id="game-title">{ this.state.selectedGame.name }</h1>
 						<hr/>
 						<div id="game-play" className="selected-game-infos">
 							<button className="btn btn-primary">
@@ -43,13 +51,13 @@ export class GameContainer extends React.Component<any, any> {
 							</button>
 							<p></p>
 						</div>
-						<p id="game-desc" className="selected-game-infos">{ this.props.selectedGame.details.summary }</p>
+						<p id="game-desc" className="selected-game-infos">{ this.state.selectedGame.details.summary }</p>
 					</div>
 					<div className="col-md-4">
 						<BlurPicture
 							faIcon={ 'play' }
 							fontSize={ 125 }
-							background={ this.props.selectedGame.details.cover }
+							background={ this.state.selectedGame.details.cover }
 							clickHandler={ this.gameCoverClickHandler.bind(this) }
 						/>
 					</div>

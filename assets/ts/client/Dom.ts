@@ -276,7 +276,7 @@ export class Dom {
 
 		$('#edit-game-submit-btn').click(() => {
 			let gameForm: any = formToObject($('#edit-game-form')[0]);
-			ipcRenderer.send('client.edit-game-manual', game.uuid, gameForm);
+			ipcRenderer.send('client.edit-game', game.uuid, gameForm);
 			$('#edit-game-submit-btn').loading();
 		});
 
