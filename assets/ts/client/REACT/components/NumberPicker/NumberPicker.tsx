@@ -1,8 +1,9 @@
 import * as React from 'react';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './NumberPicker.scss';
 
-export class NumberPicker extends React.Component<any, any> {
+export class NumberPicker extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 
@@ -95,6 +96,7 @@ export class NumberPicker extends React.Component<any, any> {
 						<i className="fa fa-caret-down"/>
 					</button>
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

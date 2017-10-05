@@ -1,9 +1,10 @@
 import * as React from 'react';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './BlurPicture.scss';
 import { urlify } from '../../../helpers';
 
-export class BlurPicture extends React.Component<any, any> {
+export class BlurPicture extends VitrineComponent {
 	private pulseDuration: number;
 
 	public constructor(props: any) {
@@ -101,6 +102,7 @@ export class BlurPicture extends React.Component<any, any> {
 					className={'fa fa-' + this.props.faIcon + ' icon ' + this.state.iconClassName }
 					style={{ ...this.state.iconStyle }}
 				/>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

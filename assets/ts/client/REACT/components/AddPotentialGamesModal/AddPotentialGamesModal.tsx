@@ -1,11 +1,12 @@
 import * as React from 'react';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './AddPotentialGamesModal.scss';
 import { PotentialGame } from '../../../../models/PotentialGame';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { localizer } from '../../Localizer';
 
-export class AddPotentialGamesModal extends React.Component<any, any> {
+export class AddPotentialGamesModal extends VitrineComponent {
 	public constructor(props: any) {
 		super(props)
 	}
@@ -42,6 +43,7 @@ export class AddPotentialGamesModal extends React.Component<any, any> {
 						</div>
 					</div>
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

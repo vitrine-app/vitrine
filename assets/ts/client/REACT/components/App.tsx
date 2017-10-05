@@ -1,12 +1,14 @@
 import * as React from 'react';
 import * as path from 'path';
 import * as fs from 'fs';
+import { ipcRenderer } from 'electron';
 
 import { TitleBar } from './TitleBar/TitleBar';
 import { Vitrine } from './Vitrine/Vitrine';
 import { localizer } from '../Localizer';
 import { getEnvFolder } from '../../../models/env';
 import { extendJQuery } from '../../helpers';
+import { ErrorsWrapper } from './ErrorsWrapper/ErrorsWrapper';
 
 export class App extends React.Component {
 	public constructor() {
@@ -30,11 +32,17 @@ export class App extends React.Component {
 		});
 	}
 
+	public componentDidMount() {
+		ipcRenderer.send('client.ready');
+	}
+
 	public render(): JSX.Element {
 		return (
 			<div className="full-height">
 				<TitleBar/>
-				<Vitrine/>
+				<ErrorsWrapper>
+					<Vitrine/>
+				</ErrorsWrapper>
 			</div>
 		);
 	}

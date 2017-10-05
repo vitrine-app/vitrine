@@ -1,11 +1,11 @@
 import * as React from 'react';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './ImagesCollection.scss';
-
 import { localizer } from '../../Localizer';
 import { openImageDialog } from '../../../helpers';
 
-export class ImagesCollection extends React.Component<any, any> {
+export class ImagesCollection extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 
@@ -76,6 +76,7 @@ export class ImagesCollection extends React.Component<any, any> {
 						/>
 					) }
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

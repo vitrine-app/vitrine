@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './Vitrine.scss';
 import { TaskBar } from '../TaskBar/TaskBar';
 import { SideBar } from '../SideBar/SideBar';
@@ -12,7 +13,7 @@ import { GamesCollection } from '../../../../models/GamesCollection';
 import { AddGameModal } from '../AddGameModal/AddGameModal';
 import { AddPotentialGamesModal } from '../AddPotentialGamesModal/AddPotentialGamesModal';
 
-export class Vitrine extends React.Component<any, any> {
+export class Vitrine extends VitrineComponent {
 	public constructor() {
 		super();
 
@@ -60,7 +61,7 @@ export class Vitrine extends React.Component<any, any> {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.removeGame(gameId, (error, game: PlayableGame, index: number) => {
 			if (error)
-				throw new Error(error);
+				return this.throwError(error);
 			let currentSelectedGame = this.state.selectedGame;
 			if (currentPlayableGames.games.length) {
 				if (index)
@@ -89,7 +90,7 @@ export class Vitrine extends React.Component<any, any> {
 				selectedGame: selectedGame
 			});
 		}).catch((error: Error) => {
-			throw error;
+			return this.throwError(error);
 		});
 	}
 
@@ -108,7 +109,7 @@ export class Vitrine extends React.Component<any, any> {
 		this.state.playableGames.getGame(gameId).then(([selectedGame]) => {
 			this.potentialGameToAddUpdateHandler(selectedGame, true);
 		}).catch((error: Error) => {
-			throw error;
+			return this.throwError(error);
 		});
 	}
 	private deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
@@ -117,7 +118,6 @@ export class Vitrine extends React.Component<any, any> {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.send('client.ready');
 		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this));
 		ipcRenderer.on('server.add-playable-game', this.addPlayableGame.bind(this));
 		ipcRenderer.on('server.edit-playable-game', this.editPlayableGame.bind(this));
@@ -152,6 +152,7 @@ export class Vitrine extends React.Component<any, any> {
 					<MenuItem onClick={ this.editGameContextClickHandler.bind(this) }>Edit</MenuItem>
 					<MenuItem onClick={ this.deleteGameContextClickHandler.bind(this) }>Delete</MenuItem>
 				</ContextMenu>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

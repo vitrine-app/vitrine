@@ -2,10 +2,11 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { ContextMenuTrigger } from 'react-contextmenu';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './SideBar.scss';
 import { PlayableGame } from '../../../../models/PlayableGame';
 
-export class SideBar extends React.Component<any, any> {
+export class SideBar extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 
@@ -47,6 +48,7 @@ export class SideBar extends React.Component<any, any> {
 						</ul>
 					</div>
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

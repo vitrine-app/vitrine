@@ -4,6 +4,7 @@ import * as uuid from 'uuid/v5';
 import * as downloadFile from 'download-file';
 
 import { getEnvData } from '../models/env';
+import { VitrineServer } from './VitrineServer';
 
 export function uuidV5(name: string): string {
 	let dnsNamespace: string = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
@@ -35,7 +36,7 @@ export function downloadImage(url: string, path: string): Promise<any> {
 				filename: filename
 			}, (error) => {
 				if (error)
-					throw error;
+					return VitrineServer.throwServerError(event, error);
 				resolve(true);
 			});
 		}

@@ -67,6 +67,10 @@ export class VitrineServer {
 		ipcMain.on('client.refresh-potential-games', this.findPotentialGames.bind(this));
 	}
 
+	public static throwServerError(event: any, error: string | Error) {
+		return event.sender.send('server.server-error', error);
+	}
+
 	private ready(event: Electron.Event) {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
@@ -78,7 +82,7 @@ export class VitrineServer {
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
 		}).catch((error) => {
-			throw error;
+			return VitrineServer.throwServerError(event, error);
 		});
 	}
 
@@ -88,7 +92,7 @@ export class VitrineServer {
 
 	private handleUpdates() {
 		autoUpdater.allowPrerelease = true;
-		autoUpdater.signals.progress((progress) => {
+		autoUpdater.signals.progress((progress: any) => {
 			this.windowsList.mainWindow.webContents.send('server.update-progress', progress)
 		});
 		autoUpdater.signals.updateDownloaded((version) => {
@@ -99,9 +103,9 @@ export class VitrineServer {
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
 		getIgdbWrapperFiller(gameId).then((game) => {
-			event.sender.send('server.send-igdb-game', null, game);
+			event.sender.send('server.send-igdb-game', game);
 		}).catch((error) => {
-			event.sender.send('server.send-igdb-game', error, null);
+			VitrineServer.throwServerError(event, error);
 		});
 	}
 
@@ -129,7 +133,7 @@ export class VitrineServer {
 
 			this.registerGame(event, editedGame, gameForm, true);
 		}).catch((error) => {
-			throw new Error(error);
+			return VitrineServer.throwServerError(event, error);
 		});
 	}
 
@@ -182,7 +186,7 @@ export class VitrineServer {
 				callback();
 			});
 		}).catch((error) => {
-			throw error;
+			return VitrineServer.throwServerError(event, error);
 		});
 	}
 
@@ -192,7 +196,7 @@ export class VitrineServer {
 				callback();
 			});
 		}).catch((error) => {
-			throw error;
+			return VitrineServer.throwServerError(event, error);
 		});
 	}
 
@@ -271,14 +275,10 @@ export class VitrineServer {
 					});
 				}
 			}).catch((error: Error) => {
-				throw error;
+				return VitrineServer.throwServerError(event, error);
 			});
 		}).catch((error: Error) => {
-			throw error;
+			return VitrineServer.throwServerError(event, error);
 		});
-	}
-
-	private static throwServerError(event: any, error: string | Error) {
-		return event.sender.send('server.server-error', error);
 	}
 }

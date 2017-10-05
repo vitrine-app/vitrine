@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './IgdbResearchModal.scss';
 import { NumberPicker } from '../NumberPicker/NumberPicker';
 import { localizer } from '../../Localizer';
 
-export class IgdbResearchModal extends React.Component<any, any> {
+export class IgdbResearchModal extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 
@@ -128,6 +129,7 @@ export class IgdbResearchModal extends React.Component<any, any> {
 						</div>
 					</div>
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

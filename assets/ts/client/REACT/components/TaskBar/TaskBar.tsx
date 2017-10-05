@@ -1,8 +1,9 @@
 import * as React from 'react';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './TaskBar.scss';
 
-export class TaskBar extends React.Component<any, any> {
+export class TaskBar extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 	}
@@ -16,7 +17,7 @@ export class TaskBar extends React.Component<any, any> {
 							<button className="btn btn-primary" data-toggle="modal" data-target="#add-game-modal">
 								<i className="fa fa-plus"/>
 							</button>
-							<button id="refresh-btn" className="btn btn-primary">
+							<button id="refresh-btn" className="btn btn-primary" onClick={ () => { this.throwError('nein') } }>
 								<i className="fa fa-refresh"/>
 							</button>
 						</div>
@@ -35,6 +36,7 @@ export class TaskBar extends React.Component<any, any> {
 						</div>
 					</div>
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

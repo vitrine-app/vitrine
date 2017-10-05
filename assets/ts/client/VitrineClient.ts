@@ -1,5 +1,4 @@
 import { ipcRenderer, shell } from 'electron';
-import { ProgressInfo } from 'electron-updater/node_modules/electron-builder-http';
 import * as moment from 'moment';
 
 import { GamesCollection } from '../models/GamesCollection';
@@ -57,7 +56,7 @@ export class VitrineClient {
 		});
 	}
 
-	private updateProgress(event: Electron.Event, progress: ProgressInfo) {
+	private updateProgress(event: Electron.Event, progress: any) {
 		if (!$('#update-bar').is(':visible'))
 			$('#update-bar').show();
 		let percentage: number = Math.round(progress.percent);

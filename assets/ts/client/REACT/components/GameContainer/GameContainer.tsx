@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './GameContainer.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { beforeCss, urlify } from '../../../helpers';
 import { localizer } from '../../Localizer';
 
-export class GameContainer extends React.Component<any, any> {
+export class GameContainer extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 
@@ -81,6 +82,7 @@ export class GameContainer extends React.Component<any, any> {
 						{ gameContainer }
 					</div>
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}

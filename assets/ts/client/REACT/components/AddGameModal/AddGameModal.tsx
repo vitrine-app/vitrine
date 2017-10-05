@@ -4,6 +4,7 @@ import * as moment from 'moment';
 
 import { PotentialGame, GameSource } from '../../../../models/PotentialGame';
 
+import { VitrineComponent } from '../VitrineComponent';
 import './AddGameModal.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { NumberPicker } from '../NumberPicker/NumberPicker';
@@ -12,7 +13,7 @@ import { ImagesCollection } from '../ImagesCollection/ImagesCollection';
 import { localizer } from '../../Localizer';
 import { openImageDialog } from '../../../helpers';
 
-export class AddGameModal extends React.Component<any, any> {
+export class AddGameModal extends VitrineComponent {
 	private emptyState: any;
 
 	public constructor(props: any) {
@@ -38,7 +39,7 @@ export class AddGameModal extends React.Component<any, any> {
 		this.state = this.emptyState;
 	}
 
-	private fillIgdbGame(event: Electron.Event, error: string, gameInfos: any) {
+	private fillIgdbGame(event: Electron.Event, gameInfos: any) {
 		$('#igdb-research-modal').modal('hide');
 		this.setState({
 			name: gameInfos.name,
@@ -355,6 +356,7 @@ export class AddGameModal extends React.Component<any, any> {
 						</div>
 					</div>
 				</div>
+				{ this.checkErrors() }
 			</div>
 		);
 	}
