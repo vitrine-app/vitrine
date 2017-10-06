@@ -1,5 +1,5 @@
 module.exports = {
-	entry: './assets/ts/client/REACT/main.tsx', //'./assets/ts/client/main.ts',
+	entry: './assets/client/main.tsx',
 	output: {
 		filename: 'public/client.js'
 	},

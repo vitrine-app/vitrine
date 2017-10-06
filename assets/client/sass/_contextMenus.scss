@@ -1,0 +1,75 @@
+@import 'bootstrapVariables';
+
+.react-contextmenu {
+	min-width: 160px;
+	padding: 5px 0px;
+	margin: 2px 0 0;
+	font-size: 16px;
+	color: $text-color;
+	text-align: left;
+	background-color: $body-bg;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.42);
+	outline: none;
+	opacity: 0;
+	pointer-events: none;
+	z-index: 3;
+
+	&.react-contextmenu--visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+
+.react-contextmenu-item {
+	padding: 3px 20px;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #A5A5A5;
+	text-align: inherit;
+	white-space: nowrap;
+	background: 0 0;
+	border: 0;
+	cursor: pointer;
+
+	&:focus {
+		outline: none;
+	}
+	&.react-contextmenu-item--active, &.react-contextmenu-item--selected {
+		color: $text-color;
+		background-color: #3E372E;
+		border-color: #3E372E;
+		border-radius: 0.25rem;
+		text-decoration: none;
+	}
+	&.react-contextmenu-item--disabled,	&.react-contextmenu-item--disabled:hover {
+		color: #878A8C;
+		background-color: transparent;
+		border-color: rgba(0, 0, 0, 0.15);
+	}
+	&.react-contextmenu-submenu {
+		padding: 0;
+	}
+}
+
+.react-contextmenu-item--divider {
+	margin-bottom: 3px;
+	padding: 2px 0;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+	cursor: inherit;
+
+	&:hover {
+		background-color: transparent;
+		border-color: rgba(0, 0, 0, 0.15);
+	}
+
+	&.react-contextmenu-submenu > .react-contextmenu-item {
+	}
+
+	&.react-contextmenu-submenu > .react-contextmenu-item:after {
+		content: "▶";
+		display: inline-block;
+		position: absolute;
+		right: 7px;
+	}
+}
