@@ -1,5 +1,5 @@
 module.exports = {
-	entry: './assets/ts/server/main.ts',
+	entry: './assets/server/main.ts',
 	output: {
 		filename: 'public/server.js'
 	},

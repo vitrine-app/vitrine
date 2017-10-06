@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 
-import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from '../../../assets/ts/server/api/IgdbWrapper';
+import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from '../../../assets/server/api/IgdbWrapper';
 
 describe('IgdbWrapper searcher', () => {
 	let gamesArray: any;

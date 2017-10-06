@@ -1,0 +1,17 @@
+#electron-titlebar {
+	background-color: #2F2C28;
+
+	img.app-icon {
+		height: 23px;
+		padding-left: 5px;
+		padding-top: 5px;
+	}
+	span.app-title {
+		padding-left: 50vw;
+		font-size: 13px;
+		color: #B1B1B1;
+	}
+	img.hover {
+		background-color: rgba(196, 196, 196, 0.2);
+	}
+}

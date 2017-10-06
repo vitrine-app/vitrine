@@ -1,7 +1,7 @@
 {
   "name": "Vitrine",
   "desc": "Vitrine est une bibliothèque moderne qui vous permet d'afficher et d'organiser vos jeux, quelle que soit leur provenance. Vitrine fonctionne actuellement avec Steam et avec tous les autres jeux sur votre PC. Vitrine vous aide également à trier vos jeux avec de nombreux détails, ainsi que le temps de jeu passé.<br>Pourquoi ne pas essayer ? La seule chose que vous avez à faire est d'ajouter un jeu, ou d'attendre que Vitrine scanne automatiquement Steam !",
-  "welcomeMessage": "Bienvenue sur %1 !",
+  "welcomeMessage": "Bienvenue sur Vitrine !",
   "cancel": "Annuler",
   "play": "Jouer",
   "timePlayed": "Temps de jeu :",
@@ -12,8 +12,9 @@
   "playGame": "Jouer",
   "removeGame": "Supprimer le jeu",
   "editGame": "Éditer",
-  "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
+  "potentialGamesAdd": "%1 jeu(x) peuvent être ajoutés",
   "addGameLabel": "Ajouter un jeu",
+  "editGameLabel": "Éditer un jeu",
   "fillWithIgdb": "Remplir les détails",
   "submitNewGame": "Ajouter",
   "gameName": "Nom du jeu",
@@ -31,7 +32,8 @@
   "executables": "Programmes",
   "images": "Images",
   "allFiles": "Tous les fichiers",
-  "error": "Une erreur est survenue :",
+  "crash": "Oups ! L'application a crashée",
+  "quit": "Quitter",
   "hoursPlur": "heures",
   "hoursSing": "heure",
   "minutesPlur": "minutes",
@@ -41,6 +43,7 @@
   "resultsNumber": "Résultats",
   "removeGameText": "Voulez vous vraiment supprimer <strong>%1</strong> de Vitrine ?<br>Le jeu restera accessible depuis votre ordinateur.",
   "update": "Mettre à jour",
-  "updateText": "Une nouvelle version de Vitrine est disponible (<strong>%1</strong>) !<br>Voulez-vous redémarrer le logiciel pour l'installer ?",
+  "updateTextFirst": "Une nouvelle version de Vitrine est disponible !",
+  "updateTextLast": "Voulez-vous redémarrer le logiciel pour l'installer ?",
   "changeLogs": "Voir les notes de mise à jour"
 }

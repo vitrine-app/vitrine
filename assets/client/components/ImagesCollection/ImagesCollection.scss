@@ -1,0 +1,27 @@
+@import '../../sass/bootstrapVariables';
+
+.images-collection {
+	.images-container {
+		overflow-x: auto;
+		overflow-y: hidden;
+		white-space: nowrap;
+
+		img {
+			width: 400px;
+			height: 270px;
+			margin: 5px;
+			border-radius: $border-radius-base;
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.46);
+			filter: brightness(65%);
+
+			&.selected-image {
+				filter: brightness(115%);
+			}
+		}
+	}
+	button.btn {
+		display: block;
+		margin-bottom: 8px;
+	}
+}
+
