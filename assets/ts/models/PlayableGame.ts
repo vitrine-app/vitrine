@@ -1,8 +1,8 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { GameSource, PotentialGame } from './PotentialGame';
-import { getGamesFolder } from '../server/helpers';
+import { PotentialGame } from './PotentialGame';
+import { getGamesFolder } from './env';
 
 export class PlayableGame extends PotentialGame {
 	public timePlayed: number;

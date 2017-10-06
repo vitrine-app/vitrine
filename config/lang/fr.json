@@ -12,7 +12,7 @@
   "playGame": "Jouer",
   "removeGame": "Supprimer le jeu",
   "editGame": "Éditer",
-  "potentialGamesAdd": "Vous pouvez ajouter %1 jeu(x)",
+  "potentialGamesAdd": "%1 jeu(x) peuvent être ajoutés",
   "addGameLabel": "Ajouter un jeu",
   "editGameLabel": "Éditer un jeu",
   "fillWithIgdb": "Remplir les détails",
@@ -43,6 +43,7 @@
   "resultsNumber": "Résultats",
   "removeGameText": "Voulez vous vraiment supprimer <strong>%1</strong> de Vitrine ?<br>Le jeu restera accessible depuis votre ordinateur.",
   "update": "Mettre à jour",
-  "updateText": "Une nouvelle version de Vitrine est disponible (<strong>%1</strong>) !<br>Voulez-vous redémarrer le logiciel pour l'installer ?",
+  "updateTextFirst": "Une nouvelle version de Vitrine est disponible !",
+  "updateTextLast": "Voulez-vous redémarrer le logiciel pour l'installer ?",
   "changeLogs": "Voir les notes de mise à jour"
 }

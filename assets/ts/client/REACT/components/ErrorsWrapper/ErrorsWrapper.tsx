@@ -18,7 +18,7 @@ export class ErrorsWrapper extends React.Component<any, any> {
 		});
 	}
 
-	public render() {
+	public render(): JSX.Element {
 		if (this.state.error)
 			return (
 				<div id="error-modal" className="modal fade show" role="dialog">

@@ -1,11 +1,17 @@
 import * as React from 'react';
+import { ipcRenderer } from 'electron';
 
 import { VitrineComponent } from '../VitrineComponent';
 import './TaskBar.scss';
+import { localizer } from '../../Localizer';
 
 export class TaskBar extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
+	}
+
+	private static refreshBtnClickHandler() {
+		ipcRenderer.send('client.refresh-potential-games');
 	}
 
 	public render(): JSX.Element {
@@ -17,21 +23,28 @@ export class TaskBar extends VitrineComponent {
 							<button className="btn btn-primary" data-toggle="modal" data-target="#add-game-modal">
 								<i className="fa fa-plus"/>
 							</button>
-							<button id="refresh-btn" className="btn btn-primary" onClick={ () => { this.throwError('nein') } }>
+							<button id="refresh-btn" className="btn btn-primary" onClick={ TaskBar.refreshBtnClickHandler }>
 								<i className="fa fa-refresh"/>
 							</button>
 						</div>
 						<div
-							className="col-md-1"
-							 style={{ display: (this.props.potentialGames.games.length) ? ('block') : ('none') }}
+							className="col-md-2"
+							style={ {display: (this.props.potentialGames.games.length) ? ('block') : ('none')} }
 						>
 							<button className="btn btn-primary" data-toggle="modal" data-target="#add-potential-games-modal">
-								You can add { this.props.potentialGames.games.length } games
+								{ localizer.f('potentialGamesAdd', this.props.potentialGames.games.length) }
 							</button>
 						</div>
-						<div className="col-md-2">
+						<div
+							className="col-md-offset-7 col-md-2"
+							style={ {display: (this.props.updateProgress) ? ('block') : ('none')} }
+						>
 							<div id="update-bar" className="progress">
-								<div className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+								<div
+									className="progress-bar progress-bar-striped active"
+									role="progressbar"
+									style={ {width: (this.props.updateProgress) ? (Math.round(this.props.updateProgress.percent) + '%') : ('0%')} }
+								/>
 							</div>
 						</div>
 					</div>

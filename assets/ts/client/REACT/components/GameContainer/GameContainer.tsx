@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
+import * as textEllipsis from 'text-ellipsis';
 
 import { VitrineComponent } from '../VitrineComponent';
 import './GameContainer.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
-import { beforeCss, urlify } from '../../../helpers';
+import { beforeCss, formatTimePlayed, launchGame, urlify } from '../../../helpers';
 import { localizer } from '../../Localizer';
 
 export class GameContainer extends VitrineComponent {
@@ -14,10 +15,6 @@ export class GameContainer extends VitrineComponent {
 		this.state = {
 			selectedGame: props.selectedGame
 		}
-	}
-
-	private gameCoverClickHandler() {
-		console.log('hey hey!');
 	}
 
 	public componentWillReceiveProps(props: any) {
@@ -47,19 +44,24 @@ export class GameContainer extends VitrineComponent {
 						<h1 id="game-title">{ this.state.selectedGame.name }</h1>
 						<hr/>
 						<div id="game-play" className="selected-game-infos">
-							<button className="btn btn-primary">
+							<button
+								onClick={launchGame.bind(null, this.state.selectedGame.uuid) }
+								className="btn btn-primary"
+							>
 								<i className="fa fa-play"/> { localizer.f('play') }
 							</button>
-							<p></p>
+							<span>{ (this.state.selectedGame.timePlayed) ? (formatTimePlayed(this.state.selectedGame.timePlayed)) : ('')}</span>
 						</div>
-						<p id="game-desc" className="selected-game-infos">{ this.state.selectedGame.details.summary }</p>
+						<p id="game-desc" className="selected-game-infos">
+							{ textEllipsis(this.state.selectedGame.details.summary, 750) }
+						</p>
 					</div>
 					<div className="col-md-4">
 						<BlurPicture
 							faIcon={ 'play' }
 							fontSize={ 125 }
 							background={ this.state.selectedGame.details.cover }
-							clickHandler={ this.gameCoverClickHandler.bind(this) }
+							clickHandler={ launchGame.bind(null, this.state.selectedGame.uuid) }
 						/>
 					</div>
 				</div>

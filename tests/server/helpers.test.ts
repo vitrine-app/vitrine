@@ -2,7 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import * as fs from 'fs';
 
-import { downloadImage, uuidV5 } from '../../assets/ts/server/helpers';
+import { downloadImage } from '../../assets/ts/server/helpers';
+import { uuidV5 } from '../../assets/ts/models/env';
 
 describe('uuidV5 function', () => {
 	let uuid: string = uuidV5('dummy');

@@ -18,8 +18,10 @@ export class ImagesCollection extends VitrineComponent {
 
 	private addImageBtnClick() {
 		let newImage: string = openImageDialog();
-		let newImages: string[] = this.state.images;
+		if (!newImage)
+			return;
 
+		let newImages: string[] = this.state.images;
 		if (this.state.customImage === true)
 			newImages[0] = newImage;
 		else

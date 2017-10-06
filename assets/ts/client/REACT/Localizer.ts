@@ -18,7 +18,7 @@ class Localizer {
 	public f(key: string, arg?: any): string {
 		if (!arg)
 			return this.languages[this.selectedLanguage][key];
-		return this.languages[this.selectedLanguage].replace('%1', arg);
+		return this.languages[this.selectedLanguage][key].replace('%1', arg);
 	}
 }
 

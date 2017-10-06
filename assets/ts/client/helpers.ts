@@ -210,3 +210,7 @@ export function beforeCss(selector: string, props: object) {
 	});
 	$('head').append('<style id="before-styling">' + selector + ':before{' + rawStyling + '}</style>');
 }
+
+export function launchGame(gameId: string) {
+	ipcRenderer.send('client.launch-game', gameId);
+}

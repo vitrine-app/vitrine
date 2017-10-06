@@ -6,9 +6,8 @@ import { AcfParser } from '../api/AcfParser';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
+import { getEnvFolder, getGamesFolder, uuidV5 } from '../../models/env';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
-import { getEnvFolder } from '../../models/env';
-import { getGamesFolder, uuidV5} from '../helpers';
 
 class SteamGamesCrawler {
 	private configFile: any;

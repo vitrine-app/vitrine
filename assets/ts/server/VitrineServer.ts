@@ -9,11 +9,12 @@ import * as moment from 'moment';
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
+import { getGamesFolder, uuidV5 } from '../models/env';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
-import { downloadImage, getGamesFolder, uuidV5 } from './helpers';
+import { downloadImage } from './helpers';
 import { getOriginCrawler } from './games/OriginGamesCrawler';
 
 export class VitrineServer {

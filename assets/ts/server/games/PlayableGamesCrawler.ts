@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getGamesFolder } from '../helpers';
+import { getGamesFolder } from '../../models/env';
 
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];

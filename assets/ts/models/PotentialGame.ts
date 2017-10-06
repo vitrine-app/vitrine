@@ -1,4 +1,4 @@
-import { uuidV5 } from '../server/helpers';
+import { uuidV5 } from './env';
 
 export enum GameSource {
 	LOCAL,
