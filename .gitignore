@@ -3,6 +3,7 @@
 /public/*
 !/public/img
 !/public/main.html
+!/public/wizard.html
 /games/*
 /dist
 /assets/sass/vitrine/_bootstrapDatepicker.scss

@@ -20,7 +20,7 @@ class OriginGamesCrawler {
 
 	public constructor(playableGames?: PlayableGame[]) {
 		let configFilePath = path.resolve(getEnvFolder('config'), 'origin.json');
-		this.configFile = JSON.parse(fs.readFileSync(configFilePath).toString());
+		this.configFile = fs.readJSONSync(configFilePath);
 		this.potentialGames = [];
 		this.regDetails = [];
 		this.playableGames = (playableGames) ? (playableGames) : ([]);

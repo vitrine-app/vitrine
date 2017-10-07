@@ -3,7 +3,6 @@ import * as path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
-import { sync as mkDir } from 'mkdirp';
 import * as moment from 'moment';
 
 import { GamesCollection } from '../models/GamesCollection';
@@ -18,19 +17,21 @@ import { downloadImage } from './helpers';
 import { getOriginCrawler } from './games/OriginGamesCrawler';
 
 export class VitrineServer {
-	private windowsList;
+	private windowsList: any;
 	private mainEntryPoint: string;
 	private loadingEntryPoint: string;
+	private wizardEntryPoint: string;
 	private devTools: boolean;
 	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
 
-	public constructor() {
+	public constructor(private vitrineConfig?: any) {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
+		this.wizardEntryPoint = path.resolve('file://', __dirname, 'wizard.html');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
@@ -39,11 +40,11 @@ export class VitrineServer {
 	public run(devTools?: boolean) {
 		if (devTools)
 			this.devTools = devTools;
-
 		app.on('ready', () => {
-			this.createLoadingWindow();
-			this.handleUpdates();
-			this.createMainWindow();
+			if (this.vitrineConfig)
+				this.runVitrine();
+			else
+				this.runWizard();
 		});
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin') {
@@ -57,15 +58,15 @@ export class VitrineServer {
 	}
 
 	public registerEvents() {
-		ipcMain.on('client.ready', this.ready.bind(this));
-		ipcMain.on('client.update-app', this.updateApp.bind(this));
-		ipcMain.on('client.fill-igdb-game', this.fillIgdbGame.bind(this));
-		ipcMain.on('client.search-igdb-games', this.searchIgdbGames.bind(this));
-		ipcMain.on('client.add-game', this.addGame.bind(this));
-		ipcMain.on('client.edit-game', this.editGame.bind(this));
-		ipcMain.on('client.launch-game', this.launchGame.bind(this));
-		ipcMain.on('client.remove-game', this.removeGame.bind(this));
-		ipcMain.on('client.refresh-potential-games', this.findPotentialGames.bind(this));
+		ipcMain.on('client.ready', this.ready.bind(this))
+			.on('client.update-app', this.updateApp.bind(this))
+			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
+			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
+			.on('client.add-game', this.addGame.bind(this))
+			.on('client.edit-game', this.editGame.bind(this))
+			.on('client.launch-game', this.launchGame.bind(this))
+			.on('client.remove-game', this.removeGame.bind(this))
+			.on('client.refresh-potential-games', this.findPotentialGames.bind(this));
 	}
 
 	public static throwServerError(event: any, error: string | Error) {
@@ -201,6 +202,23 @@ export class VitrineServer {
 		});
 	}
 
+	private runWizard() {
+		this.windowsList.wizardWindow = new BrowserWindow({
+			height: 700,
+			width: 900,
+			frame: false
+		});
+		this.windowsList.wizardWindow.setMenu(null);
+		this.windowsList.wizardWindow.webContents.openDevTools();
+		this.windowsList.wizardWindow.loadURL(this.wizardEntryPoint);
+	}
+
+	private runVitrine() {
+		this.createLoadingWindow();
+		this.handleUpdates();
+		this.createMainWindow();
+	}
+
 	private createLoadingWindow() {
 		this.windowsList.loadingWindow = new BrowserWindow({
 			height: 300,
@@ -249,7 +267,7 @@ export class VitrineServer {
 
 		if (!editing && fs.existsSync(configFilePath))
 			return;
-		mkDir(gameDirectory);
+		fs.ensureDirSync(gameDirectory);
 
 		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
