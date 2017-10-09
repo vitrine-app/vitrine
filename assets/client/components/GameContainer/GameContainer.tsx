@@ -5,11 +5,9 @@ import * as textEllipsis from 'text-ellipsis';
 import { VitrineComponent } from '../VitrineComponent';
 import './GameContainer.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
+import { CirclePercentage } from '../CirclePercentage/CirclePercentage';
 import { beforeCss, formatTimePlayed, launchGame, urlify } from '../../helpers';
 import { localizer } from '../../Localizer';
-import Transition from 'react-transition-group/Transition';
-import { CSSTransition } from 'react-transition-group';
-import * as TransitionGroup from 'react-transition-group/TransitionGroup';
 
 export class GameContainer extends VitrineComponent {
 	public constructor(props: any) {
@@ -31,7 +29,7 @@ export class GameContainer extends VitrineComponent {
 		else
 			currentBackgroundImage = 'none';
 
-		beforeCss('#game-background', {
+		beforeCss('.selected-game-background', {
 			'background-image': currentBackgroundImage
 		});
 
@@ -42,22 +40,46 @@ export class GameContainer extends VitrineComponent {
 
 		if (this.state.selectedGame) {
 			gameContainer = (
-				<div id="game-core" className="row">
+				<div className="row selected-game-core">
 					<div className="col-md-8">
-						<h1 id="game-title">{ this.state.selectedGame.name }</h1>
+						<h1>{ this.state.selectedGame.name }</h1>
 						<hr/>
-						<div id="game-play" className="selected-game-infos">
+						<div className="selected-game-infos">
 							<button
-								onClick={launchGame.bind(null, this.state.selectedGame.uuid) }
+								onClick={ launchGame.bind(null, this.state.selectedGame.uuid) }
 								className="btn btn-primary"
 							>
 								<i className="fa fa-play"/> { localizer.f('play') }
 							</button>
-							<span>{ (this.state.selectedGame.timePlayed) ? (formatTimePlayed(this.state.selectedGame.timePlayed)) : ('')}</span>
+							<span>{ (this.state.selectedGame.timePlayed) ? (formatTimePlayed(this.state.selectedGame.timePlayed)) : ('') }</span>
 						</div>
-						<p id="game-desc" className="selected-game-infos">
+						<div className="selected-game-infos">
+							<div className="row">
+								<div className="col-md-8">
+									<div className="row">
+										<div className="col-md-4">
+											<strong>{ localizer.f('developerLabel') }</strong>
+										</div>
+										<div className="col-md-8">
+											{ this.state.selectedGame.details.developer }
+										</div>
+									</div>
+									<div className="row">
+										<div className="col-md-4">
+											<strong>{ localizer.f('publisherLabel') }</strong>
+										</div>
+										<div className="col-md-8">
+											{ this.state.selectedGame.details.publisher }
+										</div>
+									</div>
+								</div>
+								<div className="col-md-4">
+									<CirclePercentage percentage={ this.state.selectedGame.details.rating } />
+								</div>
+							</div>
+							<hr/>
 							{ textEllipsis(this.state.selectedGame.details.summary, 750) }
-						</p>
+						</div>
 					</div>
 					<div className="col-md-4">
 						<BlurPicture
@@ -72,7 +94,7 @@ export class GameContainer extends VitrineComponent {
 		}
 		else {
 			gameContainer = (
-				<div id="no-game-showcase">
+				<div className="no-selected-game">
 					<h1>{ localizer.f('welcomeMessage') }</h1>
 					<hr/>
 					<p>{ localizer.f('desc') }</p>
@@ -82,8 +104,8 @@ export class GameContainer extends VitrineComponent {
 
 		return (
 			<div className="row full-height">
-				<div id="game-container" className="col-sm-8 col-lg-10 col-sm-offset-4 col-lg-offset-2">
-					<div id="game-background" className="full-height">
+				<div className="col-sm-8 col-lg-10 col-sm-offset-4 col-lg-offset-2 selected-game-container">
+					<div className="full-height selected-game-background">
 						{ gameContainer }
 					</div>
 				</div>

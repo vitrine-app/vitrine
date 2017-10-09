@@ -63,7 +63,8 @@ export class Vitrine extends VitrineComponent {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.addGame(game);
 		this.setState({
-			playableGames: currentPlayableGames
+			playableGames: currentPlayableGames,
+			selectedGame: game
 		}, () => {
 			$('#add-game-modal').modal('hide');
 			$('#add-potential-games-modal').modal('hide');
@@ -184,6 +185,9 @@ export class Vitrine extends VitrineComponent {
 				break;
 			}
 			case ('Enter'): {
+				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
+					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible'))
+					break;
 				event.preventDefault();
 
 				launchGame(this.state.selectedGame.uuid);

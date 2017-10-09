@@ -1,9 +1,11 @@
-#game-container {
+@import '../../sass/bootstrapVariables';
+
+.selected-game-container {
 	height: 100%;
 	background: radial-gradient(ellipse at center, rgba(131, 131, 131, 0.08) 0%, rgba(0, 0, 0, 0.76) 120%);
 	overflow: hidden;
 
-	#game-background {
+	.selected-game-background {
 		&:before {
 			content: '';
 			position: fixed;
@@ -17,7 +19,7 @@
 			opacity: 0.8;
 		}
 
-		#no-game-showcase {
+		.no-selected-game {
 			padding: 50px;
 
 			h1 {
@@ -26,13 +28,13 @@
 			}
 		}
 
-		#game-core {
+		.selected-game-core {
 			padding: 25px 50px;
 
 			h1 {
-				font-weight: 300;
-				font-size: 50px;
-				color: #D5D5D5;
+				font-weight: 400;
+				font-size: 33px;
+				color: $text-color;
 			}
 			hr {
 				border-top: 1px solid rgba(210, 210, 210, 0.23);
@@ -44,9 +46,6 @@
 				font-size: 1.2em;
 				border-radius: 3px;
 				margin: 10px 0;
-			}
-			div.selected-game-infos {
-				width: 16em;
 
 				span {
 					margin-left: 15px;
@@ -57,25 +56,4 @@
 			}
 		}
 	}
-}
-
-.fadecontainer-enter {
-	opacity: 0.01;
-}
-.fadecontainer-enter.switch-enter-active {
-	opacity: 1.0;
-}
-.fadecontainer-leave {
-	/* Completely hide the button while it's being animated and before it's removed from the DOM. */
-	visibility: hidden;
-	height: 0px;
-	width: 0px;
-
-	/* Starting opacity */
-	opacity: 1.0;
-}
-.fadecontainer-leave.switch-leave-active {
-	/* Ending opacity: 
-	Trigger opacity change so the "transitionend" event will fire, causing React to remove from the DOM. */
-	opacity: 0;
 }
