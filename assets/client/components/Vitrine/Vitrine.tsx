@@ -45,10 +45,16 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
+		let firstTime: boolean = this.state.playableGames.games.length === 0;
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.addGames(new GamesCollection<PlayableGame>(games), () => {
 			this.setState({
-				playableGames:  currentPlayableGames
+				playableGames: currentPlayableGames
+			}, () => {
+				if (firstTime)
+					this.setState({
+						selectedGame: this.state.playableGames.games[0]
+					});
 			});
 		});
 	}
@@ -155,8 +161,40 @@ export class Vitrine extends VitrineComponent {
 		ipcRenderer.send('client.remove-game', gameId);
 	}
 
+	private keyDownHandler(event: KeyboardEvent) {
+		switch (event.code) {
+			case ('ArrowDown'): {
+				event.preventDefault();
+
+				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
+				if (index < this.state.playableGames.games.length - 1)
+					this.setState({
+						selectedGame: this.state.playableGames.games[index + 1]
+					});
+				break;
+			}
+			case ('ArrowUp'): {
+				event.preventDefault();
+
+				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
+				if (index)
+					this.setState({
+						selectedGame: this.state.playableGames.games[index - 1]
+					});
+				break;
+			}
+			case ('Enter'): {
+				event.preventDefault();
+
+				launchGame(this.state.selectedGame.uuid);
+				break;
+			}
+		}
+	}
+
 	public componentDidMount() {
-		ipcRenderer.on('server.update-progress', this.updateProgress.bind(this))
+		ipcRenderer.on('server.first-launch', () => { console.log('first launch!') })
+			.on('server.update-progress', this.updateProgress.bind(this))
 			.on('server.update-downloaded', this.updateDownloaded.bind(this))
 			.on('server.add-playable-games', this.addPlayableGames.bind(this))
 			.on('server.add-playable-game', this.addPlayableGame.bind(this))
@@ -164,11 +202,18 @@ export class Vitrine extends VitrineComponent {
 			.on('server.remove-playable-game', this.removePlayableGame.bind(this))
 			.on('server.add-potential-games', this.addPotentialGames.bind(this))
 			.on('server.stop-game', this.stopGame.bind(this));
+
+		window.addEventListener('keydown', this.keyDownHandler.bind(this));
+
+	}
+
+	public componentWillUnmount() {
+		window.removeEventListener('keydown', this.keyDownHandler.bind(this));
 	}
 
 	public render(): JSX.Element {
 		return (
-			<div id="vitrine-app" className="container-fluid full-height">
+			<div className="container-fluid full-height vitrine-app">
 				<TaskBar
 					potentialGames={ this.state.potentialGames }
 					updateProgress={ this.state.updateProgress }

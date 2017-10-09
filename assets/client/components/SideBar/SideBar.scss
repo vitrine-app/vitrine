@@ -38,13 +38,16 @@
 					cursor: pointer;
 
 					&:hover {
-						background-color: #3E372E;
+						background-color: rgba(150, 136, 116, 0.13);
 						color: #AFACA7;
+						transition: 66ms;
 					}
 					&.selected-game {
-						background-color: #504638;
+						background-color: rgba(175, 153, 124, 0.14);
 						color: #AFACA7;
 						cursor: default;
+						padding-left: 35px;
+						transition: 250ms;
 					}
 				}
 			}

@@ -9,12 +9,12 @@
 			position: fixed;
 			transform: scale(1.02);
 			z-index: -1;
-			filter: blur(4px);
+			filter: blur(10px);
 			width: 100%;
 			height: 100%;
 			background-repeat: no-repeat;
 			background-size: cover;
-			opacity: 0.4;
+			opacity: 0.8;
 		}
 
 		#no-game-showcase {
@@ -57,4 +57,25 @@
 			}
 		}
 	}
+}
+
+.fadecontainer-enter {
+	opacity: 0.01;
+}
+.fadecontainer-enter.switch-enter-active {
+	opacity: 1.0;
+}
+.fadecontainer-leave {
+	/* Completely hide the button while it's being animated and before it's removed from the DOM. */
+	visibility: hidden;
+	height: 0px;
+	width: 0px;
+
+	/* Starting opacity */
+	opacity: 1.0;
+}
+.fadecontainer-leave.switch-leave-active {
+	/* Ending opacity: 
+	Trigger opacity change so the "transitionend" event will fire, causing React to remove from the DOM. */
+	opacity: 0;
 }

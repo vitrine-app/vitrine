@@ -20,7 +20,6 @@ export class VitrineServer {
 	private windowsList: any;
 	private mainEntryPoint: string;
 	private loadingEntryPoint: string;
-	private wizardEntryPoint: string;
 	private devTools: boolean;
 	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
@@ -31,7 +30,6 @@ export class VitrineServer {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
-		this.wizardEntryPoint = path.resolve('file://', __dirname, 'wizard.html');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
@@ -41,10 +39,7 @@ export class VitrineServer {
 		if (devTools)
 			this.devTools = devTools;
 		app.on('ready', () => {
-			if (this.vitrineConfig)
-				this.runVitrine();
-			else
-				this.runWizard();
+			this.runVitrine();
 		});
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin') {
@@ -58,7 +53,7 @@ export class VitrineServer {
 	}
 
 	public registerEvents() {
-		ipcMain.on('client.ready', this.ready.bind(this))
+		ipcMain.on('client.ready', this.clientReady.bind(this))
 			.on('client.update-app', this.updateApp.bind(this))
 			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
 			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
@@ -73,22 +68,29 @@ export class VitrineServer {
 		return event.sender.send('server.server-error', error);
 	}
 
-	private ready(event: Electron.Event) {
-		this.potentialGames = new GamesCollection();
-		this.playableGames = new GamesCollection();
+	private clientReady(event: Electron.Event) {
+		if (this.vitrineConfig) {
+			this.potentialGames = new GamesCollection();
+			this.playableGames = new GamesCollection();
 
-		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
-			this.playableGames = games;
-			event.sender.send('server.add-playable-games', this.playableGames.games);
-			this.findPotentialGames(event);
+			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
+				this.playableGames = games;
+				event.sender.send('server.add-playable-games', this.playableGames.games);
+				this.findPotentialGames(event);
+				this.windowsList.loadingWindow.destroy();
+				this.windowsList.mainWindow.show();
+			}).catch((error) => {
+				return VitrineServer.throwServerError(event, error);
+			});
+		}
+		else {
+			event.sender.send('server.first-launch');
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
-		}).catch((error) => {
-			return VitrineServer.throwServerError(event, error);
-		});
+		}
 	}
 
-	private updateApp(event: Electron.Event) {
+	private updateApp() {
 		autoUpdater.quitAndInstall(true, true);
 	}
 
@@ -202,17 +204,6 @@ export class VitrineServer {
 		});
 	}
 
-	private runWizard() {
-		this.windowsList.wizardWindow = new BrowserWindow({
-			height: 700,
-			width: 900,
-			frame: false
-		});
-		this.windowsList.wizardWindow.setMenu(null);
-		this.windowsList.wizardWindow.webContents.openDevTools();
-		this.windowsList.wizardWindow.loadURL(this.wizardEntryPoint);
-	}
-
 	private runVitrine() {
 		this.createLoadingWindow();
 		this.handleUpdates();
@@ -221,8 +212,9 @@ export class VitrineServer {
 
 	private createLoadingWindow() {
 		this.windowsList.loadingWindow = new BrowserWindow({
-			height: 300,
-			width: 500,
+			height: 400,
+			width: 700,
+			icon: this.iconPath,
 			frame: false
 		});
 		this.windowsList.loadingWindow.loadURL(this.loadingEntryPoint);
@@ -239,10 +231,10 @@ export class VitrineServer {
 			show: false,
 			frame: false
 		});
-
 		this.windowsList.mainWindow.setMenu(null);
 		this.windowsList.mainWindow.maximize();
 		this.windowsList.mainWindow.loadURL(this.mainEntryPoint);
+		this.windowsList.mainWindow.hide();
 		if (this.devTools)
 			this.windowsList.mainWindow.webContents.openDevTools();
 

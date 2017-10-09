@@ -1,6 +1,18 @@
+/* Font */
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700,900');
+
 /* Bootstrap */
 @import 'bootstrapVariables';
 @import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+.form-control {
+	&::-webkit-input-placeholder {
+		opacity: 0.6;
+	}
+	&:focus {
+		box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+}
 
 /* Font Awesome */
 $fa-font-path: '~font-awesome/fonts';

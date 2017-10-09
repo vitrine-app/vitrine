@@ -7,6 +7,9 @@ import './GameContainer.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { beforeCss, formatTimePlayed, launchGame, urlify } from '../../helpers';
 import { localizer } from '../../Localizer';
+import Transition from 'react-transition-group/Transition';
+import { CSSTransition } from 'react-transition-group';
+import * as TransitionGroup from 'react-transition-group/TransitionGroup';
 
 export class GameContainer extends VitrineComponent {
 	public constructor(props: any) {
@@ -14,7 +17,7 @@ export class GameContainer extends VitrineComponent {
 
 		this.state = {
 			selectedGame: props.selectedGame
-		}
+		};
 	}
 
 	public componentWillReceiveProps(props: any) {

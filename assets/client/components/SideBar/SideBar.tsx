@@ -42,6 +42,7 @@ export class SideBar extends VitrineComponent {
 										className={ (this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? ('selected-game') : ('') }
 										onClick={ this.clickGameHandler.bind(this) }
 										onDoubleClick={ launchGame.bind(null, game.uuid) }
+										onKeyDown={ (e) => {console.log(e)}}
 									>
 										{ game.name }
 									</li>

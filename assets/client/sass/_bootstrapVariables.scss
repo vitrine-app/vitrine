@@ -5,7 +5,7 @@ $gray-dark: lighten($gray-base, 20%) !default;
 $gray: lighten($gray-base, 33.5%) !default;
 $gray-light: lighten($gray-base, 46.7%) !default;
 $gray-lighter: lighten($gray-base, 93.5%) !default;
-$brand-primary: #CE8833 !default;
+$brand-primary: #C7783F !default;
 $brand-success: #5B9D5B !default;
 $brand-info: #7B8D93 !default;
 $brand-warning: rgb(240, 173, 78) !default;
@@ -19,7 +19,7 @@ $link-hover-color: darken($link-color, 15%) !default;
 $link-hover-decoration: underline !default;
 
 // Typography
-$font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !default;
+$font-family-sans-serif: 'Lato', sans-serif !default;
 $font-family-serif: Georgia, 'Times New Roman', Times, serif !default;
 $font-family-monospace: Menlo, Monaco, Consolas, 'Courier New', monospace !default;
 $font-family-base: $font-family-sans-serif !default;
@@ -105,7 +105,7 @@ $input-border: #2A2623 !default;
 $input-border-radius: $border-radius-base !default;
 $input-border-radius-large: $border-radius-large !default;
 $input-border-radius-small: $border-radius-small !default;
-$input-border-focus: rgb(112, 84, 56) !default;
+$input-border-focus: rgba(132, 79, 48, 0.66) !default;
 $input-color-placeholder: rgb(153, 153, 153) !default;
 $input-height-base: ($line-height-computed + ($padding-base-vertical * 2) + 2) !default;
 $input-height-large: (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 2) + 2) !default;
