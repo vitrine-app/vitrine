@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { app, BrowserWindow, Tray, Menu, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
 import * as moment from 'moment';
@@ -20,11 +20,13 @@ export class VitrineServer {
 	private windowsList: any;
 	private mainEntryPoint: string;
 	private loadingEntryPoint: string;
+	private tray: Tray;
 	private devTools: boolean;
 	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
+	private appQuit: boolean;
 
 	public constructor(private vitrineConfig?: any) {
 		this.windowsList = {};
@@ -33,16 +35,21 @@ export class VitrineServer {
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
+		this.appQuit = false;
 	}
 
 	public run(devTools?: boolean) {
 		if (devTools)
 			this.devTools = devTools;
-		app.on('ready', () => {
-			this.runVitrine();
-		});
+		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
+			this.tray.destroy();
+			app.quit();
+			return;
+		}
+		app.on('ready', this.runVitrine.bind(this));
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin') {
+				this.tray.destroy();
 				app.quit();
 			}
 		});
@@ -103,6 +110,15 @@ export class VitrineServer {
 			this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version)
 		});
 		autoUpdater.checkForUpdates();
+	}
+
+	private restoreAndFocus() {
+		if (this.windowsList.mainWindow) {
+			this.windowsList.mainWindow.show();
+			if (this.windowsList.mainWindow.isMinimized())
+				this.windowsList.mainWindow.restore();
+			this.windowsList.mainWindow.focus();
+		}
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
@@ -205,9 +221,33 @@ export class VitrineServer {
 	}
 
 	private runVitrine() {
+		this.createTrayIcon();
 		this.createLoadingWindow();
 		this.handleUpdates();
 		this.createMainWindow();
+	}
+
+	private createTrayIcon() {
+		this.tray = new Tray(this.iconPath);
+		this.tray.setTitle('Vitrine');
+		this.tray.setToolTip('Vitrine');
+		this.tray.setContextMenu(Menu.buildFromTemplate([
+			{
+				label: 'Show',
+				type: 'normal',
+				click: this.restoreAndFocus.bind(this)
+			},
+			{
+				label: 'Quit',
+				type: 'normal',
+				click: () => {
+					this.appQuit = true;
+					this.tray.destroy();
+					app.quit();
+				}
+			}
+		]));
+		this.tray.on('double-click', this.restoreAndFocus.bind(this));
 	}
 
 	private createLoadingWindow() {
@@ -221,6 +261,8 @@ export class VitrineServer {
 	}
 
 	private createMainWindow() {
+		if (!screen)
+			return;
 		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 		this.windowsList.mainWindow = new BrowserWindow({
 			width: width,
@@ -238,9 +280,15 @@ export class VitrineServer {
 		if (this.devTools)
 			this.windowsList.mainWindow.webContents.openDevTools();
 
-		this.windowsList.mainWindow.on('closed', () => {
-			delete this.windowsList.mainWindow;
+		this.windowsList.mainWindow.on('close', (event: Event) => {
+			if (!this.appQuit) {
+				event.preventDefault();
+				this.windowsList.mainWindow.hide();
+			}
+			else
+				delete this.windowsList.mainWindow;
 		});
+
 	}
 
 	private registerGame(event: any, game: PlayableGame, gameForm: any, editing: boolean) {
