@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "bootstrap-datepicker": "^1.7.1",
+    "bootstrap-select": "^1.12.4",
     "change-case": "^3.0.1",
     "download-file": "^0.1.5",
     "electron-titlebar-absolute": "0.0.4",
@@ -75,6 +76,7 @@
   },
   "devDependencies": {
     "@types/bootstrap-datepicker": "0.0.9",
+    "@types/bootstrap-select": "^1.11.1",
     "@types/chai": "^4.0.4",
     "@types/electron": "^1.6.10",
     "@types/fs-extra": "^4.0.2",
@@ -93,6 +95,7 @@
     "@types/xml2js": "^0.4.0",
     "animate.sass": "^1.0.1",
     "base64-font-loader": "0.0.4",
+    "base64-inline-loader": "^1.1.0",
     "bootstrap-sass": "^3.3.7",
     "chai": "^4.1.2",
     "cheerio": "^1.0.0-rc.2",

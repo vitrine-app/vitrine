@@ -1,9 +1,10 @@
 import * as React from 'react';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './ImagesCollection.scss';
 import { localizer } from '../../Localizer';
 import { openImageDialog } from '../../helpers';
+
+import './ImagesCollection.scss';
 
 export class ImagesCollection extends VitrineComponent {
 	public constructor(props: any) {

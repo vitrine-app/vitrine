@@ -1,7 +1,9 @@
 {
+  "language": "Français",
   "name": "Vitrine",
   "desc": "Vitrine est une bibliothèque moderne qui vous permet d'afficher et d'organiser vos jeux, quelle que soit leur provenance. Vitrine fonctionne actuellement avec Steam et avec tous les autres jeux sur votre PC. Vitrine vous aide également à trier vos jeux avec de nombreux détails, ainsi que le temps de jeu passé.<br>Pourquoi ne pas essayer ? La seule chose que vous avez à faire est d'ajouter un jeu, ou d'attendre que Vitrine scanne automatiquement Steam !",
   "welcomeMessage": "Bienvenue sur Vitrine !",
+  "confirm": "Valider",
   "cancel": "Annuler",
   "play": "Jouer",
   "timePlayed": "Temps de jeu :",
@@ -36,6 +38,8 @@
   "allFiles": "Tous les fichiers",
   "crash": "Oups ! L'application a crashée",
   "quit": "Quitter",
+  "relaunch": "Relancer",
+  "show": "Afficher",
   "hoursPlur": "heures",
   "hoursSing": "heure",
   "minutesPlur": "minutes",
@@ -47,5 +51,10 @@
   "update": "Mettre à jour",
   "updateTextFirst": "Une nouvelle version de Vitrine est disponible !",
   "updateTextLast": "Voulez-vous redémarrer le logiciel pour l'installer ?",
-  "changeLogs": "Voir les notes de mise à jour"
+  "changeLogs": "Voir les notes de mise à jour",
+  "wizardText": "Comme c'est la première fois que vous utilisez Vitrine, nous sommes là pour vous aider à configurer les modules que vous souhaitez utiliser.",
+  "steamConfig": "Paramètres de Steam :",
+  "steamPath": "Dossier d'emplacement de Steam",
+  "originConfig": "Paramètres d'Origin :",
+  "originGamesPath": "Dossier d'emplacement des jeux Origin"
 }

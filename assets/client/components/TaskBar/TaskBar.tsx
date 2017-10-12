@@ -2,8 +2,9 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './TaskBar.scss';
 import { localizer } from '../../Localizer';
+
+import './TaskBar.scss';
 
 export class TaskBar extends VitrineComponent {
 	public constructor(props: any) {

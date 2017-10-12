@@ -1,9 +1,15 @@
 /* Font */
-@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700,900');
+@font-face {
+	font-family: 'Whitney';
+	src: url('../fonts/Whitney.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
 /* Bootstrap */
 @import 'bootstrapVariables';
-@import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap';
+@import '~bootstrap-select/sass/bootstrap-select';
 .form-control {
 	&::-webkit-input-placeholder {
 		opacity: 0.6;
@@ -16,14 +22,14 @@
 
 /* Font Awesome */
 $fa-font-path: '~font-awesome/fonts';
-@import '../../../node_modules/font-awesome/scss/font-awesome';
+@import '~font-awesome/scss/font-awesome';
 
 /* Animate.css */
-@import '../../../node_modules/animate.sass/scss/animate';
+@import '~animate.sass/scss/animate';
 
 /* jQuery context menu */
 $context-menu-icon-font-path: '~jquery-contextmenu/dist/font/';
-@import '../../../node_modules/jquery-contextmenu/src/sass/jquery.contextMenu';
+@import '~jquery-contextmenu/src/sass/jquery.contextMenu';
 
 /* React context menu */
 @import 'contextMenus';

@@ -3,11 +3,12 @@ import { ipcRenderer } from 'electron';
 import * as textEllipsis from 'text-ellipsis';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './GameContainer.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { CirclePercentage } from '../CirclePercentage/CirclePercentage';
 import { beforeCss, formatTimePlayed, launchGame, urlify } from '../../helpers';
 import { localizer } from '../../Localizer';
+
+import './GameContainer.scss';
 
 export class GameContainer extends VitrineComponent {
 	public constructor(props: any) {

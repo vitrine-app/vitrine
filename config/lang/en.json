@@ -1,7 +1,9 @@
 {
+  "language": "English",
   "name": "Vitrine",
   "desc": "Vitrine is a modern game library allowing you to display and organize your games, wherever they come from. It currently works with Steam, and other games on your PC you can browse. Vitrine also helps you sorting your games with a lot of details, and the time spent on the game.<br>Why would'nt you give it a try ? The only thing you got to do is to add a game or to game for Vitrine to scan your Steam ones!",
   "welcomeMessage": "Welcome to Vitrine!",
+  "confirm": "Confirm",
   "cancel": "Cancel",
   "play": "Play",
   "timePlayed": "Time played:",
@@ -36,6 +38,8 @@
   "allFiles": "All files",
   "crash": "Whoops! The application crashed",
   "quit": "Quit",
+  "relaunch": "Relaunch",
+  "show": "Show",
   "hoursPlur": "hours",
   "hoursSing": "hour",
   "minutesPlur": "minutes",
@@ -47,5 +51,10 @@
   "update": "Update",
   "updateTextFirst": "A new version of Vitrine is available!",
   "updateTextLast": "Do you want to restart the application to install it?",
-  "changeLogs": "See the change logs"
+  "changeLogs": "See the change logs",
+  "wizardText": "As it's the first time you're using Vitrine, we are here to help you to configure which modules would you like to use.",
+  "steamConfig": "Steam settings:",
+  "steamPath": "Steam path",
+  "originConfig": "Origin settings:",
+  "originGamesPath": "Origin games path"
 }

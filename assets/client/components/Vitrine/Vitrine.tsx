@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './Vitrine.scss';
 import { TaskBar } from '../TaskBar/TaskBar';
 import { SideBar } from '../SideBar/SideBar';
 import { GameContainer } from '../GameContainer/GameContainer';
@@ -13,7 +12,10 @@ import { GamesCollection } from '../../../models/GamesCollection';
 import { AddGameModal } from '../AddGameModal/AddGameModal';
 import { AddPotentialGamesModal } from '../AddPotentialGamesModal/AddPotentialGamesModal';
 import { UpdateModal } from '../UpdateModal/UpdateModal';
+import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { launchGame } from '../../helpers';
+
+import './Vitrine.scss';
 
 export class Vitrine extends VitrineComponent {
 	public constructor() {
@@ -28,6 +30,10 @@ export class Vitrine extends VitrineComponent {
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
+	}
+
+	private firstLaunch() {
+		$('#settings-modal').modal('show');
 	}
 
 	private updateProgress(event: Electron.Event, progress: any) {
@@ -197,7 +203,7 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('server.first-launch', () => { console.log('first launch!') })
+		ipcRenderer.on('server.first-launch', this.firstLaunch.bind(this))
 			.on('server.update-progress', this.updateProgress.bind(this))
 			.on('server.update-downloaded', this.updateDownloaded.bind(this))
 			.on('server.add-playable-games', this.addPlayableGames.bind(this))
@@ -241,6 +247,7 @@ export class Vitrine extends VitrineComponent {
 				<UpdateModal
 					releaseVersion={ this.state.releaseVersion }
 				/>
+				<SettingsModal/>
 				<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={ Vitrine.launchGameContextClickHandler.bind(this) }>Play</MenuItem>
 					<MenuItem onClick={ this.editGameContextClickHandler.bind(this) }>Edit</MenuItem>

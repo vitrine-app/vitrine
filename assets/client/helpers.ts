@@ -43,6 +43,12 @@ export function formatTimePlayed(timePlayed: number): string {
 	return hours + ' ' + hoursStr + (minutesStr) ? (minutes + ' ' + minutesStr) : ('');
 }
 
+export function openDirectory(): string {
+	return openDialog({
+		properties: ['openDirectory']
+	});
+}
+
 export function openExecutableDialog(): string {
 	return openDialog({
 		properties: ['openFile'],

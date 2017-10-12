@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { VitrineComponent } from '../VitrineComponent';
+
 import './CirclePercentage.scss';
 
 export class CirclePercentage extends VitrineComponent {

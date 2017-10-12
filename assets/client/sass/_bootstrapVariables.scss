@@ -1,3 +1,5 @@
+@import '~bootstrap-select/sass/variables';
+
 // Colors
 $gray-base: rgb(0, 0, 0) !default;
 $gray-darker: lighten($gray-base, 13.5%) !default;
@@ -14,16 +16,16 @@ $brand-danger: #B3504D !default;
 // Scaffolding
 $body-bg: #2F2C28 !default;
 $text-color: #D5D5D5 !default;
-$link-color: $brand-primary !default;
+$link-color: #887F7C !default;
 $link-hover-color: darken($link-color, 15%) !default;
 $link-hover-decoration: underline !default;
 
 // Typography
-$font-family-sans-serif: 'Lato', sans-serif !default;
+$font-family-sans-serif: 'Whitney', sans-serif !default;
 $font-family-serif: Georgia, 'Times New Roman', Times, serif !default;
 $font-family-monospace: Menlo, Monaco, Consolas, 'Courier New', monospace !default;
 $font-family-base: $font-family-sans-serif !default;
-$font-size-base: 15px !default;
+$font-size-base: 17px !default;
 $font-size-large: ceil(($font-size-base * 1.25)) !default;
 $font-size-small: ceil(($font-size-base * 0.85)) !default;
 $font-size-h1: floor(($font-size-base * 2.6)) !default;
@@ -118,14 +120,14 @@ $input-group-addon-border-color: $input-border !default;
 $cursor-disabled: not-allowed !default;
 
 // Dropdowns
-$dropdown-bg: rgb(255, 255, 255) !default;
+$dropdown-bg: $body-bg !default;
 $dropdown-border: rgba(0, 0, 0, 0.15) !default;
 $dropdown-fallback-border: rgb(204, 204, 204) !default;
 $dropdown-divider-bg: rgb(229, 229, 229) !default;
-$dropdown-link-color: $gray-dark !default;
-$dropdown-link-hover-color: darken($gray-dark, 5%) !default;
-$dropdown-link-hover-bg: rgb(245, 245, 245) !default;
-$dropdown-link-active-color: $component-active-color !default;
+$dropdown-link-color: #988F88 !default;
+$dropdown-link-hover-color: $text-color !default;
+$dropdown-link-hover-bg: #423B31 !default;
+$dropdown-link-active-color: #B19E90 !default;
 $dropdown-link-active-bg: $component-active-bg !default;
 $dropdown-link-disabled-color: $gray-light !default;
 $dropdown-header-color: $gray-light !default;
@@ -211,16 +213,16 @@ $navbar-inverse-toggle-border-color: rgb(51, 51, 51) !default;
 
 // Navs
 $nav-link-padding: 10px 15px !default;
-$nav-link-hover-bg: $gray-lighter !default;
+$nav-link-hover-bg: #3A352F !default;
 $nav-disabled-link-color: $gray-light !default;
 $nav-disabled-link-hover-color: $gray-light !default;
 
 // Tabs
-$nav-tabs-border-color: rgb(221, 221, 221) !default;
+$nav-tabs-border-color: #61574B !default;
 $nav-tabs-link-hover-border-color: $gray-lighter !default;
-$nav-tabs-active-link-hover-bg: $body-bg !default;
-$nav-tabs-active-link-hover-color: $gray !default;
-$nav-tabs-active-link-hover-border-color: rgb(221, 221, 221) !default;
+$nav-tabs-active-link-hover-bg: #423B31 !default;
+$nav-tabs-active-link-hover-color: #B19E90 !default;
+$nav-tabs-active-link-hover-border-color: #61574B !default;
 $nav-tabs-justified-link-border-color: rgb(221, 221, 221) !default;
 $nav-tabs-justified-active-link-border-color: $body-bg !default;
 
@@ -455,7 +457,7 @@ $blockquote-border-color: $gray-lighter !default;
 $page-header-border-color: $gray-lighter !default;
 $dl-horizontal-offset: $component-offset-horizontal !default;
 $dl-horizontal-breakpoint: $grid-float-breakpoint !default;
-$hr-border: $gray-lighter !default;
+$hr-border: #61574B !default;
 
 // Context menu
 $context-menu-background-color: #3E3A34 !default;

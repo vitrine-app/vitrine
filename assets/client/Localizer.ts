@@ -1,10 +1,18 @@
 class Localizer {
-	private languages: any;
+	private languages: any[];
 	private selectedLanguage: string;
 
 	public constructor(languages?: any) {
 		this.languages = (languages) ? (languages) : ({});
 		this.selectedLanguage = 'en';
+	}
+
+	public getLanguages(): any[] {
+		return this.languages
+	}
+
+	public getSelectedLanguage(): string {
+		return this.selectedLanguage;
 	}
 
 	public addLanguage(key: string, dict: any) {

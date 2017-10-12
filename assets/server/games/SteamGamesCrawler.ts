@@ -17,7 +17,7 @@ class SteamGamesCrawler {
 	private callback: Function;
 
 	public constructor(playableGames?: PlayableGame[]) {
-		let configFilePath = path.resolve(getEnvFolder('config'), 'steam.json');
+		let configFilePath: string = path.resolve(getEnvFolder('config'), 'steam.json');
 		this.configFile = fs.readJSONSync(configFilePath);
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.potentialGames = [];

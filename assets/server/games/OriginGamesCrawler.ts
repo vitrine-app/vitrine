@@ -19,7 +19,7 @@ class OriginGamesCrawler {
 	private callback: Function;
 
 	public constructor(playableGames?: PlayableGame[]) {
-		let configFilePath = path.resolve(getEnvFolder('config'), 'origin.json');
+		let configFilePath: string = path.resolve(getEnvFolder('config'), 'origin.json');
 		this.configFile = fs.readJSONSync(configFilePath);
 		this.potentialGames = [];
 		this.regDetails = [];
@@ -41,8 +41,8 @@ class OriginGamesCrawler {
 
 	private parseRegistry() {
 		let regKey = new Registry({
-			hive: Registry.HKLM,
-			key: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
+			hive: Registry[this.configFile.regHive],
+			key: this.configFile.regKey
 		});
 		regKey.keys((error: Error, items: Winreg.Registry[]) => {
 			if (error)

@@ -3,9 +3,10 @@ import { ipcRenderer } from 'electron';
 import { ContextMenuTrigger } from 'react-contextmenu';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './SideBar.scss';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { launchGame } from '../../helpers';
+
+import './SideBar.scss';
 
 export class SideBar extends VitrineComponent {
 	public constructor(props: any) {
@@ -42,7 +43,6 @@ export class SideBar extends VitrineComponent {
 										className={ (this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? ('selected-game') : ('') }
 										onClick={ this.clickGameHandler.bind(this) }
 										onDoubleClick={ launchGame.bind(null, game.uuid) }
-										onKeyDown={ (e) => {console.log(e)}}
 									>
 										{ game.name }
 									</li>

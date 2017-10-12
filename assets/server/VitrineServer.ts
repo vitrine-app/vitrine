@@ -42,16 +42,13 @@ export class VitrineServer {
 		if (devTools)
 			this.devTools = devTools;
 		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
-			this.tray.destroy();
-			app.quit();
+			this.quitApplication();
 			return;
 		}
 		app.on('ready', this.runVitrine.bind(this));
 		app.on('window-all-closed', () => {
-			if (process.platform !== 'darwin') {
-				this.tray.destroy();
-				app.quit();
-			}
+			if (process.platform !== 'darwin')
+				this.quitApplication();
 		});
 		app.on('activate', () => {
 			if (!this.windowsList.mainWindow)
@@ -61,6 +58,7 @@ export class VitrineServer {
 
 	public registerEvents() {
 		ipcMain.on('client.ready', this.clientReady.bind(this))
+			.on('client.quit-application', this.quitApplication.bind(this))
 			.on('client.update-app', this.updateApp.bind(this))
 			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
 			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
@@ -95,6 +93,14 @@ export class VitrineServer {
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
 		}
+	}
+
+	private quitApplication(event?: Electron.Event, mustRelaunch?: boolean) {
+		if (mustRelaunch)
+			app.relaunch();
+		this.appQuit = true;
+		this.tray.destroy();
+		app.quit();
 	}
 
 	private updateApp() {
@@ -240,11 +246,7 @@ export class VitrineServer {
 			{
 				label: 'Quit',
 				type: 'normal',
-				click: () => {
-					this.appQuit = true;
-					this.tray.destroy();
-					app.quit();
-				}
+				click: this.quitApplication.bind(this)
 			}
 		]));
 		this.tray.on('double-click', this.restoreAndFocus.bind(this));
