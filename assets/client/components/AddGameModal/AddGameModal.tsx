@@ -5,13 +5,14 @@ import * as moment from 'moment';
 import { PotentialGame, GameSource } from '../../../models/PotentialGame';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './AddGameModal.scss';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { NumberPicker } from '../NumberPicker/NumberPicker';
 import { IgdbResearchModal } from '../IgdbResearchModal/IgdbResearchModal';
 import { ImagesCollection } from '../ImagesCollection/ImagesCollection';
 import { localizer } from '../../Localizer';
 import { openExecutableDialog, openImageDialog } from '../../helpers';
+
+import './AddGameModal.scss';
 
 export class AddGameModal extends VitrineComponent {
 	private emptyState: any;
@@ -273,14 +274,14 @@ export class AddGameModal extends VitrineComponent {
 														disabled
 													/>
 													<span className="input-group-btn">
-													<button
-														className="btn btn-default"
-														type="button"
-														onClick={ this.executableBtnClickHandler.bind(this) }
-													>
-														<i className="fa fa-folder-open-o"/>
-													</button>
-												</span>
+														<button
+															className="btn btn-default"
+															type="button"
+															onClick={ this.executableBtnClickHandler.bind(this) }
+														>
+															<i className="fa fa-folder-open-o"/>
+														</button>
+													</span>
 												</div>
 											</div>
 											<div className="form-group">

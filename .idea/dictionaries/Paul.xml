@@ -2,6 +2,8 @@
   <dictionary name="Paul">
     <words>
       <w>infos</w>
+      <w>langs</w>
+      <w>localizer</w>
       <w>uglify</w>
     </words>
   </dictionary>

@@ -1,7 +1,0 @@
-{
-  "installFolder": "C:/Program Files (x86)/Steam",
-  "gamesFolders": [
-    "~steamapps"
-  ],
-  "launchCommand": "steam://run/%id"
-}

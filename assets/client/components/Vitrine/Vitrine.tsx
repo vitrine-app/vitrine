@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './Vitrine.scss';
 import { TaskBar } from '../TaskBar/TaskBar';
 import { SideBar } from '../SideBar/SideBar';
 import { GameContainer } from '../GameContainer/GameContainer';
@@ -13,13 +12,18 @@ import { GamesCollection } from '../../../models/GamesCollection';
 import { AddGameModal } from '../AddGameModal/AddGameModal';
 import { AddPotentialGamesModal } from '../AddPotentialGamesModal/AddPotentialGamesModal';
 import { UpdateModal } from '../UpdateModal/UpdateModal';
+import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { launchGame } from '../../helpers';
 
+import './Vitrine.scss';
+
 export class Vitrine extends VitrineComponent {
-	public constructor() {
-		super();
+	public constructor(props: any) {
+		super(props);
 
 		this.state = {
+			settings: this.props.settings,
+			firstLaunch: false,
 			updateProgress: null,
 			releaseVersion: null,
 			playableGames: new GamesCollection<PlayableGame>(),
@@ -28,6 +32,14 @@ export class Vitrine extends VitrineComponent {
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
+	}
+
+	private firstLaunch() {
+		this.setState({
+			firstLaunch: true
+		}, () => {
+			$('#settings-modal').modal('show');
+		});
 	}
 
 	private updateProgress(event: Electron.Event, progress: any) {
@@ -45,10 +57,16 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
+		let firstTime: boolean = this.state.playableGames.games.length === 0;
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.addGames(new GamesCollection<PlayableGame>(games), () => {
 			this.setState({
-				playableGames:  currentPlayableGames
+				playableGames: currentPlayableGames
+			}, () => {
+				if (firstTime)
+					this.setState({
+						selectedGame: this.state.playableGames.games[0]
+					});
 			});
 		});
 	}
@@ -57,7 +75,8 @@ export class Vitrine extends VitrineComponent {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.addGame(game);
 		this.setState({
-			playableGames: currentPlayableGames
+			playableGames: currentPlayableGames,
+			selectedGame: game
 		}, () => {
 			$('#add-game-modal').modal('hide');
 			$('#add-potential-games-modal').modal('hide');
@@ -116,6 +135,19 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
+	private settingsUpdated(event: Event, newSettings: any) {
+		this.setState({
+			settings: newSettings
+		}, () => {
+			$('#settings-modal').modal('hide');
+			if (this.state.firstLaunch) {
+				this.setState({
+					firstLaunch: false
+				});
+			}
+		});
+	}
+
 	private sideBarGameClickHandler(uuid: string) {
 		this.state.playableGames.getGame(uuid).then(([selectedGame]) => {
 			this.setState({
@@ -155,20 +187,63 @@ export class Vitrine extends VitrineComponent {
 		ipcRenderer.send('client.remove-game', gameId);
 	}
 
+	private keyDownHandler(event: KeyboardEvent) {
+		switch (event.code) {
+			case ('ArrowDown'): {
+				event.preventDefault();
+
+				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
+				if (index < this.state.playableGames.games.length - 1)
+					this.setState({
+						selectedGame: this.state.playableGames.games[index + 1]
+					});
+				break;
+			}
+			case ('ArrowUp'): {
+				event.preventDefault();
+
+				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
+				if (index)
+					this.setState({
+						selectedGame: this.state.playableGames.games[index - 1]
+					});
+				break;
+			}
+			case ('Enter'): {
+				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
+					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible'))
+					break;
+				event.preventDefault();
+
+				launchGame(this.state.selectedGame.uuid);
+				break;
+			}
+		}
+	}
+
 	public componentDidMount() {
-		ipcRenderer.on('server.update-progress', this.updateProgress.bind(this))
+		ipcRenderer.on('server.first-launch', this.firstLaunch.bind(this))
+			.on('server.update-progress', this.updateProgress.bind(this))
 			.on('server.update-downloaded', this.updateDownloaded.bind(this))
 			.on('server.add-playable-games', this.addPlayableGames.bind(this))
 			.on('server.add-playable-game', this.addPlayableGame.bind(this))
 			.on('server.edit-playable-game', this.editPlayableGame.bind(this))
 			.on('server.remove-playable-game', this.removePlayableGame.bind(this))
 			.on('server.add-potential-games', this.addPotentialGames.bind(this))
-			.on('server.stop-game', this.stopGame.bind(this));
+			.on('server.stop-game', this.stopGame.bind(this))
+			.on('server.settings-updated', this.settingsUpdated.bind(this));
+
+		window.addEventListener('keydown', this.keyDownHandler.bind(this));
+
+	}
+
+	public componentWillUnmount() {
+		window.removeEventListener('keydown', this.keyDownHandler.bind(this));
 	}
 
 	public render(): JSX.Element {
 		return (
-			<div id="vitrine-app" className="container-fluid full-height">
+			<div className="container-fluid full-height vitrine-app">
 				<TaskBar
 					potentialGames={ this.state.potentialGames }
 					updateProgress={ this.state.updateProgress }
@@ -191,6 +266,10 @@ export class Vitrine extends VitrineComponent {
 				/>
 				<UpdateModal
 					releaseVersion={ this.state.releaseVersion }
+				/>
+				<SettingsModal
+					settings={ this.state.settings }
+					firstLaunch={ this.state.firstLaunch }
 				/>
 				<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={ Vitrine.launchGameContextClickHandler.bind(this) }>Play</MenuItem>

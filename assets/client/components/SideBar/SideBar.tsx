@@ -3,9 +3,10 @@ import { ipcRenderer } from 'electron';
 import { ContextMenuTrigger } from 'react-contextmenu';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './SideBar.scss';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { launchGame } from '../../helpers';
+
+import './SideBar.scss';
 
 export class SideBar extends VitrineComponent {
 	public constructor(props: any) {

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { VitrineComponent } from '../VitrineComponent';
+
 import './NumberPicker.scss';
 
 export class NumberPicker extends VitrineComponent {

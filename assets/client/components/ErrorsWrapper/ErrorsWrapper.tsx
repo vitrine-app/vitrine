@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { remote } from 'electron'
+import { remote, ipcRenderer } from 'electron'
+
+import { localizer } from '../../Localizer';
 
 import './ErrorWrapper.scss';
-import { localizer } from '../../Localizer';
 
 export class ErrorsWrapper extends React.Component<any, any> {
 	constructor(props: any) {
@@ -10,6 +11,15 @@ export class ErrorsWrapper extends React.Component<any, any> {
 
 		this.state = {};
 	}
+
+	private static quitApplication() {
+		ipcRenderer.send('client.quit-application', false);
+	}
+
+	private static relaunchApplication() {
+		ipcRenderer.send('client.quit-application', true);
+	}
+
 	public componentDidCatch(error: Error) {
 		this.setState({
 			error: error
@@ -38,6 +48,12 @@ export class ErrorsWrapper extends React.Component<any, any> {
 								>
 									{ localizer.f('quit') }
 								</button>
+								<button
+									onClick={ ErrorsWrapper.relaunchApplication }
+									className="btn btn-danger"
+								>
+									{ localizer.f('relaunch') }
+								</button>
 							</div>
 						</div>
 					</div>
@@ -45,9 +61,5 @@ export class ErrorsWrapper extends React.Component<any, any> {
 			);
 		else
 			return this.props.children;
-	}
-
-	private static quitApplication() {
-		remote.getCurrentWindow().close();
 	}
 }

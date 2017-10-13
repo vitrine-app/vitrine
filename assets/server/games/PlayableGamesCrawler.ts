@@ -31,7 +31,7 @@ class PlayableGamesCrawler {
 			files.forEach((gameId) => {
 				let configFilePath: any = path.resolve(this.gamesDirectory, gameId, 'config.json');
 				if (fs.existsSync(configFilePath)) {
-					let rawGame = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
+					let rawGame = fs.readJsonSync(configFilePath);
 					let playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
 					playableGame.uuid = rawGame.uuid;
 					playableGame.commandLine = rawGame.commandLine;

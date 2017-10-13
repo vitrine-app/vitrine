@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { VitrineComponent } from '../VitrineComponent';
+
 import './TitleBar.scss';
 
 export class TitleBar extends VitrineComponent {

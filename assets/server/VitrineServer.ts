@@ -1,9 +1,8 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { app, BrowserWindow, Tray, Menu, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import * as rimraf from 'rimraf';
-import { sync as mkDir } from 'mkdirp';
 import * as moment from 'moment';
 
 import { GamesCollection } from '../models/GamesCollection';
@@ -18,37 +17,38 @@ import { downloadImage } from './helpers';
 import { getOriginCrawler } from './games/OriginGamesCrawler';
 
 export class VitrineServer {
-	private windowsList;
+	private windowsList: any;
 	private mainEntryPoint: string;
 	private loadingEntryPoint: string;
+	private tray: Tray;
 	private devTools: boolean;
 	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
+	private appQuit: boolean;
 
-	public constructor() {
+	public constructor(private vitrineConfig?: any, private vitrineConfigFilePath?: string) {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
+		this.appQuit = false;
 	}
 
 	public run(devTools?: boolean) {
 		if (devTools)
 			this.devTools = devTools;
-
-		app.on('ready', () => {
-			this.createLoadingWindow();
-			this.handleUpdates();
-			this.createMainWindow();
-		});
+		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
+			this.quitApplication();
+			return;
+		}
+		app.on('ready', this.runVitrine.bind(this));
 		app.on('window-all-closed', () => {
-			if (process.platform !== 'darwin') {
-				app.quit();
-			}
+			if (process.platform !== 'darwin')
+				this.quitApplication();
 		});
 		app.on('activate', () => {
 			if (!this.windowsList.mainWindow)
@@ -57,37 +57,54 @@ export class VitrineServer {
 	}
 
 	public registerEvents() {
-		ipcMain.on('client.ready', this.ready.bind(this));
-		ipcMain.on('client.update-app', this.updateApp.bind(this));
-		ipcMain.on('client.fill-igdb-game', this.fillIgdbGame.bind(this));
-		ipcMain.on('client.search-igdb-games', this.searchIgdbGames.bind(this));
-		ipcMain.on('client.add-game', this.addGame.bind(this));
-		ipcMain.on('client.edit-game', this.editGame.bind(this));
-		ipcMain.on('client.launch-game', this.launchGame.bind(this));
-		ipcMain.on('client.remove-game', this.removeGame.bind(this));
-		ipcMain.on('client.refresh-potential-games', this.findPotentialGames.bind(this));
+		ipcMain.on('client.ready', this.clientReady.bind(this))
+			.on('client.quit-application', this.quitApplication.bind(this))
+			.on('client.update-app', this.updateApp.bind(this))
+			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
+			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
+			.on('client.add-game', this.addGame.bind(this))
+			.on('client.edit-game', this.editGame.bind(this))
+			.on('client.launch-game', this.launchGame.bind(this))
+			.on('client.remove-game', this.removeGame.bind(this))
+			.on('client.refresh-potential-games', this.findPotentialGames.bind(this))
+			.on('client.update-settings', this.updateSettings.bind(this));
 	}
 
 	public static throwServerError(event: any, error: string | Error) {
 		return event.sender.send('server.server-error', error);
 	}
 
-	private ready(event: Electron.Event) {
-		this.potentialGames = new GamesCollection();
-		this.playableGames = new GamesCollection();
+	private clientReady(event: Electron.Event) {
+		if (this.vitrineConfig) {
+			this.potentialGames = new GamesCollection();
+			this.playableGames = new GamesCollection();
 
-		getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
-			this.playableGames = games;
-			event.sender.send('server.add-playable-games', this.playableGames.games);
-			this.findPotentialGames(event);
+			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
+				this.playableGames = games;
+				event.sender.send('server.add-playable-games', this.playableGames.games);
+				this.findPotentialGames(event);
+				this.windowsList.loadingWindow.destroy();
+				this.windowsList.mainWindow.show();
+			}).catch((error) => {
+				return VitrineServer.throwServerError(event, error);
+			});
+		}
+		else {
+			event.sender.send('server.first-launch');
 			this.windowsList.loadingWindow.destroy();
 			this.windowsList.mainWindow.show();
-		}).catch((error) => {
-			return VitrineServer.throwServerError(event, error);
-		});
+		}
 	}
 
-	private updateApp(event: Electron.Event) {
+	private quitApplication(event?: Electron.Event, mustRelaunch?: boolean) {
+		if (mustRelaunch)
+			app.relaunch();
+		this.appQuit = true;
+		this.tray.destroy();
+		app.quit();
+	}
+
+	private updateApp() {
 		autoUpdater.quitAndInstall(true, true);
 	}
 
@@ -100,6 +117,15 @@ export class VitrineServer {
 			this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version)
 		});
 		autoUpdater.checkForUpdates();
+	}
+
+	private restoreAndFocus() {
+		if (this.windowsList.mainWindow) {
+			this.windowsList.mainWindow.show();
+			if (this.windowsList.mainWindow.isMinimized())
+				this.windowsList.mainWindow.restore();
+			this.windowsList.mainWindow.focus();
+		}
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
@@ -181,8 +207,41 @@ export class VitrineServer {
 		});
 	}
 
+	private updateSettings(event: Electron.Event, settingsForm: any) {
+		let config: any = {
+			lang: settingsForm.lang
+		};
+		if (settingsForm.steamPath) {
+			config.steam = {
+				installFolder: settingsForm.steamPath,
+				gamesFolders: [
+					'~steamapps'
+				],
+				launchCommand: 'steam://run/%id'
+			};
+		}
+		if (settingsForm.originPath) {
+			config.origin = {
+				installFolder: settingsForm.originPath,
+				configFile: '%appdata%/Origin/local.xml',
+				regHive: 'HKLM',
+				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
+			};
+		}
+		fs.outputJSON(this.vitrineConfigFilePath, config).then(() => {
+			this.vitrineConfig = config;
+			event.sender.send('server.settings-updated', this.vitrineConfig);
+		}).catch((error: Error) => {
+			return VitrineServer.throwServerError(event, error);
+		});
+	}
+
 	private searchSteamGames(callback: Function) {
-		getSteamCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+		if (!this.vitrineConfig.steam) {
+			callback();
+			return;
+		}
+		getSteamCrawler(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 			this.potentialGames.addGames(games, () => {
 				callback();
 			});
@@ -192,7 +251,11 @@ export class VitrineServer {
 	}
 
 	private searchOriginGames(callback: Function) {
-		getOriginCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+		if (!this.vitrineConfig.origin) {
+			callback();
+			return;
+		}
+		getOriginCrawler(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 			this.potentialGames.addGames(games, () => {
 				callback();
 			});
@@ -201,16 +264,45 @@ export class VitrineServer {
 		});
 	}
 
+	private runVitrine() {
+		this.createTrayIcon();
+		this.createLoadingWindow();
+		this.handleUpdates();
+		this.createMainWindow();
+	}
+
+	private createTrayIcon() {
+		this.tray = new Tray(this.iconPath);
+		this.tray.setTitle('Vitrine');
+		this.tray.setToolTip('Vitrine');
+		this.tray.setContextMenu(Menu.buildFromTemplate([
+			{
+				label: 'Show',
+				type: 'normal',
+				click: this.restoreAndFocus.bind(this)
+			},
+			{
+				label: 'Quit',
+				type: 'normal',
+				click: this.quitApplication.bind(this)
+			}
+		]));
+		this.tray.on('double-click', this.restoreAndFocus.bind(this));
+	}
+
 	private createLoadingWindow() {
 		this.windowsList.loadingWindow = new BrowserWindow({
-			height: 300,
-			width: 500,
+			height: 400,
+			width: 700,
+			icon: this.iconPath,
 			frame: false
 		});
 		this.windowsList.loadingWindow.loadURL(this.loadingEntryPoint);
 	}
 
 	private createMainWindow() {
+		if (!screen)
+			return;
 		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 		this.windowsList.mainWindow = new BrowserWindow({
 			width: width,
@@ -221,16 +313,22 @@ export class VitrineServer {
 			show: false,
 			frame: false
 		});
-
 		this.windowsList.mainWindow.setMenu(null);
 		this.windowsList.mainWindow.maximize();
 		this.windowsList.mainWindow.loadURL(this.mainEntryPoint);
+		this.windowsList.mainWindow.hide();
 		if (this.devTools)
 			this.windowsList.mainWindow.webContents.openDevTools();
 
-		this.windowsList.mainWindow.on('closed', () => {
-			delete this.windowsList.mainWindow;
+		this.windowsList.mainWindow.on('close', (event: Event) => {
+			if (!this.appQuit) {
+				event.preventDefault();
+				this.windowsList.mainWindow.hide();
+			}
+			else
+				delete this.windowsList.mainWindow;
 		});
+
 	}
 
 	private registerGame(event: any, game: PlayableGame, gameForm: any, editing: boolean) {
@@ -249,7 +347,7 @@ export class VitrineServer {
 
 		if (!editing && fs.existsSync(configFilePath))
 			return;
-		mkDir(gameDirectory);
+		fs.ensureDirSync(gameDirectory);
 
 		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
 		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');

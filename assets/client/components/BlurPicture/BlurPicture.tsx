@@ -1,8 +1,9 @@
 import * as React from 'react';
 
 import { VitrineComponent } from '../VitrineComponent';
-import './BlurPicture.scss';
 import { urlify } from '../../helpers';
+
+import './BlurPicture.scss';
 
 export class BlurPicture extends VitrineComponent {
 	private pulseDuration: number;
