@@ -17,10 +17,10 @@ export class SettingsModal extends VitrineComponent {
 		this.state = {
 			langs: localizer.getLanguages(),
 			lang: localizer.getSelectedLanguage(),
-			steamEnabled: (this.props.settings.steam) ? (true) : (false),
-			originEnabled: (this.props.settings.origin) ? (true) : (false),
-			steamPath: (this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
-			originPath: (this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
+			steamEnabled: (this.props.settings && this.props.settings.steam) ? (true) : (false),
+			originEnabled: (this.props.settings && this.props.settings.origin) ? (true) : (false),
+			steamPath: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
+			originPath: (this.props.settings && this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
 			steamError: false,
 			originError: false
 		};

@@ -26,7 +26,7 @@ export function formatTimePlayed(timePlayed: number): string {
 			minutesStr = localizer.f('minutesPlur');
 		return minutes + ' ' + minutesStr;
 	}
-	let hours: number = minutes / 60;
+	let hours: number = Math.floor(minutes / 60);
 	let hoursStr: string;
 	if (hours == 1)
 		hoursStr = localizer.f('hoursSing');
@@ -40,7 +40,7 @@ export function formatTimePlayed(timePlayed: number): string {
 		minutesStr = localizer.f('minutesSing');
 	else
 		minutesStr = localizer.f('minutesPlur');
-	return hours + ' ' + hoursStr + (minutesStr) ? (minutes + ' ' + minutesStr) : ('');
+	return hours + ' ' + hoursStr + ((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''));
 }
 
 export function openDirectory(): string {

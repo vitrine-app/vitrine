@@ -13,8 +13,10 @@ import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
-import { downloadImage } from './helpers';
 import { getOriginCrawler } from './games/OriginGamesCrawler';
+import { getSteamUserFinder } from './api/SteamUserFinder';
+import { getSteamPlayTimeWrapper } from './api/SteamPlayTimeWrapper';
+import { downloadImage } from './helpers';
 
 export class VitrineServer {
 	private windowsList: any;
@@ -75,9 +77,17 @@ export class VitrineServer {
 	}
 
 	private clientReady(event: Electron.Event) {
+		this.potentialGames = new GamesCollection();
+		this.playableGames = new GamesCollection();
+
 		if (this.vitrineConfig) {
-			this.potentialGames = new GamesCollection();
-			this.playableGames = new GamesCollection();
+			if (this.vitrineConfig.steam) {
+				getSteamUserFinder(this.vitrineConfig.steam).then((steamUser: any) => {
+					Object.assign(this.vitrineConfig.steam, steamUser);
+				}).catch((error: Error) => {
+					return VitrineServer.throwServerError(event, error);
+				});
+			}
 
 			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
@@ -342,8 +352,8 @@ export class VitrineServer {
 		delete game.details.date;
 		delete game.details.arguments;
 
-		let gameDirectory = path.resolve(getGamesFolder(), game.uuid);
-		let configFilePath = path.resolve(gameDirectory, 'config.json');
+		let gameDirectory: string = path.resolve(getGamesFolder(), game.uuid);
+		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		if (!editing && fs.existsSync(configFilePath))
 			return;
@@ -361,23 +371,39 @@ export class VitrineServer {
 					delete game.details.screenshots;
 				else
 					delete game.details.background;
-				fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
-				if (!editing && game.source !== GameSource.LOCAL)
-					this.findPotentialGames(event);
-				if (!editing) {
-					event.sender.send('server.add-playable-game', game);
-					this.playableGames.addGame(game);
-				}
-				else {
-					this.playableGames.editGame(game, () => {
-						event.sender.send('server.edit-playable-game', game);
+
+				if (!editing && game.source === GameSource.STEAM) {
+					getSteamPlayTimeWrapper(this.vitrineConfig.steam, game).then((timedGame: PlayableGame) => {
+						console.log(timedGame);
+						this.handleRegisteredGame(event, timedGame, configFilePath, editing);
+					}).catch((error: Error) => {
+						return VitrineServer.throwServerError(event, error);
 					});
 				}
+				else
+					this.handleRegisteredGame(event, game, configFilePath, editing);
+
 			}).catch((error: Error) => {
 				return VitrineServer.throwServerError(event, error);
 			});
 		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);
 		});
+	}
+
+	private handleRegisteredGame(event: any, game: PlayableGame, configFilePath: string, editing: boolean) {
+		fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
+
+		if (!editing && game.source !== GameSource.LOCAL)
+			this.findPotentialGames(event);
+		if (!editing) {
+			event.sender.send('server.add-playable-game', game);
+			this.playableGames.addGame(game);
+		}
+		else {
+			this.playableGames.editGame(game, () => {
+				event.sender.send('server.edit-playable-game', game);
+			});
+		}
 	}
 }

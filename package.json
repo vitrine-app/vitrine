@@ -68,6 +68,7 @@
     "removeduplicates": "^1.1.0",
     "rimraf": "^2.6.2",
     "sass-percentage-circle": "^0.2.0",
+    "steam-web": "^0.6.0",
     "text-ellipsis": "^1.0.3",
     "truncate": "^2.0.0",
     "uuid": "^3.1.0",
@@ -119,7 +120,7 @@
     "start": "webpack && electron .",
     "run-server-electron": "webpack --config config/build/server.build.js && electron .",
     "run-client-electron": "webpack --config config/build/client.build.js && electron .",
-    "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 15000",
+    "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "pack": "webpack && build --dir",
     "dist": "npm test && webpack && build",
     "release": "npm test && webpack && build --publish always"
