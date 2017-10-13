@@ -11,16 +11,13 @@ import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 import { getEnvFolder, getGamesFolder, uuidV5 } from '../../models/env';
 
 class OriginGamesCrawler {
-	private configFile: any;
 	private regDetails: any[];
 	private potentialGames: PotentialGame[];
 	private playableGames: PlayableGame[];
 	private gamesFolder: string;
 	private callback: Function;
 
-	public constructor(playableGames?: PlayableGame[]) {
-		let configFilePath: string = path.resolve(getEnvFolder('config'), 'origin.json');
-		this.configFile = fs.readJSONSync(configFilePath);
+	public constructor(private originConfig: any, playableGames?: PlayableGame[]) {
 		this.potentialGames = [];
 		this.regDetails = [];
 		this.playableGames = (playableGames) ? (playableGames) : ([]);
@@ -29,7 +26,7 @@ class OriginGamesCrawler {
 	public search(callback: Function) {
 		this.callback = callback;
 
-		let xmlPath: string = path.resolve(this.configFile.configFile.replace('%appdata%', process.env.APPDATA));
+		let xmlPath: string = path.resolve(this.originConfig.configFile.replace('%appdata%', process.env.APPDATA));
 		parseXmlString(fs.readFileSync(xmlPath).toString(), (error, result: any) => {
 			if (error)
 				this.callback(error, null);
@@ -41,8 +38,8 @@ class OriginGamesCrawler {
 
 	private parseRegistry() {
 		let regKey = new Registry({
-			hive: Registry[this.configFile.regHive],
-			key: this.configFile.regKey
+			hive: Registry[this.originConfig.regHive],
+			key: this.originConfig.regKey
 		});
 		regKey.keys((error: Error, items: Winreg.Registry[]) => {
 			if (error)
@@ -140,9 +137,9 @@ class OriginGamesCrawler {
 	}
 }
 
-export function getOriginCrawler(playableGames?: PlayableGame[]): Promise<any> {
+export function getOriginCrawler(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new OriginGamesCrawler(playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
+		new OriginGamesCrawler(originConfig, playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)
 				reject(error);
 			else

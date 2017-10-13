@@ -28,7 +28,7 @@ export class VitrineServer {
 	private gameLaunched: boolean;
 	private appQuit: boolean;
 
-	public constructor(private vitrineConfig?: any) {
+	public constructor(private vitrineConfig?: any, private configFolderPath?: string) {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
@@ -66,7 +66,8 @@ export class VitrineServer {
 			.on('client.edit-game', this.editGame.bind(this))
 			.on('client.launch-game', this.launchGame.bind(this))
 			.on('client.remove-game', this.removeGame.bind(this))
-			.on('client.refresh-potential-games', this.findPotentialGames.bind(this));
+			.on('client.refresh-potential-games', this.findPotentialGames.bind(this))
+			.on('client.update-settings', this.updateSettings.bind(this));
 	}
 
 	public static throwServerError(event: any, error: string | Error) {
@@ -206,8 +207,40 @@ export class VitrineServer {
 		});
 	}
 
+	private updateSettings(event: Electron.Event, settingsForm: any) {
+		let config: any = {
+			lang: settingsForm.lang
+		};
+		if (settingsForm.steamPath) {
+			config.steam = {
+				installFolder: settingsForm.steamPath,
+				gamesFolders: [
+					'~steamapps'
+				],
+				launchCommand: 'steam://run/%id'
+			};
+		}
+		if (settingsForm.originPath) {
+			config.origin = {
+				installFolder: settingsForm.originPath,
+				configFile: '%appdata%/Origin/local.xml',
+				regHive: 'HKLM',
+				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
+			};
+		}
+		fs.outputJSON(path.resolve(this.configFolderPath, 'vitrine_config.json'), config).then(() => {
+			this.vitrineConfig = config;
+		}).catch((error: Error) => {
+			return VitrineServer.throwServerError(event, error);
+		});
+	}
+
 	private searchSteamGames(callback: Function) {
-		getSteamCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+		if (!this.vitrineConfig.steam) {
+			callback();
+			return;
+		}
+		getSteamCrawler(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 			this.potentialGames.addGames(games, () => {
 				callback();
 			});
@@ -217,7 +250,11 @@ export class VitrineServer {
 	}
 
 	private searchOriginGames(callback: Function) {
-		getOriginCrawler(this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+		if (!this.vitrineConfig.origin) {
+			callback();
+			return;
+		}
+		getOriginCrawler(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 			this.potentialGames.addGames(games, () => {
 				callback();
 			});

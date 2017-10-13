@@ -1,5 +1,0 @@
-{
-  "configFile": "%appdata%/Origin/local.xml",
-  "regHive": "HKLM",
-  "regKey": "\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games"
-}

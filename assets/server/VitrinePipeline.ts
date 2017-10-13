@@ -25,15 +25,15 @@ export class VitrinePipeline {
 			fs.ensureDirSync(this.configFolderPath);
 		}
 		fs.ensureDirSync(this.gamesFolderPath);
-		let vitrineConfigFile: string = path.resolve(this.configFolderPath, 'vitrine_config.json');
-		fs.ensureFileSync(vitrineConfigFile);
-		let vitrineConfig: any = fs.readJSONSync(vitrineConfigFile, {throws: false});
+		let vitrineConfigFilePath: string = path.resolve(this.configFolderPath, 'vitrine_config.json');
+		fs.ensureFileSync(vitrineConfigFilePath);
+		let vitrineConfig: any = fs.readJSONSync(vitrineConfigFilePath, {throws: false});
 
 		this.launchMainClient(vitrineConfig);
 	}
 
 	public launchMainClient(vitrineConfig: any) {
-		this.serverInstance = new VitrineServer(vitrineConfig);
+		this.serverInstance = new VitrineServer(vitrineConfig, this.configFolderPath);
 		this.serverInstance.registerEvents();
 		this.serverInstance.run(!this.prod);
 	}

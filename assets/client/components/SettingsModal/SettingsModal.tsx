@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ipcRenderer } from 'electron';
 
 import { VitrineComponent } from '../VitrineComponent';
 import { GamesModule } from '../GamesModule/GamesModule';
@@ -101,9 +102,8 @@ export class SettingsModal extends VitrineComponent {
 				});
 			}
 		}
-		if (canBeSent) {
-			console.log(form);
-		}
+		if (canBeSent)
+			ipcRenderer.send('client.update-settings', form);
 	}
 
 	public render(): JSX.Element {
