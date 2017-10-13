@@ -18,10 +18,12 @@ import { launchGame } from '../../helpers';
 import './Vitrine.scss';
 
 export class Vitrine extends VitrineComponent {
-	public constructor() {
-		super();
+	public constructor(props: any) {
+		super(props);
 
 		this.state = {
+			settings: this.props.settings,
+			firstLaunch: false,
 			updateProgress: null,
 			releaseVersion: null,
 			playableGames: new GamesCollection<PlayableGame>(),
@@ -33,7 +35,11 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private firstLaunch() {
-		$('#settings-modal').modal('show');
+		this.setState({
+			firstLaunch: true
+		}, () => {
+			$('#settings-modal').modal('show');
+		});
 	}
 
 	private updateProgress(event: Electron.Event, progress: any) {
@@ -129,6 +135,19 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
+	private settingsUpdated(event: Event, newSettings: any) {
+		this.setState({
+			settings: newSettings
+		}, () => {
+			$('#settings-modal').modal('hide');
+			if (this.state.firstLaunch) {
+				this.setState({
+					firstLaunch: false
+				});
+			}
+		});
+	}
+
 	private sideBarGameClickHandler(uuid: string) {
 		this.state.playableGames.getGame(uuid).then(([selectedGame]) => {
 			this.setState({
@@ -211,7 +230,8 @@ export class Vitrine extends VitrineComponent {
 			.on('server.edit-playable-game', this.editPlayableGame.bind(this))
 			.on('server.remove-playable-game', this.removePlayableGame.bind(this))
 			.on('server.add-potential-games', this.addPotentialGames.bind(this))
-			.on('server.stop-game', this.stopGame.bind(this));
+			.on('server.stop-game', this.stopGame.bind(this))
+			.on('server.settings-updated', this.settingsUpdated.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
 
@@ -247,7 +267,10 @@ export class Vitrine extends VitrineComponent {
 				<UpdateModal
 					releaseVersion={ this.state.releaseVersion }
 				/>
-				<SettingsModal/>
+				<SettingsModal
+					settings={ this.state.settings }
+					firstLaunch={ this.state.firstLaunch }
+				/>
 				<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={ Vitrine.launchGameContextClickHandler.bind(this) }>Play</MenuItem>
 					<MenuItem onClick={ this.editGameContextClickHandler.bind(this) }>Edit</MenuItem>

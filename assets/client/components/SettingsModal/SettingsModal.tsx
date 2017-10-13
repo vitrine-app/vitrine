@@ -11,16 +11,16 @@ import * as steamIcon from './steamIcon.png';
 import * as originIcon from './originIcon.png';
 
 export class SettingsModal extends VitrineComponent {
-	public constructor() {
-		super();
+	public constructor(props: any) {
+		super(props);
 
 		this.state = {
 			langs: localizer.getLanguages(),
 			lang: localizer.getSelectedLanguage(),
-			steamEnabled: false,
-			originEnabled: false,
-			steamPath: '',
-			originPath: '',
+			steamEnabled: (this.props.settings.steam) ? (true) : (false),
+			originEnabled: (this.props.settings.origin) ? (true) : (false),
+			steamPath: (this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
+			originPath: (this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
 			steamError: false,
 			originError: false
 		};
@@ -108,13 +108,27 @@ export class SettingsModal extends VitrineComponent {
 
 	public render(): JSX.Element {
 		return (
-			<div id="settings-modal" className="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div
+				id="settings-modal"
+				className="modal fade"
+				role="dialog"
+				data-keyboard={ (this.props.firstLaunch) ? (false) : (true) }
+				data-backdrop={ (this.props.firstLaunch) ? ('static') : (true) }
+			>
 				<div className="modal-dialog">
 					<div className="modal-content">
+						<div
+							className="modal-header"
+							style={ {display: (!this.props.firstLaunch) ? ('block') : ('none')} }
+						>
+							{ localizer.f('settings') }
+						</div>
 						<div className="modal-body">
 							<form id="settings-form">
-								<h1>{ localizer.f('welcomeMessage') }</h1>
-								<p>{ localizer.f('wizardText') }</p>
+								<div style={ {display: (this.props.firstLaunch) ? ('block') : ('none')} }>
+									<h1>{ localizer.f('welcomeMessage') }</h1>
+									<p>{ localizer.f('wizardText') }</p>
+								</div>
 								<ul className="nav nav-tabs">
 									<li className="active"><a data-toggle="tab" href="#options-pane-modules">Modules</a></li>
 									<li><a data-toggle="tab" href="#options-pane-lang">Lang</a></li>
@@ -122,11 +136,13 @@ export class SettingsModal extends VitrineComponent {
 								<div className="tab-content">
 									<div id="options-pane-modules" className="tab-pane fade in active">
 										<GamesModule
+											clicked={ this.state.steamEnabled }
 											iconFile={ steamIcon }
 											iconAlt={ 'Steam' }
 											clickHandler={ this.steamIconClickHandler.bind(this) }
 										/>
 										<GamesModule
+											clicked={ this.state.originEnabled }
 											iconFile={ originIcon }
 											iconAlt={ 'Origin' }
 											clickHandler={ this.originIconClickHandler.bind(this) }
@@ -215,6 +231,13 @@ export class SettingsModal extends VitrineComponent {
 							</form>
 						</div>
 						<div className="modal-footer">
+							<button
+								className="btn btn-default"
+								style={ {display: (!this.props.firstLaunch) ? ('inline-block') : ('none')} }
+								data-dismiss="modal"
+							>
+								{ localizer.f('cancel') }
+							</button>
 							<button
 								className="btn btn-success"
 								onClick={ this.submitBtnClickHandler.bind(this) }

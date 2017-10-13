@@ -9,7 +9,7 @@ export class GamesModule extends VitrineComponent {
 		super(props);
 
 		this.state = {
-			clicked: false
+			clicked: this.props.clicked
 		};
 	}
 

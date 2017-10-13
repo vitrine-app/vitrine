@@ -230,6 +230,7 @@ export class VitrineServer {
 		}
 		fs.outputJSON(this.vitrineConfigFilePath, config).then(() => {
 			this.vitrineConfig = config;
+			event.sender.send('server.settings-updated', this.vitrineConfig);
 		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);
 		});

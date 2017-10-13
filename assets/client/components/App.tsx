@@ -11,6 +11,8 @@ import { getEnvFolder } from '../../models/env';
 import { ErrorsWrapper } from './ErrorsWrapper/ErrorsWrapper';
 
 export class App extends React.Component {
+	private config: any;
+
 	public constructor() {
 		super();
 
@@ -27,8 +29,8 @@ export class App extends React.Component {
 	private initLanguages() {
 		let langFilesFolder: string = getEnvFolder('config/lang');
 		let configFilePath: string = path.resolve(getEnvFolder('config'), 'vitrine_config.json');
-		let config: any = fs.readJSONSync(configFilePath, {throws: false});
-		let configLang: string = (config && config.lang) ? (config.lang) : ('');
+		this.config = fs.readJSONSync(configFilePath, {throws: false});
+		let configLang: string = (this.config && this.config.lang) ? (this.config.lang) : ('');
 		let systemLang: string = remote.app.getLocale();
 
 		let langFilesPaths: string[] = glob.sync(langFilesFolder + '/*');
@@ -54,7 +56,9 @@ export class App extends React.Component {
 			<div className="full-height">
 				<TitleBar/>
 				<ErrorsWrapper>
-					<Vitrine/>
+					<Vitrine
+						settings={ this.config }
+					/>
 				</ErrorsWrapper>
 			</div>
 		);

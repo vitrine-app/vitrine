@@ -18,18 +18,29 @@ export class TaskBar extends VitrineComponent {
 	public render(): JSX.Element {
 		return (
 			<div>
-				<div id="taskbar">
+				<div className="task-bar">
 					<div className="row">
 						<div className="col-md-1">
-							<button className="btn btn-primary" data-toggle="modal" data-target="#add-game-modal">
-								<i className="fa fa-plus"/>
-							</button>
-							<button id="refresh-btn" className="btn btn-primary" onClick={ TaskBar.refreshBtnClickHandler }>
-								<i className="fa fa-refresh"/>
-							</button>
+							<div className="row">
+								<div className="col-md-4">
+									<button className="btn btn-primary" data-toggle="modal" data-target="#add-game-modal">
+										<i className="fa fa-plus"/>
+									</button>
+								</div>
+								<div className="col-md-4">
+									<button className="btn btn-primary" onClick={ TaskBar.refreshBtnClickHandler }>
+										<i className="fa fa-refresh"/>
+									</button>
+								</div>
+								<div className="col-md-4">
+									<button className="btn btn-primary" data-toggle="modal" data-target="#settings-modal">
+										<i className="fa fa-cogs"/>
+									</button>
+								</div>
+							</div>
 						</div>
 						<div
-							className="col-md-2"
+							className="potential-games-container col-md-2"
 							style={ {display: (this.props.potentialGames.games.length) ? ('block') : ('none')} }
 						>
 							<button className="btn btn-primary" data-toggle="modal" data-target="#add-potential-games-modal">
@@ -40,7 +51,7 @@ export class TaskBar extends VitrineComponent {
 							className="col-md-offset-7 col-md-2"
 							style={ {display: (this.props.updateProgress) ? ('block') : ('none')} }
 						>
-							<div id="update-bar" className="progress">
+							<div className="update-bar progress">
 								<div
 									className="progress-bar progress-bar-striped active"
 									role="progressbar"
