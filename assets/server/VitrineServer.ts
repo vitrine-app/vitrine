@@ -28,7 +28,7 @@ export class VitrineServer {
 	private gameLaunched: boolean;
 	private appQuit: boolean;
 
-	public constructor(private vitrineConfig?: any, private configFolderPath?: string) {
+	public constructor(private vitrineConfig?: any, private vitrineConfigFilePath?: string) {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
@@ -228,7 +228,7 @@ export class VitrineServer {
 				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
 			};
 		}
-		fs.outputJSON(path.resolve(this.configFolderPath, 'vitrine_config.json'), config).then(() => {
+		fs.outputJSON(this.vitrineConfigFilePath, config).then(() => {
 			this.vitrineConfig = config;
 		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);

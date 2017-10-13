@@ -10,6 +10,7 @@ export class VitrinePipeline {
 	private gamesFolderPath: string;
 	private configFolderPath: string;
 	private prodFolderPath: string;
+	private vitrineConfigFilePath: string;
 
 	public constructor() {
 		this.prod = (getEnvData().env) ? (true) : (false);
@@ -25,15 +26,15 @@ export class VitrinePipeline {
 			fs.ensureDirSync(this.configFolderPath);
 		}
 		fs.ensureDirSync(this.gamesFolderPath);
-		let vitrineConfigFilePath: string = path.resolve(this.configFolderPath, 'vitrine_config.json');
-		fs.ensureFileSync(vitrineConfigFilePath);
-		let vitrineConfig: any = fs.readJSONSync(vitrineConfigFilePath, {throws: false});
+		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, 'vitrine_config.json');
+		fs.ensureFileSync(this.vitrineConfigFilePath);
+		let vitrineConfig: any = fs.readJSONSync(this.vitrineConfigFilePath, {throws: false});
 
 		this.launchMainClient(vitrineConfig);
 	}
 
 	public launchMainClient(vitrineConfig: any) {
-		this.serverInstance = new VitrineServer(vitrineConfig, this.configFolderPath);
+		this.serverInstance = new VitrineServer(vitrineConfig, this.vitrineConfigFilePath);
 		this.serverInstance.registerEvents();
 		this.serverInstance.run(!this.prod);
 	}
