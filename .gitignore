@@ -7,4 +7,5 @@
 /games/*
 /dist
 /assets/sass/vitrine/_bootstrapDatepicker.scss
+/config/vitrine_config.json
 /github_token
