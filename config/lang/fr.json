@@ -56,5 +56,6 @@
   "steamConfig": "Paramètres de Steam :",
   "steamPath": "Dossier d'emplacement de Steam",
   "originConfig": "Paramètres d'Origin :",
-  "originGamesPath": "Dossier d'emplacement des jeux Origin"
+  "originGamesPath": "Dossier d'emplacement des jeux Origin",
+  "pathError": "Vous devez définir un dossier d'emplacement"
 }

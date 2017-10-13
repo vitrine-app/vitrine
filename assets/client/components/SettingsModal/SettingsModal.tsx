@@ -19,14 +19,17 @@ export class SettingsModal extends VitrineComponent {
 			steamEnabled: false,
 			originEnabled: false,
 			steamPath: '',
-			originPath: ''
+			originPath: '',
+			steamError: false,
+			originError: false
 		};
 	}
 
 	private steamIconClickHandler(checked: boolean) {
 		if ((checked && !this.state.steamEnabled) || (!checked && this.state.steamEnabled)) {
 			this.setState({
-				steamEnabled: !this.state.steamEnabled
+				steamEnabled: !this.state.steamEnabled,
+				steamError: false
 			});
 		}
 	}
@@ -34,7 +37,8 @@ export class SettingsModal extends VitrineComponent {
 	private originIconClickHandler(checked: boolean) {
 		if ((checked && !this.state.originEnabled) || (!checked && this.state.originEnabled)) {
 			this.setState({
-				originEnabled: !this.state.originEnabled
+				originEnabled: !this.state.originEnabled,
+				originError: false
 			});
 		}
 	}
@@ -68,11 +72,38 @@ export class SettingsModal extends VitrineComponent {
 		let form: any = {
 			lang: this.state.lang
 		};
-		if (this.state.steamEnabled)
-			form.steamPath = this.state.steamPath;
-		if (this.state.originEnabled)
-			form.steamPath = this.state.originPath;
-		console.log(form);
+		let canBeSent: boolean = true;
+		if (this.state.steamEnabled) {
+			if (this.state.steamPath) {
+				form.steamPath = this.state.steamPath;
+				this.setState({
+					steamError: false
+				});
+			}
+			else {
+				canBeSent = false;
+				this.setState({
+					steamError: true
+				});
+			}
+		}
+		if (this.state.originEnabled) {
+			if (this.state.originPath) {
+				form.originPath = this.state.originPath;
+				this.setState({
+					originError: false
+				});
+			}
+			else {
+				canBeSent = false;
+				this.setState({
+					originError: true
+				});
+			}
+		}
+		if (canBeSent) {
+			console.log(form);
+		}
 	}
 
 	public render(): JSX.Element {
@@ -103,7 +134,7 @@ export class SettingsModal extends VitrineComponent {
 										<div style={ {display: (this.state.steamEnabled) ? ('block') : ('none')} }>
 											<hr/>
 											<h3>{ localizer.f('steamConfig') }</h3>
-											<div className="form-group">
+											<div className={ 'form-group' + ((this.state.steamError) ? (' has-error') : ('')) }>
 												<label>{ localizer.f('steamPath') }</label>
 												<div className="input-group">
 													<input
@@ -123,12 +154,18 @@ export class SettingsModal extends VitrineComponent {
 														</button>
 													</span>
 												</div>
+												<span
+													className="help-block"
+													style={ {display: (this.state.steamError) ? ('inline') : ('none')} }
+												>
+													{ localizer.f('pathError') }
+												</span>
 											</div>
 										</div>
 										<div style={ {display: (this.state.originEnabled) ? ('block') : ('none')} }>
 											<hr/>
 											<h3>{ localizer.f('originConfig') }</h3>
-											<div className="form-group">
+											<div className={ 'form-group' + ((this.state.originError) ? (' has-error') : ('')) }>
 												<label>{ localizer.f('originGamesPath') }</label>
 												<div className="input-group">
 													<input
@@ -148,6 +185,12 @@ export class SettingsModal extends VitrineComponent {
 														</button>
 													</span>
 												</div>
+												<span
+													className="help-block"
+													style={ {display: (this.state.originError) ? ('inline') : ('none')} }
+												>
+													{ localizer.f('pathError') }
+												</span>
 											</div>
 										</div>
 									</div>

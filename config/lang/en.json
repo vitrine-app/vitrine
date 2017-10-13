@@ -56,5 +56,6 @@
   "steamConfig": "Steam settings:",
   "steamPath": "Steam path",
   "originConfig": "Origin settings:",
-  "originGamesPath": "Origin games path"
+  "originGamesPath": "Origin games path",
+  "pathError": "You need to specify a path"
 }
