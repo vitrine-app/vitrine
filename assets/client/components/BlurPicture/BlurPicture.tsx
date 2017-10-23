@@ -92,18 +92,18 @@ export class BlurPicture extends VitrineComponent {
 	public render(): JSX.Element {
 		return (
 			<div
-				className={ 'blur-picture-container ' + this.state.divClassName }
-				onMouseEnter={ this.mouseEnterHandler.bind(this) }
-				onMouseLeave={ this.mouseLeaveHandler.bind(this) }
-				onClick={ this.clickHandler.bind(this) }
-				style={ this.state.divStyle }
+				className={`blur-picture-container ${this.state.divClassName}`}
+				onMouseEnter={this.mouseEnterHandler.bind(this)}
+				onMouseLeave={this.mouseLeaveHandler.bind(this)}
+				onClick={this.clickHandler.bind(this)}
+				style={this.state.divStyle}
 			>
 				<div className="image" style={{ ...this.state.imageStyle }}/>
 				<i
-					className={'fa fa-' + this.props.faIcon + ' icon ' + this.state.iconClassName }
+					className={`fa fa-${this.props.faIcon} icon ${this.state.iconClassName}`}
 					style={{ ...this.state.iconStyle }}
 				/>
-				{ this.checkErrors() }
+				{this.checkErrors()}
 			</div>
 		);
 	}

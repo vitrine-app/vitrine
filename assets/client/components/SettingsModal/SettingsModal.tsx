@@ -6,7 +6,6 @@ import { GamesModule } from '../GamesModule/GamesModule';
 import { localizer } from '../../Localizer';
 import { openDirectory } from '../../helpers';
 
-import './SettingsModal.scss';
 import * as steamIcon from './steamIcon.png';
 import * as originIcon from './originIcon.png';
 
@@ -112,22 +111,22 @@ export class SettingsModal extends VitrineComponent {
 				id="settings-modal"
 				className="modal fade"
 				role="dialog"
-				data-keyboard={ (this.props.firstLaunch) ? (false) : (true) }
-				data-backdrop={ (this.props.firstLaunch) ? ('static') : (true) }
+				data-keyboard={(this.props.firstLaunch) ? (false) : (true)}
+				data-backdrop={(this.props.firstLaunch) ? ('static') : (true)}
 			>
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div
 							className="modal-header"
-							style={ {display: (!this.props.firstLaunch) ? ('block') : ('none')} }
+							style={{display: (!this.props.firstLaunch) ? ('block') : ('none')}}
 						>
-							{ localizer.f('settings') }
+							{localizer.f('settings')}
 						</div>
-						<div className="modal-body">
+						<div className="modal-body" style={styles.modalBody}>
 							<form id="settings-form">
-								<div style={ {display: (this.props.firstLaunch) ? ('block') : ('none')} }>
-									<h1>{ localizer.f('welcomeMessage') }</h1>
-									<p>{ localizer.f('wizardText') }</p>
+								<div style={{display: (this.props.firstLaunch) ? ('block') : ('none')}}>
+									<h1>{localizer.f('welcomeMessage')}</h1>
+									<p>{localizer.f('wizardText')}</p>
 								</div>
 								<ul className="nav nav-tabs">
 									<li className="active"><a data-toggle="tab" href="#options-pane-modules">Modules</a></li>
@@ -136,35 +135,35 @@ export class SettingsModal extends VitrineComponent {
 								<div className="tab-content">
 									<div id="options-pane-modules" className="tab-pane fade in active">
 										<GamesModule
-											clicked={ this.state.steamEnabled }
-											iconFile={ steamIcon }
-											iconAlt={ 'Steam' }
-											clickHandler={ this.steamIconClickHandler.bind(this) }
+											clicked={this.state.steamEnabled}
+											iconFile={steamIcon}
+											iconAlt={'Steam'}
+											clickHandler={this.steamIconClickHandler.bind(this)}
 										/>
 										<GamesModule
-											clicked={ this.state.originEnabled }
-											iconFile={ originIcon }
-											iconAlt={ 'Origin' }
-											clickHandler={ this.originIconClickHandler.bind(this) }
+											clicked={this.state.originEnabled}
+											iconFile={originIcon}
+											iconAlt={'Origin'}
+											clickHandler={this.originIconClickHandler.bind(this)}
 										/>
-										<div style={ {display: (this.state.steamEnabled) ? ('block') : ('none')} }>
+										<div style={{display: (this.state.steamEnabled) ? ('block') : ('none')}}>
 											<hr/>
-											<h3>{ localizer.f('steamConfig') }</h3>
-											<div className={ 'form-group' + ((this.state.steamError) ? (' has-error') : ('')) }>
-												<label>{ localizer.f('steamPath') }</label>
+											<h3>{localizer.f('steamConfig')}</h3>
+											<div className={`form-group ${((this.state.steamError) ? (' has-error') : (''))}`}>
+												<label>{localizer.f('steamPath')}</label>
 												<div className="input-group">
 													<input
 														className="form-control"
 														name="steam"
-														placeholder={ localizer.f('steamPath') }
-														value={ this.state.steamPath }
+														placeholder={localizer.f('steamPath')}
+														value={this.state.steamPath}
 														disabled
 													/>
 													<span className="input-group-btn">
 														<button
 															className="btn btn-default"
 															type="button"
-															onClick={ this.steamPathBtnClickHandler.bind(this) }
+															onClick={this.steamPathBtnClickHandler.bind(this)}
 														>
 															<i className="fa fa-folder-open-o"/>
 														</button>
@@ -172,30 +171,30 @@ export class SettingsModal extends VitrineComponent {
 												</div>
 												<span
 													className="help-block"
-													style={ {display: (this.state.steamError) ? ('inline') : ('none')} }
+													style={{display: (this.state.steamError) ? ('inline') : ('none')}}
 												>
-													{ localizer.f('pathError') }
+													{localizer.f('pathError')}
 												</span>
 											</div>
 										</div>
-										<div style={ {display: (this.state.originEnabled) ? ('block') : ('none')} }>
+										<div style={{display: (this.state.originEnabled) ? ('block') : ('none')}}>
 											<hr/>
-											<h3>{ localizer.f('originConfig') }</h3>
-											<div className={ 'form-group' + ((this.state.originError) ? (' has-error') : ('')) }>
-												<label>{ localizer.f('originGamesPath') }</label>
+											<h3>{localizer.f('originConfig')}</h3>
+											<div className={`form-group ${((this.state.originError) ? (' has-error') : (''))}`}>
+												<label>{localizer.f('originGamesPath')}</label>
 												<div className="input-group">
 													<input
 														className="form-control"
 														name="origin"
-														placeholder={ localizer.f('originGamesPath') }
-														value={ this.state.originPath }
+														placeholder={localizer.f('originGamesPath')}
+														value={this.state.originPath}
 														disabled
 													/>
 													<span className="input-group-btn">
 														<button
 															className="btn btn-default"
 															type="button"
-															onClick={ this.originPathBtnClickHandler.bind(this) }
+															onClick={this.originPathBtnClickHandler.bind(this)}
 														>
 															<i className="fa fa-folder-open-o"/>
 														</button>
@@ -203,28 +202,28 @@ export class SettingsModal extends VitrineComponent {
 												</div>
 												<span
 													className="help-block"
-													style={ {display: (this.state.originError) ? ('inline') : ('none')} }
+													style={{display: (this.state.originError) ? ('inline') : ('none')}}
 												>
-													{ localizer.f('pathError') }
+													{localizer.f('pathError')}
 												</span>
 											</div>
 										</div>
 									</div>
-									<div id="options-pane-lang" className="tab-pane fade lang-select">
+									<div id="options-pane-lang" className="tab-pane fade" style={styles.langSelect}>
 										<select
 											name="lang"
 											className="selectpicker"
-											value={ this.state.lang }
-											onChange={ this.langSelectChangeHandler.bind(this) }
+											value={this.state.lang}
+											onChange={this.langSelectChangeHandler.bind(this)}
 										>
-											{ Object.keys(this.state.langs).map((langName: string, index: number) =>
+											{Object.keys(this.state.langs).map((langName: string, index: number) =>
 												<option
-													value={ langName }
-													key={ index }
+													value={langName}
+													key={index}
 												>
-													{ this.state.langs[langName].language }
+													{this.state.langs[langName].language}
 												</option>
-											) }
+											)}
 										</select>
 									</div>
 								</div>
@@ -233,16 +232,16 @@ export class SettingsModal extends VitrineComponent {
 						<div className="modal-footer">
 							<button
 								className="btn btn-default"
-								style={ {display: (!this.props.firstLaunch) ? ('inline-block') : ('none')} }
+								style={{display: (!this.props.firstLaunch) ? ('inline-block') : ('none')}}
 								data-dismiss="modal"
 							>
-								{ localizer.f('cancel') }
+								{localizer.f('cancel')}
 							</button>
 							<button
 								className="btn btn-success"
-								onClick={ this.submitBtnClickHandler.bind(this) }
+								onClick={this.submitBtnClickHandler.bind(this)}
 							>
-								{ localizer.f('confirm') }
+								{localizer.f('confirm')}
 							</button>
 						</div>
 					</div>
@@ -251,3 +250,27 @@ export class SettingsModal extends VitrineComponent {
 		);
 	}
 }
+
+const styles: React.CSSProperties = {
+	modalBody: {
+		paddingTop: 15,
+		paddingBottom: 10,
+		paddingLeft: 40,
+		paddingRight: 40
+	},
+	langSelect: {
+		paddingTop: 20,
+		paddingBottom: 0,
+		paddingLeft: 0,
+		paddingRight: 0
+	},
+	navTabsLink: {
+		':hover': {
+			color: '#988F88',
+borderTop: 'none',
+borderLeft: 'none',
+borderRight: 'none',
+borderBottom: '#61574B'
+		}
+	}
+};

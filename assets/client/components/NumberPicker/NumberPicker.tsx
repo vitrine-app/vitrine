@@ -1,8 +1,7 @@
 import * as React from 'react';
+import { css, StyleSheet } from 'aphrodite';
 
 import { VitrineComponent } from '../VitrineComponent';
-
-import './NumberPicker.scss';
 
 export class NumberPicker extends VitrineComponent {
 	public constructor(props: any) {
@@ -75,30 +74,65 @@ export class NumberPicker extends VitrineComponent {
 			<div className="input-group spinner">
 				<input
 					type="text"
-					className="form-control"
-					name={ this.props.name }
-					placeholder={ this.props.placeholder }
-					value={ this.state.value }
-					onChange={ this.inputChangeHandler.bind(this) }
+					className={`form-control ${css(styles.spinnerInput)}`}
+					name={this.props.name}
+					placeholder={this.props.placeholder}
+					value={this.state.value}
+					onChange={this.inputChangeHandler.bind(this)}
 				/>
-				<div className="input-group-btn-vertical">
+				<div className={css(styles.verticalBtnDiv)}>
 					<button
-						className="btn btn-default"
+						className={`btn btn-default ${css(styles.verticalBtn)} ${css(styles.firstVerticalBtn)}`}
 						type="button"
-						onClick={ this.increaseCounterHandler.bind(this) }
+						onClick={this.increaseCounterHandler.bind(this)}
 					>
-						<i className="fa fa-caret-up"/>
+						<i className={`fa fa-caret-up ${css(styles.verticalBtnIcon)}`}/>
 					</button>
 					<button
-						className="btn btn-default"
+						className={`btn btn-default ${css(styles.verticalBtn)} ${css(styles.lastVerticalBtn)}`}
 						type="button"
-						onClick={ this.decreaseCounterHandler.bind(this) }
+						onClick={this.decreaseCounterHandler.bind(this)}
 					>
-						<i className="fa fa-caret-down"/>
+						<i className={`fa fa-caret-down ${css(styles.verticalBtnIcon)}`}/>
 					</button>
 				</div>
-				{ this.checkErrors() }
+				{this.checkErrors()}
 			</div>
 		);
 	}
 }
+
+const styles: React.CSSProperties = StyleSheet.create({
+	spinnerInput: {
+		textAlign: 'right'
+	},
+	verticalBtnDiv: {
+		position: 'relative',
+		whiteSpace: 'nowrap',
+		width: 1 + '%',
+		verticalAlign: 'middle',
+		display: 'table-cell'
+	},
+	verticalBtn: {
+		display: 'block',
+		float: 'none',
+		width: 100 + '%',
+		maxWidth: 100 + '%',
+		padding: 8,
+		marginLeft: -1,
+		position: 'relative',
+		borderRadius: 0
+	},
+	firstVerticalBtn: {
+		borderTopRightRadius: 4
+	},
+	lastVerticalBtn: {
+		marginTop: 2,
+		borderBottomRightRadius: 4
+	},
+	verticalBtnIcon: {
+		position: 'absolute',
+		top: 0,
+		left: 4
+	}
+});

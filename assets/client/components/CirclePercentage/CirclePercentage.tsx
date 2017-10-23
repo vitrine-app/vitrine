@@ -15,13 +15,13 @@ export class CirclePercentage extends VitrineComponent {
 				<path
 					className="circular-percentage-circle"
 					d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-					strokeDasharray={ this.props.percentage + ', 100' }
+					strokeDasharray={`${this.props.percentage}, 100`}
 				/>
 				<text
 					x="10"
 					y="22.35"
 					className="percentage-text">
-					{ this.props.percentage }
+					{this.props.percentage}
 				</text>
 			</svg>
 		);

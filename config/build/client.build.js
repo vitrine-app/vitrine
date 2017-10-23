@@ -32,7 +32,7 @@ module.exports = {
 				]
 			},
 			{
-				test: /\.(jpe?g|png|gif)(.*?)?$/,
+				test: /\.(jpe?g|png|gif|ico)(.*?)?$/,
 				loader: 'base64-inline-loader?name=[name].[ext]'
 			},
 			{

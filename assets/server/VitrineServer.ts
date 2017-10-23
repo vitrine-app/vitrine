@@ -238,7 +238,9 @@ export class VitrineServer {
 				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
 			};
 		}
-		fs.outputJSON(this.vitrineConfigFilePath, config).then(() => {
+		fs.outputJSON(this.vitrineConfigFilePath, config, {
+			spaces: 2
+		}).then(() => {
 			this.vitrineConfig = config;
 			event.sender.send('server.settings-updated', this.vitrineConfig);
 		}).catch((error: Error) => {
@@ -374,7 +376,6 @@ export class VitrineServer {
 
 				if (!editing && game.source === GameSource.STEAM) {
 					getSteamPlayTimeWrapper(this.vitrineConfig.steam, game).then((timedGame: PlayableGame) => {
-						console.log(timedGame);
 						this.handleRegisteredGame(event, timedGame, configFilePath, editing);
 					}).catch((error: Error) => {
 						return VitrineServer.throwServerError(event, error);
@@ -392,18 +393,21 @@ export class VitrineServer {
 	}
 
 	private handleRegisteredGame(event: any, game: PlayableGame, configFilePath: string, editing: boolean) {
-		fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
-
-		if (!editing && game.source !== GameSource.LOCAL)
+		fs.outputJSON(configFilePath, game , {
+			spaces: 2
+		}).then(() => {if (!editing && game.source !== GameSource.LOCAL)
 			this.findPotentialGames(event);
-		if (!editing) {
-			event.sender.send('server.add-playable-game', game);
-			this.playableGames.addGame(game);
-		}
-		else {
-			this.playableGames.editGame(game, () => {
-				event.sender.send('server.edit-playable-game', game);
-			});
-		}
+			if (!editing) {
+				event.sender.send('server.add-playable-game', game);
+				this.playableGames.addGame(game);
+			}
+			else {
+				this.playableGames.editGame(game, () => {
+					event.sender.send('server.edit-playable-game', game);
+				});
+			}
+		}).catch((error: Error) => {
+			return VitrineServer.throwServerError(event, error);
+		});
 	}
 }

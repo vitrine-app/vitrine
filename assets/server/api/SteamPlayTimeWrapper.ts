@@ -1,4 +1,5 @@
 import * as SteamWeb from 'steam-web';
+
 import { PlayableGame } from '../../models/PlayableGame';
 
 class SteamPlayTimeWrapper {

@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { ipcRenderer, remote } from 'electron';
+import { ipcRenderer, remote} from 'electron';
+import { StyleSheet, css} from 'aphrodite';
 import * as moment from 'moment';
 
-import { PotentialGame, GameSource } from '../../../models/PotentialGame';
+import {PotentialGame, GameSource} from '../../../models/PotentialGame';
 
 import { VitrineComponent } from '../VitrineComponent';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
@@ -11,8 +12,6 @@ import { IgdbResearchModal } from '../IgdbResearchModal/IgdbResearchModal';
 import { ImagesCollection } from '../ImagesCollection/ImagesCollection';
 import { localizer } from '../../Localizer';
 import { openExecutableDialog, openImageDialog } from '../../helpers';
-
-import './AddGameModal.scss';
 
 export class AddGameModal extends VitrineComponent {
 	private emptyState: any;
@@ -104,13 +103,13 @@ export class AddGameModal extends VitrineComponent {
 	}
 
 	private addGameBtnClickHandler() {
-		let gameInfos: any = { ...this.state };
+		let gameInfos: any = {...this.state};
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.isEditing;
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http'))
-			gameInfos.cover = 'file://' + gameInfos.cover;
+			gameInfos.cover = `file://${gameInfos.cover}`;
 		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http'))
-			gameInfos.backgroundScreen = 'file://' + gameInfos.backgroundScreen;
+			gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
 
 		if (this.state.isEditing)
 			ipcRenderer.send('client.edit-game',this.props.potentialGameToAdd.uuid, gameInfos);
@@ -157,127 +156,127 @@ export class AddGameModal extends VitrineComponent {
 					<div className="modal-dialog modal-lg">
 						<div className="modal-content">
 							<div className="modal-header">
-								<button type="button" className="close" data-dismiss="modal">&times;</button>
+								<button type="button" className="close" data-dismiss="modal"><i className="fa fa-times"/></button>
 								<h4 className="modal-title">
-									{ (this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel')) }
+									{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}
 								</h4>
 							</div>
-							<div className="modal-body">
+							<div className={`modal-body ${css(styles.modalBody)}`}>
 								<div className="row">
 									<div className="col-md-2">
 										<BlurPicture
-											faIcon={ 'folder-open-o' }
-											fontSize={ 55 }
-											background={ this.state.cover }
-											clickHandler={ this.gameCoverClickHandler.bind(this) }
+											faIcon={'folder-open-o'}
+											fontSize={55}
+											background={this.state.cover}
+											clickHandler={this.gameCoverClickHandler.bind(this)}
 										/>
 									</div>
 									<div className="col-md-7 col-md-offset-1">
-										<form id="add-game-form">
+										<form className={css(styles.addGameForm)}>
 											<div className="form-group">
-												<label>{ localizer.f('gameName') }</label>
+												<label>{localizer.f('gameName')}</label>
 												<input
 													className="form-control"
 													name="name"
-													placeholder={ localizer.f('gameName') }
-													value={ this.state.name }
-													onChange={ this.inputChangeHandler.bind(this) }
+													placeholder={localizer.f('gameName')}
+													value={this.state.name}
+													onChange={this.inputChangeHandler.bind(this)}
 												/>
 											</div>
 											<div className="row">
 												<div className="form-group col-md-8">
-													<label>{ localizer.f('gamesSeries') }</label>
+													<label>{localizer.f('gamesSeries')}</label>
 													<input
 														className="form-control"
 														name="series"
-														placeholder={ localizer.f('gamesSeries') }
-														value={ this.state.series }
-														onChange={ this.inputChangeHandler.bind(this) }
+														placeholder={localizer.f('gamesSeries')}
+														value={this.state.series}
+														onChange={this.inputChangeHandler.bind(this)}
 													/>
 												</div>
 												<div className="form-group col-md-4">
-													<label>{ localizer.f('releaseDate') }</label>
+													<label>{localizer.f('releaseDate')}</label>
 													<input
 														className="form-control"
 														name="date"
-														placeholder={ localizer.f('releaseDate') }
-														value={ this.state.date }
-														onChange={ this.inputChangeHandler.bind(this) }
+														placeholder={localizer.f('releaseDate')}
+														value={this.state.date}
+														onChange={this.inputChangeHandler.bind(this)}
 													/>
 												</div>
 											</div>
 											<div className="row">
 												<div className="form-group col-md-6">
-													<label>{ localizer.f('developer') }</label>
+													<label>{localizer.f('developer')}</label>
 													<input
 														className="form-control"
 														name="developer"
-														placeholder={ localizer.f('developer') }
-														value={ this.state.developer }
-														onChange={ this.inputChangeHandler.bind(this) }
+														placeholder={localizer.f('developer')}
+														value={this.state.developer}
+														onChange={this.inputChangeHandler.bind(this)}
 													/>
 												</div>
 												<div className="form-group col-md-6">
-													<label>{ localizer.f('publisher') }</label>
+													<label>{localizer.f('publisher')}</label>
 													<input
 														className="form-control"
 														name="publisher"
-														placeholder={ localizer.f('publisher') }
-														value={ this.state.publisher }
-														onChange={ this.inputChangeHandler.bind(this) }
+														placeholder={localizer.f('publisher')}
+														value={this.state.publisher}
+														onChange={this.inputChangeHandler.bind(this)}
 													/>
 												</div>
 											</div>
 											<div className="row">
 												<div className="form-group col-md-10">
-													<label>{ localizer.f('genres') }</label>
+													<label>{localizer.f('genres')}</label>
 													<input
 														className="form-control"
 														name="genres"
-														placeholder={ localizer.f('genres') }
-														value={ this.state.genres }
-														onChange={ this.inputChangeHandler.bind(this) }
+														placeholder={localizer.f('genres')}
+														value={this.state.genres}
+														onChange={this.inputChangeHandler.bind(this)}
 													/>
 												</div>
 												<div className="form-group col-md-2">
-													<label>{ localizer.f('rating') }</label>
+													<label>{localizer.f('rating')}</label>
 													<NumberPicker
-														min={ 1 }
-														max={ 100 }
+														min={1}
+														max={100}
 														name="rating"
-														placeholder={ localizer.f('rating') }
-														value={ this.state.rating }
-														onChange={ this.ratingChangeHandler.bind(this) }
+														placeholder={localizer.f('rating')}
+														value={this.state.rating}
+														onChange={this.ratingChangeHandler.bind(this)}
 													/>
 												</div>
 											</div>
 											<div className="form-group">
-												<label>{ localizer.f('summary') }</label>
+												<label>{localizer.f('summary')}</label>
 												<textarea
-													className="form-control"
+													className={`form-control ${css(styles.formTextArea)}`}
 													name="summary"
-													placeholder={ localizer.f('summary') }
-													value={ this.state.summary }
-													onChange={ this.inputChangeHandler.bind(this) }
+													placeholder={localizer.f('summary')}
+													value={this.state.summary}
+													onChange={this.inputChangeHandler.bind(this)}
 												/>
 											</div>
-											<hr/>
+											<hr className={css(styles.formHr)}/>
 											<div className="form-group">
-												<label>{ localizer.f('executable') }</label>
+												<label>{localizer.f('executable')}</label>
 												<div className="input-group">
 													<input
 														className="form-control"
 														name="executable"
-														placeholder={ localizer.f('executable') }
-														value={ this.state.executable }
-														onChange={ this.inputChangeHandler.bind(this) }
+														placeholder={localizer.f('executable')}
+														value={this.state.executable}
+														onChange={this.inputChangeHandler.bind(this)}
 														disabled
 													/>
 													<span className="input-group-btn">
 														<button
 															className="btn btn-default"
 															type="button"
-															onClick={ this.executableBtnClickHandler.bind(this) }
+															onClick={this.executableBtnClickHandler.bind(this)}
 														>
 															<i className="fa fa-folder-open-o"/>
 														</button>
@@ -285,39 +284,39 @@ export class AddGameModal extends VitrineComponent {
 												</div>
 											</div>
 											<div className="form-group">
-												<label>{ localizer.f('lineArguments') }</label>
+												<label>{localizer.f('lineArguments')}</label>
 												<input
 													className="form-control"
 													name="arguments"
-													placeholder={ localizer.f('lineArguments') }
-													value={ this.state.arguments }
-													onChange={ this.inputChangeHandler.bind(this) }
+													placeholder={localizer.f('lineArguments')}
+													value={this.state.arguments}
+													onChange={this.inputChangeHandler.bind(this)}
 												/>
 											</div>
-											<hr/>
+											<hr className={css(styles.formHr)}/>
 											<div className="form-group">
-												<label>{ localizer.f('backgroundImage') }</label>
+												<label>{localizer.f('backgroundImage')}</label>
 												<ImagesCollection
-													images={ this.state.potentialBackgrounds }
-													onChange={ this.changeBackgroundHandler.bind(this) }
+													images={this.state.potentialBackgrounds}
+													onChange={this.changeBackgroundHandler.bind(this)}
 												/>
 											</div>
 											<input
 												name="cover"
-												value={ this.state.cover }
-												onChange={ this.inputChangeHandler.bind(this) }
+												value={this.state.cover}
+												onChange={this.inputChangeHandler.bind(this)}
 												hidden
 											/>
 											<input
 												name="background"
-												value={ this.state.backgroundScreen }
-												onChange={ this.inputChangeHandler.bind(this) }
+												value={this.state.backgroundScreen}
+												onChange={this.inputChangeHandler.bind(this)}
 												hidden
 											/>
 											<input
 												name="source"
-												value={ this.state.source }
-												onChange={ this.inputChangeHandler.bind(this) }
+												value={this.state.source}
+												onChange={this.inputChangeHandler.bind(this)}
 												hidden
 											/>
 										</form>
@@ -329,24 +328,38 @@ export class AddGameModal extends VitrineComponent {
 									id="igdb-search-btn"
 									className="btn btn-primary"
 									disabled={!this.state.name}
-									onClick={ this.searchIgdbBtnClickHandler.bind(this) }
+									onClick={this.searchIgdbBtnClickHandler.bind(this)}
 								>
-									{ localizer.f('fillWithIgdb') }
+									{localizer.f('fillWithIgdb')}
 								</button>
 								<button
 									className="btn btn-primary"
 									disabled={!this.state.name || !this.state.executable}
 									type="button"
-									onClick={ this.addGameBtnClickHandler.bind(this) }
+									onClick={this.addGameBtnClickHandler.bind(this)}
 								>
-									{ (this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame')) }
+									{(this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
 								</button>
 							</div>
 						</div>
 					</div>
 				</div>
-				{ this.checkErrors() }
+				{this.checkErrors()}
 			</div>
 		);
 	}
 }
+
+const styles: React.CSSProperties = StyleSheet.create({
+	modalBody: {
+		maxHeight: 82 + 'vh',
+		overflowY: 'auto'
+	},
+	formHr: {
+		borderTop: '1px solid rgba(238, 238, 238, 0.15)'
+	},
+	formTextArea: {
+		resize: 'none',
+		height: 7 + 'em'
+	}
+});

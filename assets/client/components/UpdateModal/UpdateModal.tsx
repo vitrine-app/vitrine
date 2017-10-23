@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { ipcRenderer, shell } from 'electron';
+import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from '../VitrineComponent';
 import { localizer } from '../../Localizer';
-
-import './UpdateModal.scss'
 
 export class UpdateModal extends VitrineComponent {
 	public constructor(props: any) {
@@ -27,10 +26,10 @@ export class UpdateModal extends VitrineComponent {
 
 	public render(): JSX.Element {
 		return (
-			<div id="update-modal" className="modal fade" role="dialog">
+			<div id="update-modal" className={`modal fade ${css(styles.updateModal)}`} role="dialog">
 				<div className="modal-dialog">
 					<div className="modal-content">
-						<div className="modal-body">
+						<div className={`modal-body ${css(styles.modalBody)}`}>
 							<p id="update-app-disclaimer">
 								{ localizer.f('updateTextFirst') } (<strong>{ this.props.releaseVersion }</strong>)
 								<br/>
@@ -61,3 +60,13 @@ export class UpdateModal extends VitrineComponent {
 		);
 	}
 }
+
+const styles: React.CSSProperties = StyleSheet.create({
+	updateModal: {
+		top: 27 + 'vh',
+		left: 18 + 'vh'
+	},
+	modalBody: {
+		paddingTop: 24
+	}
+});

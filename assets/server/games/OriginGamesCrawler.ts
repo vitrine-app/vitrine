@@ -8,7 +8,7 @@ import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
-import { getEnvFolder, getGamesFolder, uuidV5 } from '../../models/env';
+import { getGamesFolder, uuidV5 } from '../../models/env';
 
 class OriginGamesCrawler {
 	private regDetails: any[];
@@ -27,7 +27,7 @@ class OriginGamesCrawler {
 		this.callback = callback;
 
 		let xmlPath: string = path.resolve(this.originConfig.configFile.replace('%appdata%', process.env.APPDATA));
-		parseXmlString(fs.readFileSync(xmlPath).toString(), (error, result: any) => {
+		parseXmlString(fs.readFileSync(xmlPath).toString(), (error: Error, result: any) => {
 			if (error)
 				this.callback(error, null);
 
@@ -57,7 +57,7 @@ class OriginGamesCrawler {
 					});
 					counter++;
 					if (counter === items.length)
-						glob(this.gamesFolder + '*', this.parseFolder.bind(this));
+						glob(`${this.gamesFolder}*`, this.parseFolder.bind(this));
 				});
 			});
 		});
@@ -139,7 +139,7 @@ class OriginGamesCrawler {
 
 export function getOriginCrawler(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new OriginGamesCrawler(originConfig, playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
+		new OriginGamesCrawler(originConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)
 				reject(error);
 			else

@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from '../VitrineComponent';
 import { localizer } from '../../Localizer';
 import { openImageDialog } from '../../helpers';
 
-import './ImagesCollection.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../../sass/bootstrap.variables.scss';
 
 export class ImagesCollection extends VitrineComponent {
 	public constructor(props: any) {
@@ -61,27 +62,47 @@ export class ImagesCollection extends VitrineComponent {
 
 	public render(): JSX.Element {
 		return (
-			<div className="images-collection">
+			<div>
 				<button
 					className="btn btn-primary"
 					type="button"
-					onClick={ this.addImageBtnClick.bind(this) }
+					onClick={this.addImageBtnClick.bind(this)}
 				>
-					<i className="fa fa-plus"/> { localizer.f('addCustomBgImage') }
+					<i className="fa fa-plus"/> {localizer.f('addCustomBgImage')}
 				</button>
-				<div className="images-container">
-					{ this.state.images.map((image: string, index: number) =>
+				<div className={css(styles.imagesContainer)}>
+					{this.state.images.map((image: string, index: number) =>
 						<img
-							key={ index }
-							src={ image }
-							className={ (this.state.selectedImage === image) ? ('selected-image') : ('') }
-							onClick={ this.imageClickHandler.bind(this, image) }
+							key={index}
+							src={image}
+							className={
+								css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))
+							}
+							onClick={this.imageClickHandler.bind(this, image)}
 						/>
-					) }
+					)}
 				</div>
-				{ this.checkErrors() }
+				{this.checkErrors()}
 			</div>
 		);
 	}
 }
 
+const styles: React.CSSProperties = StyleSheet.create({
+	imagesContainer: {
+		overflowX: 'auto',
+		overflowY: 'hidden',
+		whiteSpace: 'nowrap'
+	},
+	image: {
+		width: 400,
+		height: 270,
+		margin: 5,
+		borderRadius: bootstrapVariables.borderRadiusBase,
+		boxShadow: '0 0 6px rgba(0, 0, 0, 0.46)',
+		filter: 'brightness(65%)'
+	},
+	selectedImage: {
+		filter: 'brightness(115%)'
+	}
+});

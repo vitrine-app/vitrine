@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
+import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from '../VitrineComponent';
 import { TaskBar } from '../TaskBar/TaskBar';
@@ -15,7 +16,6 @@ import { UpdateModal } from '../UpdateModal/UpdateModal';
 import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { launchGame } from '../../helpers';
 
-import './Vitrine.scss';
 
 export class Vitrine extends VitrineComponent {
 	public constructor(props: any) {
@@ -99,7 +99,7 @@ export class Vitrine extends VitrineComponent {
 		currentPlayableGames.removeGame(gameId, (error, game: PlayableGame, index: number) => {
 			if (error)
 				return this.throwError(error);
-			let currentSelectedGame = this.state.selectedGame;
+			let currentSelectedGame: PlayableGame = this.state.selectedGame;
 			if (currentPlayableGames.games.length) {
 				if (index)
 					currentSelectedGame = currentPlayableGames.games[index - 1];
@@ -243,41 +243,53 @@ export class Vitrine extends VitrineComponent {
 
 	public render(): JSX.Element {
 		return (
-			<div className="container-fluid full-height vitrine-app">
+			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
 				<TaskBar
-					potentialGames={ this.state.potentialGames }
-					updateProgress={ this.state.updateProgress }
+					potentialGames={this.state.potentialGames}
+					updateProgress={this.state.updateProgress}
 				/>
 				<SideBar
-					playableGames={ this.state.playableGames }
-					gameClickHandler={ this.sideBarGameClickHandler.bind(this) }
-					selectedGame={ this.state.selectedGame }
+					playableGames={this.state.playableGames}
+					gameClickHandler={this.sideBarGameClickHandler.bind(this)}
+					selectedGame={this.state.selectedGame}
 				/>
 				<GameContainer
-					selectedGame={ this.state.selectedGame }
+					selectedGame={this.state.selectedGame}
 				/>
 				<AddGameModal
-					potentialGameToAdd={ this.state.potentialGameToAdd }
-					isEditing={ this.state.gameWillBeEdited }
+					potentialGameToAdd={this.state.potentialGameToAdd}
+					isEditing={this.state.gameWillBeEdited}
 				/>
 				<AddPotentialGamesModal
-					potentialGames={ this.state.potentialGames }
-					potentialGameUpdateCallback={ this.potentialGameToAddUpdateHandler.bind(this) }
+					potentialGames={this.state.potentialGames}
+					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
 				/>
 				<UpdateModal
-					releaseVersion={ this.state.releaseVersion }
+					releaseVersion={this.state.releaseVersion}
 				/>
 				<SettingsModal
-					settings={ this.state.settings }
-					firstLaunch={ this.state.firstLaunch }
+					settings={this.state.settings}
+					firstLaunch={this.state.firstLaunch}
 				/>
 				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={ Vitrine.launchGameContextClickHandler.bind(this) }>Play</MenuItem>
-					<MenuItem onClick={ this.editGameContextClickHandler.bind(this) }>Edit</MenuItem>
-					<MenuItem onClick={ Vitrine.deleteGameContextClickHandler.bind(this) }>Delete</MenuItem>
+					<MenuItem onClick={Vitrine.launchGameContextClickHandler.bind(this)}>Play</MenuItem>
+					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>Edit</MenuItem>
+					<MenuItem onClick={Vitrine.deleteGameContextClickHandler.bind(this)}>Delete</MenuItem>
 				</ContextMenu>
-				{ this.checkErrors() }
+				{this.checkErrors()}
 			</div>
 		);
 	}
 }
+
+const styles: React.CSSProperties = StyleSheet.create({
+	vitrineApp: {
+		paddingTop: 29,
+		paddingBottom: 0,
+		paddingLeft: 0,
+		paddingRight: 0,
+		height: 100 + '%',
+		userSelect: 'none',
+		overflow: 'hidden'
+	}
+});

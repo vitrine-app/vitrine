@@ -18,7 +18,7 @@ export class App extends React.Component {
 
 		this.initLanguages();
 		$(document).on('show.bs.modal', '.modal', function() {
-			let zIndex = 1040 + (10 * $('.modal:visible').length);
+			let zIndex: number = 1040 + (10 * $('.modal:visible').length);
 			$(this).css('z-index', zIndex);
 			setTimeout(() => {
 				$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
@@ -33,7 +33,7 @@ export class App extends React.Component {
 		let configLang: string = (this.config && this.config.lang) ? (this.config.lang) : ('');
 		let systemLang: string = remote.app.getLocale();
 
-		let langFilesPaths: string[] = glob.sync(langFilesFolder + '/*');
+		let langFilesPaths: string[] = glob.sync(`${langFilesFolder}/*`);
 		let counter: number = 0;
 		langFilesPaths.forEach((langFilePath: string) => {
 			let langName: string = path.basename(langFilePath).slice(0, -5);

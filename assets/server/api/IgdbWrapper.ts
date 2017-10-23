@@ -48,7 +48,7 @@ class IgdbWrapper {
 			let counter: number = 0;
 			response.body.forEach((game: any) => {
 				if (game.cover)
-					game.cover = 'https:' + game.cover.url.replace('t_thumb', 't_cover_small_2x');
+					game.cover = `https:${game.cover.url.replace('t_thumb', 't_cover_small_2x')}`;
 				else // TODO: Change default image
 					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
 				counter++;
@@ -62,7 +62,7 @@ class IgdbWrapper {
 
 	private basicFormatting() {
 		if (this.game.total_rating) {
-			let rating = this.game.total_rating;
+			let rating: number = this.game.total_rating;
 			this.game.rating = Math.round(rating);
 			delete this.game.total_rating;
 		}
@@ -71,12 +71,12 @@ class IgdbWrapper {
 			delete this.game.first_release_date;
 		}
 		if (this.game.cover)
-			this.game.cover = 'https:' + this.game.cover.url.replace('t_thumb', 't_cover_big_2x');
+			this.game.cover = `https:${this.game.cover.url.replace('t_thumb', 't_cover_big_2x')}`;
 		else // TODO: Change default image
 			this.game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
 		if (this.game.screenshots) {
 			this.game.screenshots.forEach((element, key) => {
-				this.game.screenshots[key] = 'https:' + element.url.replace('t_thumb', 't_screenshot_med');
+				this.game.screenshots[key] = `https:${element.url.replace('t_thumb', 't_screenshot_med')}`;
 			});
 		}
 		else
@@ -88,7 +88,7 @@ class IgdbWrapper {
 			callback({name: ''});
 			return;
 		}
-		let ids = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
+		let ids: number | number[] = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
 
 		this.client.companies({
 			ids: ids
@@ -114,7 +114,7 @@ class IgdbWrapper {
 	}
 
 	private findGenreById(id: number, callback: Function) {
-		let ids = (Array.isArray(id)) ? (id) : ([id]);
+		let ids: number |number[] = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.genres({
 			ids: ids
@@ -147,7 +147,7 @@ class IgdbWrapper {
 	}
 
 	private addGenresCallback(genres: any) {
-		let genresArray = [];
+		let genresArray: any[] = [];
 		genres.forEach((genre) => {
 			genresArray.push(genre.name);
 		});

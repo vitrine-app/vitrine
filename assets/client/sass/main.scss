@@ -19,6 +19,9 @@
 		-webkit-box-shadow: none;
 	}
 }
+.btn:focus, .btn:active:focus {
+	outline: none;
+}
 
 /* Font Awesome */
 $fa-font-path: '~font-awesome/fonts';
@@ -33,3 +36,25 @@ $context-menu-icon-font-path: '~jquery-contextmenu/dist/font/';
 
 /* React context menu */
 @import 'contextMenus';
+
+/* Specific */
+body {
+	overflow-y: hidden;
+}
+
+.full-height {
+	height: 100%;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 30px;
+	background: rgba(0, 0, 0, 0.21);
+}
