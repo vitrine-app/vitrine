@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { remote, ipcRenderer } from 'electron'
+import { remote, ipcRenderer } from 'electron';
+import { StyleSheet, css } from 'aphrodite';
 
 import { localizer } from '../../Localizer';
-
-import './ErrorWrapper.scss';
 
 export class ErrorsWrapper extends React.Component<any, any> {
 	constructor(props: any) {
@@ -34,25 +33,25 @@ export class ErrorsWrapper extends React.Component<any, any> {
 				<div id="error-modal" className="modal fade show" role="dialog">
 					<div className="modal-dialog">
 						<div className="modal-content">
-							<span className="error-icon">:(</span>
+							<span className={css(styles.errorIcon)}>:(</span>
 							<div className="modal-body">
-								<h4>{ localizer.f('crash') }</h4>
-								<hr/>
-								<p>{ this.state.error.message }</p>
-								<pre>{ this.state.error.stack }</pre>
+								<h4>{localizer.f('crash')}</h4>
+								<hr className={css(styles.hr)}/>
+								<p className={css(styles.errorMessage)}>{this.state.error.message}</p>
+								<pre className={css(styles.errorStack)}>{this.state.error.stack}</pre>
 							</div>
 							<div className="modal-footer">
 								<button
-									onClick={ ErrorsWrapper.quitApplication }
+									onClick={ErrorsWrapper.quitApplication}
 									className="btn btn-danger"
 								>
-									{ localizer.f('quit') }
+									{localizer.f('quit')}
 								</button>
 								<button
-									onClick={ ErrorsWrapper.relaunchApplication }
+									onClick={ErrorsWrapper.relaunchApplication}
 									className="btn btn-danger"
 								>
-									{ localizer.f('relaunch') }
+									{localizer.f('relaunch')}
 								</button>
 							</div>
 						</div>
@@ -63,3 +62,30 @@ export class ErrorsWrapper extends React.Component<any, any> {
 			return this.props.children;
 	}
 }
+
+const styles: React.CSSProperties = StyleSheet.create({
+	modalContent: {
+		backgroundColor: '#332929'
+	},
+	errorIcon: {
+		fontSize: 205,
+		position: 'absolute',
+		color: 'rgba(255, 50, 50, 0.12)',
+		top: -50,
+		right: 23
+	},
+	errorMessage: {
+		fontSize: 23,
+		marginTop: 15
+	},
+	errorStack: {
+		color: '#BDB3B3',
+		backgroundColor: '#272020',
+		border: '1px solid #674242'
+	},
+	hr: {
+		marginTop: 14,
+		marginBottom: 14,
+		borderTop: '1px solid rgba(179, 144, 144, 0.39)'
+	}
+});

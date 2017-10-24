@@ -81,15 +81,6 @@ export function urlify(imgPath: string): string {
 	return (imgPath) ? ('url(' + imgPath.replace(/\\/g, '\\\\') + ')') : ('');
 }
 
-export function beforeCss(selector: string, props: object) {
-	$('head style#before-styling').remove();
-	let rawStyling: string = '';
-	Object.keys(props).forEach((key) => {
-		rawStyling += key + ': ' + props[key] + ';';
-	});
-	$('head').append('<style id="before-styling">' + selector + ':before{' + rawStyling + '}</style>');
-}
-
 export function launchGame(gameId: string) {
 	ipcRenderer.send('client.launch-game', gameId);
 }

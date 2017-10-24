@@ -3,7 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from '../VitrineComponent';
 
-import * as vitrineIcon from './vitrine.ico';
+import * as vitrineIcon from '../../images/vitrine.ico';
 
 export class TitleBar extends VitrineComponent {
 	render() {

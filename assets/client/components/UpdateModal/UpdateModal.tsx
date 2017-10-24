@@ -56,6 +56,7 @@ export class UpdateModal extends VitrineComponent {
 						</div>
 					</div>
 				</div>
+				{this.checkErrors()}
 			</div>
 		);
 	}

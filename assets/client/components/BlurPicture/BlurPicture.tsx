@@ -1,9 +1,8 @@
 import * as React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from '../VitrineComponent';
 import { urlify } from '../../helpers';
-
-import './BlurPicture.scss';
 
 export class BlurPicture extends VitrineComponent {
 	private pulseDuration: number;
@@ -92,15 +91,15 @@ export class BlurPicture extends VitrineComponent {
 	public render(): JSX.Element {
 		return (
 			<div
-				className={`blur-picture-container ${this.state.divClassName}`}
+				className={`${css(styles.container)} ${this.state.divClassName}`}
 				onMouseEnter={this.mouseEnterHandler.bind(this)}
 				onMouseLeave={this.mouseLeaveHandler.bind(this)}
 				onClick={this.clickHandler.bind(this)}
 				style={this.state.divStyle}
 			>
-				<div className="image" style={{ ...this.state.imageStyle }}/>
+				<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
 				<i
-					className={`fa fa-${this.props.faIcon} icon ${this.state.iconClassName}`}
+					className={`fa fa-${this.props.faIcon} ${css(styles.icon)} ${this.state.iconClassName}`}
 					style={{ ...this.state.iconStyle }}
 				/>
 				{this.checkErrors()}
@@ -108,3 +107,28 @@ export class BlurPicture extends VitrineComponent {
 		);
 	}
 }
+
+const styles: React.CSSProperties = StyleSheet.create({
+	container: {
+		overflow: 'hidden',
+		position: 'relative',
+		left: 40,
+		color: '#F1F1F1',
+		textShadow: '0 0 10px rgba(8, 8, 8, 0.17)',
+		boxShadow: '0 0 10px rgba(0, 0, 0, 0.55)'
+	},
+	picture: {
+		width: 100 + '%',
+		height: 100 + '%',
+		backgroundRepeat: 'no-repeat',
+		backgroundSize: '100% 100%',
+		transform: 'scale(1.02)',
+		transition: '75ms filter linear'
+	},
+	icon: {
+		position: 'absolute',
+		opacity: 0.6,
+		left: 1.268 + 'em',
+		top: 1.74 + 'em'
+	}
+});

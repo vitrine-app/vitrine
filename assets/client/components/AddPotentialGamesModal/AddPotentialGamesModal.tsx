@@ -1,11 +1,10 @@
 import * as React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from '../VitrineComponent';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { BlurPicture } from '../BlurPicture/BlurPicture';
 import { localizer } from '../../Localizer';
-
-import './AddPotentialGamesModal.scss';
 
 export class AddPotentialGamesModal extends VitrineComponent {
 	public constructor(props: any) {
@@ -23,29 +22,45 @@ export class AddPotentialGamesModal extends VitrineComponent {
 					<div className="modal-content">
 						<div className="modal-header">
 							<button type="button" className="close" data-dismiss="modal">&times;</button>
-							<h4 className="modal-title">{ localizer.f('addGames') }</h4>
+							<h4 className="modal-title">{localizer.f('addGames')}</h4>
 						</div>
 						<div className="modal-body">
-							<div className="row potential-games-row">
-								{ this.props.potentialGames.games.map((potentialGame: PotentialGame, index: number) =>
-									<div key={ index } className="col-md-3">
-										<div className="potential-game-cover">
+							<div className={`row ${css(styles.potentialGamesRow)}`}>
+								{this.props.potentialGames.games.map((potentialGame: PotentialGame, index: number) =>
+									<div key={index} className="col-md-3">
+										<div className={css(styles.potentialGameCover)}>
 											<BlurPicture
-												faIcon={ 'plus-circle' }
-												fontSize={ 55 }
-												background={ potentialGame.details.cover }
-												clickHandler={ this.gameCoverClickHandler.bind(this, potentialGame) }
+												faIcon={'plus-circle'}
+												fontSize={55}
+												background={potentialGame.details.cover}
+												clickHandler={this.gameCoverClickHandler.bind(this, potentialGame)}
 											/>
-											<span className="potential-game-name">{ potentialGame.name }</span>
+											<span className={css(styles.potentialGameName)}>{potentialGame.name}</span>
 										</div>
 									</div>
-								) }
+								)}
 							</div>
 						</div>
 					</div>
 				</div>
-				{ this.checkErrors() }
+				{this.checkErrors()}
 			</div>
 		);
 	}
 }
+
+const styles: React.CSSProperties = StyleSheet.create({
+	potentialGamesRow: {
+		padding: `${15}px ${0} ${15}px ${50}px`,
+		maxHeight: 810,
+		overflowY: 'auto'
+	},
+	potentialGameName: {
+		fontWeight: 300,
+		fontSize: 18,
+		marginLeft: 40
+	},
+	potentialGameCover: {
+		paddingBottom: 20
+	}
+});
