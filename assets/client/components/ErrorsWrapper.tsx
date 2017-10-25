@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { remote, ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { localizer } from '../Localizer';
 
@@ -75,7 +76,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	errorIcon: {
 		fontSize: 205,
 		position: 'absolute',
-		color: `rgba(${255}, ${50}, ${50} ${0.12})`,
+		color: rgba(255, 50, 50, 0.12),
 		top: -50,
 		right: 23
 	},
@@ -91,6 +92,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 	hr: {
 		marginTop: 14,
 		marginBottom: 14,
-		borderTop: `solid ${1}px rgba(${179}, ${144}, ${144}, ${0.39})`
+		borderTop: `solid ${1}px ${rgba(179, 144, 144, 0.39)}`
 	}
 });

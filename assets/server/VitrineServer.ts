@@ -317,13 +317,13 @@ export class VitrineServer {
 			return;
 		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 		this.windowsList.mainWindow = new BrowserWindow({
-			width: width,
-			height: height,
 			minWidth: width,
 			minHeight: height,
 			icon: this.iconPath,
 			show: false,
-			frame: false
+			frame: false,
+			width,
+			height
 		});
 		this.windowsList.mainWindow.setMenu(null);
 		this.windowsList.mainWindow.maximize();

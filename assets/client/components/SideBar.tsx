@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { ContextMenuTrigger } from 'react-contextmenu';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { PlayableGame } from '../../models/PlayableGame';
@@ -89,13 +90,13 @@ const styles: React.CSSProperties = StyleSheet.create({
 		padding: `${10}px ${20}px ${10}px`,
 		cursor: 'pointer',
 		':hover': {
-			backgroundColor: `rgba(${150}, ${136}, ${116}, ${0.13})`,
+			backgroundColor: rgba(150, 136, 116, 0.13),
 			color: '#AFACA7',
 			transition: `${66}ms`
 		}
 	},
 	selectedGame: {
-		backgroundColor: `rgba(${175}, ${153}, ${124}, ${0.14})`,
+		backgroundColor: rgba(175, 153, 124, 0.14),
 		color: '#AFACA7',
 		fontWeight: 600,
 		paddingLeft: 35,

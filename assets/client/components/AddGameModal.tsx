@@ -3,6 +3,7 @@ import * as DateTime from 'react-datetime';
 import { ipcRenderer, remote} from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame, GameSource } from '../../models/PotentialGame';
@@ -366,7 +367,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		overflowY: 'auto'
 	},
 	formHr: {
-		borderTop: `solid ${1}px rgba(${238}, ${238}, ${238}, ${0.15})`
+		borderTop: `solid ${1}px ${rgba(238, 238, 238, 0.15)}`
 	},
 	formTextArea: {
 		resize: 'none',

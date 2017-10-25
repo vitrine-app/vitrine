@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
@@ -114,8 +115,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		position: 'relative',
 		left: 40,
 		color: '#F1F1F1',
-		textShadow: `${0} ${0} ${10}px rgba(${8}, ${8}, ${8}, ${0.17})`,
-		boxShadow: `${0} ${0} ${10}px rgba(${0}, ${0}, ${0}, ${0.55})`
+		textShadow: `${0} ${0} ${10}px ${rgba(8, 8, 8, 0.17)}`,
+		boxShadow: `${0} ${0} ${10}px ${rgba(0, 0, 0, 0.55)}`
 	},
 	picture: {
 		width: `${100}%`,

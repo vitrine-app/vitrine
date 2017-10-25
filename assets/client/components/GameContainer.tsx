@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as textEllipsis from 'text-ellipsis';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
@@ -128,7 +129,7 @@ export class GameContainer extends VitrineComponent {
 const styles: React.CSSProperties = StyleSheet.create({
 	selectedGameContainer: {
 		height: `${100}%`,
-		background: `radial-gradient(ellipse at center, rgba(${131}, ${131}, ${131}, ${0.08}) ${0}%, rgba(${0}, ${0}, ${0}, ${0.76}) ${120}%)`,
+		background: `radial-gradient(ellipse at center, ${rgba(131, 131, 131, 0.08)} ${0}%, ${rgba(0, 0, 0, 0.76)} ${120}%)`,
 		overflow: 'hidden'
 	},
 	selectedGameBackground: {
@@ -160,10 +161,10 @@ const styles: React.CSSProperties = StyleSheet.create({
 		color: bootstrapVariables.textColor
 	},
 	selectedGameCoreHr: {
-		borderTop: `solid ${1}px rgba(${210}, ${210}, ${210}, ${0.23})`
+		borderTop: `solid ${1}px ${rgba(210, 210, 210, 0.23)}`
 	},
 	selectedGameInfos: {
-		backgroundColor: `rgba(${0}, ${0}, ${0}, ${0.49})`,
+		backgroundColor: rgba(0, 0, 0, 0.49),
 		padding: `${13}px ${24}px`,
 		color: '#E4E4E4',
 		fontSize: `${1.2}em`,

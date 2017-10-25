@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
@@ -150,7 +151,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		borderRadius: 2,
 		backgroundColor: '#39342E',
 		':hover': {
-			backgroundColor: 'rgba(247, 210, 174, 0.1)'
+			backgroundColor: rgba(247, 210, 174, 0.1)
 		}
 	},
 	selectedIgdbResearch: {
@@ -160,7 +161,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	igdbResearchImg: {
 		width: 90,
 		height: 120,
-		boxShadow: `${0} ${0} ${5}px rgba(${12}, ${12}, ${12}, ${0.33})`
+		boxShadow: `${0} ${0} ${5}px ${rgba(12, 12, 12, 0.33)}`
 	},
 	igdbResearchName: {
 		top: 48

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { localizer } from '../Localizer';
@@ -99,7 +100,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		height: 270,
 		margin: 5,
 		borderRadius: bootstrapVariables.borderRadiusBase,
-		boxShadow: `${0} ${0} ${6}px rgba(${0}, ${0}, ${0}, ${0.46})`,
+		boxShadow: `${0} ${0} ${6}px ${rgba(0, 0, 0, 0.46)}`,
 		filter: `brightness(${65}%)`
 	},
 	selectedImage: {

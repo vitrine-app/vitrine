@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { localizer } from '../Localizer';
@@ -72,10 +73,10 @@ const styles: React.CSSProperties = StyleSheet.create({
 	taskBar: {
 		backgroundColor: bootstrapVariables.bodyBg,
 		height: 45,
-		borderTop: `solid ${1}px rgba(${31}, ${30}, ${30}, ${0.63})`,
-		borderBottom: `solid ${1}px rgba(${31}, ${30}, ${30}, ${0.63})`,
+		borderTop: `solid ${1}px ${rgba(31, 30, 30, 0.63)}`,
+		borderBottom: `solid ${1}px ${rgba(31, 30, 30, 0.63)}`,
 		padding: `${4}px ${0} ${0} ${15}px`,
-		boxShadow: `${0} ${0} ${9}px rgba(${0}, ${0}, ${0}, ${0.55})`
+		boxShadow: `${0} ${0} ${9}px ${rgba(0, 0, 0, 0.55)}`
 	},
 	potentialGamesContainer: {
 		marginLeft: 18
