@@ -16,7 +16,7 @@ import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper'
 import { getOriginCrawler } from './games/OriginGamesCrawler';
 import { getSteamUserFinder } from './api/SteamUserFinder';
 import { getSteamPlayTimeWrapper } from './api/SteamPlayTimeWrapper';
-import { downloadImage } from './helpers';
+import { downloadImage, randomHashedString } from './helpers';
 
 export class VitrineServer {
 	private windowsList: any;
@@ -343,7 +343,7 @@ export class VitrineServer {
 
 	}
 
-	private registerGame(event: any, game: PlayableGame, gameForm: any, editing: boolean) {
+	private registerGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
 		game.commandLine.push(gameForm.executable);
 		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
 		game.details.rating = parseInt(game.details.rating);
@@ -361,14 +361,21 @@ export class VitrineServer {
 			return;
 		fs.ensureDirSync(gameDirectory);
 
-		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
-		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
+		let gameHash: string = randomHashedString(8);
+		let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
+		let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
 		let backgroundScreen: string = game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge');
 
-		downloadImage(game.details.cover, coverPath).then((isStored: boolean) => {
-			game.details.cover = (isStored) ? (coverPath) : ('');
-			downloadImage(backgroundScreen, screenPath).then((isStored: boolean) => {
-				game.details.backgroundScreen = (isStored) ? (screenPath) : ('');
+		let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (backgroundScreen);
+		let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
+		this.downloadGamePictures(event, configFilePath, game, {backgroundUrl, backgroundPath, coverUrl, coverPath}, editing);
+	}
+
+	private downloadGamePictures(event: Electron.Event, configFilePath: string, game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any, editing: boolean) {
+		downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
+			game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
+			downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
+				game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
 				if (game.details.steamId)
 					delete game.details.screenshots;
 				else
@@ -395,8 +402,9 @@ export class VitrineServer {
 	private handleRegisteredGame(event: any, game: PlayableGame, configFilePath: string, editing: boolean) {
 		fs.outputJSON(configFilePath, game , {
 			spaces: 2
-		}).then(() => {if (!editing && game.source !== GameSource.LOCAL)
-			this.findPotentialGames(event);
+		}).then(() => {
+			if (!editing && game.source !== GameSource.LOCAL)
+				this.findPotentialGames(event);
 			if (!editing) {
 				event.sender.send('server.add-playable-game', game);
 				this.playableGames.addGame(game);

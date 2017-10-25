@@ -3,6 +3,7 @@
 .rdtPicker {
 	background-color: $body-bg;
 	border: none;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
 
 	table tr td {
 		border-radius: $border-radius-base;

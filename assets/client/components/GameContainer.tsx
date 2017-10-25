@@ -22,18 +22,21 @@ export class GameContainer extends VitrineComponent {
 	}
 
 	public componentWillReceiveProps(props: any) {
-		let currentBackgroundImage: string;
-		if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
-			currentBackgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+		if (props.selectedGame) {
 			this.setState({
 				selectedGame: props.selectedGame
+			}, () => {
+				let currentBackgroundImage: string;
+				if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
+					currentBackgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+				}
+				else
+					currentBackgroundImage = 'none';
+				this.setState({
+					backgroundImage: currentBackgroundImage
+				});
 			});
 		}
-		else
-			currentBackgroundImage = 'none';
-		this.setState({
-			backgroundImage: currentBackgroundImage
-		});
 	}
 
 	public render(): JSX.Element {

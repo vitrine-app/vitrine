@@ -30,7 +30,12 @@ export class ErrorsWrapper extends React.Component<any, any> {
 	public render(): JSX.Element {
 		if (this.state.error)
 			return (
-				<div id="error-modal" className="modal fade show" role="dialog">
+				<div
+					id="error-modal"
+					className="modal fade show"
+					role="dialog"
+					data-backdrop="static"
+				>
 					<div className="modal-dialog">
 						<div className="modal-content">
 							<span className={css(styles.errorIcon)}>:(</span>

@@ -88,7 +88,15 @@ export class Vitrine extends VitrineComponent {
 			this.setState({
 				playableGames: currentPlayableGames
 			}, () => {
-				$('#add-game-modal').modal('hide');
+				if (game.uuid === this.state.selectedGame.uuid) {
+					this.setState({
+						selectedGame: game
+					}, () => {
+						$('#add-game-modal').modal('hide');
+					});
+				}
+				else
+					$('#add-game-modal').modal('hide');
 			});
 		});
 	}
@@ -145,6 +153,10 @@ export class Vitrine extends VitrineComponent {
 				});
 			}
 		});
+	}
+
+	private serverError(event: Event, error: Error) {
+		this.throwError(error.message);
 	}
 
 	private sideBarGameClickHandler(uuid: string) {
@@ -230,7 +242,9 @@ export class Vitrine extends VitrineComponent {
 			.on('server.remove-playable-game', this.removePlayableGame.bind(this))
 			.on('server.add-potential-games', this.addPotentialGames.bind(this))
 			.on('server.stop-game', this.stopGame.bind(this))
-			.on('server.settings-updated', this.settingsUpdated.bind(this));
+			.on('server.settings-updated', this.settingsUpdated.bind(this))
+			.on('server.server-error', this.serverError.bind(this));
+		;
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
 

@@ -97,7 +97,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	selectedGame: {
 		backgroundColor: `rgba(${175}, ${153}, ${124}, ${0.14})`,
 		color: '#AFACA7',
-		cursor: 'default',
+		fontWeight: 600,
 		paddingLeft: 35,
 		transition: `${250}ms`
 	}
