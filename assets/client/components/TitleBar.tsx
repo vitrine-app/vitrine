@@ -28,7 +28,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		paddingTop: 5
 	},
 	appTitle: {
-		paddingLeft: 50 + 'vw',
+		paddingLeft: `${50}vw`,
 		fontSize: 13,
 		color: '#B1B1B1'
 	}

@@ -121,7 +121,6 @@
   },
   "scripts": {
     "compile-cpp": "cl scripts/regWatcher.cpp Advapi32.lib /EHsc && cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
-    "build-html": "node scripts/htmlCompiler.js assets/html/main.html public/main.html && node scripts/htmlCompiler.js assets/html/loading.html public/loading.html",
     "electron": "electron .",
     "start": "webpack && electron .",
     "run-server-electron": "webpack --config config/build/server.build.js && electron .",

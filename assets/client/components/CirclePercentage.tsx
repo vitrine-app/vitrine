@@ -42,10 +42,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		display: 'block',
 		height: 110,
 		width: 110,
-		marginTop: 10,
-		marginBottom: 10,
-		marginLeft: 'auto',
-		marginRight: 'auto'
+		margin: `${10}px auto`
 	},
 	circle: {
 		stroke: bootstrapVariables.brandPrimary,

@@ -17,10 +17,10 @@ export class BlurPicture extends VitrineComponent {
 		this.state = {
 			divClassName: '',
 			divStyle: {
-				width: divWidth + 'em',
-				height: divHeight + 'em',
-				fontSize: this.props.fontSize + 'px',
-				animationDuration: this.pulseDuration + 'ms'
+				width: `${divWidth}em`,
+				height: `${divHeight}em`,
+				fontSize: `${this.props.fontSize}px`,
+				animationDuration: `${this.pulseDuration}ms`
 			},
 			imageStyle: {
 				backgroundImage: urlify(this.props.background)
@@ -36,13 +36,13 @@ export class BlurPicture extends VitrineComponent {
 	private mouseEnterHandler() {
 		let imageStyle: any = this.state.imageStyle;
 		let iconStyle: any = this.state.iconStyle;
-		imageStyle.filter = 'blur(4px)';
+		imageStyle.filter = `blur(${4}px)`;
 		iconStyle.display = 'inline';
 
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
-				filter: 'blur(4px)'
+				filter: `blur(${4}px)`
 			},
 			iconClassName: 'animated zoomIn',
 			iconStyle: iconStyle
@@ -114,21 +114,21 @@ const styles: React.CSSProperties = StyleSheet.create({
 		position: 'relative',
 		left: 40,
 		color: '#F1F1F1',
-		textShadow: '0 0 10px rgba(8, 8, 8, 0.17)',
-		boxShadow: '0 0 10px rgba(0, 0, 0, 0.55)'
+		textShadow: `${0} ${0} ${10}px rgba(${8}, ${8}, ${8}, ${0.17})`,
+		boxShadow: `${0} ${0} ${10}px rgba(${0}, ${0}, ${0}, ${0.55})`
 	},
 	picture: {
-		width: 100 + '%',
-		height: 100 + '%',
+		width: `${100}%`,
+		height: `${100}%`,
 		backgroundRepeat: 'no-repeat',
-		backgroundSize: '100% 100%',
-		transform: 'scale(1.02)',
-		transition: '75ms filter linear'
+		backgroundSize: `${100}% ${100}%`,
+		transform: `scale(${1.02}%)`,
+		transition: `${75}ms filter linear`
 	},
 	icon: {
 		position: 'absolute',
 		opacity: 0.6,
-		left: 1.268 + 'em',
-		top: 1.74 + 'em'
+		left: `${1.268}em`,
+		top: `${1.74}em`
 	}
 });

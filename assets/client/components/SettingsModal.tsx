@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
+import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from './VitrineComponent';
 import { GamesModule } from './GamesModule';
@@ -109,7 +110,7 @@ export class SettingsModal extends VitrineComponent {
 		return (
 			<div
 				id="settings-modal"
-				className="modal fade"
+				className={`modal fade ${css(styles.modal)}`}
 				role="dialog"
 				data-keyboard={(this.props.firstLaunch) ? (false) : (true)}
 				data-backdrop={(this.props.firstLaunch) ? ('static') : (true)}
@@ -122,31 +123,41 @@ export class SettingsModal extends VitrineComponent {
 						>
 							{localizer.f('settings')}
 						</div>
-						<div className="modal-body" style={styles.modalBody}>
-							<form id="settings-form">
+						<div className={`modal-body ${css(styles.modalBody)}`}>
+							<form>
 								<div style={{display: (this.props.firstLaunch) ? ('block') : ('none')}}>
 									<h1>{localizer.f('welcomeMessage')}</h1>
 									<p>{localizer.f('wizardText')}</p>
 								</div>
 								<ul className="nav nav-tabs">
-									<li className="active"><a data-toggle="tab" href="#options-pane-modules">Modules</a></li>
-									<li><a data-toggle="tab" href="#options-pane-lang">Lang</a></li>
+									<li className="active">
+										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-modules">Modules</a>
+									</li>
+									<li>
+										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-lang">Lang</a>
+									</li>
 								</ul>
 								<div className="tab-content">
 									<div id="options-pane-modules" className="tab-pane fade in active">
-										<GamesModule
-											clicked={this.state.steamEnabled}
-											iconFile={steamIcon}
-											iconAlt={'Steam'}
-											clickHandler={this.steamIconClickHandler.bind(this)}
-										/>
-										<GamesModule
-											clicked={this.state.originEnabled}
-											iconFile={originIcon}
-											iconAlt={'Origin'}
-											clickHandler={this.originIconClickHandler.bind(this)}
-										/>
-										<div style={{display: (this.state.steamEnabled) ? ('block') : ('none')}}>
+										<div className="row">
+											<div className="col-md-offset-1 col-md-5">
+												<GamesModule
+													clicked={this.state.steamEnabled}
+													iconFile={steamIcon}
+													iconAlt={'Steam'}
+													clickHandler={this.steamIconClickHandler.bind(this)}
+												/>
+											</div>
+											<div className="col-md-6">
+												<GamesModule
+													clicked={this.state.originEnabled}
+													iconFile={originIcon}
+													iconAlt={'Origin'}
+													clickHandler={this.originIconClickHandler.bind(this)}
+												/>
+											</div>
+										</div>
+										<div style={{ display: (this.state.steamEnabled) ? ('block') : ('none') }}>
 											<hr/>
 											<h3>{localizer.f('steamConfig')}</h3>
 											<div className={`form-group ${((this.state.steamError) ? (' has-error') : (''))}`}>
@@ -209,7 +220,7 @@ export class SettingsModal extends VitrineComponent {
 											</div>
 										</div>
 									</div>
-									<div id="options-pane-lang" className="tab-pane fade" style={styles.langSelect}>
+									<div id="options-pane-lang" className={`tab-pane fade ${css(styles.langSelect)}`}>
 										<select
 											name="lang"
 											className="selectpicker"
@@ -252,26 +263,20 @@ export class SettingsModal extends VitrineComponent {
 	}
 }
 
-const styles: React.CSSProperties = {
+const styles: React.CSSProperties = StyleSheet.create({
+	modal: {
+		top: `${10}vh`
+	},
 	modalBody: {
-		paddingTop: 15,
-		paddingBottom: 10,
-		paddingLeft: 40,
-		paddingRight: 40
+		padding: `${15}px ${40}px ${10}px`
 	},
 	langSelect: {
-		paddingTop: 20,
-		paddingBottom: 0,
-		paddingLeft: 0,
-		paddingRight: 0
+		padding: `${20}px ${0} ${0}`
 	},
 	navTabsLink: {
 		':hover': {
 			color: '#988F88',
-borderTop: 'none',
-borderLeft: 'none',
-borderRight: 'none',
-borderBottom: '#61574B'
+			border: 'none'
 		}
 	}
-};
+});

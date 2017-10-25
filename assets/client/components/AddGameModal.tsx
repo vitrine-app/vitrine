@@ -366,7 +366,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		overflowY: 'auto'
 	},
 	formHr: {
-		borderTop: `${1}px solid rgba(${238}, ${238}, ${238}, ${0.15})`
+		borderTop: `solid ${1}px rgba(${238}, ${238}, ${238}, ${0.15})`
 	},
 	formTextArea: {
 		resize: 'none',

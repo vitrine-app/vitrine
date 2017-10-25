@@ -157,7 +157,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		color: bootstrapVariables.textColor
 	},
 	selectedGameCoreHr: {
-		borderTop: `${1}px solid rgba(${210}, ${210}, ${210}, ${0.23})`
+		borderTop: `solid ${1}px rgba(${210}, ${210}, ${210}, ${0.23})`
 	},
 	selectedGameInfos: {
 		backgroundColor: `rgba(${0}, ${0}, ${0}, ${0.49})`,

@@ -141,32 +141,26 @@ const styles: React.CSSProperties = StyleSheet.create({
 		overflowY: 'auto'
 	},
 	igdbResearchBtnDiv: {
-		paddingTop: 4 + '%',
+		paddingTop: `${4}%`,
 		paddingLeft: 0
 	},
 	igdbResearchList: {
-		marginTop: 5,
-		marginBottom: 5,
-		marginLeft: 0,
-		marginRight: 0,
+		margin: `${5}px ${0}`,
+		padding: `${10}px ${0}`,
 		borderRadius: 2,
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingLeft: 0,
-		paddingRight: 0,
 		backgroundColor: '#39342E',
 		':hover': {
 			backgroundColor: 'rgba(247, 210, 174, 0.1)'
 		}
 	},
 	selectedIgdbResearch: {
-		border: 'solid #81705E 2px',
+		border: `solid ${2}px #81705E`,
 		fontWeight: 600
 	},
 	igdbResearchImg: {
 		width: 90,
 		height: 120,
-		boxShadow: '0 0 5px rgba(12, 12, 12, 0.33)'
+		boxShadow: `${0} ${0} ${5}px rgba(${12}, ${12}, ${12}, ${0.33})`
 	},
 	igdbResearchName: {
 		top: 48

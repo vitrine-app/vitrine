@@ -43,9 +43,9 @@ export class GamesModule extends VitrineComponent {
 const styles: React.CSSProperties = StyleSheet.create({
 	gamesModuleIcon: {
 		opacity: 0.05,
-		width: 150 + 'px',
-		margin: 15 + 'px',
-		transition: 320 + 'ms ease',
+		width: `${150}px`,
+		margin: `${15}px`,
+		transition: `${320}ms ease`,
 		':hover': {
 			opacity: 0.14,
 			cursor: 'pointer'
@@ -53,6 +53,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	clickedGamesModuleIcon: {
 		opacity: 1,
-		filter: `opacity(0.5) drop-shadow(0 0 0 ${bootstrapVariables.brandPrimary})`
+		filter: `opacity(${0.5}) drop-shadow(${0} ${0} ${0} ${bootstrapVariables.brandPrimary})`
 	}
 });

@@ -109,15 +109,15 @@ const styles: React.CSSProperties = StyleSheet.create({
 	verticalBtnDiv: {
 		position: 'relative',
 		whiteSpace: 'nowrap',
-		width: 1 + '%',
+		width: `${1}%`,
 		verticalAlign: 'middle',
 		display: 'table-cell'
 	},
 	verticalBtn: {
 		display: 'block',
 		float: 'none',
-		width: 100 + '%',
-		maxWidth: 100 + '%',
+		width: `${100}%`,
+		maxWidth: `${100}%`,
 		padding: 8,
 		marginLeft: -1,
 		position: 'relative',

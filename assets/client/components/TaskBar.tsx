@@ -72,10 +72,10 @@ const styles: React.CSSProperties = StyleSheet.create({
 	taskBar: {
 		backgroundColor: bootstrapVariables.bodyBg,
 		height: 45,
-		borderTop: 'solid 1px rgba(31, 30, 30, 0.63)',
-		borderBottom: 'solid 1px rgba(31, 30, 30, 0.63)',
-		padding: '4px 0 0 15px',
-		boxShadow: '0 0 9px rgba(0, 0, 0, 0.55)'
+		borderTop: `solid ${1}px rgba(${31}, ${30}, ${30}, ${0.63})`,
+		borderBottom: `solid ${1}px rgba(${31}, ${30}, ${30}, ${0.63})`,
+		padding: `${4}px ${0} ${0} ${15}px`,
+		boxShadow: `${0} ${0} ${9}px rgba(${0}, ${0}, ${0}, ${0.55})`
 	},
 	potentialGamesContainer: {
 		marginLeft: 18

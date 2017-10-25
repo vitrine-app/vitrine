@@ -61,23 +61,23 @@ export class SideBar extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	sideBarContainer: {
-		height: 97 + '%',
+		height: `${97}%`,
 		padding: 0,
 		position: 'absolute',
 		backgroundColor: bootstrapVariables.bodyBg,
-		width: 16 + '%'
+		width: `${16}%`
 	},
 	sideBarContent: {
-		height: 96 + '%',
+		height: `${96}%`,
 		overflowX: 'hidden',
 		overflowY: 'auto'
 	},
 	sideBarHr: {
 		margin: 0,
-		borderTop: '1px solid #565149'
+		borderTop: `solid ${1}px #565149`
 	},
 	gamesListUl: {
-		height: 98 + '%',
+		height: `${98}%`,
 		listStyleType: 'none',
 		padding: 0,
 		margin: 0
@@ -86,22 +86,19 @@ const styles: React.CSSProperties = StyleSheet.create({
 		display: 'block',
 		fontSize: 15,
 		color: '#A5A5A5',
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingLeft: 20,
-		paddingRight: 20,
+		padding: `${10}px ${20}px ${10}px`,
 		cursor: 'pointer',
 		':hover': {
-			backgroundColor: 'rgba(150, 136, 116, 0.13)',
+			backgroundColor: `rgba(${150}, ${136}, ${116}, ${0.13})`,
 			color: '#AFACA7',
-			transition: 66 + 'ms'
+			transition: `${66}ms`
 		}
 	},
 	selectedGame: {
-		backgroundColor: 'rgba(175, 153, 124, 0.14)',
+		backgroundColor: `rgba(${175}, ${153}, ${124}, ${0.14})`,
 		color: '#AFACA7',
 		cursor: 'default',
 		paddingLeft: 35,
-		transition: 250 + 'ms'
+		transition: `${250}ms`
 	}
 });
