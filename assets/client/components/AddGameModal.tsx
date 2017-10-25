@@ -1,17 +1,17 @@
 import * as React from 'react';
+import * as DateTime from 'react-datetime';
 import { ipcRenderer, remote} from 'electron';
-import { StyleSheet, css} from 'aphrodite';
+import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
 
-import {PotentialGame, GameSource} from '../../../models/PotentialGame';
-
-import { VitrineComponent } from '../VitrineComponent';
-import { BlurPicture } from '../BlurPicture/BlurPicture';
-import { NumberPicker } from '../NumberPicker/NumberPicker';
-import { IgdbResearchModal } from '../IgdbResearchModal/IgdbResearchModal';
-import { ImagesCollection } from '../ImagesCollection/ImagesCollection';
-import { localizer } from '../../Localizer';
-import { openExecutableDialog, openImageDialog } from '../../helpers';
+import { VitrineComponent } from './VitrineComponent';
+import { PotentialGame, GameSource } from '../../models/PotentialGame';
+import { BlurPicture } from './BlurPicture';
+import { NumberPicker } from './NumberPicker';
+import { IgdbResearchModal } from './IgdbResearchModal';
+import { ImagesCollection } from './ImagesCollection';
+import { localizer } from '../Localizer';
+import { openExecutableDialog, openImageDialog } from '../helpers';
 
 export class AddGameModal extends VitrineComponent {
 	private emptyState: any;
@@ -74,6 +74,12 @@ export class AddGameModal extends VitrineComponent {
 
 		this.setState({
 			[name]: value
+		});
+	}
+
+	private dateChangeHandler(date: moment.Moment) {
+		this.setState({
+			date: date.format('DD/MM/YYYY')
 		});
 	}
 
@@ -196,12 +202,15 @@ export class AddGameModal extends VitrineComponent {
 												</div>
 												<div className="form-group col-md-4">
 													<label>{localizer.f('releaseDate')}</label>
-													<input
-														className="form-control"
-														name="date"
-														placeholder={localizer.f('releaseDate')}
+													<DateTime
 														value={this.state.date}
-														onChange={this.inputChangeHandler.bind(this)}
+														dateFormat={'DD/MM/YYYY'}
+														timeFormat={false}
+														inputProps={{
+															placeholder: localizer.f('releaseDate'),
+															readOnly: true
+														}}
+														onChange={this.dateChangeHandler.bind(this)}
 													/>
 												</div>
 											</div>
@@ -270,7 +279,8 @@ export class AddGameModal extends VitrineComponent {
 														placeholder={localizer.f('executable')}
 														value={this.state.executable}
 														onChange={this.inputChangeHandler.bind(this)}
-														disabled
+														readOnly={true}
+														onClick={this.executableBtnClickHandler.bind(this)}
 													/>
 													<span className="input-group-btn">
 														<button
@@ -352,14 +362,14 @@ export class AddGameModal extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modalBody: {
-		maxHeight: 82 + 'vh',
+		maxHeight: `${82}vh`,
 		overflowY: 'auto'
 	},
 	formHr: {
-		borderTop: '1px solid rgba(238, 238, 238, 0.15)'
+		borderTop: `${1}px solid rgba(${238}, ${238}, ${238}, ${0.15})`
 	},
 	formTextArea: {
 		resize: 'none',
-		height: 7 + 'em'
+		height: `${7}em`
 	}
 });

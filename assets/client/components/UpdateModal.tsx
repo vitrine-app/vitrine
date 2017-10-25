@@ -2,8 +2,8 @@ import * as React from 'react';
 import { ipcRenderer, shell } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { localizer } from '../../Localizer';
+import { VitrineComponent } from './VitrineComponent';
+import { localizer } from '../Localizer';
 
 export class UpdateModal extends VitrineComponent {
 	public constructor(props: any) {

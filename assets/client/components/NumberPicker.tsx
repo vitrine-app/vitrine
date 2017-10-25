@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { css, StyleSheet } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
+import { VitrineComponent } from './VitrineComponent';
 
 export class NumberPicker extends VitrineComponent {
 	public constructor(props: any) {

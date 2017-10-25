@@ -7,9 +7,11 @@
 }
 
 /* Bootstrap */
-@import 'bootstrapVariables';
+@import 'bootstrap.variables';
 @import '~bootstrap-sass/assets/stylesheets/bootstrap';
 @import '~bootstrap-select/sass/bootstrap-select';
+@import '~react-datetime/css/react-datetime.css';
+@import 'reactDateTime';
 .form-control {
 	&::-webkit-input-placeholder {
 		opacity: 0.6;

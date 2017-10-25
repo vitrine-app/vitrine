@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { localizer } from '../../Localizer';
-import { openImageDialog } from '../../helpers';
+import { VitrineComponent } from './VitrineComponent';
+import { localizer } from '../Localizer';
+import { openImageDialog } from '../helpers';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class ImagesCollection extends VitrineComponent {
 	public constructor(props: any) {

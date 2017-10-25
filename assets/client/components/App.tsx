@@ -4,11 +4,11 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
-import { TitleBar } from './TitleBar/TitleBar';
-import { Vitrine } from './Vitrine/Vitrine';
+import { TitleBar } from './TitleBar';
+import { Vitrine } from './Vitrine';
 import { localizer } from '../Localizer';
 import { getEnvFolder } from '../../models/env';
-import { ErrorsWrapper } from './ErrorsWrapper/ErrorsWrapper';
+import { ErrorsWrapper } from './ErrorsWrapper';
 
 export class App extends React.Component {
 	private config: any;

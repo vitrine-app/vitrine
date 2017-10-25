@@ -3,19 +3,18 @@ import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { TaskBar } from '../TaskBar/TaskBar';
-import { SideBar } from '../SideBar/SideBar';
-import { GameContainer } from '../GameContainer/GameContainer';
-import { PotentialGame } from '../../../models/PotentialGame';
-import { PlayableGame } from '../../../models/PlayableGame';
-import { GamesCollection } from '../../../models/GamesCollection';
-import { AddGameModal } from '../AddGameModal/AddGameModal';
-import { AddPotentialGamesModal } from '../AddPotentialGamesModal/AddPotentialGamesModal';
-import { UpdateModal } from '../UpdateModal/UpdateModal';
-import { SettingsModal } from '../SettingsModal/SettingsModal';
-import { launchGame } from '../../helpers';
-
+import { VitrineComponent } from './VitrineComponent';
+import { TaskBar } from './TaskBar';
+import { SideBar } from './SideBar';
+import { GameContainer } from './GameContainer';
+import { PotentialGame } from '../../models/PotentialGame';
+import { PlayableGame } from '../../models/PlayableGame';
+import { GamesCollection } from '../../models/GamesCollection';
+import { AddGameModal } from './AddGameModal';
+import { AddPotentialGamesModal } from './AddPotentialGamesModal';
+import { UpdateModal } from './UpdateModal';
+import { SettingsModal } from './SettingsModal';
+import { launchGame } from '../helpers';
 
 export class Vitrine extends VitrineComponent {
 	public constructor(props: any) {

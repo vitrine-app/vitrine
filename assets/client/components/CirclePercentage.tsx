@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
+import { VitrineComponent } from './VitrineComponent';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class CirclePercentage extends VitrineComponent {
 	public constructor(props: any) {
@@ -25,6 +25,7 @@ export class CirclePercentage extends VitrineComponent {
 				>
 					{this.props.percentage}
 				</text>
+				{this.checkErrors()}
 			</svg>
 		);
 	}

@@ -3,11 +3,11 @@ import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { ContextMenuTrigger } from 'react-contextmenu';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { PlayableGame } from '../../../models/PlayableGame';
-import { launchGame } from '../../helpers';
+import { VitrineComponent } from './VitrineComponent';
+import { PlayableGame } from '../../models/PlayableGame';
+import { launchGame } from '../helpers';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class SideBar extends VitrineComponent {
 	public constructor(props: any) {

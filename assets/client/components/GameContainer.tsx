@@ -3,13 +3,13 @@ import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as textEllipsis from 'text-ellipsis';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { BlurPicture } from '../BlurPicture/BlurPicture';
-import { CirclePercentage } from '../CirclePercentage/CirclePercentage';
-import { formatTimePlayed, launchGame, urlify } from '../../helpers';
-import { localizer } from '../../Localizer';
+import { VitrineComponent } from './VitrineComponent';
+import { BlurPicture } from './BlurPicture';
+import { CirclePercentage } from './CirclePercentage';
+import { formatTimePlayed, launchGame, urlify } from '../helpers';
+import { localizer } from '../Localizer';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class GameContainer extends VitrineComponent {
 	public constructor(props: any) {

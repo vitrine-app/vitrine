@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { urlify } from '../../helpers';
+import { VitrineComponent } from './VitrineComponent';
+import { urlify } from '../helpers';
 
 export class BlurPicture extends VitrineComponent {
 	private pulseDuration: number;

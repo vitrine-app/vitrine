@@ -2,15 +2,14 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { localizer } from '../../Localizer';
+import { VitrineComponent } from './VitrineComponent';
+import { localizer } from '../Localizer';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class TaskBar extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
-		console.log(bootstrapVariables);
 	}
 
 	private static refreshBtnClickHandler() {

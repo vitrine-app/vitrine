@@ -2,9 +2,9 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { NumberPicker } from '../NumberPicker/NumberPicker';
-import { localizer } from '../../Localizer';
+import { VitrineComponent } from './VitrineComponent';
+import { NumberPicker } from './NumberPicker';
+import { localizer } from '../Localizer';
 
 export class IgdbResearchModal extends VitrineComponent {
 	public constructor(props: any) {

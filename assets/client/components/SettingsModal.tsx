@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { GamesModule } from '../GamesModule/GamesModule';
-import { localizer } from '../../Localizer';
-import { openDirectory } from '../../helpers';
+import { VitrineComponent } from './VitrineComponent';
+import { GamesModule } from './GamesModule';
+import { localizer } from '../Localizer';
+import { openDirectory } from '../helpers';
 
-import * as steamIcon from '../../images/steamIcon.png';
-import * as originIcon from '../../images/originIcon.png';
+import * as steamIcon from '../images/steamIcon.png';
+import * as originIcon from '../images/originIcon.png';
 
 export class SettingsModal extends VitrineComponent {
 	public constructor(props: any) {
@@ -246,6 +246,7 @@ export class SettingsModal extends VitrineComponent {
 						</div>
 					</div>
 				</div>
+				{this.checkErrors()}
 			</div>
 		);
 	}

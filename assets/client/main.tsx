@@ -3,7 +3,6 @@ window.jQuery = window.$ = jQuery;
 import 'bootstrap-sass';
 import 'bootstrap-select';
 import 'electron-titlebar-absolute';
-import 'bootstrap-datepicker';
 import 'jquery-contextmenu';
 
 import * as React from 'react';

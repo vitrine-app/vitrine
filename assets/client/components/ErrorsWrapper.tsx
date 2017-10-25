@@ -2,7 +2,7 @@ import * as React from 'react';
 import { remote, ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 
-import { localizer } from '../../Localizer';
+import { localizer } from '../Localizer';
 
 export class ErrorsWrapper extends React.Component<any, any> {
 	constructor(props: any) {

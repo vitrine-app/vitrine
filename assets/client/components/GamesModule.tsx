@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
+import { VitrineComponent } from './VitrineComponent';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class GamesModule extends VitrineComponent {
 	public constructor(props: any) {
@@ -24,15 +24,18 @@ export class GamesModule extends VitrineComponent {
 
 	public render(): JSX.Element {
 		return (
-			<img
-				alt={this.props.iconAlt}
-				src={this.props.iconFile}
-				className={
-					css(styles.gamesModuleIcon) + ' ' +
-					(((this.state.clicked) ? (css(styles.clickedGamesModuleIcon)) : ('')))
-				}
-				onClick={this.imgClickHandler.bind(this)}
-			/>
+			<div>
+				<img
+					alt={this.props.iconAlt}
+					src={this.props.iconFile}
+					className={
+						css(styles.gamesModuleIcon) + ' ' +
+						(((this.state.clicked) ? (css(styles.clickedGamesModuleIcon)) : ('')))
+					}
+					onClick={this.imgClickHandler.bind(this)}
+				/>
+				{this.checkErrors()}
+			</div>
 		);
 	}
 }

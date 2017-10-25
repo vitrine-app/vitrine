@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from '../VitrineComponent';
-import { PotentialGame } from '../../../models/PotentialGame';
-import { BlurPicture } from '../BlurPicture/BlurPicture';
-import { localizer } from '../../Localizer';
+import { VitrineComponent } from './VitrineComponent';
+import { PotentialGame } from '../../models/PotentialGame';
+import { BlurPicture } from './BlurPicture';
+import { localizer } from '../Localizer';
 
 export class AddPotentialGamesModal extends VitrineComponent {
 	public constructor(props: any) {
