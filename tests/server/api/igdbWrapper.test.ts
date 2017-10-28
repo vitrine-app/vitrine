@@ -10,7 +10,7 @@ describe('IgdbWrapper searcher', () => {
 			done();
 		});
 	});
-	it('Should return a 2 games length array', (n) => {
+	it('Should return a 2 games length array', () => {
 		expect(gamesArray).to.be.a('array');
 
 		expect(gamesArray).to.have.length(2);
