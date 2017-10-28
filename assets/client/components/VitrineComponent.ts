@@ -19,7 +19,7 @@ export abstract class VitrineComponent extends React.Component<any, any> {
 			throw this.state.error;
 	}
 
-	public render(): JSX.Element | false | null {
+	public render(): JSX.Element | JSX.Element[] | React.ReactPortal | string | number | null | false {
 		return super.render();
 	}
 }

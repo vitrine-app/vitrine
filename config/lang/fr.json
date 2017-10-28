@@ -6,6 +6,7 @@
   "confirm": "Valider",
   "cancel": "Annuler",
   "play": "Jouer",
+  "refreshLabel": "Actualiser",
   "timePlayed": "Temps de jeu :",
   "addGame": "Ajouter %1",
   "addGames": "Ajouter des jeux",
@@ -58,5 +59,7 @@
   "originConfig": "Paramètres d'Origin :",
   "originGamesPath": "Dossier d'emplacement des jeux Origin",
   "pathError": "Vous devez définir un dossier d'emplacement",
-  "settings": "Paramètres"
+  "settings": "Paramètres",
+  "modules": "Modules",
+  "lang": "Langue"
 }

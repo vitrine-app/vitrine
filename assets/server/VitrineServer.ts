@@ -13,8 +13,10 @@ import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
-import { downloadImage } from './helpers';
 import { getOriginCrawler } from './games/OriginGamesCrawler';
+import { getSteamUserFinder } from './api/SteamUserFinder';
+import { getSteamPlayTimeWrapper } from './api/SteamPlayTimeWrapper';
+import { downloadImage, randomHashedString } from './helpers';
 
 export class VitrineServer {
 	private windowsList: any;
@@ -75,9 +77,17 @@ export class VitrineServer {
 	}
 
 	private clientReady(event: Electron.Event) {
+		this.potentialGames = new GamesCollection();
+		this.playableGames = new GamesCollection();
+
 		if (this.vitrineConfig) {
-			this.potentialGames = new GamesCollection();
-			this.playableGames = new GamesCollection();
+			if (this.vitrineConfig.steam) {
+				getSteamUserFinder(this.vitrineConfig.steam).then((steamUser: any) => {
+					Object.assign(this.vitrineConfig.steam, steamUser);
+				}).catch((error: Error) => {
+					return VitrineServer.throwServerError(event, error);
+				});
+			}
 
 			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
@@ -228,7 +238,9 @@ export class VitrineServer {
 				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
 			};
 		}
-		fs.outputJSON(this.vitrineConfigFilePath, config).then(() => {
+		fs.outputJSON(this.vitrineConfigFilePath, config, {
+			spaces: 2
+		}).then(() => {
 			this.vitrineConfig = config;
 			event.sender.send('server.settings-updated', this.vitrineConfig);
 		}).catch((error: Error) => {
@@ -305,13 +317,13 @@ export class VitrineServer {
 			return;
 		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 		this.windowsList.mainWindow = new BrowserWindow({
-			width: width,
-			height: height,
 			minWidth: width,
 			minHeight: height,
 			icon: this.iconPath,
 			show: false,
-			frame: false
+			frame: false,
+			width,
+			height
 		});
 		this.windowsList.mainWindow.setMenu(null);
 		this.windowsList.mainWindow.maximize();
@@ -331,7 +343,7 @@ export class VitrineServer {
 
 	}
 
-	private registerGame(event: any, game: PlayableGame, gameForm: any, editing: boolean) {
+	private registerGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
 		game.commandLine.push(gameForm.executable);
 		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
 		game.details.rating = parseInt(game.details.rating);
@@ -342,40 +354,66 @@ export class VitrineServer {
 		delete game.details.date;
 		delete game.details.arguments;
 
-		let gameDirectory = path.resolve(getGamesFolder(), game.uuid);
-		let configFilePath = path.resolve(gameDirectory, 'config.json');
+		let gameDirectory: string = path.resolve(getGamesFolder(), game.uuid);
+		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		if (!editing && fs.existsSync(configFilePath))
 			return;
 		fs.ensureDirSync(gameDirectory);
 
-		let screenPath: string = path.resolve(gameDirectory, 'background.jpg');
-		let coverPath: string = path.resolve(gameDirectory, 'cover.jpg');
+		let gameHash: string = randomHashedString(8);
+		let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
+		let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
 		let backgroundScreen: string = game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge');
 
-		downloadImage(game.details.cover, coverPath).then((isStored: boolean) => {
-			game.details.cover = (isStored) ? (coverPath) : ('');
-			downloadImage(backgroundScreen, screenPath).then((isStored: boolean) => {
-				game.details.backgroundScreen = (isStored) ? (screenPath) : ('');
+		let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (backgroundScreen);
+		let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
+		this.downloadGamePictures(event, configFilePath, game, {backgroundUrl, backgroundPath, coverUrl, coverPath}, editing);
+	}
+
+	private downloadGamePictures(event: Electron.Event, configFilePath: string, game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any, editing: boolean) {
+		downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
+			game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
+			downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
+				game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
 				if (game.details.steamId)
 					delete game.details.screenshots;
 				else
 					delete game.details.background;
-				fs.writeFileSync(configFilePath, JSON.stringify(game, null, 2));
-				if (!editing && game.source !== GameSource.LOCAL)
-					this.findPotentialGames(event);
-				if (!editing) {
-					event.sender.send('server.add-playable-game', game);
-					this.playableGames.addGame(game);
-				}
-				else {
-					this.playableGames.editGame(game, () => {
-						event.sender.send('server.edit-playable-game', game);
+
+				if (!editing && game.source === GameSource.STEAM) {
+					getSteamPlayTimeWrapper(this.vitrineConfig.steam, game).then((timedGame: PlayableGame) => {
+						this.handleRegisteredGame(event, timedGame, configFilePath, editing);
+					}).catch((error: Error) => {
+						return VitrineServer.throwServerError(event, error);
 					});
 				}
+				else
+					this.handleRegisteredGame(event, game, configFilePath, editing);
+
 			}).catch((error: Error) => {
 				return VitrineServer.throwServerError(event, error);
 			});
+		}).catch((error: Error) => {
+			return VitrineServer.throwServerError(event, error);
+		});
+	}
+
+	private handleRegisteredGame(event: any, game: PlayableGame, configFilePath: string, editing: boolean) {
+		fs.outputJSON(configFilePath, game , {
+			spaces: 2
+		}).then(() => {
+			if (!editing && game.source !== GameSource.LOCAL)
+				this.findPotentialGames(event);
+			if (!editing) {
+				event.sender.send('server.add-playable-game', game);
+				this.playableGames.addGame(game);
+			}
+			else {
+				this.playableGames.editGame(game, () => {
+					event.sender.send('server.edit-playable-game', game);
+				});
+			}
 		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);
 		});

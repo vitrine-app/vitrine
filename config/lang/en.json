@@ -6,6 +6,7 @@
   "confirm": "Confirm",
   "cancel": "Cancel",
   "play": "Play",
+  "refreshLabel": "Refresh games list",
   "timePlayed": "Time played:",
   "addGame": "Add %1",
   "addGames": "Add games",
@@ -58,5 +59,7 @@
   "originConfig": "Origin settings:",
   "originGamesPath": "Origin games path",
   "pathError": "You need to specify a path",
-  "settings": "Settings"
+  "settings": "Settings",
+  "modules": "Modules",
+  "lang": "Lang"
 }

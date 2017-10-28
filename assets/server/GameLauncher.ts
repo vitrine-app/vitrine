@@ -1,4 +1,4 @@
-import { execFile } from 'child_process';
+import { execFile, ChildProcess } from 'child_process';
 import * as path from 'path';
 
 import { GameSource } from '../models/PotentialGame';
@@ -45,7 +45,7 @@ class GameLauncher {
 	}
 
 	private launchSteamGame(callback: Function) {
-		let inWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], null,(error) => {
+		let inWatcherProcess: ChildProcess = execFile(this.watcherPath, [this.game.details.steamId], null,(error) => {
 			if (error)
 				callback(error, null);
 		});
@@ -55,7 +55,7 @@ class GameLauncher {
 		});
 		inWatcherProcess.on('exit', () => {
 			let beginTime: Date = new Date();
-			let outWatcherProcess = execFile(this.watcherPath, [this.game.details.steamId], null, (error) => {
+			let outWatcherProcess: ChildProcess = execFile(this.watcherPath, [this.game.details.steamId], null, (error) => {
 				if (error)
 					callback(error, null);
 			});
