@@ -131,10 +131,14 @@ export class SettingsModal extends VitrineComponent {
 								</div>
 								<ul className="nav nav-tabs">
 									<li className="active">
-										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-modules">Modules</a>
+										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-modules">
+											{localizer.f('modules')}
+										</a>
 									</li>
 									<li>
-										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-lang">Lang</a>
+										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-lang">
+											{localizer.f('lang')}
+										</a>
 									</li>
 								</ul>
 								<div className="tab-content">

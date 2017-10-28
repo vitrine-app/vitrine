@@ -32,10 +32,6 @@ $fa-font-path: '~font-awesome/fonts';
 /* Animate.css */
 @import '~animate.sass/scss/animate';
 
-/* jQuery context menu */
-$context-menu-icon-font-path: '~jquery-contextmenu/dist/font/';
-@import '~jquery-contextmenu/src/sass/jquery.contextMenu';
-
 /* React context menu */
 @import 'contextMenus';
 

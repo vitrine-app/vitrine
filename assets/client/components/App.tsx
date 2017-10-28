@@ -4,7 +4,6 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
-import { TitleBar } from './TitleBar';
 import { Vitrine } from './Vitrine';
 import { localizer } from '../Localizer';
 import { getEnvFolder } from '../../models/env';
@@ -53,14 +52,11 @@ export class App extends React.Component {
 
 	public render(): JSX.Element {
 		return (
-			<div className="full-height">
-				<TitleBar/>
-				<ErrorsWrapper>
-					<Vitrine
-						settings={ this.config }
-					/>
-				</ErrorsWrapper>
-			</div>
+			<ErrorsWrapper>
+				<Vitrine
+					settings={ this.config }
+				/>
+			</ErrorsWrapper>
 		);
 	}
 }

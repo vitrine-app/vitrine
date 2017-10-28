@@ -1,9 +1,7 @@
 import * as jQuery from 'jquery';
 window.jQuery = window.$ = jQuery;
 import 'bootstrap-sass';
-import 'bootstrap-select';
-import 'electron-titlebar-absolute';
-import 'jquery-contextmenu';
+import 'bootstrap-select'
 
 import * as React from 'react';
 import { render } from 'react-dom';

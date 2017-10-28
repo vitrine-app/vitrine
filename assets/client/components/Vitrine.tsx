@@ -244,7 +244,6 @@ export class Vitrine extends VitrineComponent {
 			.on('server.stop-game', this.stopGame.bind(this))
 			.on('server.settings-updated', this.settingsUpdated.bind(this))
 			.on('server.server-error', this.serverError.bind(this));
-		;
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
 
@@ -297,9 +296,10 @@ export class Vitrine extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	vitrineApp: {
-		padding: `${29}px ${0} ${0}`,
+		padding: 0,
 		height: `${100}%`,
 		userSelect: 'none',
-		overflow: 'hidden'
+		overflow: 'hidden',
+		cursor: 'default'
 	}
 });

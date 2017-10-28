@@ -1,18 +1,19 @@
-import 'mocha';
 import { expect } from 'chai';
 
 import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from '../../../assets/server/api/IgdbWrapper';
 
 describe('IgdbWrapper searcher', () => {
 	let gamesArray: any;
-	it('Should return a 2 games length array', (done: Function) => {
+	before((done: Function) => {
 		getIgdbWrapperSearcher('Super Mario Galaxy', 2).then((games: any) => {
-			expect(games).to.be.a('array');
-
-			expect(games).to.have.length(2);
 			gamesArray = games;
 			done();
 		});
+	});
+	it('Should return a 2 games length array', (n) => {
+		expect(gamesArray).to.be.a('array');
+
+		expect(gamesArray).to.have.length(2);
 	});
 	it('Should return a games array with name and cover', () => {
 		expect(gamesArray[0]).to.be.a('object');

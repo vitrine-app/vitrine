@@ -121,6 +121,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	picture: {
 		width: `${100}%`,
 		height: `${100}%`,
+		cursor: 'pointer',
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: `${100}% ${100}%`,
 		transform: `scale(${1.02}%)`,
@@ -130,6 +131,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		position: 'absolute',
 		opacity: 0.6,
 		left: `${1.268}em`,
-		top: `${1.74}em`
+		top: `${1.74}em`,
+		cursor: 'pointer'
 	}
 });

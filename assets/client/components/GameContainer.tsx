@@ -47,17 +47,16 @@ export class GameContainer extends VitrineComponent {
 			gameContainer = (
 				<div className={`row ${css(styles.selectedGameCore)}`}>
 					<div className="col-md-8">
-						<h1 className={css(styles.selectedGameCoreH1)}>{ this.state.selectedGame.name }</h1>
-						<hr className={css(styles.selectedGameCoreHr)}/>
+						<h1 className={css(styles.selectedGameCoreH1)}>{this.state.selectedGame.name}</h1>
 						<div className={css(styles.selectedGameInfos)}>
 							<button
-								onClick={ launchGame.bind(null, this.state.selectedGame.uuid) }
+								onClick={launchGame.bind(null, this.state.selectedGame.uuid)}
 								className="btn btn-primary"
 							>
-								<i className="fa fa-play"/> { localizer.f('play') }
+								<i className="fa fa-play"/> {localizer.f('play')}
 							</button>
 							<span className={css(styles.selectedGameInfosSpan)}>
-								{ (this.state.selectedGame.timePlayed) ? (formatTimePlayed(this.state.selectedGame.timePlayed)) : ('') }
+								{(this.state.selectedGame.timePlayed) ? (formatTimePlayed(this.state.selectedGame.timePlayed)) : ('')}
 							</span>
 						</div>
 						<div className={css(styles.selectedGameInfos)}>
@@ -65,35 +64,35 @@ export class GameContainer extends VitrineComponent {
 								<div className="col-md-8">
 									<div className="row">
 										<div className="col-md-4">
-											<strong>{ localizer.f('developerLabel') }</strong>
+											<strong>{localizer.f('developerLabel')}</strong>
 										</div>
 										<div className="col-md-8">
-											{ this.state.selectedGame.details.developer }
+											{this.state.selectedGame.details.developer}
 										</div>
 									</div>
 									<div className="row">
 										<div className="col-md-4">
-											<strong>{ localizer.f('publisherLabel') }</strong>
+											<strong>{localizer.f('publisherLabel')}</strong>
 										</div>
 										<div className="col-md-8">
-											{ this.state.selectedGame.details.publisher }
+											{this.state.selectedGame.details.publisher}
 										</div>
 									</div>
 								</div>
 								<div className="col-md-4">
-									<CirclePercentage percentage={ this.state.selectedGame.details.rating } />
+									<CirclePercentage percentage={this.state.selectedGame.details.rating} />
 								</div>
 							</div>
 							<hr className={css(styles.selectedGameCoreHr)}/>
-							{ textEllipsis(this.state.selectedGame.details.summary, 750) }
+							<p>{textEllipsis(this.state.selectedGame.details.summary, 750)}</p>
 						</div>
 					</div>
 					<div className="col-md-4">
 						<BlurPicture
-							faIcon={ 'play' }
-							fontSize={ 125 }
-							background={ this.state.selectedGame.details.cover }
-							clickHandler={ launchGame.bind(null, this.state.selectedGame.uuid) }
+							faIcon={'play'}
+							fontSize={125}
+							background={this.state.selectedGame.details.cover}
+							clickHandler={launchGame.bind(null, this.state.selectedGame.uuid)}
 						/>
 					</div>
 				</div>
@@ -102,9 +101,9 @@ export class GameContainer extends VitrineComponent {
 		else {
 			gameContainer = (
 				<div className={css(styles.noSelectedGame)}>
-					<h1>{ localizer.f('welcomeMessage') }</h1>
+					<h1>{localizer.f('welcomeMessage')}</h1>
 					<hr className={css(styles.noSelectedGameH1)}/>
-					<p>{ localizer.f('desc') }</p>
+					<p>{localizer.f('desc')}</p>
 				</div>
 			);
 		}
@@ -113,14 +112,14 @@ export class GameContainer extends VitrineComponent {
 			<div className="row full-height">
 				<div className={`col-sm-8 col-lg-10 col-sm-offset-4 col-lg-offset-2 ${css(styles.selectedGameContainer)}`}>
 					<div className={`full-height selected-game-background`}>
-						{ gameContainer }
+						{gameContainer}
 						<div
 							className={css(styles.selectedGameBackground)}
 							style={{ backgroundImage: this.state.backgroundImage }}
 						/>
 					</div>
 				</div>
-				{ this.checkErrors() }
+				{this.checkErrors()}
 			</div>
 		);
 	}
@@ -158,10 +157,11 @@ const styles: React.CSSProperties = StyleSheet.create({
 	selectedGameCoreH1: {
 		fontWeight: 400,
 		fontSize: 33,
+		marginBottom: 40,
 		color: bootstrapVariables.textColor
 	},
 	selectedGameCoreHr: {
-		borderTop: `solid ${1}px ${rgba(210, 210, 210, 0.23)}`
+		borderTop: `solid ${1}px ${rgba(210, 210, 210, 0.15)}`
 	},
 	selectedGameInfos: {
 		backgroundColor: rgba(0, 0, 0, 0.49),

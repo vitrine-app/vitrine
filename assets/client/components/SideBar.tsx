@@ -62,14 +62,14 @@ export class SideBar extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	sideBarContainer: {
-		height: `${97}%`,
+		height: `${95}%`,
 		padding: 0,
 		position: 'absolute',
 		backgroundColor: bootstrapVariables.bodyBg,
 		width: `${16}%`
 	},
 	sideBarContent: {
-		height: `${96}%`,
+		height: `${100}%`,
 		overflowX: 'hidden',
 		overflowY: 'auto'
 	},
@@ -78,7 +78,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		borderTop: `solid ${1}px #565149`
 	},
 	gamesListUl: {
-		height: `${98}%`,
+		height: `${100}%`,
 		listStyleType: 'none',
 		padding: 0,
 		margin: 0

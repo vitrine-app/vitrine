@@ -32,13 +32,13 @@ module.exports = {
 				]
 			},
 			{
-				test: /\.(jpe?g|png|gif|ico)(.*?)?$/,
+				test: /\.(jpe?g|png|gif|ico|woff|woff2|eot|ttf|otf|svg)(.*?)?$/,
 				loader: 'base64-inline-loader?name=[name].[ext]'
-			},
+			}/*,
 			{
 				test: /\.(woff|woff2|eot|ttf|otf|svg)(.*?)?$/,
 				loader: 'base64-font-loader'
-			}
+			}*/
 		]
 	}
 };
