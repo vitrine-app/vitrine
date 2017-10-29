@@ -78,11 +78,21 @@ class OriginGamesCrawler {
 
 			if (OriginGamesCrawler.isGameAlreadyAdded(gameName)) {
 				counter++;
+				if (counter === files.length) {
+					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+					potentialGames.games = this.potentialGames;
+					this.callback(null, potentialGames);
+				}
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (gameName == playableGame.name) {
 					counter++;
+					if (counter === files.length) {
+						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+						potentialGames.games = this.potentialGames;
+						this.callback(null, potentialGames);
+					}
 					return;
 				}
 			}

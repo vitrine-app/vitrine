@@ -51,11 +51,21 @@ class SteamGamesCrawler {
 
 			if (SteamGamesCrawler.isGameAlreadyAdded(gameManifest.name)) {
 				counter++;
+				if (counter === array.length) {
+					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+					potentialGames.games = this.potentialGames;
+					this.callback(null, potentialGames);
+				}
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (gameManifest.appid == playableGame.details.steamId) {
 					counter++;
+					if (counter === array.length) {
+						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+						potentialGames.games = this.potentialGames;
+						this.callback(null, potentialGames);
+					}
 					return;
 				}
 			}

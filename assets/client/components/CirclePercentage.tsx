@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 
@@ -14,16 +15,28 @@ export class CirclePercentage extends VitrineComponent {
 		return (
 			<svg viewBox="0 0 36 36" className={css(styles.svg)}>
 				<path
+					className={css(styles.backgroundCircle)}
+					d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+					strokeDasharray={`100, 100`}
+				/>
+				<path
 					className={css(styles.circle)}
 					d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
 					strokeDasharray={`${this.props.percentage}, 100`}
 				/>
 				<text
-					x="10"
-					y="22.35"
+					x={9}
+					y={21}
 					className={css(styles.text)}
 				>
 					{this.props.percentage}
+				</text>
+				<text
+					x={14}
+					y={28}
+					className={css(styles.backgroundText)}
+				>
+					/ 100
 				</text>
 				{this.checkErrors()}
 			</svg>
@@ -52,8 +65,20 @@ const styles: React.CSSProperties = StyleSheet.create({
 		animationName: progressKeyframe,
 		animation: '500ms ease-out forwards'
 	},
+	backgroundCircle: {
+		stroke: rgba(0, 0, 0, 0.3),
+		fill: 'none',
+		strokeWidth: 2.8,
+		strokeLinecap: 'round',
+		animationName: progressKeyframe,
+		animation: '500ms ease-out forwards'
+	},
 	text: {
 		fill: bootstrapVariables.textColor,
 		fontSize: 13
+	},
+	backgroundText: {
+		fill: rgba(213, 213, 213, 0.4),
+		fontSize: 5
 	}
 });

@@ -15,6 +15,7 @@ import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { UpdateModal } from './UpdateModal';
 import { SettingsModal } from './SettingsModal';
 import { launchGame } from '../helpers';
+import { localizer } from '../Localizer';
 
 export class Vitrine extends VitrineComponent {
 	public constructor(props: any) {
@@ -27,6 +28,7 @@ export class Vitrine extends VitrineComponent {
 			releaseVersion: null,
 			playableGames: new GamesCollection<PlayableGame>(),
 			potentialGames: new GamesCollection<PotentialGame>(),
+			refreshingGames: false,
 			selectedGame: null,
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
@@ -124,7 +126,8 @@ export class Vitrine extends VitrineComponent {
 
 	private addPotentialGames(event: Electron.Event, potentialGames: PotentialGame[]) {
 		this.setState({
-			potentialGames: new GamesCollection<PotentialGame>(potentialGames)
+			potentialGames: new GamesCollection<PotentialGame>(potentialGames),
+			refreshingGames: false
 		});
 	}
 
@@ -157,6 +160,13 @@ export class Vitrine extends VitrineComponent {
 
 	private serverError(event: Event, error: Error) {
 		this.throwError(error.message);
+	}
+
+	private taskBarRefreshBtnClickHandler() {
+		ipcRenderer.send('client.refresh-potential-games');
+		this.setState({
+			refreshingGames: true
+		});
 	}
 
 	private sideBarGameClickHandler(uuid: string) {
@@ -258,6 +268,8 @@ export class Vitrine extends VitrineComponent {
 			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
 				<TaskBar
 					potentialGames={this.state.potentialGames}
+					refreshingGames={this.state.refreshingGames}
+					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
 					updateProgress={this.state.updateProgress}
 				/>
 				<SideBar
@@ -284,9 +296,15 @@ export class Vitrine extends VitrineComponent {
 					firstLaunch={this.state.firstLaunch}
 				/>
 				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={Vitrine.launchGameContextClickHandler.bind(this)}>Play</MenuItem>
-					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>Edit</MenuItem>
-					<MenuItem onClick={Vitrine.deleteGameContextClickHandler.bind(this)}>Delete</MenuItem>
+					<MenuItem onClick={Vitrine.launchGameContextClickHandler.bind(this)}>
+						{localizer.f('play')}
+					</MenuItem>
+					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>
+						{localizer.f('edit')}
+					</MenuItem>
+					<MenuItem onClick={Vitrine.deleteGameContextClickHandler.bind(this)}>
+						{localizer.f('delete')}
+					</MenuItem>
 				</ContextMenu>
 				{this.checkErrors()}
 			</div>

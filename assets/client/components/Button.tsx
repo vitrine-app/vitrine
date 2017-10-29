@@ -78,7 +78,7 @@ export class Button extends VitrineComponent {
 const styles: React.CSSProperties = StyleSheet.create({
 	button: {
 		display: 'inline-block',
-		padding: `${7}px ${8}px ${3}px ${8}px`,
+		padding: `${5}px ${8}px ${4}px ${8}px`,
 		borderRadius: 3,
 		cursor: 'pointer',
 		transition: `${100}ms ease`,

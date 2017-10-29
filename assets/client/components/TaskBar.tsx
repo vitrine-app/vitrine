@@ -25,8 +25,8 @@ export class TaskBar extends VitrineComponent {
 		};
 	}
 
-	private static refreshBtnClickHandler() {
-		ipcRenderer.send('client.refresh-potential-games');
+	public componentWillReceiveProps(props) {
+		console.log(props.refreshingGames)
 	}
 
 	private minimizeBtnClickHandler() {
@@ -59,9 +59,9 @@ export class TaskBar extends VitrineComponent {
 							</div>
 							<div className="col-md-4">
 								<Button
-									iconName={'refresh'}
+									iconName={(this.props.refreshingGames) ? ('refresh fa-spin') : ('refresh')}
 									tooltip={localizer.f('refreshLabel')}
-									onClick={TaskBar.refreshBtnClickHandler}
+									onClick={this.props.refreshBtnCallback}
 								/>
 							</div>
 							<div className="col-md-4">

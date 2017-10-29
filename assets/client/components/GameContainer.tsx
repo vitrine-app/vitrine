@@ -141,7 +141,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		opacity: 0.8,
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: 'cover',
-		filter: `blur(${10}px)`,
+		filter: `blur(${4}px)`,
 		transform: `scale(${1.02})`
 	},
 	noSelectedGame: {

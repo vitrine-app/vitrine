@@ -106,6 +106,7 @@ export class AddGameModal extends VitrineComponent {
 	}
 
 	private searchIgdbBtnClickHandler() {
+		$('#igdb-research-modal').modal('show');
 		ipcRenderer.send('client.search-igdb-games', this.state.name);
 	}
 
@@ -171,6 +172,7 @@ export class AddGameModal extends VitrineComponent {
 							<div className={`modal-body ${css(styles.modalBody)}`}>
 								<div className="row">
 									<div className="col-md-2">
+										<label className={css(styles.coverLabel)}>{localizer.f('coverLabel')}</label>
 										<BlurPicture
 											faIcon={'folder-open-o'}
 											fontSize={55}
@@ -372,5 +374,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 	formTextArea: {
 		resize: 'none',
 		height: `${7}em`
+	},
+	coverLabel: {
+		paddingLeft: 40
 	}
 });

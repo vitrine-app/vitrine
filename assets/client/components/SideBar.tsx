@@ -66,7 +66,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		padding: 0,
 		position: 'absolute',
 		backgroundColor: bootstrapVariables.bodyBg,
-		width: `${16}%`
+		width: `${16}%`,
+		boxShadow: `${6}px ${6}px ${9}px ${rgba(0, 0, 0, 0.2)}`
 	},
 	sideBarContent: {
 		height: `${100}%`,
