@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
-import { getGamesFolder, uuidV5 } from '../models/env';
+import { getEnvFolder, uuidV5 } from '../models/env';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
@@ -202,7 +202,7 @@ export class VitrineServer {
 		this.playableGames.removeGame(gameId, (error) => {
 			if (error)
 				event.sender.send('server.server-error', error);
-			let gameDirectory: string = path.resolve(getGamesFolder(), gameId);
+			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
 			rimraf(gameDirectory, () => {
 				event.sender.send('server.remove-playable-game', gameId);
 			});
@@ -383,7 +383,7 @@ export class VitrineServer {
 		delete game.details.date;
 		delete game.details.arguments;
 
-		let gameDirectory: string = path.resolve(getGamesFolder(), game.uuid);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		if (!editing && fs.existsSync(configFilePath))

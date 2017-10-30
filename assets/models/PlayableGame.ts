@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { PotentialGame } from './PotentialGame';
-import { getGamesFolder } from './env';
+import { getEnvFolder } from './env';
 
 export class PlayableGame extends PotentialGame {
 	public timePlayed: number;
@@ -15,7 +15,7 @@ export class PlayableGame extends PotentialGame {
 	public addPlayTime(timePlayed: number, errorCallback?: Function) {
 		this.timePlayed += timePlayed;
 
-		let configFilePath: string = path.resolve(getGamesFolder(), this.uuid, 'config.json');
+		let configFilePath: string = path.resolve(getEnvFolder('games'), this.uuid, 'config.json');
 		fs.writeFile(configFilePath, JSON.stringify(this, null, 2), (error) => {
 			if (error && errorCallback)
 				errorCallback(error);

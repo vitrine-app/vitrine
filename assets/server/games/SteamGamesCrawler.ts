@@ -6,7 +6,7 @@ import { AcfParser } from '../api/AcfParser';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getGamesFolder, uuidV5 } from '../../models/env';
+import { getEnvFolder, uuidV5 } from '../../models/env';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 
 class SteamGamesCrawler {
@@ -95,7 +95,7 @@ class SteamGamesCrawler {
 	private static isGameAlreadyAdded(name: string): boolean {
 		let gameId: string = uuidV5(name);
 
-		let gameDirectory: string = path.resolve(getGamesFolder(), gameId);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		return fs.existsSync(configFilePath);
