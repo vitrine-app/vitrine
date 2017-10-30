@@ -4,7 +4,8 @@ export enum GameSource {
 	LOCAL,
 	STEAM,
 	BATTLE_NET,
-	ORIGIN
+	ORIGIN,
+	ROM
 }
 
 export class PotentialGame {

@@ -6,7 +6,7 @@ import { AcfParser } from '../api/AcfParser';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getEnvFolder, getGamesFolder, uuidV5 } from '../../models/env';
+import { getGamesFolder, uuidV5 } from '../../models/env';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 
 class SteamGamesCrawler {
@@ -104,7 +104,7 @@ class SteamGamesCrawler {
 
 export function getSteamCrawler(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamGamesCrawler(steamConfig, playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
+		new SteamGamesCrawler(steamConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)
 				reject(error);
 			else

@@ -25,10 +25,6 @@ export class TaskBar extends VitrineComponent {
 		};
 	}
 
-	public componentWillReceiveProps(props) {
-		console.log(props.refreshingGames)
-	}
-
 	private minimizeBtnClickHandler() {
 		this.currentWindow.minimize();
 	}

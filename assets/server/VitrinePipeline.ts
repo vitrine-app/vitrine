@@ -28,12 +28,22 @@ export class VitrinePipeline {
 		fs.ensureDirSync(this.gamesFolderPath);
 		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, 'vitrine_config.json');
 		fs.ensureFileSync(this.vitrineConfigFilePath);
-		let vitrineConfig: any = fs.readJSONSync(this.vitrineConfigFilePath, {throws: false});
-
+		let vitrineConfig: any = this.includeEmulatorsConfig(fs.readJSONSync(this.vitrineConfigFilePath, { throws: false }));
 		this.launchMainClient(vitrineConfig);
 	}
 
-	public launchMainClient(vitrineConfig: any) {
+	private includeEmulatorsConfig(vitrineConfig: any) {
+		if (!vitrineConfig.emulated)
+			return vitrineConfig;
+		let consolesConfigFilePath: string = path.resolve(this.configFolderPath, 'consoles.json');
+		let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
+		let newVitrineConfig: any = { ...vitrineConfig };
+		newVitrineConfig.emulated.consoles = fs.readJSONSync(consolesConfigFilePath, { throws: false });
+		newVitrineConfig.emulated.emulators = fs.readJSONSync(emulatorsConfigFilePath, { throws: false });
+		return newVitrineConfig;
+	}
+
+	private launchMainClient(vitrineConfig: any) {
 		this.serverInstance = new VitrineServer(vitrineConfig, this.vitrineConfigFilePath);
 		this.serverInstance.registerEvents();
 		this.serverInstance.run(!this.prod);

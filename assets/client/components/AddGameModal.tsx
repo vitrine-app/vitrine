@@ -133,8 +133,7 @@ export class AddGameModal extends VitrineComponent {
 	public componentWillReceiveProps(props: any) {
 		if (props.potentialGameToAdd) {
 			let gameToAdd: PotentialGame = props.potentialGameToAdd;
-			let args: string[] = gameToAdd.commandLine.slice();
-			let executable: string = args.shift();
+			let [executable, args] = gameToAdd.commandLine;
 
 			this.setState({
 				isEditing: props.isEditing,
@@ -142,7 +141,7 @@ export class AddGameModal extends VitrineComponent {
 				cover: gameToAdd.details.cover,
 				source: gameToAdd.source,
 				executable: executable,
-				arguments: args.join(' '),
+				arguments: args,
 				series: (gameToAdd.details.series) ? (gameToAdd.details.series) : (''),
 				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate / 1000).format('DD/MM/YYYY')) : (''),
 				developer: (gameToAdd.details.developer) ? (gameToAdd.details.developer) : (''),

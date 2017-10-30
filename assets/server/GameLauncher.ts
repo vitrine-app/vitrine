@@ -1,4 +1,4 @@
-import { execFile, ChildProcess } from 'child_process';
+import * as childProcess from 'child_process';
 import * as path from 'path';
 
 import { GameSource } from '../models/PotentialGame';
@@ -20,6 +20,10 @@ class GameLauncher {
 				this.launchStandardGame(callback);
 				break;
 			}
+			case GameSource.ROM: {
+				this.launchStandardGame(callback);
+				break;
+			}
 			case GameSource.ORIGIN: {
 				this.launchStandardGame(callback);
 				break;
@@ -32,12 +36,14 @@ class GameLauncher {
 	}
 
 	private launchStandardGame(callback: Function) {
+		let [executable, args] = this.game.commandLine;
+
 		let beginTime: Date = new Date();
-		let gameProcess = execFile(this.scriptPath, this.game.commandLine, null,(error) => {
-			if (error)
+		childProcess.exec(`"${executable}" ${args}`, (error: Error) => {
+			if (error) {
 				callback(error, null);
-		});
-		gameProcess.on('exit', () => {
+				return;
+			}
 			let endTime: Date = new Date();
 			let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
 			callback(null, secondsPlayed);
@@ -45,25 +51,28 @@ class GameLauncher {
 	}
 
 	private launchSteamGame(callback: Function) {
-		let inWatcherProcess: ChildProcess = execFile(this.watcherPath, [this.game.details.steamId], null,(error) => {
-			if (error)
+		childProcess.exec(`"${this.watcherPath}" ${this.game.details.steamId}`, (error: Error) => {
+			if (error) {
 				callback(error, null);
-		});
-		execFile(this.scriptPath, this.game.commandLine, null, (error) => {
-			if (error)
-				callback(error, null);
-		});
-		inWatcherProcess.on('exit', () => {
+				return;
+			}
 			let beginTime: Date = new Date();
-			let outWatcherProcess: ChildProcess = execFile(this.watcherPath, [this.game.details.steamId], null, (error) => {
-				if (error)
+			childProcess.exec(`"${this.watcherPath}" ${this.game.details.steamId}`, (error: Error) => {
+				if (error) {
 					callback(error, null);
-			});
-			outWatcherProcess.on('exit', () => {
+					return;
+				}
 				let endTime: Date = new Date();
 				let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
 				callback(null, secondsPlayed);
 			});
+		});
+
+		let [executable, args] = this.game.commandLine;
+		console.log(executable, '|', args.replace(/\\/g, '/'));
+		childProcess.exec(`"${executable}" ${args.replace(/\\/g, '/')}`, (error: Error) => {
+			if (error)
+				callback(error, null);
 		});
 	}
 }
