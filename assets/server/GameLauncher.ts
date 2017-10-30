@@ -69,7 +69,6 @@ class GameLauncher {
 		});
 
 		let [executable, args] = this.game.commandLine;
-		console.log(executable, '|', args.replace(/\\/g, '/'));
 		childProcess.exec(`"${executable}" ${args.replace(/\\/g, '/')}`, (error: Error) => {
 			if (error)
 				callback(error, null);
