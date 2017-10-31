@@ -154,10 +154,9 @@ export class Vitrine extends VitrineComponent {
 					playableGames: currentPlayableGames,
 					launchedGame: null,
 					selectedGame
-				});
+				}, this.forceUpdate.bind(this));
 			});
 		}).catch((error: Error) => {
-			console.log(6);
 			this.throwError(error);
 		});
 	}

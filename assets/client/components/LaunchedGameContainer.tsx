@@ -29,12 +29,10 @@ export class LaunchedGameContainer extends VitrineComponent {
 
 const backgroundKeyframes: React.CSSProperties = {
 	'0%': {
-		width: `${99}%`,
-		transform: `scale(${1.02})`
+		backgroundSize: `${100}%`
 	},
 	'100%': {
-		width: `${92}%`,
-		transform: `scale(${1.15})`
+		backgroundSize: `${110}%`
 	}
 };
 
@@ -58,16 +56,17 @@ const styles: React.CSSProperties = StyleSheet.create({
 	launchedGameBackground: {
 		position: 'absolute',
 		zIndex: -1,
+		width: `${100}%`,
 		height: `${100}%`,
 		top: 0,
 		left: 0,
 		opacity: 0.8,
 		backgroundRepeat: 'no-repeat',
-		backgroundSize: 'cover',
-		filter: `blur(${10}px)`,
+		backgroundPosition: 'center',
+		filter: `blur(${8}px)`,
 		animationName: backgroundKeyframes,
 		animationDuration: `${20}s`,
-		animationTimingFunction: 'linear',
+		animationTimingFunction: 'ease-in-out',
 		animationIterationCount: 'infinite',
 		animationDirection: 'alternate'
 	}

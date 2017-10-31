@@ -44,7 +44,7 @@ export class GamesCollection<T> {
 	}
 
 	public editGame(game: T, callback?: Function) {
-		this.getGame(game['uuid']).then(([currentGame]) => {
+		this.getGame(game['uuid']).then((currentGame: T) => {
 			Object.assign(currentGame, game);
 			if (callback)
 				callback();

@@ -369,7 +369,6 @@ export class VitrineServer {
 	}
 
 	private registerGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
-		console.log(gameForm.executable, gameForm.arguments);
 		game.commandLine = [
 			gameForm.executable,
 		];
