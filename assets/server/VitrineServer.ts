@@ -164,7 +164,7 @@ export class VitrineServer {
 	}
 
 	private editGame(event: Electron.Event, gameUuid: string, gameForm: any) {
-		this.playableGames.getGame(gameUuid).then(([editedGame]) => {
+		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
 			editedGame.name = gameForm.name;
 			editedGame.commandLine = [];
 			editedGame.details = gameForm;
@@ -176,19 +176,19 @@ export class VitrineServer {
 	}
 
 	private launchGame(event: Electron.Event, gameUuid: string) {
-		this.playableGames.getGame(gameUuid).then(([game]) => {
-			if (game.uuid !== uuidV5(game.name))
+		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
+			if (launchingGame.uuid !== uuidV5(launchingGame.name))
 				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
-			getGameLauncher(game).then((secondsPlayed: number) => {
+			getGameLauncher(launchingGame).then((secondsPlayed: number) => {
 				this.gameLaunched = false;
 				console.log('You played', secondsPlayed, 'seconds.');
-				game.addPlayTime(secondsPlayed, (error) => {
+				launchingGame.addPlayTime(secondsPlayed, (error) => {
 					return VitrineServer.throwServerError(event, error);
 				});
-				event.sender.send('server.stop-game', gameUuid, game.timePlayed);
+				event.sender.send('server.stop-game', gameUuid, launchingGame.timePlayed);
 			}).catch((error: Error) => {
 				this.gameLaunched = false;
 				return VitrineServer.throwServerError(event, error);

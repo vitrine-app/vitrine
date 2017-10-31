@@ -134,7 +134,7 @@ export class Vitrine extends VitrineComponent {
 
 	private launchGame(gameUuid: string) {
 		ipcRenderer.send('client.launch-game', gameUuid);
-		this.state.playableGames.getGame(gameUuid).then(([launchedGame]) => {
+		this.state.playableGames.getGame(gameUuid).then((launchedGame: PlayableGame) => {
 			setTimeout(() => {
 				this.setState({
 					launchedGame
@@ -147,7 +147,7 @@ export class Vitrine extends VitrineComponent {
 
 	private stopGame(event: Electron.Event, gameUuid: string, totalTimePlayed: number) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.getGame(gameUuid).then(([selectedGame]) => {
+		currentPlayableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			selectedGame.timePlayed = totalTimePlayed;
 			currentPlayableGames.editGame(selectedGame, () => {
 				this.setState({
@@ -187,7 +187,7 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private sideBarGameClickHandler(uuid: string) {
-		this.state.playableGames.getGame(uuid).then(([selectedGame]) => {
+		this.state.playableGames.getGame(uuid).then((selectedGame: PlayableGame) => {
 			this.setState({
 				selectedGame
 			});
@@ -213,7 +213,7 @@ export class Vitrine extends VitrineComponent {
 
 	private editGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.state.playableGames.getGame(gameUuid).then(([selectedGame]) => {
+		this.state.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			this.potentialGameToAddUpdateHandler(selectedGame, true);
 		}).catch((error: Error) => {
 			return this.throwError(error);

@@ -23,7 +23,7 @@ export class GamesCollection<T> {
 			this._games.forEach((game: T) => {
 				if (game['uuid'] === gameUuid) {
 					found = true;
-					resolve([game, counter]);
+					resolve(game);
 				}
 				counter++;
 				if (counter === this._games.length && !found)
