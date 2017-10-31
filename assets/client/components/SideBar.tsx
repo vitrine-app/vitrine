@@ -6,9 +6,6 @@ import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { PlayableGame } from '../../models/PlayableGame';
-import { launchGame } from '../helpers';
-
-import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class SideBar extends VitrineComponent {
 	public constructor(props: any) {
@@ -46,7 +43,7 @@ export class SideBar extends VitrineComponent {
 										((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
 									}
 									onClick={this.clickGameHandler.bind(this)}
-									onDoubleClick={launchGame.bind(null, game.uuid)}
+									onDoubleClick={this.props.launchGameCallback.bind(null, game.uuid)}
 								>
 									{game.name}
 								</li>
@@ -65,7 +62,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		height: `${95}%`,
 		padding: 0,
 		position: 'absolute',
-		backgroundColor: bootstrapVariables.bodyBg,
+		backgroundColor: rgba(0, 0, 0, 0),
 		width: `${16}%`,
 		boxShadow: `${6}px ${6}px ${9}px ${rgba(0, 0, 0, 0.2)}`
 	},

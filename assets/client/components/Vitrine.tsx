@@ -14,7 +14,6 @@ import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { UpdateModal } from './UpdateModal';
 import { SettingsModal } from './SettingsModal';
-import { launchGame } from '../helpers';
 import { localizer } from '../Localizer';
 
 export class Vitrine extends VitrineComponent {
@@ -103,9 +102,9 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private removePlayableGame(event: Electron.Event, gameId: string) {
+	private removePlayableGame(event: Electron.Event, gameUuid: string) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.removeGame(gameId, (error, game: PlayableGame, index: number) => {
+		currentPlayableGames.removeGame(gameUuid, (error, game: PlayableGame, index: number) => {
 			if (error)
 				return this.throwError(error);
 			let currentSelectedGame: PlayableGame = this.state.selectedGame;
@@ -131,9 +130,18 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private stopGame(event: Electron.Event, gameId: string, totalTimePlayed: number) {
+	private launchGame(gameUuid: string) {
+		// ipcRenderer.send('client.launch-game', gameUuid);
+		this.state.playableGames.getGame(gameUuid).then(([selectedGame]) => {
+			console.log(selectedGame);
+		}).catch((error: Error) => {
+			this.throwError(error);
+		});
+	}
+
+	private stopGame(event: Electron.Event, gameUuid: string, totalTimePlayed: number) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.getGame(gameId).then(([game]) => {
+		currentPlayableGames.getGame(gameUuid).then(([game]) => {
 			game.timePlayed = totalTimePlayed;
 			currentPlayableGames.editGame(game, () => {
 				this.setState({
@@ -189,14 +197,14 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private static launchGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
-		let gameId: string = target.children[0].id.replace('game-', '');
-		launchGame(gameId);
+	private launchGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+		let gameUuid: string = target.children[0].id.replace('game-', '');
+		this.launchGame(gameUuid);
 	}
 
 	private editGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
-		let gameId: string = target.children[0].id.replace('game-', '');
-		this.state.playableGames.getGame(gameId).then(([selectedGame]) => {
+		let gameUuid: string = target.children[0].id.replace('game-', '');
+		this.state.playableGames.getGame(gameUuid).then(([selectedGame]) => {
 			this.potentialGameToAddUpdateHandler(selectedGame, true);
 		}).catch((error: Error) => {
 			return this.throwError(error);
@@ -204,8 +212,8 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private static deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
-		let gameId: string = target.children[0].id.replace('game-', '');
-		ipcRenderer.send('client.remove-game', gameId);
+		let gameUuid: string = target.children[0].id.replace('game-', '');
+		ipcRenderer.send('client.remove-game', gameUuid);
 	}
 
 	private keyDownHandler(event: KeyboardEvent) {
@@ -236,7 +244,7 @@ export class Vitrine extends VitrineComponent {
 					break;
 				event.preventDefault();
 
-				launchGame(this.state.selectedGame.uuid);
+				this.launchGame(this.state.selectedGame.uuid);
 				break;
 			}
 		}
@@ -274,11 +282,13 @@ export class Vitrine extends VitrineComponent {
 				/>
 				<SideBar
 					playableGames={this.state.playableGames}
-					gameClickHandler={this.sideBarGameClickHandler.bind(this)}
 					selectedGame={this.state.selectedGame}
+					gameClickHandler={this.sideBarGameClickHandler.bind(this)}
+					launchGameCallback={this.launchGame.bind(this)}
 				/>
 				<GameContainer
 					selectedGame={this.state.selectedGame}
+					launchGameCallback={this.launchGame.bind(this)}
 				/>
 				<AddGameModal
 					potentialGameToAdd={this.state.potentialGameToAdd}
@@ -296,7 +306,7 @@ export class Vitrine extends VitrineComponent {
 					firstLaunch={this.state.firstLaunch}
 				/>
 				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={Vitrine.launchGameContextClickHandler.bind(this)}>
+					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
 						{localizer.f('play')}
 					</MenuItem>
 					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>

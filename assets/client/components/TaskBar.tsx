@@ -10,8 +10,6 @@ import { MaximizeIcon } from './icons/MaximizeIcon';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
-
 export class TaskBar extends VitrineComponent {
 	private currentWindow: BrowserWindow;
 	private colorStyles: any;
@@ -115,7 +113,7 @@ export class TaskBar extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	taskBar: {
-		backgroundColor: bootstrapVariables.bodyBg,
+		backgroundColor: rgba(0, 0, 0, 0),
 		height: `${5}%`,
 		borderTop: `solid ${1}px ${rgba(31, 30, 30, 0.63)}`,
 		borderBottom: `solid ${1}px ${rgba(31, 30, 30, 0.63)}`,

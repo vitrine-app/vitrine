@@ -28,7 +28,7 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 
 export function downloadImage(url: string, path: string): Promise<any> {
 	return new Promise((resolve, reject) => {
-		if (!url || !fs.existsSync(url.substring(7))) {
+		if (!url || (url.startsWith('file://') && !fs.existsSync(url.substring(7)))) {
 			resolve(false);
 			return;
 		}

@@ -163,8 +163,8 @@ export class VitrineServer {
 		this.registerGame(event, addedGame, gameForm, false);
 	}
 
-	private editGame(event: Electron.Event, gameId: string, gameForm: any) {
-		this.playableGames.getGame(gameId).then(([editedGame]) => {
+	private editGame(event: Electron.Event, gameUuid: string, gameForm: any) {
+		this.playableGames.getGame(gameUuid).then(([editedGame]) => {
 			editedGame.name = gameForm.name;
 			editedGame.commandLine = [];
 			editedGame.details = gameForm;
@@ -175,8 +175,8 @@ export class VitrineServer {
 		});
 	}
 
-	private launchGame(event: Electron.Event, gameId: string) {
-		this.playableGames.getGame(gameId).then(([game]) => {
+	private launchGame(event: Electron.Event, gameUuid: string) {
+		this.playableGames.getGame(gameUuid).then(([game]) => {
 			if (game.uuid !== uuidV5(game.name))
 				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 			if (this.gameLaunched)
@@ -188,7 +188,7 @@ export class VitrineServer {
 				game.addPlayTime(secondsPlayed, (error) => {
 					return VitrineServer.throwServerError(event, error);
 				});
-				event.sender.send('server.stop-game', gameId, game.timePlayed);
+				event.sender.send('server.stop-game', gameUuid, game.timePlayed);
 			}).catch((error) => {
 				this.gameLaunched = false;
 				return VitrineServer.throwServerError(event, error);
@@ -198,13 +198,13 @@ export class VitrineServer {
 		});
 	}
 
-	private removeGame(event: Electron.Event, gameId: string) {
-		this.playableGames.removeGame(gameId, (error) => {
+	private removeGame(event: Electron.Event, gameUuid: string) {
+		this.playableGames.removeGame(gameUuid, (error) => {
 			if (error)
 				event.sender.send('server.server-error', error);
-			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
+			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 			rimraf(gameDirectory, () => {
-				event.sender.send('server.remove-playable-game', gameId);
+				event.sender.send('server.remove-playable-game', gameUuid);
 			});
 		});
 	}
@@ -402,8 +402,10 @@ export class VitrineServer {
 
 	private downloadGamePictures(event: Electron.Event, configFilePath: string, game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any, editing: boolean) {
 		downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
+			console.log('[1]:', isStored);
 			game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
 			downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
+				console.log('[2]:', isStored);
 				game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
 				if (game.details.steamId)
 					delete game.details.screenshots;

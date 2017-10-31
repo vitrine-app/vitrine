@@ -7,7 +7,7 @@ import { rgba } from 'css-verbose';
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
 import { CirclePercentage } from './CirclePercentage';
-import { formatTimePlayed, launchGame, urlify } from '../helpers';
+import { formatTimePlayed, urlify } from '../helpers';
 import { localizer } from '../Localizer';
 
 import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
@@ -50,7 +50,7 @@ export class GameContainer extends VitrineComponent {
 						<h1 className={css(styles.selectedGameCoreH1)}>{this.state.selectedGame.name}</h1>
 						<div className={css(styles.selectedGameInfos)}>
 							<button
-								onClick={launchGame.bind(null, this.state.selectedGame.uuid)}
+								onClick={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
 								className="btn btn-primary"
 							>
 								<i className="fa fa-play"/> {localizer.f('play')}
@@ -92,7 +92,7 @@ export class GameContainer extends VitrineComponent {
 							faIcon={'play'}
 							fontSize={125}
 							background={this.state.selectedGame.details.cover}
-							clickHandler={launchGame.bind(null, this.state.selectedGame.uuid)}
+							clickHandler={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
 						/>
 					</div>
 				</div>

@@ -93,9 +93,9 @@ class SteamGamesCrawler {
 	}
 
 	private static isGameAlreadyAdded(name: string): boolean {
-		let gameId: string = uuidV5(name);
+		let gameUuid: string = uuidV5(name);
 
-		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameId);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		return fs.existsSync(configFilePath);
