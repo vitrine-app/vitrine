@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';
@@ -15,8 +14,8 @@ import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { UpdateModal } from './UpdateModal';
 import { SettingsModal } from './SettingsModal';
+import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
-import { urlify } from '../helpers';
 
 export class Vitrine extends VitrineComponent {
 	public constructor(props: any) {
@@ -136,9 +135,11 @@ export class Vitrine extends VitrineComponent {
 	private launchGame(gameUuid: string) {
 		ipcRenderer.send('client.launch-game', gameUuid);
 		this.state.playableGames.getGame(gameUuid).then(([launchedGame]) => {
-			this.setState({
-				launchedGame
-			});
+			setTimeout(() => {
+				this.setState({
+					launchedGame
+				});
+			}, 100);
 		}).catch((error: Error) => {
 			this.throwError(error);
 		});
@@ -146,14 +147,17 @@ export class Vitrine extends VitrineComponent {
 
 	private stopGame(event: Electron.Event, gameUuid: string, totalTimePlayed: number) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.getGame(gameUuid).then(([game]) => {
-			game.timePlayed = totalTimePlayed;
-			currentPlayableGames.editGame(game, () => {
+		currentPlayableGames.getGame(gameUuid).then(([selectedGame]) => {
+			selectedGame.timePlayed = totalTimePlayed;
+			currentPlayableGames.editGame(selectedGame, () => {
 				this.setState({
-					playableGames: currentPlayableGames
+					playableGames: currentPlayableGames,
+					launchedGame: null,
+					selectedGame
 				});
 			});
 		}).catch((error: Error) => {
+			console.log(6);
 			this.throwError(error);
 		});
 	}
@@ -317,17 +321,9 @@ export class Vitrine extends VitrineComponent {
 				</ContextMenu>
 			</div>
 		) : (
-			<div>
-				<div className={css(styles.launchedGameDiv)}>
-					<span className={css(styles.launchedGameTitle)}>Vous êtes en train de jouer à {this.state.launchedGame.name}.</span>
-					<hr className={css(styles.launchedGameHr)}/>
-					<span className={css(styles.launchedGameSubTitle)}>Amusez-vous bien !</span>
-				</div>
-				<div
-					className={css(styles.launchedGameBackground)}
-					style={{ backgroundImage: urlify(this.state.launchedGame.details.backgroundScreen) }}
-				/>
-			</div>
+			<LaunchedGameContainer
+				launchedGame={this.state.launchedGame}
+			/>
 		);
 		return (
 			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
@@ -352,34 +348,5 @@ const styles: React.CSSProperties = StyleSheet.create({
 		userSelect: 'none',
 		overflow: 'hidden',
 		cursor: 'default'
-	},
-	launchedGameDiv: {
-		textAlign: 'center',
-		marginTop: `${29}vh`
-	},
-	launchedGameTitle: {
-		fontSize: 50,
-		color: '#FFFFFF'
-	},
-	launchedGameHr: {
-		margin: `${10}px ${40}vw`,
-		borderColor: rgba(255, 255, 255, 0.45),
-	},
-	launchedGameSubTitle: {
-		fontSize: 25,
-		color: rgba(255, 255, 255, 0.7)
-	},
-	launchedGameBackground: {
-		position: 'absolute',
-		zIndex: -1,
-		width: `${99}%`,
-		height: `${100}%`,
-		top: 0,
-		left: 0,
-		opacity: 0.8,
-		backgroundRepeat: 'no-repeat',
-		backgroundSize: 'cover',
-		filter: `blur(${10}px)`,
-		transform: `scale(${1.02})`
 	}
 });

@@ -40,11 +40,7 @@ class GameLauncher {
 		let commandLine: string = (args) ? (`"${executable}" ${args}`) : (`"${executable}"`);
 
 		let beginTime: Date = new Date();
-		childProcess.exec(commandLine, (error: Error) => {
-			if (error) {
-				callback(error, null);
-				return;
-			}
+		childProcess.exec(commandLine, () => {
 			let endTime: Date = new Date();
 			let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
 			callback(null, secondsPlayed);

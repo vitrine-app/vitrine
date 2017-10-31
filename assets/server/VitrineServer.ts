@@ -170,7 +170,7 @@ export class VitrineServer {
 			editedGame.details = gameForm;
 
 			this.registerGame(event, editedGame, gameForm, true);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);
 		});
 	}
@@ -189,11 +189,11 @@ export class VitrineServer {
 					return VitrineServer.throwServerError(event, error);
 				});
 				event.sender.send('server.stop-game', gameUuid, game.timePlayed);
-			}).catch((error) => {
+			}).catch((error: Error) => {
 				this.gameLaunched = false;
 				return VitrineServer.throwServerError(event, error);
 			});
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);
 		});
 	}
