@@ -36,10 +36,11 @@ class GameLauncher {
 	}
 
 	private launchStandardGame(callback: Function) {
-		let [executable, args] = this.game.commandLine;
+		let [executable, args]: string[] = this.game.commandLine;
+		let commandLine: string = (args) ? (`"${executable}" ${args}`) : (`"${executable}"`);
 
 		let beginTime: Date = new Date();
-		childProcess.exec(`"${executable}" ${args}`, (error: Error) => {
+		childProcess.exec(commandLine, (error: Error) => {
 			if (error) {
 				callback(error, null);
 				return;
@@ -68,10 +69,11 @@ class GameLauncher {
 			});
 		});
 
-		let [executable, args] = this.game.commandLine;
+		let [executable, args]: string[] = this.game.commandLine;
 		childProcess.exec(`"${executable}" ${args.replace(/\\/g, '/')}`, (error: Error) => {
 			if (error)
 				callback(error, null);
+			return;
 		});
 	}
 }

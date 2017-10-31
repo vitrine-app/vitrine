@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';
@@ -15,6 +16,7 @@ import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { UpdateModal } from './UpdateModal';
 import { SettingsModal } from './SettingsModal';
 import { localizer } from '../Localizer';
+import { urlify } from '../helpers';
 
 export class Vitrine extends VitrineComponent {
 	public constructor(props: any) {
@@ -29,6 +31,7 @@ export class Vitrine extends VitrineComponent {
 			potentialGames: new GamesCollection<PotentialGame>(),
 			refreshingGames: false,
 			selectedGame: null,
+			launchedGame: null,
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
@@ -131,9 +134,11 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private launchGame(gameUuid: string) {
-		// ipcRenderer.send('client.launch-game', gameUuid);
-		this.state.playableGames.getGame(gameUuid).then(([selectedGame]) => {
-			console.log(selectedGame);
+		ipcRenderer.send('client.launch-game', gameUuid);
+		this.state.playableGames.getGame(gameUuid).then(([launchedGame]) => {
+			this.setState({
+				launchedGame
+			});
 		}).catch((error: Error) => {
 			this.throwError(error);
 		});
@@ -180,7 +185,7 @@ export class Vitrine extends VitrineComponent {
 	private sideBarGameClickHandler(uuid: string) {
 		this.state.playableGames.getGame(uuid).then(([selectedGame]) => {
 			this.setState({
-				selectedGame: selectedGame
+				selectedGame
 			});
 		}).catch((error: Error) => {
 			return this.throwError(error);
@@ -272,14 +277,8 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	public render(): JSX.Element {
-		return (
-			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
-				<TaskBar
-					potentialGames={this.state.potentialGames}
-					refreshingGames={this.state.refreshingGames}
-					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
-					updateProgress={this.state.updateProgress}
-				/>
+		let vitrineContent: JSX.Element = (!this.state.launchedGame) ? (
+			<div className={'full-height'}>
 				<SideBar
 					playableGames={this.state.playableGames}
 					selectedGame={this.state.selectedGame}
@@ -316,6 +315,30 @@ export class Vitrine extends VitrineComponent {
 						{localizer.f('delete')}
 					</MenuItem>
 				</ContextMenu>
+			</div>
+		) : (
+			<div>
+				<div className={css(styles.launchedGameDiv)}>
+					<span className={css(styles.launchedGameTitle)}>Vous êtes en train de jouer à {this.state.launchedGame.name}.</span>
+					<hr className={css(styles.launchedGameHr)}/>
+					<span className={css(styles.launchedGameSubTitle)}>Amusez-vous bien !</span>
+				</div>
+				<div
+					className={css(styles.launchedGameBackground)}
+					style={{ backgroundImage: urlify(this.state.launchedGame.details.backgroundScreen) }}
+				/>
+			</div>
+		);
+		return (
+			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
+				<TaskBar
+					potentialGames={this.state.potentialGames}
+					isGameLaunched={(this.state.launchedGame) ? (true) : (false)}
+					refreshingGames={this.state.refreshingGames}
+					updateProgress={this.state.updateProgress}
+					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
+				/>
+				{vitrineContent}
 				{this.checkErrors()}
 			</div>
 		);
@@ -329,5 +352,34 @@ const styles: React.CSSProperties = StyleSheet.create({
 		userSelect: 'none',
 		overflow: 'hidden',
 		cursor: 'default'
+	},
+	launchedGameDiv: {
+		textAlign: 'center',
+		marginTop: `${29}vh`
+	},
+	launchedGameTitle: {
+		fontSize: 50,
+		color: '#FFFFFF'
+	},
+	launchedGameHr: {
+		margin: `${10}px ${40}vw`,
+		borderColor: rgba(255, 255, 255, 0.45),
+	},
+	launchedGameSubTitle: {
+		fontSize: 25,
+		color: rgba(255, 255, 255, 0.7)
+	},
+	launchedGameBackground: {
+		position: 'absolute',
+		zIndex: -1,
+		width: `${99}%`,
+		height: `${100}%`,
+		top: 0,
+		left: 0,
+		opacity: 0.8,
+		backgroundRepeat: 'no-repeat',
+		backgroundSize: 'cover',
+		filter: `blur(${10}px)`,
+		transform: `scale(${1.02})`
 	}
 });

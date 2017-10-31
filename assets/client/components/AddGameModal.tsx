@@ -133,7 +133,7 @@ export class AddGameModal extends VitrineComponent {
 	public componentWillReceiveProps(props: any) {
 		if (props.potentialGameToAdd) {
 			let gameToAdd: PotentialGame = props.potentialGameToAdd;
-			let [executable, args] = gameToAdd.commandLine;
+			let [executable, args]: string[] = gameToAdd.commandLine;
 
 			this.setState({
 				isEditing: props.isEditing,

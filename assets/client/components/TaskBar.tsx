@@ -39,71 +39,75 @@ export class TaskBar extends VitrineComponent {
 	}
 
 	public render(): JSX.Element {
-		return (
-			<div className={css(styles.taskBar)}>
-				<div className="row">
-					<div className="col-md-1">
-						<div className="row">
-							<div className="col-md-4">
-								<Button
-									iconName={'plus'}
-									tooltip={localizer.f('addGameLabel')}
-									onClick='#add-game-modal'
-								/>
-							</div>
-							<div className="col-md-4">
-								<Button
-									iconName={(this.props.refreshingGames) ? ('refresh fa-spin') : ('refresh')}
-									tooltip={localizer.f('refreshLabel')}
-									onClick={this.props.refreshBtnCallback}
-								/>
-							</div>
-							<div className="col-md-4">
-								<Button
-									iconName={'cogs'}
-									tooltip={localizer.f('settings')}
-									onClick='#settings-modal'
-								/>
-							</div>
+		let taskBarElements: JSX.Element = (!this.props.isGameLaunched) ? (
+			<div className="row">
+				<div className="col-md-1">
+					<div className="row">
+						<div className="col-md-4">
+							<Button
+								iconName={'plus'}
+								tooltip={localizer.f('addGameLabel')}
+								onClick='#add-game-modal'
+							/>
 						</div>
-					</div>
-					<div
-						className={`potential-games-container col-md-2 ${css(styles.potentialGamesContainer)}`}
-						style={{ visibility: (this.props.potentialGames.games.length) ? ('visible') : ('hidden') }}
-					>
-						<button className={`btn btn-primary ${css(styles.controlBtn)}`} data-toggle="modal" data-target="#add-potential-games-modal">
-							{localizer.f('potentialGamesAdd', this.props.potentialGames.games.length)}
-						</button>
-					</div>
-					<div
-						className="col-md-2"
-						style={{ visibility: (this.props.updateProgress) ? ('visible') : ('hidden') }}
-					>
-						<div className={`progress ${css(styles.updateBar)}`}>
-							<div
-								className="progress-bar progress-bar-striped active"
-								role="progressbar"
-								style={{ width: (this.props.updateProgress) ? (`${Math.round(this.props.updateProgress.percent)}%`) : ('0%') }}
+						<div className="col-md-4">
+							<Button
+								iconName={(this.props.refreshingGames) ? ('refresh fa-spin') : ('refresh')}
+								tooltip={localizer.f('refreshLabel')}
+								onClick={this.props.refreshBtnCallback}
+							/>
+						</div>
+						<div className="col-md-4">
+							<Button
+								iconName={'cogs'}
+								tooltip={localizer.f('settings')}
+								onClick='#settings-modal'
 							/>
 						</div>
 					</div>
-					<div className={`col-md-1 ${css(styles.windowControlBtnGroup)}`}>
-						<MinimizeIcon
-							styles={styles.windowControlIcon}
-							colors={this.colorStyles}
-							onClick={this.minimizeBtnClickHandler.bind(this)}
-						/>
-						<MaximizeIcon
-							styles={styles.windowControlIcon}
-							colors={this.colorStyles}
-							onClick={this.maximizeBtnClickHandler.bind(this)}
-						/>
-						<CloseIcon
-							styles={styles.windowControlIcon}
-							colors={this.colorStyles}
-							onClick={this.closeBtnClickHandler.bind(this)}
+				</div>
+				<div
+					className={`potential-games-container col-md-2 ${css(styles.potentialGamesContainer)}`}
+					style={{ visibility: (this.props.potentialGames.games.length) ? ('visible') : ('hidden') }}
+				>
+					<button className={`btn btn-primary ${css(styles.controlBtn)}`} data-toggle="modal" data-target="#add-potential-games-modal">
+						{localizer.f('potentialGamesAdd', this.props.potentialGames.games.length)}
+					</button>
+				</div>
+				<div
+					className="col-md-2"
+					style={{ visibility: (this.props.updateProgress) ? ('visible') : ('hidden') }}
+				>
+					<div className={`progress ${css(styles.updateBar)}`}>
+						<div
+							className="progress-bar progress-bar-striped active"
+							role="progressbar"
+							style={{ width: (this.props.updateProgress) ? (`${Math.round(this.props.updateProgress.percent)}%`) : ('0%') }}
 						/>
 					</div>
+				</div>
+			</div>
+		) : (null);
+
+		return (
+			<div className={css(styles.taskBar)}>
+				{taskBarElements}
+				<div className={css(styles.windowControlBtnGroup)}>
+					<MinimizeIcon
+						styles={styles.windowControlIcon}
+						colors={this.colorStyles}
+						onClick={this.minimizeBtnClickHandler.bind(this)}
+					/>
+					<MaximizeIcon
+						styles={styles.windowControlIcon}
+						colors={this.colorStyles}
+						onClick={this.maximizeBtnClickHandler.bind(this)}
+					/>
+					<CloseIcon
+						styles={styles.windowControlIcon}
+						colors={this.colorStyles}
+						onClick={this.closeBtnClickHandler.bind(this)}
+					/>
 				</div>
 				{this.checkErrors()}
 			</div>
@@ -136,9 +140,10 @@ const styles: React.CSSProperties = StyleSheet.create({
 		'-webkitAppRegion': 'no-drag'
 	},
 	windowControlBtnGroup: {
-		width: `${5}%`,
-		marginLeft: `${51}%`,
-		padding: `${12}px ${0} ${0}`
+		position: 'absolute',
+		top: 16,
+		right: 20,
+		zIndex: 1
 	},
 	windowControlIcon: {
 		cursor: 'pointer',
