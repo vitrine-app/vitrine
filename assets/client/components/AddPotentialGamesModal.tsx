@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import { padding } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame } from '../../models/PotentialGame';
@@ -51,7 +52,7 @@ export class AddPotentialGamesModal extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	potentialGamesRow: {
-		padding: `${15}px ${0} ${15}px ${50}px`,
+		padding: padding(15, 0, 15, 50),
 		maxHeight: 810,
 		overflowY: 'auto'
 	},

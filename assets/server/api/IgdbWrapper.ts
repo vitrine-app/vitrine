@@ -1,4 +1,5 @@
 import * as igdb from 'igdb-api-node';
+import * as googleTranslate from 'google-translate-api';
 
 class IgdbWrapper {
 	private apiKey: string;
@@ -7,7 +8,7 @@ class IgdbWrapper {
 	private callback: any;
 	private game: any;
 
-	public constructor() {
+	public constructor(private lang?: string) {
 		this.apiKey = 'cb14c151b2f67d505d13ee673d5acde4';
 		this.client = igdb.default(this.apiKey);
 		this.levenshteinRefiner = 5;
@@ -148,18 +149,36 @@ class IgdbWrapper {
 
 	private addGenresCallback(genres: any) {
 		let genresArray: any[] = [];
+		let counter: number = 0;
 		genres.forEach((genre) => {
 			genresArray.push(genre.name);
+			counter++;
+			if (counter === genres.length) {
+				console.log(0);
+				this.game.genres = genresArray;
+				if (this.game.summary && this.lang) {
+					console.log(1);
+					googleTranslate(this.game.summary, {
+						to: this.lang
+					}).then(({text}: any) => {
+						console.log(2);
+						this.game.summary = text;
+						this.callback(null, this.game);
+					}).catch((error: Error) => {
+						console.log(4);
+						this.callback(error, null);
+					});
+				}
+				else
+					this.callback(null, this.game);
+			}
 		});
-		this.game.genres = genresArray;
-
-		this.callback(null, this.game);
 	}
 }
 
-export function getIgdbWrapperFiller(gameId: number): Promise<any> {
+export function getIgdbWrapperFiller(gameId: number, lang: string): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper().findGameById(gameId, (error, game) => {
+		new IgdbWrapper(lang).findGameById(gameId, (error, game) => {
 			if (error)
 				reject(error);
 			else

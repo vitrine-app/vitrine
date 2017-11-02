@@ -54,7 +54,7 @@ export class App extends React.Component {
 		return (
 			<ErrorsWrapper>
 				<Vitrine
-					settings={ this.config }
+					settings={this.config}
 				/>
 			</ErrorsWrapper>
 		);

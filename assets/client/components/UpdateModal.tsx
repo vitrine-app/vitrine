@@ -31,27 +31,27 @@ export class UpdateModal extends VitrineComponent {
 					<div className="modal-content">
 						<div className={`modal-body ${css(styles.modalBody)}`}>
 							<p id="update-app-disclaimer">
-								{ localizer.f('updateTextFirst') } (<strong>{ this.props.releaseVersion }</strong>)
+								{localizer.f('updateTextFirst')} (<strong>{this.props.releaseVersion}</strong>)
 								<br/>
-								{ localizer.f('updateTextLast') }
+								{localizer.f('updateTextLast')}
 							</p>
 							<p id="app-change-logs">
 								<a
-									onClick={ this.changeLogsLinkClickHandler.bind(this) }
+									onClick={this.changeLogsLinkClickHandler.bind(this)}
 									href="#"
 								>
-									{ localizer.f('changeLogs') }
+									{localizer.f('changeLogs')}
 								</a>
 							</p>
 						</div>
 						<div className="modal-footer">
-							<button className="btn btn-default" data-dismiss="modal">{ localizer.f('cancel') }</button>
+							<button className="btn btn-default" data-dismiss="modal">{localizer.f('cancel')}</button>
 							<button
 								id="update-app-btn"
-								onClick={ UpdateModal.updateBtnClickHandler }
+								onClick={UpdateModal.updateBtnClickHandler}
 								className="btn btn-success"
 							>
-								{ localizer.f('update') }
+								{localizer.f('update')}
 							</button>
 						</div>
 					</div>
@@ -64,8 +64,8 @@ export class UpdateModal extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	updateModal: {
-		top: `${27}vh`,
-		left: `${18}vh`
+		top: 27..vh(),
+		left:18..vh()
 	},
 	modalBody: {
 		paddingTop: 24

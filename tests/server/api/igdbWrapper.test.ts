@@ -26,7 +26,7 @@ describe('IgdbWrapper searcher', () => {
 
 describe('IgdbWrapper filler', () => {
 	it('Should return a game object', (done: Function) => {
-		getIgdbWrapperFiller(340).then((game: any) => {
+		getIgdbWrapperFiller(340, 'en').then((game: any) => {
 			expect(game).to.be.a('object');
 
 			expect(game).to.have.property('name');

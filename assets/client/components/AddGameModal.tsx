@@ -3,7 +3,7 @@ import * as DateTime from 'react-datetime';
 import { ipcRenderer, remote} from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
-import { rgba } from 'css-verbose';
+import { border, rgb, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame, GameSource } from '../../models/PotentialGame';
@@ -106,6 +106,7 @@ export class AddGameModal extends VitrineComponent {
 	}
 
 	private searchIgdbBtnClickHandler() {
+		$('#igdb-research-modal').modal('show');
 		ipcRenderer.send('client.search-igdb-games', this.state.name);
 	}
 
@@ -132,8 +133,7 @@ export class AddGameModal extends VitrineComponent {
 	public componentWillReceiveProps(props: any) {
 		if (props.potentialGameToAdd) {
 			let gameToAdd: PotentialGame = props.potentialGameToAdd;
-			let args: string[] = gameToAdd.commandLine.slice();
-			let executable: string = args.shift();
+			let [executable, args]: string[] = gameToAdd.commandLine;
 
 			this.setState({
 				isEditing: props.isEditing,
@@ -141,7 +141,7 @@ export class AddGameModal extends VitrineComponent {
 				cover: gameToAdd.details.cover,
 				source: gameToAdd.source,
 				executable: executable,
-				arguments: args.join(' '),
+				arguments: args,
 				series: (gameToAdd.details.series) ? (gameToAdd.details.series) : (''),
 				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate / 1000).format('DD/MM/YYYY')) : (''),
 				developer: (gameToAdd.details.developer) ? (gameToAdd.details.developer) : (''),
@@ -171,6 +171,7 @@ export class AddGameModal extends VitrineComponent {
 							<div className={`modal-body ${css(styles.modalBody)}`}>
 								<div className="row">
 									<div className="col-md-2">
+										<label className={css(styles.coverLabel)}>{localizer.f('coverLabel')}</label>
 										<BlurPicture
 											faIcon={'folder-open-o'}
 											fontSize={55}
@@ -363,14 +364,17 @@ export class AddGameModal extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modalBody: {
-		maxHeight: `${82}vh`,
+		maxHeight: 82..vh(),
 		overflowY: 'auto'
 	},
 	formHr: {
-		borderTop: `solid ${1}px ${rgba(238, 238, 238, 0.15)}`
+		borderTop: border(1, 'solid', rgba(238, 238, 238, 0.15))
 	},
 	formTextArea: {
 		resize: 'none',
-		height: `${7}em`
+		height: 7..em()
+	},
+	coverLabel: {
+		paddingLeft: 40
 	}
 });

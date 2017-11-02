@@ -2,38 +2,42 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 
 import { VitrineServer } from './VitrineServer';
-import { getEnvData } from '../models/env';
+import { getEnvData, getEnvFolder } from '../models/env';
 
 export class VitrinePipeline {
 	private serverInstance: VitrineServer;
 	private prod: boolean;
 	private gamesFolderPath: string;
 	private configFolderPath: string;
-	private prodFolderPath: string;
 	private vitrineConfigFilePath: string;
 
 	public constructor() {
 		this.prod = (getEnvData().env) ? (true) : (false);
-
-		this.prodFolderPath = (this.prod) ? path.resolve(process.env.APPDATA, 'vitrine', 'data') : ('');
-		this.gamesFolderPath = (this.prod) ? (path.resolve(this.prodFolderPath, 'games')) : (path.resolve(__dirname, '..', 'games'));
-		this.configFolderPath = (this.prod) ? (path.resolve(this.prodFolderPath, 'config')) : (path.resolve(__dirname, '..', 'config'));
+		this.gamesFolderPath = getEnvFolder('games');
+		this.configFolderPath = getEnvFolder('config');
 	}
 
 	public launch() {
-		if (this.prod) {
-			fs.ensureDirSync(this.prodFolderPath);
-			fs.ensureDirSync(this.configFolderPath);
-		}
+		fs.ensureDirSync(this.configFolderPath);
 		fs.ensureDirSync(this.gamesFolderPath);
 		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, 'vitrine_config.json');
 		fs.ensureFileSync(this.vitrineConfigFilePath);
-		let vitrineConfig: any = fs.readJSONSync(this.vitrineConfigFilePath, {throws: false});
-
+		let vitrineConfig: any = this.includeEmulatorsConfig(fs.readJSONSync(this.vitrineConfigFilePath, { throws: false }));
 		this.launchMainClient(vitrineConfig);
 	}
 
-	public launchMainClient(vitrineConfig: any) {
+	private includeEmulatorsConfig(vitrineConfig: any) {
+		if (!vitrineConfig.emulated)
+			return vitrineConfig;
+		let consolesConfigFilePath: string = path.resolve(this.configFolderPath, 'consoles.json');
+		let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
+		let newVitrineConfig: any = { ...vitrineConfig };
+		newVitrineConfig.emulated.consoles = fs.readJSONSync(consolesConfigFilePath, { throws: false });
+		newVitrineConfig.emulated.emulators = fs.readJSONSync(emulatorsConfigFilePath, { throws: false });
+		return newVitrineConfig;
+	}
+
+	private launchMainClient(vitrineConfig: any) {
 		this.serverInstance = new VitrineServer(vitrineConfig, this.vitrineConfigFilePath);
 		this.serverInstance.registerEvents();
 		this.serverInstance.run(!this.prod);

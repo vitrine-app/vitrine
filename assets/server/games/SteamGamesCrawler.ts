@@ -6,7 +6,7 @@ import { AcfParser } from '../api/AcfParser';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getEnvFolder, getGamesFolder, uuidV5 } from '../../models/env';
+import { getEnvFolder, uuidV5 } from '../../models/env';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 
 class SteamGamesCrawler {
@@ -51,11 +51,21 @@ class SteamGamesCrawler {
 
 			if (SteamGamesCrawler.isGameAlreadyAdded(gameManifest.name)) {
 				counter++;
+				if (counter === array.length) {
+					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+					potentialGames.games = this.potentialGames;
+					this.callback(null, potentialGames);
+				}
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (gameManifest.appid == playableGame.details.steamId) {
 					counter++;
+					if (counter === array.length) {
+						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+						potentialGames.games = this.potentialGames;
+						this.callback(null, potentialGames);
+					}
 					return;
 				}
 			}
@@ -83,9 +93,9 @@ class SteamGamesCrawler {
 	}
 
 	private static isGameAlreadyAdded(name: string): boolean {
-		let gameId: string = uuidV5(name);
+		let gameUuid: string = uuidV5(name);
 
-		let gameDirectory: string = path.resolve(getGamesFolder(), gameId);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		return fs.existsSync(configFilePath);
@@ -94,7 +104,7 @@ class SteamGamesCrawler {
 
 export function getSteamCrawler(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamGamesCrawler(steamConfig, playableGames).search((error, potentialGames: GamesCollection<PotentialGame>) => {
+		new SteamGamesCrawler(steamConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)
 				reject(error);
 			else

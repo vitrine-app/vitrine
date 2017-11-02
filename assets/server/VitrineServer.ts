@@ -8,12 +8,13 @@ import * as moment from 'moment';
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
-import { getGamesFolder, uuidV5 } from '../models/env';
+import { getEnvFolder, uuidV5 } from '../models/env';
 import { getGameLauncher } from './GameLauncher';
 import { getSteamCrawler } from './games/SteamGamesCrawler';
 import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
-import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
+import { getEmulatedGamesCrawler } from './games/EmulatedGamesCrawler';
 import { getOriginCrawler } from './games/OriginGamesCrawler';
+import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
 import { getSteamUserFinder } from './api/SteamUserFinder';
 import { getSteamPlayTimeWrapper } from './api/SteamPlayTimeWrapper';
 import { downloadImage, randomHashedString } from './helpers';
@@ -139,7 +140,7 @@ export class VitrineServer {
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
-		getIgdbWrapperFiller(gameId).then((game) => {
+		getIgdbWrapperFiller(gameId, this.vitrineConfig.lang).then((game) => {
 			event.sender.send('server.send-igdb-game', game);
 		}).catch((error) => {
 			VitrineServer.throwServerError(event, error);
@@ -162,59 +163,60 @@ export class VitrineServer {
 		this.registerGame(event, addedGame, gameForm, false);
 	}
 
-	private editGame(event: Electron.Event, gameId: string, gameForm: any) {
-		this.playableGames.getGame(gameId).then(([editedGame]) => {
+	private editGame(event: Electron.Event, gameUuid: string, gameForm: any) {
+		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
 			editedGame.name = gameForm.name;
 			editedGame.commandLine = [];
 			editedGame.details = gameForm;
 
 			this.registerGame(event, editedGame, gameForm, true);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);
 		});
 	}
 
-	private launchGame(event: Electron.Event, gameId: string)  {
-		this.playableGames.getGame(gameId).then(([game]) => {
-			if (game.uuid !== uuidV5(game.name))
+	private launchGame(event: Electron.Event, gameUuid: string) {
+		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
+			if (launchingGame.uuid !== uuidV5(launchingGame.name))
 				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
-			getGameLauncher(game).then((secondsPlayed: number) => {
+			getGameLauncher(launchingGame).then((secondsPlayed: number) => {
 				this.gameLaunched = false;
 				console.log('You played', secondsPlayed, 'seconds.');
-				game.addPlayTime(secondsPlayed, (error) => {
+				launchingGame.addPlayTime(secondsPlayed, (error) => {
 					return VitrineServer.throwServerError(event, error);
 				});
-				event.sender.send('server.stop-game', gameId, game.timePlayed);
-			}).catch((error) => {
+				event.sender.send('server.stop-game', gameUuid, launchingGame.timePlayed);
+			}).catch((error: Error) => {
 				this.gameLaunched = false;
 				return VitrineServer.throwServerError(event, error);
 			});
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			return VitrineServer.throwServerError(event, error);
 		});
 	}
 
-	private removeGame(event: Electron.Event, gameId: string) {
-		this.playableGames.removeGame(gameId, (error) => {
+	private removeGame(event: Electron.Event, gameUuid: string) {
+		this.playableGames.removeGame(gameUuid, (error) => {
 			if (error)
 				event.sender.send('server.server-error', error);
-			let gameDirectory: string = path.resolve(getGamesFolder(), gameId);
+			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 			rimraf(gameDirectory, () => {
-				event.sender.send('server.remove-playable-game', gameId);
+				event.sender.send('server.remove-playable-game', gameUuid);
 			});
 		});
 	}
 
 	private findPotentialGames(event: Electron.Event) {
 		this.potentialGames.games = [];
-		this.searchSteamGames(() => {
-			this.searchOriginGames(() => {
+		this.searchSteamGames()
+			.then(this.searchOriginGames.bind(this))
+			.then(this.searchEmulatedGames.bind(this))
+			.then(() => {
 				event.sender.send('server.add-potential-games', this.potentialGames.games);
 			});
-		});
 	}
 
 	private updateSettings(event: Electron.Event, settingsForm: any) {
@@ -248,31 +250,54 @@ export class VitrineServer {
 		});
 	}
 
-	private searchSteamGames(callback: Function) {
-		if (!this.vitrineConfig.steam) {
-			callback();
-			return;
-		}
-		getSteamCrawler(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-			this.potentialGames.addGames(games, () => {
-				callback();
+	private searchSteamGames(): Promise<any> {
+		return new Promise((resolve) => {
+			if (!this.vitrineConfig.steam) {
+				resolve();
+				return;
+			}
+			getSteamCrawler(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+				this.potentialGames.addGames(games, () => {
+					resolve();
+				});
+			}).catch((error: Error) => {
+				resolve();
+				return VitrineServer.throwServerError(event, error);
 			});
-		}).catch((error) => {
-			return VitrineServer.throwServerError(event, error);
 		});
 	}
 
-	private searchOriginGames(callback: Function) {
-		if (!this.vitrineConfig.origin) {
-			callback();
-			return;
-		}
-		getOriginCrawler(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-			this.potentialGames.addGames(games, () => {
-				callback();
+	private searchOriginGames(): Promise<any> {
+		return new Promise((resolve) => {
+			if (!this.vitrineConfig.origin) {
+				resolve();
+				return;
+			}
+			getOriginCrawler(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+				this.potentialGames.addGames(games, () => {
+					resolve();
+				});
+			}).catch((error: Error) => {
+				resolve();
+				return VitrineServer.throwServerError(event, error);
 			});
-		}).catch((error) => {
-			return VitrineServer.throwServerError(event, error);
+		});
+	}
+
+	private searchEmulatedGames(): Promise<any> {
+		return new Promise((resolve) => {
+			if (!this.vitrineConfig.emulated) {
+				resolve();
+				return;
+			}
+			getEmulatedGamesCrawler(this.vitrineConfig.emulated, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+				this.potentialGames.addGames(games, () => {
+					resolve();
+				});
+			}).catch((error: Error) => {
+				resolve();
+				return VitrineServer.throwServerError(event, error);
+			});
 		});
 	}
 
@@ -344,17 +369,22 @@ export class VitrineServer {
 	}
 
 	private registerGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
-		game.commandLine.push(gameForm.executable);
-		game.commandLine = game.commandLine.concat(gameForm.arguments.split(' '));
+		game.commandLine = [
+			gameForm.executable,
+		];
+		if (gameForm.arguments)
+			game.commandLine.push(gameForm.arguments);
 		game.details.rating = parseInt(game.details.rating);
 		game.details.genres = game.details.genres.split(', ');
 		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix();
 		if (!editing && game.source == GameSource.STEAM)
 			game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
+		delete game.details.name;
 		delete game.details.date;
+		delete game.details.executable;
 		delete game.details.arguments;
 
-		let gameDirectory: string = path.resolve(getGamesFolder(), game.uuid);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		if (!editing && fs.existsSync(configFilePath))

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
+import { padding } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { GamesModule } from './GamesModule';
@@ -269,13 +270,13 @@ export class SettingsModal extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		top: `${10}vh`
+		top: 10..vh()
 	},
 	modalBody: {
-		padding: `${15}px ${40}px ${10}px`
+		padding: padding(15, 40, 10)
 	},
 	langSelect: {
-		padding: `${20}px ${0} ${0}`
+		padding: padding(20, 0, 0)
 	},
 	navTabsLink: {
 		':hover': {

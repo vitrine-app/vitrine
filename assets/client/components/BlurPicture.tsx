@@ -7,6 +7,7 @@ import { urlify } from '../helpers';
 
 export class BlurPicture extends VitrineComponent {
 	private pulseDuration: number;
+	private mounted: boolean;
 
 	public constructor(props: any) {
 		super(props);
@@ -40,6 +41,8 @@ export class BlurPicture extends VitrineComponent {
 		imageStyle.filter = `blur(${4}px)`;
 		iconStyle.display = 'inline';
 
+		if (!this.mounted)
+			return;
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
@@ -56,6 +59,8 @@ export class BlurPicture extends VitrineComponent {
 		imageStyle.filter = '';
 		iconStyle.display = 'none';
 
+		if (!this.mounted)
+			return;
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
@@ -67,9 +72,13 @@ export class BlurPicture extends VitrineComponent {
 	}
 
 	private clickHandler() {
+		if (!this.mounted)
+			return;
 		this.setState({
 			divClassName: 'animated pulse'
 		}, () => {
+			if (!this.mounted)
+				return;
 			setTimeout(() => {
 				this.setState({
 					divClassName: ''
@@ -81,12 +90,22 @@ export class BlurPicture extends VitrineComponent {
 	}
 
 	public componentWillReceiveProps(props: any) {
+		if (!this.mounted)
+			return;
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(props.background),
 				filter: ''
 			}
 		});
+	}
+
+	public componentDidMount() {
+		this.mounted = true;
+	}
+
+	public componentWillUnmount() {
+		this.mounted = false;
 	}
 
 	public render(): JSX.Element {
@@ -119,19 +138,19 @@ const styles: React.CSSProperties = StyleSheet.create({
 		boxShadow: `${0} ${0} ${10}px ${rgba(0, 0, 0, 0.55)}`
 	},
 	picture: {
-		width: `${100}%`,
-		height: `${100}%`,
+		width: 100..percents(),
+		height: 100..percents(),
 		cursor: 'pointer',
 		backgroundRepeat: 'no-repeat',
-		backgroundSize: `${100}% ${100}%`,
-		transform: `scale(${1.02}%)`,
+		backgroundSize: `${100..percents()} ${100..percents()}`,
+		transform: `scale(${1.02.percents()})`,
 		transition: `${75}ms filter linear`
 	},
 	icon: {
 		position: 'absolute',
 		opacity: 0.6,
-		left: `${1.268}em`,
-		top: `${1.74}em`,
+		left: 1.268.em(),
+		top: 1.74.em(),
 		cursor: 'pointer'
 	}
 });

@@ -8,7 +8,7 @@ import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
-import { getGamesFolder, uuidV5 } from '../../models/env';
+import { getEnvFolder, uuidV5 } from '../../models/env';
 
 class OriginGamesCrawler {
 	private regDetails: any[];
@@ -78,11 +78,21 @@ class OriginGamesCrawler {
 
 			if (OriginGamesCrawler.isGameAlreadyAdded(gameName)) {
 				counter++;
+				if (counter === files.length) {
+					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+					potentialGames.games = this.potentialGames;
+					this.callback(null, potentialGames);
+				}
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (gameName == playableGame.name) {
 					counter++;
+					if (counter === files.length) {
+						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+						potentialGames.games = this.potentialGames;
+						this.callback(null, potentialGames);
+					}
 					return;
 				}
 			}
@@ -128,9 +138,9 @@ class OriginGamesCrawler {
 	}
 
 	private static isGameAlreadyAdded(name: string): boolean {
-		let gameId: string = uuidV5(name);
+		let gameUuid: string = uuidV5(name);
 
-		let gameDirectory = path.resolve(getGamesFolder(), gameId);
+		let gameDirectory = path.resolve(getEnvFolder('games'), gameUuid);
 		let configFilePath = path.resolve(gameDirectory, 'config.json');
 
 		return fs.existsSync(configFilePath);

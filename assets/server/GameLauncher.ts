@@ -1,4 +1,4 @@
-import { execFile, ChildProcess } from 'child_process';
+import * as childProcess from 'child_process';
 import * as path from 'path';
 
 import { GameSource } from '../models/PotentialGame';
@@ -6,17 +6,19 @@ import { PlayableGame } from '../models/PlayableGame';
 import { getEnvFolder } from '../models/env';
 
 class GameLauncher {
-	private scriptPath: string;
 	private watcherPath: string;
 
 	public constructor(private game: PlayableGame) {
-		this.scriptPath = path.resolve(getEnvFolder('scripts'), 'gameLauncher.exe');
 		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
 	}
 
 	public launch(callback: Function) {
 		switch (+this.game.source) {
 			case GameSource.LOCAL: {
+				this.launchStandardGame(callback);
+				break;
+			}
+			case GameSource.ROM: {
 				this.launchStandardGame(callback);
 				break;
 			}
@@ -32,12 +34,11 @@ class GameLauncher {
 	}
 
 	private launchStandardGame(callback: Function) {
+		let [executable, args]: string[] = this.game.commandLine;
+		let commandLine: string = (args) ? (`"${executable}" ${args}`) : (`"${executable}"`);
+
 		let beginTime: Date = new Date();
-		let gameProcess = execFile(this.scriptPath, this.game.commandLine, null,(error) => {
-			if (error)
-				callback(error, null);
-		});
-		gameProcess.on('exit', () => {
+		childProcess.exec(commandLine, () => {
 			let endTime: Date = new Date();
 			let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
 			callback(null, secondsPlayed);
@@ -45,25 +46,28 @@ class GameLauncher {
 	}
 
 	private launchSteamGame(callback: Function) {
-		let inWatcherProcess: ChildProcess = execFile(this.watcherPath, [this.game.details.steamId], null,(error) => {
-			if (error)
+		childProcess.exec(`"${this.watcherPath}" ${this.game.details.steamId}`, (error: Error) => {
+			if (error) {
 				callback(error, null);
-		});
-		execFile(this.scriptPath, this.game.commandLine, null, (error) => {
-			if (error)
-				callback(error, null);
-		});
-		inWatcherProcess.on('exit', () => {
+				return;
+			}
 			let beginTime: Date = new Date();
-			let outWatcherProcess: ChildProcess = execFile(this.watcherPath, [this.game.details.steamId], null, (error) => {
-				if (error)
+			childProcess.exec(`"${this.watcherPath}" ${this.game.details.steamId}`, (error: Error) => {
+				if (error) {
 					callback(error, null);
-			});
-			outWatcherProcess.on('exit', () => {
+					return;
+				}
 				let endTime: Date = new Date();
 				let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
 				callback(null, secondsPlayed);
 			});
+		});
+
+		let [executable, args]: string[] = this.game.commandLine;
+		childProcess.exec(`"${executable}" ${args.replace(/\\/g, '/')}`, (error: Error) => {
+			if (error)
+				callback(error, null);
+			return;
 		});
 	}
 }

@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getGamesFolder } from '../../models/env';
+import { getEnvFolder } from '../../models/env';
 
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];
@@ -12,7 +12,7 @@ class PlayableGamesCrawler {
 
 	public constructor() {
 		this.playableGames = [];
-		this.gamesDirectory = getGamesFolder();
+		this.gamesDirectory = getEnvFolder('games');
 	}
 
 	public search(callback: Function) {
@@ -28,8 +28,8 @@ class PlayableGamesCrawler {
 				return;
 			}
 			let counter: number = 0;
-			files.forEach((gameId) => {
-				let configFilePath: any = path.resolve(this.gamesDirectory, gameId, 'config.json');
+			files.forEach((gameUuid) => {
+				let configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, 'config.json');
 				if (fs.existsSync(configFilePath)) {
 					let rawGame = fs.readJsonSync(configFilePath);
 					let playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
