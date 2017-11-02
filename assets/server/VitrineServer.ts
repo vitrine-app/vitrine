@@ -140,7 +140,7 @@ export class VitrineServer {
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
-		getIgdbWrapperFiller(gameId).then((game) => {
+		getIgdbWrapperFiller(gameId, this.vitrineConfig.lang).then((game) => {
 			event.sender.send('server.send-igdb-game', game);
 		}).catch((error) => {
 			VitrineServer.throwServerError(event, error);
