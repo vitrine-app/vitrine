@@ -138,19 +138,19 @@ const styles: React.CSSProperties = StyleSheet.create({
 		boxShadow: `${0} ${0} ${10}px ${rgba(0, 0, 0, 0.55)}`
 	},
 	picture: {
-		width: `${100}%`,
-		height: `${100}%`,
+		width: 100..percents(),
+		height: 100..percents(),
 		cursor: 'pointer',
 		backgroundRepeat: 'no-repeat',
-		backgroundSize: `${100}% ${100}%`,
-		transform: `scale(${1.02}%)`,
+		backgroundSize: `${100..percents()} ${100..percents()}`,
+		transform: `scale(${1.02.percents()})`,
 		transition: `${75}ms filter linear`
 	},
 	icon: {
 		position: 'absolute',
 		opacity: 0.6,
-		left: `${1.268}em`,
-		top: `${1.74}em`,
+		left: 1.268.em(),
+		top: 1.74.em(),
 		cursor: 'pointer'
 	}
 });

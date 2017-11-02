@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { ContextMenuTrigger } from 'react-contextmenu';
-import { rgba } from 'css-verbose';
+import { margin, padding, border, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { PlayableGame } from '../../models/PlayableGame';
@@ -59,33 +59,33 @@ export class SideBar extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	sideBarContainer: {
-		height: `${95}%`,
+		height: 95..percents(),
 		padding: 0,
 		position: 'absolute',
 		backgroundColor: rgba(0, 0, 0, 0),
-		width: `${16}%`,
-		boxShadow: `${6}px ${6}px ${9}px ${rgba(0, 0, 0, 0.2)}`
+		width: 16..percents(),
+		boxShadow: `${6..px()} ${6..px()} ${9..px()} ${rgba(0, 0, 0, 0.2)}`
 	},
 	sideBarContent: {
-		height: `${100}%`,
+		height: 100..percents(),
 		overflowX: 'hidden',
 		overflowY: 'auto'
 	},
 	sideBarHr: {
 		margin: 0,
-		borderTop: `solid ${1}px #565149`
+		borderTop: border(1, 'solid', '#565149')
 	},
 	gamesListUl: {
-		height: `${100}%`,
+		height: 100..percents(),
 		listStyleType: 'none',
-		padding: 0,
-		margin: 0
+		padding: padding(0),
+		margin: margin(0)
 	},
 	gamesListLi: {
 		display: 'block',
 		fontSize: 15,
 		color: '#A5A5A5',
-		padding: `${10}px ${20}px ${10}px`,
+		padding: padding(10, 20, 10),
 		cursor: 'pointer',
 		':hover': {
 			backgroundColor: rgba(150, 136, 116, 0.13),

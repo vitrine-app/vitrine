@@ -64,8 +64,8 @@ export class UpdateModal extends VitrineComponent {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	updateModal: {
-		top: `${27}vh`,
-		left: `${18}vh`
+		top: 27..vh(),
+		left:18..vh()
 	},
 	modalBody: {
 		paddingTop: 24

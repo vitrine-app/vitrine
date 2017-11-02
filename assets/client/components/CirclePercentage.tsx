@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
+import { margin, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 
@@ -55,7 +55,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		display: 'block',
 		height: 110,
 		width: 110,
-		margin: `${10}px auto`
+		margin: margin(10, 'auto')
 	},
 	circle: {
 		stroke: bootstrapVariables.brandPrimary,

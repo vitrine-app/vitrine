@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer, remote, BrowserWindow } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
+import { border, padding, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { Button } from './Button';
@@ -119,9 +119,9 @@ const styles: React.CSSProperties = StyleSheet.create({
 	taskBar: {
 		backgroundColor: rgba(0, 0, 0, 0),
 		height: `${5}%`,
-		borderTop: `solid ${1}px ${rgba(31, 30, 30, 0.63)}`,
-		borderBottom: `solid ${1}px ${rgba(31, 30, 30, 0.63)}`,
-		padding: `${4}px ${0} ${0} ${15}px`,
+		borderTop: border(1, 'solid', rgba(31, 30, 30, 0.63)),
+		borderBottom: border(1, 'solid', rgba(31, 30, 30, 0.63)),
+		padding: padding(4, 0, 0, 15),
 		boxShadow: `${0} ${0} ${9}px ${rgba(0, 0, 0, 0.55)}`,
 		'-webkitAppRegion': 'drag'
 	},

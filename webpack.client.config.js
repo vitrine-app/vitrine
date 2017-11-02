@@ -40,5 +40,6 @@ module.exports = {
 				loader: 'base64-font-loader'
 			}*/
 		]
-	}
+	},
+	devtool: 'source-map'
 };

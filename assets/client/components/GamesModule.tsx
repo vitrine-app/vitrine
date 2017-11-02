@@ -43,8 +43,8 @@ export class GamesModule extends VitrineComponent {
 const styles: React.CSSProperties = StyleSheet.create({
 	gamesModuleIcon: {
 		opacity: 0.05,
-		width: `${150}px`,
-		margin: `${15}px`,
+		width: 150..px(),
+		margin: 15..px(),
 		transition: `${320}ms ease`,
 		':hover': {
 			opacity: 0.14,

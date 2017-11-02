@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
+import { margin, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
@@ -29,24 +29,24 @@ export class LaunchedGameContainer extends VitrineComponent {
 
 const backgroundKeyframes: React.CSSProperties = {
 	'0%': {
-		backgroundSize: `${100}%`
+		backgroundSize: 100..percents()
 	},
 	'100%': {
-		backgroundSize: `${110}%`
+		backgroundSize: 100..percents()
 	}
 };
 
 const styles: React.CSSProperties = StyleSheet.create({
 	launchedGameDiv: {
 		textAlign: 'center',
-		marginTop: `${29}vh`
+		marginTop: 29..vh()
 	},
 	launchedGameTitle: {
 		fontSize: 50,
 		color: '#FFFFFF'
 	},
 	launchedGameHr: {
-		margin: `${10}px ${40}vw`,
+		margin: margin(10, 40..vw()),
 		borderColor: rgba(255, 255, 255, 0.45),
 	},
 	launchedGameSubTitle: {
@@ -56,14 +56,14 @@ const styles: React.CSSProperties = StyleSheet.create({
 	launchedGameBackground: {
 		position: 'absolute',
 		zIndex: -1,
-		width: `${100}%`,
-		height: `${100}%`,
+		width: 100..percents(),
+		height: 100..percents(),
 		top: 0,
 		left: 0,
 		opacity: 0.8,
 		backgroundRepeat: 'no-repeat',
 		backgroundPosition: 'center',
-		filter: `blur(${8}px)`,
+		filter: `blur(${8..px()})`,
 		animationName: backgroundKeyframes,
 		animationDuration: `${20}s`,
 		animationTimingFunction: 'ease-in-out',

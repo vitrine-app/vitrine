@@ -4,6 +4,7 @@ import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 
 import { localizer } from '../Localizer';
+import { ReactNode } from 'react';
 
 export class ErrorsWrapper extends React.Component<any, any> {
 	constructor(props: any) {
@@ -65,7 +66,7 @@ export class ErrorsWrapper extends React.Component<any, any> {
 				</div>
 			);
 		else
-			return this.props.children;
+			return this.props.children as JSX.Element;
 	}
 }
 

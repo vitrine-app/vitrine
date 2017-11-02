@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
+import { padding, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import * as ReactTooltip from 'react-tooltip';
@@ -78,7 +78,7 @@ export class Button extends VitrineComponent {
 const styles: React.CSSProperties = StyleSheet.create({
 	button: {
 		display: 'inline-block',
-		padding: `${5}px ${8}px ${4}px ${8}px`,
+		padding: padding(5, 8, 4, 8),
 		borderRadius: 3,
 		cursor: 'pointer',
 		transition: `${100}ms ease`,

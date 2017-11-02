@@ -6,11 +6,9 @@ import { PlayableGame } from '../models/PlayableGame';
 import { getEnvFolder } from '../models/env';
 
 class GameLauncher {
-	private scriptPath: string;
 	private watcherPath: string;
 
 	public constructor(private game: PlayableGame) {
-		this.scriptPath = path.resolve(getEnvFolder('scripts'), 'gameLauncher.exe');
 		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
 	}
 

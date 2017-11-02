@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as textEllipsis from 'text-ellipsis';
-import { rgba } from 'css-verbose';
+import { margin, padding, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
@@ -128,20 +128,20 @@ export class GameContainer extends VitrineComponent {
 const styles: React.CSSProperties = StyleSheet.create({
 	selectedGameContainer: {
 		height: `${100}%`,
-		background: `radial-gradient(ellipse at center, ${rgba(131, 131, 131, 0.08)} ${0}%, ${rgba(0, 0, 0, 0.76)} ${120}%)`,
+		background: `radial-gradient(ellipse at center, ${rgba(131, 131, 131, 0.08)} ${0}%, ${rgba(0, 0, 0, 0.76)} ${120..percents()})`,
 		overflow: 'hidden'
 	},
 	selectedGameBackground: {
 		position: 'absolute',
 		zIndex: -1,
-		width: `${100}%`,
-		height: `${100}%`,
+		width: 100..percents(),
+		height: 100..percents(),
 		top: 0,
 		left: 0,
 		opacity: 0.8,
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: 'cover',
-		filter: `blur(${4}px)`,
+		filter: `blur(${4..px()})`,
 		transform: `scale(${1.02})`
 	},
 	noSelectedGame: {
@@ -152,7 +152,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		fontSize: 50
 	},
 	selectedGameCore: {
-		padding: `${25}px ${50}px`
+		padding: padding(25, 50)
 	},
 	selectedGameCoreH1: {
 		fontWeight: 400,
@@ -165,11 +165,11 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	selectedGameInfos: {
 		backgroundColor: rgba(0, 0, 0, 0.49),
-		padding: `${13}px ${24}px`,
+		padding: padding(13, 24),
 		color: '#E4E4E4',
-		fontSize: `${1.2}em`,
+		fontSize: 1.2.em(),
 		borderRadius: 3,
-		margin: `${10}px ${0}`
+		margin: margin(10, 0)
 	},
 	selectedGameInfosSpan: {
 		marginLeft: 15

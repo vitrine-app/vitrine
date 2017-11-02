@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ipcRenderer, shell } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
+import { border, margin, padding, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
@@ -182,12 +182,12 @@ const styles: React.CSSProperties = StyleSheet.create({
 		overflowY: 'auto'
 	},
 	igdbResearchBtnDiv: {
-		paddingTop: `${4}%`,
+		paddingTop: 4..percents(),
 		paddingLeft: 0
 	},
 	igdbResearchList: {
-		margin: `${5}px ${0}`,
-		padding: `${10}px ${0}`,
+		margin: margin(5, 0),
+		padding: padding(10, 0),
 		borderRadius: 2,
 		backgroundColor: '#39342E',
 		':hover': {
@@ -195,7 +195,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		}
 	},
 	selectedIgdbResearch: {
-		border: `solid ${2}px #81705E`,
+		border: border(2, 'solid', '#81705E'),
 		fontWeight: 600
 	},
 	igdbResearchImg: {
@@ -215,9 +215,9 @@ const styles: React.CSSProperties = StyleSheet.create({
 		cursor: 'pointer'
 	},
 	loadingContainer: {
-		height: `${100}%`,
-		paddingTop: `${30}%`,
-		paddingLeft: `${39}%`
+		height: 100..percents(),
+		paddingTop: 30..percents(),
+		paddingLeft: 39..percents()
 	},
 	loadingIcon: {
 		fontSize: 120,
