@@ -111,7 +111,8 @@ export class VitrineServer {
 		if (mustRelaunch)
 			app.relaunch();
 		this.appQuit = true;
-		this.tray.destroy();
+		if (this.tray)
+			this.tray.destroy();
 		app.quit();
 	}
 
