@@ -154,18 +154,14 @@ class IgdbWrapper {
 			genresArray.push(genre.name);
 			counter++;
 			if (counter === genres.length) {
-				console.log(0);
 				this.game.genres = genresArray;
 				if (this.game.summary && this.lang) {
-					console.log(1);
 					googleTranslate(this.game.summary, {
 						to: this.lang
 					}).then(({text}: any) => {
-						console.log(2);
 						this.game.summary = text;
 						this.callback(null, this.game);
 					}).catch((error: Error) => {
-						console.log(4);
 						this.callback(error, null);
 					});
 				}
@@ -178,7 +174,7 @@ class IgdbWrapper {
 
 export function getIgdbWrapperFiller(gameId: number, lang: string): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper(lang).findGameById(gameId, (error, game) => {
+		new IgdbWrapper(lang).findGameById(gameId, (error: Error, game: any) => {
 			if (error)
 				reject(error);
 			else
@@ -189,7 +185,7 @@ export function getIgdbWrapperFiller(gameId: number, lang: string): Promise<any>
 
 export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper().searchGames(gameName,(error, games) => {
+		new IgdbWrapper().searchGames(gameName,(error: Error, games: any) => {
 			if (error)
 				reject(error);
 			else

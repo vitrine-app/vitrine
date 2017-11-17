@@ -88,11 +88,11 @@ const styles: React.CSSProperties = StyleSheet.create({
 	errorStack: {
 		color: '#BDB3B3',
 		backgroundColor: '#272020',
-		border: `solid ${1}px #674242`
+		border: `solid ${1..px()} #674242`
 	},
 	hr: {
 		marginTop: 14,
 		marginBottom: 14,
-		borderTop: `solid ${1}px ${rgba(179, 144, 144, 0.39)}`
+		borderTop: `solid ${1..px()} ${rgba(179, 144, 144, 0.39)}`
 	}
 });

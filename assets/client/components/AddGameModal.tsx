@@ -111,7 +111,7 @@ export class AddGameModal extends VitrineComponent {
 	}
 
 	private addGameBtnClickHandler() {
-		let gameInfos: any = {...this.state};
+		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.isEditing;
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http'))

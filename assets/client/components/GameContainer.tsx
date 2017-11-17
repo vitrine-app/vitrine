@@ -15,7 +15,6 @@ import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.va
 export class GameContainer extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
-
 		this.state = {
 			selectedGame: props.selectedGame,
 			backgroundImage: 'none'
@@ -27,14 +26,14 @@ export class GameContainer extends VitrineComponent {
 			this.setState({
 				selectedGame: props.selectedGame
 			}, () => {
-				let currentBackgroundImage: string;
+				let backgroundImage: string;
 				if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
-					currentBackgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+					backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
 				}
 				else
-					currentBackgroundImage = 'none';
+					backgroundImage = 'none';
 				this.setState({
-					backgroundImage: currentBackgroundImage
+					backgroundImage
 				});
 			});
 		}
@@ -140,9 +139,9 @@ const styles: React.CSSProperties = StyleSheet.create({
 		left: 0,
 		opacity: 0.8,
 		backgroundRepeat: 'no-repeat',
-		backgroundSize: 'cover',
+		backgroundSize: `${100..percents()} ${100..percents()}`,
 		filter: `blur(${4..px()})`,
-		transform: `scale(${1.02})`
+		transition: `${150}ms ease`
 	},
 	noSelectedGame: {
 		padding: 50
@@ -161,7 +160,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		color: bootstrapVariables.textColor
 	},
 	selectedGameCoreHr: {
-		borderTop: `solid ${1}px ${rgba(210, 210, 210, 0.15)}`
+		borderTop: `solid ${1..px()} ${rgba(210, 210, 210, 0.15)}`
 	},
 	selectedGameInfos: {
 		backgroundColor: rgba(0, 0, 0, 0.49),

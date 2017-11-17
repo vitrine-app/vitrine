@@ -31,8 +31,11 @@ const backgroundKeyframes: React.CSSProperties = {
 	'0%': {
 		backgroundSize: 100..percents()
 	},
+	'85%': {
+		backgroundSize: 120..percents()
+	},
 	'100%': {
-		backgroundSize: 100..percents()
+		backgroundSize: 120..percents()
 	}
 };
 

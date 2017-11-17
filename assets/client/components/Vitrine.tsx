@@ -272,7 +272,6 @@ export class Vitrine extends VitrineComponent {
 			.on('server.server-error', this.serverError.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
-
 	}
 
 	public componentWillUnmount() {

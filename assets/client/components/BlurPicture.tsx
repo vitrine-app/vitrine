@@ -7,7 +7,6 @@ import { urlify } from '../helpers';
 
 export class BlurPicture extends VitrineComponent {
 	private pulseDuration: number;
-	private mounted: boolean;
 
 	public constructor(props: any) {
 		super(props);
@@ -19,9 +18,9 @@ export class BlurPicture extends VitrineComponent {
 		this.state = {
 			divClassName: '',
 			divStyle: {
-				width: `${divWidth}em`,
-				height: `${divHeight}em`,
-				fontSize: `${this.props.fontSize}px`,
+				width: divWidth.em(),
+				height: divHeight.em(),
+				fontSize: this.props.fontSize.px(),
 				animationDuration: `${this.pulseDuration}ms`
 			},
 			imageStyle: {
@@ -38,15 +37,13 @@ export class BlurPicture extends VitrineComponent {
 	private mouseEnterHandler() {
 		let imageStyle: any = this.state.imageStyle;
 		let iconStyle: any = this.state.iconStyle;
-		imageStyle.filter = `blur(${4}px)`;
+		imageStyle.filter = `blur(${4..px()})`;
 		iconStyle.display = 'inline';
 
-		if (!this.mounted)
-			return;
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
-				filter: `blur(${4}px)`
+				filter: `blur(${4..px()})`
 			},
 			iconClassName: 'animated zoomIn',
 			iconStyle: iconStyle
@@ -59,8 +56,6 @@ export class BlurPicture extends VitrineComponent {
 		imageStyle.filter = '';
 		iconStyle.display = 'none';
 
-		if (!this.mounted)
-			return;
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
@@ -72,14 +67,10 @@ export class BlurPicture extends VitrineComponent {
 	}
 
 	private clickHandler() {
-		if (!this.mounted)
-			return;
 		this.setState({
 			divClassName: 'animated pulse'
 		}, () => {
-			if (!this.mounted)
-				return;
-			setTimeout(() => {
+			setTimeout(10, () => {
 				this.setState({
 					divClassName: ''
 				});
@@ -90,22 +81,12 @@ export class BlurPicture extends VitrineComponent {
 	}
 
 	public componentWillReceiveProps(props: any) {
-		if (!this.mounted)
-			return;
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(props.background),
 				filter: ''
 			}
 		});
-	}
-
-	public componentDidMount() {
-		this.mounted = true;
-	}
-
-	public componentWillUnmount() {
-		this.mounted = false;
 	}
 
 	public render(): JSX.Element {
@@ -134,8 +115,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		position: 'relative',
 		left: 40,
 		color: '#F1F1F1',
-		textShadow: `${0} ${0} ${10}px ${rgba(8, 8, 8, 0.17)}`,
-		boxShadow: `${0} ${0} ${10}px ${rgba(0, 0, 0, 0.55)}`
+		textShadow: `${0} ${0} ${10..px()} ${rgba(8, 8, 8, 0.17)}`,
+		boxShadow: `${0} ${0} ${10..px()} ${rgba(0, 0, 0, 0.55)}`
 	},
 	picture: {
 		width: 100..percents(),
@@ -143,7 +124,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 		cursor: 'pointer',
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: `${100..percents()} ${100..percents()}`,
-		transform: `scale(${1.02.percents()})`,
 		transition: `${75}ms filter linear`
 	},
 	icon: {
