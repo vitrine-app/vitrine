@@ -15,7 +15,6 @@ import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.va
 export class GameContainer extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
-
 		this.state = {
 			selectedGame: props.selectedGame,
 			backgroundImage: 'none'
@@ -27,14 +26,14 @@ export class GameContainer extends VitrineComponent {
 			this.setState({
 				selectedGame: props.selectedGame
 			}, () => {
-				let currentBackgroundImage: string;
+				let backgroundImage: string;
 				if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
-					currentBackgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+					backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
 				}
 				else
-					currentBackgroundImage = 'none';
+					backgroundImage = 'none';
 				this.setState({
-					backgroundImage: currentBackgroundImage
+					backgroundImage
 				});
 			});
 		}
@@ -88,12 +87,14 @@ export class GameContainer extends VitrineComponent {
 						</div>
 					</div>
 					<div className="col-md-4">
-						<BlurPicture
-							faIcon={'play'}
-							fontSize={125}
-							background={this.state.selectedGame.details.cover}
-							clickHandler={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
-						/>
+						<div className={css(styles.coverDiv)}>
+							<BlurPicture
+								faIcon={'play'}
+								fontSize={125}
+								background={this.state.selectedGame.details.cover}
+								clickHandler={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
+							/>
+						</div>
 					</div>
 				</div>
 			);
@@ -140,9 +141,9 @@ const styles: React.CSSProperties = StyleSheet.create({
 		left: 0,
 		opacity: 0.8,
 		backgroundRepeat: 'no-repeat',
-		backgroundSize: 'cover',
+		backgroundSize: `${100..percents()} ${100..percents()}`,
 		filter: `blur(${4..px()})`,
-		transform: `scale(${1.02})`
+		transition: `${150}ms ease`
 	},
 	noSelectedGame: {
 		padding: 50
@@ -161,7 +162,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		color: bootstrapVariables.textColor
 	},
 	selectedGameCoreHr: {
-		borderTop: `solid ${1}px ${rgba(210, 210, 210, 0.15)}`
+		borderTop: `solid ${1..px()} ${rgba(210, 210, 210, 0.15)}`
 	},
 	selectedGameInfos: {
 		backgroundColor: rgba(0, 0, 0, 0.49),
@@ -173,5 +174,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	selectedGameInfosSpan: {
 		marginLeft: 15
+	},
+	coverDiv: {
+		paddingLeft: 40
 	}
 });

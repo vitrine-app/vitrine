@@ -5,6 +5,7 @@ import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
+import { spatStr } from '../helpers';
 
 class EmulatedGamesCrawler {
 	private potentialGames: PotentialGame[];
@@ -61,7 +62,7 @@ class EmulatedGamesCrawler {
 							return;
 						let romName = path.parse(romPath).name;
 						for (let playableGame of this.playableGames) {
-							if (romName == playableGame.name) {
+							if (spatStr(romName) === spatStr(playableGame.name)) {
 								secondCounter++;
 								if (secondCounter === roms.length) {
 									counter++;

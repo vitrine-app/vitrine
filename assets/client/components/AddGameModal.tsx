@@ -111,7 +111,7 @@ export class AddGameModal extends VitrineComponent {
 	}
 
 	private addGameBtnClickHandler() {
-		let gameInfos: any = {...this.state};
+		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.isEditing;
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http'))
@@ -171,13 +171,15 @@ export class AddGameModal extends VitrineComponent {
 							<div className={`modal-body ${css(styles.modalBody)}`}>
 								<div className="row">
 									<div className="col-md-2">
-										<label className={css(styles.coverLabel)}>{localizer.f('coverLabel')}</label>
-										<BlurPicture
-											faIcon={'folder-open-o'}
-											fontSize={55}
-											background={this.state.cover}
-											clickHandler={this.gameCoverClickHandler.bind(this)}
-										/>
+										<div className={css(styles.coverDiv)}>
+											<label>{localizer.f('coverLabel')}</label>
+											<BlurPicture
+												faIcon={'folder-open-o'}
+												fontSize={55}
+												background={this.state.cover}
+												clickHandler={this.gameCoverClickHandler.bind(this)}
+											/>
+										</div>
 									</div>
 									<div className="col-md-7 col-md-offset-1">
 										<form className={css(styles.addGameForm)}>
@@ -374,7 +376,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		resize: 'none',
 		height: 7..em()
 	},
-	coverLabel: {
+	coverDiv: {
 		paddingLeft: 40
 	}
 });

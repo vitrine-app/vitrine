@@ -69,3 +69,7 @@ export function randomHashedString(length?: number): string {
 	const finalLength: number = length || 8;
 	return crypto.randomBytes(Math.ceil(finalLength / 2)).toString('hex').slice(0, finalLength);
 }
+
+export function spatStr(str: string) {
+	return str.replace(/ /g, '').replace(/([-:])/g, '|')
+}

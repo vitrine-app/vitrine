@@ -174,8 +174,11 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private serverError(event: Event, error: Error) {
-		this.throwError(error.message);
+	private serverError(event: Event, errorName: string, errorStack: string) {
+		let error: Error = new Error(errorName);
+		error.stack = errorStack;
+		error.name = errorName;
+		this.throwError(error);
 	}
 
 	private taskBarRefreshBtnClickHandler() {
@@ -269,10 +272,9 @@ export class Vitrine extends VitrineComponent {
 			.on('server.add-potential-games', this.addPotentialGames.bind(this))
 			.on('server.stop-game', this.stopGame.bind(this))
 			.on('server.settings-updated', this.settingsUpdated.bind(this))
-			.on('server.server-error', this.serverError.bind(this));
+			.on('server.error', this.serverError.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
-
 	}
 
 	public componentWillUnmount() {

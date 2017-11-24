@@ -201,7 +201,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	igdbResearchImg: {
 		width: 90,
 		height: 120,
-		boxShadow: `${0} ${0} ${5}px ${rgba(12, 12, 12, 0.33)}`
+		boxShadow: `${0} ${0} ${5..px()} ${rgba(12, 12, 12, 0.33)}`
 	},
 	igdbResearchName: {
 		top: 48

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ReactNode } from 'react';
 
 export abstract class VitrineComponent extends React.Component<any, any> {
 	public constructor(props?: any) {
@@ -6,12 +7,10 @@ export abstract class VitrineComponent extends React.Component<any, any> {
 		this.state = {};
 	}
 
-	protected throwError(error: string | Error) {
-		let currentState: any = Object.assign({}, this.state);
-		let message: string = (error instanceof Error) ? (error.message) : (error);
-		currentState.error = new Error(message);
-
-		this.setState(currentState);
+	protected throwError(error: Error) {
+		this.setState({
+			error
+		});
 	}
 
 	protected checkErrors() {
@@ -19,7 +18,7 @@ export abstract class VitrineComponent extends React.Component<any, any> {
 			throw this.state.error;
 	}
 
-	public render(): JSX.Element | JSX.Element[] | React.ReactPortal | string | number | null | false {
+	public render(): ReactNode {
 		return super.render();
 	}
 }

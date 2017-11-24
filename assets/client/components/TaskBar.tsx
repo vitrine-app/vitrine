@@ -122,7 +122,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		borderTop: border(1, 'solid', rgba(31, 30, 30, 0.63)),
 		borderBottom: border(1, 'solid', rgba(31, 30, 30, 0.63)),
 		padding: padding(4, 0, 0, 15),
-		boxShadow: `${0} ${0} ${9}px ${rgba(0, 0, 0, 0.55)}`,
+		boxShadow: `${0} ${0} ${9..px()} ${rgba(0, 0, 0, 0.55)}`,
 		'-webkitAppRegion': 'drag'
 	},
 	potentialGamesContainer: {

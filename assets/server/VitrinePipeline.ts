@@ -26,6 +26,15 @@ export class VitrinePipeline {
 		this.launchMainClient(vitrineConfig);
 	}
 
+	private registerDebugPromiseHandler() {
+		process.on('unhandledRejection', (reason: Error) => {
+			console.error('[PROCESS] Unhandled Promise Rejection');
+			console.error('- - - - - - - - - - - - - - - - - - -');
+			console.error(reason);
+			console.error('- -' );
+		});
+	}
+
 	private includeEmulatorsConfig(vitrineConfig: any) {
 		if (!vitrineConfig.emulated)
 			return vitrineConfig;
@@ -38,6 +47,8 @@ export class VitrinePipeline {
 	}
 
 	private launchMainClient(vitrineConfig: any) {
+		if (!this.prod)
+			this.registerDebugPromiseHandler();
 		this.serverInstance = new VitrineServer(vitrineConfig, this.vitrineConfigFilePath);
 		this.serverInstance.registerEvents();
 		this.serverInstance.run(!this.prod);

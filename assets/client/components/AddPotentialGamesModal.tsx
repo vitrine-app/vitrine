@@ -28,16 +28,14 @@ export class AddPotentialGamesModal extends VitrineComponent {
 						<div className="modal-body">
 							<div className={`row ${css(styles.potentialGamesRow)}`}>
 								{this.props.potentialGames.games.map((potentialGame: PotentialGame, index: number) =>
-									<div key={index} className="col-md-3">
-										<div className={css(styles.potentialGameCover)}>
-											<BlurPicture
-												faIcon={'plus-circle'}
-												fontSize={55}
-												background={potentialGame.details.cover}
-												clickHandler={this.gameCoverClickHandler.bind(this, potentialGame)}
-											/>
-											<span className={css(styles.potentialGameName)}>{potentialGame.name}</span>
-										</div>
+									<div key={index} className={`col-md-3 ${css(styles.potentialGameCell)}`}>
+										<BlurPicture
+											faIcon={'plus-circle'}
+											fontSize={55}
+											background={potentialGame.details.cover}
+											clickHandler={this.gameCoverClickHandler.bind(this, potentialGame)}
+										/>
+										<p>{potentialGame.name}</p>
 									</div>
 								)}
 							</div>
@@ -55,6 +53,9 @@ const styles: React.CSSProperties = StyleSheet.create({
 		padding: padding(15, 0, 15, 50),
 		maxHeight: 810,
 		overflowY: 'auto'
+	},
+	potentialGameCell: {
+		height: 300
 	},
 	potentialGameName: {
 		fontWeight: 300,

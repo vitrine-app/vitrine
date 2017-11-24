@@ -31,8 +31,11 @@ const backgroundKeyframes: React.CSSProperties = {
 	'0%': {
 		backgroundSize: 100..percents()
 	},
+	'85%': {
+		backgroundSize: 120..percents()
+	},
 	'100%': {
-		backgroundSize: 100..percents()
+		backgroundSize: 120..percents()
 	}
 };
 
@@ -43,7 +46,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	launchedGameTitle: {
 		fontSize: 50,
-		color: '#FFFFFF'
+		color: rgba(255, 255, 255, 0.7)
 	},
 	launchedGameHr: {
 		margin: margin(10, 40..vw()),

@@ -13,7 +13,7 @@ export class App extends React.Component {
 	private config: any;
 
 	public constructor() {
-		super();
+		super(null);
 
 		this.initLanguages();
 		$(document).on('show.bs.modal', '.modal', function() {

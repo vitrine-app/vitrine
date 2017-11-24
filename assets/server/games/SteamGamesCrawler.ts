@@ -86,7 +86,7 @@ class SteamGamesCrawler {
 					potentialGames.games = this.potentialGames;
 					this.callback(null, potentialGames);
 				}
-			}).catch((error) => {
+			}).catch((error: Error) => {
 				this.callback(error, null);
 			});
 		});

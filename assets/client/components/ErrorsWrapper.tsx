@@ -44,7 +44,6 @@ export class ErrorsWrapper extends React.Component<any, any> {
 							<div className="modal-body">
 								<h4>{localizer.f('crash')}</h4>
 								<hr className={css(styles.hr)}/>
-								<p className={css(styles.errorMessage)}>{this.state.error.message}</p>
 								<pre className={css(styles.errorStack)}>{this.state.error.stack}</pre>
 							</div>
 							<div className="modal-footer">
@@ -81,18 +80,14 @@ const styles: React.CSSProperties = StyleSheet.create({
 		top: -50,
 		right: 23
 	},
-	errorMessage: {
-		fontSize: 23,
-		marginTop: 15
-	},
 	errorStack: {
 		color: '#BDB3B3',
 		backgroundColor: '#272020',
-		border: `solid ${1}px #674242`
+		border: `solid ${1..px()} #674242`
 	},
 	hr: {
 		marginTop: 14,
 		marginBottom: 14,
-		borderTop: `solid ${1}px ${rgba(179, 144, 144, 0.39)}`
+		borderTop: `solid ${1..px()} ${rgba(179, 144, 144, 0.39)}`
 	}
 });

@@ -73,8 +73,8 @@ export class VitrineServer {
 			.on('client.update-settings', this.updateSettings.bind(this));
 	}
 
-	public static throwServerError(event: any, error: string | Error) {
-		return event.sender.send('server.server-error', error);
+	public static throwServerError(event: any, error: Error) {
+		return event.sender.send('server.error', error.name, error.stack);
 	}
 
 	private clientReady(event: Electron.Event) {
@@ -96,7 +96,7 @@ export class VitrineServer {
 				this.findPotentialGames(event);
 				this.windowsList.loadingWindow.destroy();
 				this.windowsList.mainWindow.show();
-			}).catch((error) => {
+			}).catch((error: Error) => {
 				return VitrineServer.throwServerError(event, error);
 			});
 		}
@@ -111,7 +111,8 @@ export class VitrineServer {
 		if (mustRelaunch)
 			app.relaunch();
 		this.appQuit = true;
-		this.tray.destroy();
+		if (this.tray)
+			this.tray.destroy();
 		app.quit();
 	}
 
@@ -142,7 +143,7 @@ export class VitrineServer {
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
 		getIgdbWrapperFiller(gameId, this.vitrineConfig.lang).then((game) => {
 			event.sender.send('server.send-igdb-game', game);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			VitrineServer.throwServerError(event, error);
 		});
 	}
@@ -150,7 +151,7 @@ export class VitrineServer {
 	private searchIgdbGames(event: Electron.Event, gameName: string, resultsNb?: number) {
 		getIgdbWrapperSearcher(gameName, resultsNb).then((games: any) => {
 			event.sender.send('server.send-igdb-searches', gameName, games);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			event.sender.send('server.server-error', error);
 		})
 	}
@@ -178,7 +179,7 @@ export class VitrineServer {
 	private launchGame(event: Electron.Event, gameUuid: string) {
 		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
 			if (launchingGame.uuid !== uuidV5(launchingGame.name))
-				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
+				return VitrineServer.throwServerError(event, new Error('Hashed codes don\'t match. Your game is probably corrupted.'));
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
@@ -211,9 +212,9 @@ export class VitrineServer {
 
 	private findPotentialGames(event: Electron.Event) {
 		this.potentialGames.games = [];
-		this.searchSteamGames()
-			.then(this.searchOriginGames.bind(this))
-			.then(this.searchEmulatedGames.bind(this))
+		this.searchSteamGames(event)
+			.then(this.searchOriginGames.bind(this, event))
+			.then(this.searchEmulatedGames.bind(this, event))
 			.then(() => {
 				event.sender.send('server.add-potential-games', this.potentialGames.games);
 			});
@@ -250,7 +251,7 @@ export class VitrineServer {
 		});
 	}
 
-	private searchSteamGames(): Promise<any> {
+	private searchSteamGames(event: Electron.Event): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.steam) {
 				resolve();
@@ -267,7 +268,7 @@ export class VitrineServer {
 		});
 	}
 
-	private searchOriginGames(): Promise<any> {
+	private searchOriginGames(event: Electron.Event): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.origin) {
 				resolve();
@@ -284,7 +285,7 @@ export class VitrineServer {
 		});
 	}
 
-	private searchEmulatedGames(): Promise<any> {
+	private searchEmulatedGames(event: Electron.Event): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.emulated) {
 				resolve();
