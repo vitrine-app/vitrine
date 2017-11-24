@@ -6,12 +6,10 @@ export abstract class VitrineComponent extends React.Component<any, any> {
 		this.state = {};
 	}
 
-	protected throwError(error: string | Error) {
-		let currentState: any = Object.assign({}, this.state);
-		let message: string = (error instanceof Error) ? (error.message) : (error);
-		currentState.error = new Error(message);
-
-		this.setState(currentState);
+	protected throwError(error: Error) {
+		this.setState({
+			error
+		});
 	}
 
 	protected checkErrors() {

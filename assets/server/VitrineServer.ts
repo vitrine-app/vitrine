@@ -73,8 +73,8 @@ export class VitrineServer {
 			.on('client.update-settings', this.updateSettings.bind(this));
 	}
 
-	public static throwServerError(event: any, error: string | Error) {
-		return event.sender.send('server.server-error', error);
+	public static throwServerError(event: any, error: Error) {
+		return event.sender.send('server.error', error.name, error.stack);
 	}
 
 	private clientReady(event: Electron.Event) {
@@ -179,7 +179,7 @@ export class VitrineServer {
 	private launchGame(event: Electron.Event, gameUuid: string) {
 		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
 			if (launchingGame.uuid !== uuidV5(launchingGame.name))
-				return VitrineServer.throwServerError(event, 'Hashed codes don\'t match. Your game is probably corrupted.');
+				return VitrineServer.throwServerError(event, new Error('Hashed codes don\'t match. Your game is probably corrupted.'));
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
