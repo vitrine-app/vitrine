@@ -46,7 +46,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	launchedGameTitle: {
 		fontSize: 50,
-		color: '#FFFFFF'
+		color: rgba(255, 255, 255, 0.7)
 	},
 	launchedGameHr: {
 		margin: margin(10, 40..vw()),

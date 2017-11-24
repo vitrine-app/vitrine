@@ -30,7 +30,8 @@ export class ErrorsWrapper extends React.Component<any, any> {
 	}
 
 	public render(): JSX.Element {
-		if (this.state.error)
+		if (this.state.error) {
+			console.warn(this.state.error);
 			return (
 				<div
 					id="error-modal"
@@ -65,6 +66,7 @@ export class ErrorsWrapper extends React.Component<any, any> {
 					</div>
 				</div>
 			);
+		}
 		else
 			return this.props.children as JSX.Element;
 	}

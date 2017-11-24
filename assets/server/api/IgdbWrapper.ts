@@ -74,12 +74,17 @@ class IgdbWrapper {
 			this.game.releaseDate = this.game.first_release_date;
 			delete this.game.first_release_date;
 		}
-		if (this.game.cover)
+		if (this.game.cover) {
+			if (this.game.cover.url.substr(0, 6) === 'https:')
+				this.game.cover.url = this.game.cover.url.substr(6);
 			this.game.cover = `https:${this.game.cover.url.replace('t_thumb', 't_cover_big_2x')}`;
+		}
 		else // TODO: Change default image
 			this.game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
 		if (this.game.screenshots) {
 			this.game.screenshots.forEach((element, key) => {
+				if (element.url.substr(0, 6) === 'https:')
+					element.url = element.url.substr(6);
 				this.game.screenshots[key] = `https:${element.url.replace('t_thumb', 't_screenshot_med')}`;
 			});
 		}

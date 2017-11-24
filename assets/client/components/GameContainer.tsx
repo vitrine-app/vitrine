@@ -87,12 +87,14 @@ export class GameContainer extends VitrineComponent {
 						</div>
 					</div>
 					<div className="col-md-4">
-						<BlurPicture
-							faIcon={'play'}
-							fontSize={125}
-							background={this.state.selectedGame.details.cover}
-							clickHandler={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
-						/>
+						<div className={css(styles.coverDiv)}>
+							<BlurPicture
+								faIcon={'play'}
+								fontSize={125}
+								background={this.state.selectedGame.details.cover}
+								clickHandler={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
+							/>
+						</div>
 					</div>
 				</div>
 			);
@@ -172,5 +174,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	selectedGameInfosSpan: {
 		marginLeft: 15
+	},
+	coverDiv: {
+		paddingLeft: 40
 	}
 });

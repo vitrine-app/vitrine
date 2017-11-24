@@ -113,7 +113,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	container: {
 		overflow: 'hidden',
 		position: 'relative',
-		left: 40,
+		//left: 40,
 		color: '#F1F1F1',
 		textShadow: `${0} ${0} ${10..px()} ${rgba(8, 8, 8, 0.17)}`,
 		boxShadow: `${0} ${0} ${10..px()} ${rgba(0, 0, 0, 0.55)}`
