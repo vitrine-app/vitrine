@@ -9,6 +9,7 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
 import { getEnvFolder, uuidV5 } from '../../models/env';
+import { spatStr } from '../helpers';
 
 class OriginGamesCrawler {
 	private regDetails: any[];
@@ -86,7 +87,7 @@ class OriginGamesCrawler {
 				return;
 			}
 			for (let playableGame of this.playableGames) {
-				if (gameName == playableGame.name) {
+				if (spatStr(gameName) === spatStr(playableGame.name)) {
 					counter++;
 					if (counter === files.length) {
 						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
@@ -116,7 +117,7 @@ class OriginGamesCrawler {
 						potentialGames.games = this.potentialGames;
 						this.callback(null, potentialGames);
 					}
-				}).catch((error) => {
+				}).catch((error: Error) => {
 					this.callback(error, null);
 				});
 			});

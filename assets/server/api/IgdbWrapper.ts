@@ -36,7 +36,7 @@ class IgdbWrapper {
 			this.callback = callback;
 			this.basicFormatting();
 			this.findCompanyById(this.game.developers, this.addDeveloperCallback.bind(this));
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			callback(error, null);
 		});
 	}
@@ -59,7 +59,7 @@ class IgdbWrapper {
 				if (counter === response.body.length)
 					callback(null, response.body);
 			});
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			callback(error, null);
 		});
 	}
@@ -103,7 +103,7 @@ class IgdbWrapper {
 			ids: ids
 		}, ['name']).then((response) => {
 			callback(response.body[0]);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			this.callback(error, null);
 		});
 	}
@@ -117,7 +117,7 @@ class IgdbWrapper {
 			ids: [id]
 		}, ['name']).then((response) => {
 			callback(response.body[0]);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			this.callback(error, null);
 		});
 	}
@@ -129,7 +129,7 @@ class IgdbWrapper {
 			ids: ids
 		}, ['name']).then((response) => {
 			callback(response.body);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			this.callback(error, null);
 		});
 	}

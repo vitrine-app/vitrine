@@ -96,7 +96,7 @@ export class VitrineServer {
 				this.findPotentialGames(event);
 				this.windowsList.loadingWindow.destroy();
 				this.windowsList.mainWindow.show();
-			}).catch((error) => {
+			}).catch((error: Error) => {
 				return VitrineServer.throwServerError(event, error);
 			});
 		}
@@ -143,7 +143,7 @@ export class VitrineServer {
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
 		getIgdbWrapperFiller(gameId, this.vitrineConfig.lang).then((game) => {
 			event.sender.send('server.send-igdb-game', game);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			VitrineServer.throwServerError(event, error);
 		});
 	}
@@ -151,7 +151,7 @@ export class VitrineServer {
 	private searchIgdbGames(event: Electron.Event, gameName: string, resultsNb?: number) {
 		getIgdbWrapperSearcher(gameName, resultsNb).then((games: any) => {
 			event.sender.send('server.send-igdb-searches', gameName, games);
-		}).catch((error) => {
+		}).catch((error: Error) => {
 			event.sender.send('server.server-error', error);
 		})
 	}
