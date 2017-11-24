@@ -26,6 +26,7 @@
       }
     },
     "files": [
+      "!config/vitrine_config.json",
       "!.circleci",
       "!.idea",
       "!assets",

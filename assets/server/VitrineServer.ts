@@ -212,9 +212,9 @@ export class VitrineServer {
 
 	private findPotentialGames(event: Electron.Event) {
 		this.potentialGames.games = [];
-		this.searchSteamGames()
-			.then(this.searchOriginGames.bind(this))
-			.then(this.searchEmulatedGames.bind(this))
+		this.searchSteamGames(event)
+			.then(this.searchOriginGames.bind(this, event))
+			.then(this.searchEmulatedGames.bind(this, event))
 			.then(() => {
 				event.sender.send('server.add-potential-games', this.potentialGames.games);
 			});
@@ -251,7 +251,7 @@ export class VitrineServer {
 		});
 	}
 
-	private searchSteamGames(): Promise<any> {
+	private searchSteamGames(event: Electron.Event): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.steam) {
 				resolve();
@@ -268,7 +268,7 @@ export class VitrineServer {
 		});
 	}
 
-	private searchOriginGames(): Promise<any> {
+	private searchOriginGames(event: Electron.Event): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.origin) {
 				resolve();
@@ -285,7 +285,7 @@ export class VitrineServer {
 		});
 	}
 
-	private searchEmulatedGames(): Promise<any> {
+	private searchEmulatedGames(event: Electron.Event): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.emulated) {
 				resolve();

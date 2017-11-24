@@ -48,8 +48,11 @@ class IgdbWrapper {
 		}, ['name', 'cover']).then((response) => {
 			let counter: number = 0;
 			response.body.forEach((game: any) => {
-				if (game.cover)
+				if (game.cover) {
+					if (game.cover.url.substr(0, 6) === 'https:')
+						game.cover.url = game.cover.url.substr(6);
 					game.cover = `https:${game.cover.url.replace('t_thumb', 't_cover_small_2x')}`;
+				}
 				else // TODO: Change default image
 					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
 				counter++;
