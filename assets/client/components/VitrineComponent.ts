@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ReactNode } from 'react';
 
 export abstract class VitrineComponent extends React.Component<any, any> {
 	public constructor(props?: any) {
@@ -17,7 +18,7 @@ export abstract class VitrineComponent extends React.Component<any, any> {
 			throw this.state.error;
 	}
 
-	public render(): JSX.Element | JSX.Element[] | React.ReactPortal | string | number | null | false {
+	public render(): ReactNode {
 		return super.render();
 	}
 }
