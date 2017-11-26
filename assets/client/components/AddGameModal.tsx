@@ -11,6 +11,7 @@ import { BlurPicture } from './BlurPicture';
 import { NumberPicker } from './NumberPicker';
 import { IgdbResearchModal } from './IgdbResearchModal';
 import { ImagesCollection } from './ImagesCollection';
+import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 import { openExecutableDialog, openImageDialog } from '../helpers';
 
@@ -163,7 +164,7 @@ export class AddGameModal extends VitrineComponent {
 					<div className="modal-dialog modal-lg">
 						<div className="modal-content">
 							<div className="modal-header">
-								<button type="button" className="close" data-dismiss="modal"><i className="fa fa-times"/></button>
+								<CloseIcon onClick={'#add-game-modal'}/>
 								<h4 className="modal-title">
 									{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}
 								</h4>
