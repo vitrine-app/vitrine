@@ -14,6 +14,7 @@ import * as originIcon from '../images/originIcon.png';
 export class SettingsModal extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
+		console.log(this.props.settings);
 
 		this.state = {
 			langs: localizer.getLanguages(),
@@ -105,6 +106,10 @@ export class SettingsModal extends VitrineComponent {
 		}
 		if (canBeSent)
 			ipcRenderer.send('client.update-settings', form);
+	}
+
+	public componentDidMount() {
+		$('#options-pane-lang').find('select').selectpicker();
 	}
 
 	public render(): JSX.Element {
@@ -248,7 +253,7 @@ export class SettingsModal extends VitrineComponent {
 						<div className="modal-footer">
 							<button
 								className="btn btn-default"
-								style={{display: (!this.props.firstLaunch) ? ('inline-block') : ('none')}}
+								style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
 								data-dismiss="modal"
 							>
 								{localizer.f('cancel')}

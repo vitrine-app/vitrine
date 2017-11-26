@@ -37,14 +37,6 @@ export class Vitrine extends VitrineComponent {
 		};
 	}
 
-	private firstLaunch() {
-		this.setState({
-			firstLaunch: true
-		}, () => {
-			$('#settings-modal').modal('show');
-		});
-	}
-
 	private updateProgress(event: Electron.Event, progress: any) {
 		this.setState({
 			updateProgress: progress
@@ -273,8 +265,15 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('server.first-launch', this.firstLaunch.bind(this))
-			.on('server.update-progress', this.updateProgress.bind(this))
+		if (this.state.settings.firstLaunch) {
+			this.setState({
+				firstLaunch: true
+			}, () => {
+				$('#settings-modal').modal('show');
+			});
+		}
+
+		ipcRenderer.on('server.update-progress', this.updateProgress.bind(this))
 			.on('server.update-downloaded', this.updateDownloaded.bind(this))
 			.on('server.add-playable-games', this.addPlayableGames.bind(this))
 			.on('server.add-playable-game', this.addPlayableGame.bind(this))

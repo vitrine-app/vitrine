@@ -60,7 +60,8 @@ export class VitrineServer {
 	}
 
 	public registerEvents() {
-		ipcMain.on('client.ready', this.clientReady.bind(this))
+		ipcMain.on('client.settings-asked', this.clientSettingsAsked.bind(this))
+			.on('client.ready', this.clientReady.bind(this))
 			.on('client.quit-application', this.quitApplication.bind(this))
 			.on('client.update-app', this.updateApp.bind(this))
 			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
@@ -77,11 +78,12 @@ export class VitrineServer {
 		return event.sender.send('server.error', error.name, error.stack);
 	}
 
-	private clientReady(event: Electron.Event) {
+	private clientSettingsAsked(event: Electron.Event) {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
-		if (this.vitrineConfig) {
+		event.sender.send('server.init-settings', this.vitrineConfig);
+		if (!this.vitrineConfig.firstLaunch) {
 			if (this.vitrineConfig.steam) {
 				getSteamUserFinder(this.vitrineConfig.steam).then((steamUser: any) => {
 					Object.assign(this.vitrineConfig.steam, steamUser);
@@ -89,22 +91,19 @@ export class VitrineServer {
 					return this.throwServerError(event, error);
 				});
 			}
-
 			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
 				event.sender.send('server.add-playable-games', this.playableGames.games);
 				this.findPotentialGames(event);
-				this.windowsList.loadingWindow.destroy();
-				this.windowsList.mainWindow.show();
 			}).catch((error: Error) => {
 				return this.throwServerError(event, error);
 			});
 		}
-		else {
-			event.sender.send('server.first-launch');
-			this.windowsList.loadingWindow.destroy();
-			this.windowsList.mainWindow.show();
-		}
+	}
+
+	private clientReady() {
+		this.windowsList.loadingWindow.destroy();
+		this.windowsList.mainWindow.show();
 	}
 
 	private quitApplication(event?: Electron.Event, mustRelaunch?: boolean) {

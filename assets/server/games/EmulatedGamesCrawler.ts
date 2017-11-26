@@ -80,6 +80,7 @@ class EmulatedGamesCrawler {
 							delete game.name;
 							let potentialGame: PotentialGame = new PotentialGame(romName, game);
 							potentialGame.source = GameSource.ROM;
+							console.log(emulator);
 							potentialGame.commandLine = [
 								'PROGRAM',
 								emulator.command.replace('%g', romPath)
