@@ -49,7 +49,7 @@ class SteamGamesCrawler {
 		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
 
-			if (SteamGamesCrawler.isGameAlreadyAdded(gameManifest.name)) {
+			if (this.isGameAlreadyAdded(gameManifest.name)) {
 				counter++;
 				if (counter === array.length) {
 					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
@@ -92,7 +92,7 @@ class SteamGamesCrawler {
 		});
 	}
 
-	private static isGameAlreadyAdded(name: string): boolean {
+	private isGameAlreadyAdded(name: string): boolean {
 		let gameUuid: string = uuidV5(name);
 
 		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);

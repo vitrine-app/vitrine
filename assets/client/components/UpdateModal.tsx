@@ -14,7 +14,7 @@ export class UpdateModal extends VitrineComponent {
 		};
 	}
 
-	private static updateBtnClickHandler() {
+	private updateBtnClickHandler() {
 		ipcRenderer.send('client.update-app');
 	}
 
@@ -48,7 +48,7 @@ export class UpdateModal extends VitrineComponent {
 							<button className="btn btn-default" data-dismiss="modal">{localizer.f('cancel')}</button>
 							<button
 								id="update-app-btn"
-								onClick={UpdateModal.updateBtnClickHandler}
+								onClick={this.updateBtnClickHandler}
 								className="btn btn-success"
 							>
 								{localizer.f('update')}

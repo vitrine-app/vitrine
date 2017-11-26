@@ -77,7 +77,7 @@ class OriginGamesCrawler {
 		files.forEach((gameFolder: string) => {
 			let gameName: string = gameFolder.split('/').pop();
 
-			if (OriginGamesCrawler.isGameAlreadyAdded(gameName)) {
+			if (this.isGameAlreadyAdded(gameName)) {
 				counter++;
 				if (counter === files.length) {
 					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
@@ -138,7 +138,7 @@ class OriginGamesCrawler {
 		});
 	}
 
-	private static isGameAlreadyAdded(name: string): boolean {
+	private isGameAlreadyAdded(name: string): boolean {
 		let gameUuid: string = uuidV5(name);
 
 		let gameDirectory = path.resolve(getEnvFolder('games'), gameUuid);

@@ -73,7 +73,7 @@ export class VitrineServer {
 			.on('client.update-settings', this.updateSettings.bind(this));
 	}
 
-	public static throwServerError(event: any, error: Error) {
+	public throwServerError(event: any, error: Error) {
 		return event.sender.send('server.error', error.name, error.stack);
 	}
 
@@ -86,7 +86,7 @@ export class VitrineServer {
 				getSteamUserFinder(this.vitrineConfig.steam).then((steamUser: any) => {
 					Object.assign(this.vitrineConfig.steam, steamUser);
 				}).catch((error: Error) => {
-					return VitrineServer.throwServerError(event, error);
+					return this.throwServerError(event, error);
 				});
 			}
 
@@ -97,7 +97,7 @@ export class VitrineServer {
 				this.windowsList.loadingWindow.destroy();
 				this.windowsList.mainWindow.show();
 			}).catch((error: Error) => {
-				return VitrineServer.throwServerError(event, error);
+				return this.throwServerError(event, error);
 			});
 		}
 		else {
@@ -144,7 +144,7 @@ export class VitrineServer {
 		getIgdbWrapperFiller(gameId, this.vitrineConfig.lang).then((game) => {
 			event.sender.send('server.send-igdb-game', game);
 		}).catch((error: Error) => {
-			VitrineServer.throwServerError(event, error);
+			this.throwServerError(event, error);
 		});
 	}
 
@@ -172,14 +172,14 @@ export class VitrineServer {
 
 			this.registerGame(event, editedGame, gameForm, true);
 		}).catch((error: Error) => {
-			return VitrineServer.throwServerError(event, error);
+			return this.throwServerError(event, error);
 		});
 	}
 
 	private launchGame(event: Electron.Event, gameUuid: string) {
 		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
 			if (launchingGame.uuid !== uuidV5(launchingGame.name))
-				return VitrineServer.throwServerError(event, new Error('Hashed codes don\'t match. Your game is probably corrupted.'));
+				return this.throwServerError(event, new Error('Hashed codes don\'t match. Your game is probably corrupted.'));
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
@@ -187,15 +187,15 @@ export class VitrineServer {
 				this.gameLaunched = false;
 				console.log('You played', secondsPlayed, 'seconds.');
 				launchingGame.addPlayTime(secondsPlayed, (error) => {
-					return VitrineServer.throwServerError(event, error);
+					return this.throwServerError(event, error);
 				});
 				event.sender.send('server.stop-game', gameUuid, launchingGame.timePlayed);
 			}).catch((error: Error) => {
 				this.gameLaunched = false;
-				return VitrineServer.throwServerError(event, error);
+				return this.throwServerError(event, error);
 			});
 		}).catch((error: Error) => {
-			return VitrineServer.throwServerError(event, error);
+			return this.throwServerError(event, error);
 		});
 	}
 
@@ -247,7 +247,7 @@ export class VitrineServer {
 			this.vitrineConfig = config;
 			event.sender.send('server.settings-updated', this.vitrineConfig);
 		}).catch((error: Error) => {
-			return VitrineServer.throwServerError(event, error);
+			return this.throwServerError(event, error);
 		});
 	}
 
@@ -263,7 +263,7 @@ export class VitrineServer {
 				});
 			}).catch((error: Error) => {
 				resolve();
-				return VitrineServer.throwServerError(event, error);
+				return this.throwServerError(event, error);
 			});
 		});
 	}
@@ -280,7 +280,7 @@ export class VitrineServer {
 				});
 			}).catch((error: Error) => {
 				resolve();
-				return VitrineServer.throwServerError(event, error);
+				return this.throwServerError(event, error);
 			});
 		});
 	}
@@ -297,7 +297,7 @@ export class VitrineServer {
 				});
 			}).catch((error: Error) => {
 				resolve();
-				return VitrineServer.throwServerError(event, error);
+				return this.throwServerError(event, error);
 			});
 		});
 	}
@@ -416,17 +416,17 @@ export class VitrineServer {
 					getSteamPlayTimeWrapper(this.vitrineConfig.steam, game).then((timedGame: PlayableGame) => {
 						this.handleRegisteredGame(event, timedGame, configFilePath, editing);
 					}).catch((error: Error) => {
-						return VitrineServer.throwServerError(event, error);
+						return this.throwServerError(event, error);
 					});
 				}
 				else
 					this.handleRegisteredGame(event, game, configFilePath, editing);
 
 			}).catch((error: Error) => {
-				return VitrineServer.throwServerError(event, error);
+				return this.throwServerError(event, error);
 			});
 		}).catch((error: Error) => {
-			return VitrineServer.throwServerError(event, error);
+			return this.throwServerError(event, error);
 		});
 	}
 
@@ -446,7 +446,7 @@ export class VitrineServer {
 				});
 			}
 		}).catch((error: Error) => {
-			return VitrineServer.throwServerError(event, error);
+			return this.throwServerError(event, error);
 		});
 	}
 }

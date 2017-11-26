@@ -29,6 +29,7 @@ export class Vitrine extends VitrineComponent {
 			playableGames: new GamesCollection<PlayableGame>(),
 			potentialGames: new GamesCollection<PotentialGame>(),
 			refreshingGames: false,
+			launchedGamePictureActivated: true,
 			selectedGame: null,
 			launchedGame: null,
 			potentialGameToAdd: null,
@@ -222,9 +223,19 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private static deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+	private deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
 		ipcRenderer.send('client.remove-game', gameUuid);
+	}
+
+	private launchedGamePictureToggleHandler() {
+		this.setState({
+			launchedGamePictureActivated: false
+		}, () => {
+			this.setState({
+				selectedGame: this.state.selectedGame
+			});
+		});
 	}
 
 	private keyDownHandler(event: KeyboardEvent) {
@@ -282,7 +293,7 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	public render(): JSX.Element {
-		let vitrineContent: JSX.Element = (!this.state.launchedGame) ? (
+		let vitrineContent: JSX.Element = (!this.state.launchedGame || !this.state.launchedGamePictureActivated) ? (
 			<div className={'full-height'}>
 				<SideBar
 					playableGames={this.state.playableGames}
@@ -316,7 +327,7 @@ export class Vitrine extends VitrineComponent {
 					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>
 						{localizer.f('edit')}
 					</MenuItem>
-					<MenuItem onClick={Vitrine.deleteGameContextClickHandler.bind(this)}>
+					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
 						{localizer.f('delete')}
 					</MenuItem>
 				</ContextMenu>
@@ -324,13 +335,14 @@ export class Vitrine extends VitrineComponent {
 		) : (
 			<LaunchedGameContainer
 				launchedGame={this.state.launchedGame}
+				clickHandler={this.launchedGamePictureToggleHandler.bind(this)}
 			/>
 		);
 		return (
 			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
 				<TaskBar
 					potentialGames={this.state.potentialGames}
-					isGameLaunched={(this.state.launchedGame) ? (true) : (false)}
+					isGameLaunched={this.state.launchedGame && this.state.launchedGamePictureActivated}
 					refreshingGames={this.state.refreshingGames}
 					updateProgress={this.state.updateProgress}
 					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
