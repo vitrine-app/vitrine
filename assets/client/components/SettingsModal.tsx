@@ -142,6 +142,11 @@ export class SettingsModal extends VitrineComponent {
 										</a>
 									</li>
 									<li>
+										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-emulators">
+											{localizer.f('emulators')}
+										</a>
+									</li>
+									<li>
 										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-lang">
 											{localizer.f('lang')}
 										</a>
@@ -246,6 +251,9 @@ export class SettingsModal extends VitrineComponent {
 												</option>
 											)}
 										</select>
+									</div>
+									<div id="options-pane-emulators">
+										Hello
 									</div>
 								</div>
 							</form>

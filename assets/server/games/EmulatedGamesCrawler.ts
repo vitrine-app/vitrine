@@ -60,6 +60,18 @@ class EmulatedGamesCrawler {
 					this.getEmulator(romConsole, (error: Error, emulator: any) => {
 						if (error)
 							return;
+						if (!emulator.active) {
+							secondCounter++;
+							if (secondCounter === roms.length) {
+								counter++;
+								if (counter === this.romsFolders.length) {
+									let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+									potentialGames.games = this.potentialGames;
+									this.callback(null, potentialGames);
+								}
+							}
+							return;
+						}
 						let romName = path.parse(romPath).name;
 						for (let playableGame of this.playableGames) {
 							if (spatStr(romName) === spatStr(playableGame.name)) {
@@ -80,7 +92,6 @@ class EmulatedGamesCrawler {
 							delete game.name;
 							let potentialGame: PotentialGame = new PotentialGame(romName, game);
 							potentialGame.source = GameSource.ROM;
-							console.log(emulator);
 							potentialGame.commandLine = [
 								'PROGRAM',
 								emulator.command.replace('%g', romPath)

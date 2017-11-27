@@ -64,6 +64,7 @@
   "pathError": "You need to specify a path",
   "settings": "Settings",
   "modules": "Modules",
+  "emulators": "Emulators",
   "lang": "Lang",
   "igdbDisclaimer": "This feature is powered by ",
   "genresNames": {

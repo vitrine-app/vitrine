@@ -64,6 +64,7 @@
   "pathError": "Vous devez définir un dossier d'emplacement",
   "settings": "Paramètres",
   "modules": "Modules",
+  "emulators": "Emulateurs",
   "lang": "Langue",
   "igdbDisclaimer": "Cette fonctionalité est disponible grâce à ",
   "genresNames": {
