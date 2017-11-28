@@ -23,6 +23,8 @@ export class VitrineServer {
 	private windowsList: any;
 	private mainEntryPoint: string;
 	private loadingEntryPoint: string;
+	private vitrineConfigFilePath: string;
+	private emulatorsConfigFilePath: string;
 	private tray: Tray;
 	private devTools: boolean;
 	private iconPath: string;
@@ -31,10 +33,12 @@ export class VitrineServer {
 	private gameLaunched: boolean;
 	private appQuit: boolean;
 
-	public constructor(private vitrineConfig?: any, private vitrineConfigFilePath?: string) {
+	public constructor(private vitrineConfig: any, configFolderPath: string) {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
+		this.vitrineConfigFilePath = path.resolve(configFolderPath, 'vitrine_config.json');
+		this.emulatorsConfigFilePath = path.resolve(configFolderPath, 'emulators.json');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.devTools = false;
 		this.gameLaunched = false;
@@ -243,8 +247,17 @@ export class VitrineServer {
 		fs.outputJSON(this.vitrineConfigFilePath, config, {
 			spaces: 2
 		}).then(() => {
-			this.vitrineConfig = config;
-			event.sender.send('server.settings-updated', this.vitrineConfig);
+			let emulatorsConfig: any = this.vitrineConfig.emulated;
+			emulatorsConfig.emulators = settingsForm.emulators;
+			fs.outputJSON(this.emulatorsConfigFilePath, emulatorsConfig.emulators, {
+				spaces: 2
+			}).then(() => {
+				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
+				console.log(this.vitrineConfig);
+				event.sender.send('server.settings-updated', this.vitrineConfig);
+			}).catch((error: Error) => {
+				return this.throwServerError(event, error);
+			});
 		}).catch((error: Error) => {
 			return this.throwServerError(event, error);
 		});

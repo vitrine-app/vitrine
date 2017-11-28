@@ -1,53 +1,48 @@
 [
   {
-    "id": 0,
-    "name": "ZSNES",
-    "path": "",
-    "command": "-m \"%g\"",
     "active": false,
+    "command": "-m \"%g\"",
     "consoles": [
       1
-    ]
+    ],
+    "id": 0,
+    "name": "ZSNES",
+    "path": ""
   },
   {
-    "id": 1,
-    "name": "Project64",
-    "path": "",
-    "command": "\"%g\"",
     "active": false,
+    "command": "\"%g\"",
     "consoles": [
       2
-    ]
+    ],
+    "id": 1,
+    "name": "Project64",
+    "path": ""
   },
   {
-    "id": 2,
-    "name": "Dolphin",
-    "path": "",
+    "active": true,
     "command": "--batch --exec=\"%g\"",
-    "active": false,
-    "consoles": [
-      3,
-      4
-    ]
+    "name": "Dolphin",
+    "path": "C:\\Program Files\\Dolphin\\Dolphin.exe"
   },
   {
-    "id": 3,
-    "name": "Cemu",
-    "path": "",
-    "command": "-g \"%g\" -f",
     "active": false,
+    "command": "-g \"%g\" -f",
     "consoles": [
       5
-    ]
+    ],
+    "id": 3,
+    "name": "Cemu",
+    "path": ""
   },
   {
-    "id": 4,
-    "name": "ePSXe",
-    "path": "",
-    "command": "-nogui -loadiso \"%g\"",
     "active": false,
+    "command": "-nogui -loadiso \"%g\"",
     "consoles": [
       6
-    ]
+    ],
+    "id": 4,
+    "name": "ePSXe",
+    "path": ""
   }
 ]

@@ -5,6 +5,7 @@ import { padding } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { GamesModule } from './GamesModule';
+import { EmulatorSettingsRow } from './EmulatorSettingsRow';
 import { localizer } from '../Localizer';
 import { openDirectory } from '../helpers';
 
@@ -24,7 +25,9 @@ export class SettingsModal extends VitrineComponent {
 			steamPath: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
 			originPath: (this.props.settings && this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
 			steamError: false,
-			originError: false
+			originError: false,
+			emulatorsCurrentConfig: this.props.settings.emulated.emulators,
+			emulatorsError: ''
 		};
 	}
 
@@ -71,11 +74,22 @@ export class SettingsModal extends VitrineComponent {
 		});
 	}
 
+	private emulatorConfigChangeHandler(emulatorId: number, emulatorConfig: any) {
+		let emulatorsCurrentConfig: any[] = this.state.emulatorsCurrentConfig;
+		emulatorsCurrentConfig[emulatorId] = emulatorConfig;
+		this.setState({
+			emulatorsCurrentConfig
+		}, () => {
+			console.log(this.state.emulatorsCurrentConfig);
+		});
+	}
+
 	private submitBtnClickHandler() {
+		let canBeSent: boolean = true;
+
 		let form: any = {
 			lang: this.state.lang
 		};
-		let canBeSent: boolean = true;
 		if (this.state.steamEnabled) {
 			if (this.state.steamPath) {
 				form.steamPath = this.state.steamPath;
@@ -104,8 +118,24 @@ export class SettingsModal extends VitrineComponent {
 				});
 			}
 		}
-		if (canBeSent)
-			ipcRenderer.send('client.update-settings', form);
+
+		let emulatorsError: string = '';
+		let counter: number = 0;
+		this.state.emulatorsCurrentConfig.forEach((emulatorConfig: any) => {
+			if (emulatorConfig.active && (!emulatorConfig.path || !emulatorConfig.command)) {
+				console.error(emulatorConfig.name, 'must have a correct config.');
+				canBeSent = false;
+				emulatorsError += `${emulatorConfig.name} must have a correct config. `;
+			}
+			counter++;
+			if (counter === this.state.emulatorsCurrentConfig.length) {
+				this.setState({
+					emulatorsError
+				});
+				if (canBeSent)
+					ipcRenderer.send('client.update-settings', { ...form, emulators: this.state.emulatorsCurrentConfig });
+			}
+		});
 	}
 
 	public componentDidMount() {
@@ -121,7 +151,7 @@ export class SettingsModal extends VitrineComponent {
 				data-keyboard={(this.props.firstLaunch) ? (false) : (true)}
 				data-backdrop={(this.props.firstLaunch) ? ('static') : (true)}
 			>
-				<div className="modal-dialog">
+				<div className={`modal-dialog ${css(styles.modalDialog)}`}>
 					<div className="modal-content">
 						<div
 							className="modal-header"
@@ -252,8 +282,32 @@ export class SettingsModal extends VitrineComponent {
 											)}
 										</select>
 									</div>
-									<div id="options-pane-emulators">
-										Hello
+									<div id="options-pane-emulators" className={`tab-pane fade in ${css(styles.tableDiv)}`}>
+										<p className={css(styles.emulatorsError)}>{this.state.emulatorsError}</p>
+										<table className={`table table-bordered ${css(styles.emulatorsTable)}`}>
+											<thead>
+											<tr>
+												<th className={css(styles.emulatorNameTh)}>{localizer.f('emulatorName')}</th>
+												<th className={css(styles.emulatorActiveTh)}>{localizer.f('emulatorActive')}</th>
+												<th className={css(styles.emulatorPathTh)}>{localizer.f('emulatorPath')}</th>
+												<th className={css(styles.emulatorCommandTh)}>{localizer.f('emulatorCommand')}</th>
+											</tr>
+											</thead>
+											<tbody>
+											{Object.keys(this.props.settings.emulated.emulators).map((emulatorId: string, index: number) =>
+												<EmulatorSettingsRow
+													key={index}
+													id={emulatorId}
+													name={this.props.settings.emulated.emulators[emulatorId].name}
+													active={this.props.settings.emulated.emulators[emulatorId].active}
+													path={this.props.settings.emulated.emulators[emulatorId].path}
+													command={this.props.settings.emulated.emulators[emulatorId].command}
+													onChange={this.emulatorConfigChangeHandler.bind(this)}
+												/>
+											)}
+											</tbody>
+										</table>
+										<p className={css(styles.emulatorsCommandLineInstruction)}>{localizer.f('emulatorCommandLineInstruction')}</p>
 									</div>
 								</div>
 							</form>
@@ -285,8 +339,13 @@ const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
 		top: 10..vh()
 	},
+	modalDialog: {
+		width: 900..px()
+	},
 	modalBody: {
-		padding: padding(15, 40, 10)
+		padding: padding(15, 40, 10),
+		maxHeight: 63..vh(),
+		overflowY: 'auto'
 	},
 	langSelect: {
 		padding: padding(20, 0, 0)
@@ -296,5 +355,37 @@ const styles: React.CSSProperties = StyleSheet.create({
 			color: '#988F88',
 			border: 'none'
 		}
-	}
+	},
+	tableDiv: {
+		maxHeight: 50..vh(),
+		overflowY: 'auto'
+	},
+	emulatorsError: {
+		color: '#A94442',
+		marginTop: 15
+	},
+	emulatorsTable: {
+		marginTop: 5,
+		marginBottom: 5,
+		fontSize: 14
+	},
+	emulatorNameTh: {
+		width: 23..percents()
+	},
+	emulatorActiveTh: {
+		width: 17..percents()
+	},
+	emulatorPathTh: {
+		width: 30..percents()
+	},
+	emulatorCommandTh: {
+		width: 30..percents()
+	},
+	emulatorsCommandLineInstruction: {
+		fontSize: 14,
+		marginBottom: 10,
+		paddingLeft: 10,
+		opacity: 0.5,
+		float: 'right'
+	},
 });

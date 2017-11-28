@@ -38,7 +38,7 @@ export class VitrinePipeline {
 	private includeEmulatorsConfig(vitrineConfig: any) {
 		let consolesConfigFilePath: string = path.resolve(this.configFolderPath, 'consoles.json');
 		let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
-		let newVitrineConfig: any = (vitrineConfig) ? ({ ...vitrineConfig }) : ({ firstLaunch: true, emulated: {} });
+		let newVitrineConfig: any = (vitrineConfig) ? ({ ...vitrineConfig, emulated: {} }) : ({ firstLaunch: true, emulated: {} });
 		newVitrineConfig.emulated.consoles = fs.readJSONSync(consolesConfigFilePath, { throws: false });
 		newVitrineConfig.emulated.emulators = fs.readJSONSync(emulatorsConfigFilePath, { throws: false });
 		return newVitrineConfig;
@@ -47,7 +47,7 @@ export class VitrinePipeline {
 	private launchMainClient(vitrineConfig: any) {
 		if (!this.prod)
 			this.registerDebugPromiseHandler();
-		this.serverInstance = new VitrineServer(vitrineConfig, this.vitrineConfigFilePath);
+		this.serverInstance = new VitrineServer(vitrineConfig, this.configFolderPath);
 		this.serverInstance.registerEvents();
 		this.serverInstance.run(!this.prod);
 	}
