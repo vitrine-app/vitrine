@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
-import * as textEllipsis from 'text-ellipsis';
 import { margin, padding, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
@@ -83,7 +81,7 @@ export class GameContainer extends VitrineComponent {
 								</div>
 							</div>
 							<hr className={css(styles.selectedGameCoreHr)}/>
-							<p>{textEllipsis(this.state.selectedGame.details.summary, 750)}</p>
+							<p className={css(styles.selectedGameDesc)}>{this.state.selectedGame.details.summary}</p>
 						</div>
 					</div>
 					<div className="col-md-4">
@@ -174,6 +172,12 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	selectedGameInfosSpan: {
 		marginLeft: 15
+	},
+	selectedGameDesc: {
+		maxHeight: 170,
+		overflowY: 'auto',
+		backgroundColor: rgba(0, 0, 0, 0.2),
+		borderRadius: 3
 	},
 	coverDiv: {
 		paddingLeft: 40

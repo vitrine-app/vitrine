@@ -29,14 +29,14 @@ class EmulatedGamesCrawler {
 			let counter: number = 0;
 			folders.forEach((folder: string) => {
 				let secondCounter: number = 0;
-				this.emulatedConfig.consoles.forEach((console: any) => {
-					if (console.folder === path.basename(folder))
+				this.emulatedConfig.platforms.forEach((platforms: any) => {
+					if (platforms.folder === path.basename(folder))
 						this.romsFolders.push({
-							console,
+							platforms,
 							folder
 						});
 					secondCounter++;
-					if (secondCounter === this.emulatedConfig.consoles.length) {
+					if (secondCounter === this.emulatedConfig.platforms.length) {
 						counter++;
 						if (counter === folders.length) {
 							this.analyzeFolders();
@@ -49,7 +49,7 @@ class EmulatedGamesCrawler {
 
 	private analyzeFolders() {
 		let counter: number = 0;
-		this.romsFolders.forEach(({folder: romFolder, console: romConsole}) => {
+		this.romsFolders.forEach(({folder: romFolder, platform: romPlatform}) => {
 			glob(`${romFolder}/*`, (error: Error, roms: string[]) => {
 				if (error) {
 					this.callback(error, null);
@@ -57,7 +57,7 @@ class EmulatedGamesCrawler {
 				}
 				let secondCounter: number = 0;
 				roms.forEach((romPath: string) => {
-					this.getEmulator(romConsole, (error: Error, emulator: any) => {
+					this.getEmulator(romPlatform, (error: Error, emulator: any) => {
 						if (error)
 							return;
 						if (!emulator.active) {
@@ -115,16 +115,16 @@ class EmulatedGamesCrawler {
 		});
 	}
 
-	private getEmulator(romConsole: any, callback: Function) {
+	private getEmulator(romPlatform: any, callback: Function) {
 		let counter: number = 0;
 		let found: boolean = false;
 		this.emulatedConfig.emulators.forEach((emulator: any) => {
-			if (emulator.consoles.indexOf(romConsole.id) !== -1) {
+			if (emulator.platforms.indexOf(romPlatform.id) !== -1) {
 				callback(null, emulator);
 				found = true;
 			}
 			counter++;
-			if (counter === emulator.consoles.length && !found)
+			if (counter === emulator.platforms.length && !found)
 				callback(new Error('Emulator not found.'), null);
 		});
 	}

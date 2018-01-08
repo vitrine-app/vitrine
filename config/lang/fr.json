@@ -61,6 +61,8 @@
   "steamPath": "Dossier d'emplacement de Steam",
   "originConfig": "Paramètres d'Origin :",
   "originGamesPath": "Dossier d'emplacement des jeux Origin",
+  "emulatedConfig": "Paramètres d'émulation :",
+  "emulatedGamesPath": "Dossier d'emplacement des ROMs de jeux",
   "pathError": "Vous devez définir un dossier d'emplacement",
   "settings": "Paramètres",
   "modules": "Modules",
@@ -72,6 +74,8 @@
   "emulatorPath": "Chemin du programme",
   "emulatorCommand": "Ligne de commande",
   "emulatorCommandLineInstruction": "'%g' sera remplacé par l'emplacement de la ROM du jeu. Il doit être entre des guillemets doubles.",
+  "emulatorConfigError": "doit avoir une configuration valide.",
+  "emulatorPlatforms": "Consoles",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Combat",

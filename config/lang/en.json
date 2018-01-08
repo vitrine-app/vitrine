@@ -61,6 +61,8 @@
   "steamPath": "Steam path",
   "originConfig": "Origin settings:",
   "originGamesPath": "Origin games path",
+  "emulatedConfig": "Emulation settings:",
+  "emulatedGamesPath": "Games ROMs path",
   "pathError": "You need to specify a path",
   "settings": "Settings",
   "modules": "Modules",
@@ -72,6 +74,8 @@
   "emulatorPath": "Program path",
   "emulatorCommand": "Command line",
   "emulatorCommandLineInstruction": "'%g' will be replaced by the game ROM path. It must be between double quotes.",
+  "emulatorConfigError": "must have a correct config.",
+  "emulatorPlatforms": "Platforms",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Fighting",

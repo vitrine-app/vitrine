@@ -253,7 +253,6 @@ export class VitrineServer {
 				spaces: 2
 			}).then(() => {
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
-				console.log(this.vitrineConfig);
 				event.sender.send('server.settings-updated', this.vitrineConfig);
 			}).catch((error: Error) => {
 				return this.throwServerError(event, error);

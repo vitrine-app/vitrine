@@ -10,10 +10,11 @@ export class EmulatorSettingsRow extends VitrineComponent {
 		super(props);
 
 		this.state = {
-			name: props.name,
-			active: props.active,
-			path: props.path,
-			command: props.command
+			name: props.emulator.name,
+			platforms: props.platforms,
+			active: props.emulator.active,
+			path: props.emulator.path,
+			command: props.emulator.command
 		};
 	}
 
@@ -21,7 +22,7 @@ export class EmulatorSettingsRow extends VitrineComponent {
 		this.setState({
 			active: event.target.checked
 		}, () => {
-			this.props.onChange(this.props.id, this.state);
+			this.props.onChange(this.props.id, this.getEmulatorFromState());
 		});
 	}
 
@@ -32,7 +33,7 @@ export class EmulatorSettingsRow extends VitrineComponent {
 		this.setState({
 			path: dialogRet
 		}, () => {
-			this.props.onChange(this.props.id, this.state);
+			this.props.onChange(this.props.id, this.getEmulatorFromState());
 		});
 	}
 
@@ -40,8 +41,15 @@ export class EmulatorSettingsRow extends VitrineComponent {
 		this.setState({
 			command: event.target.value
 		}, () => {
-			this.props.onChange(this.props.id, this.state);
+			this.props.onChange(this.props.id, this.getEmulatorFromState());
 		});
+	}
+
+	private getEmulatorFromState() {
+		return {
+			...this.state,
+			platforms: this.state.platforms.map((platforms) => platforms.id)
+		};
 	}
 
 	public render(): JSX.Element {
@@ -51,6 +59,9 @@ export class EmulatorSettingsRow extends VitrineComponent {
 			>
 				<th>
 					<strong>{this.state.name}</strong>
+				</th>
+				<th>
+					{this.state.platforms.map((platforms) => platforms.folder).join(', ')}
 				</th>
 				<th>
 					<input

@@ -1,48 +1,57 @@
 [
   {
     "active": false,
+    "command": "\"%g\"",
+    "name": "Nestopia",
+    "path": "",
+    "platforms": [
+      0
+    ]
+  },
+  {
+    "active": false,
     "command": "-m \"%g\"",
-    "consoles": [
-      1
-    ],
-    "id": 0,
     "name": "ZSNES",
-    "path": ""
+    "path": "",
+    "platforms": [
+      1
+    ]
   },
   {
     "active": false,
     "command": "\"%g\"",
-    "consoles": [
-      2
-    ],
-    "id": 1,
     "name": "Project64",
-    "path": ""
+    "path": "",
+    "platforms": [
+      2
+    ]
   },
   {
-    "active": true,
+    "active": false,
     "command": "--batch --exec=\"%g\"",
     "name": "Dolphin",
-    "path": "C:\\Program Files\\Dolphin\\Dolphin.exe"
+    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
+    "platforms": [
+      3,
+      6
+    ]
   },
   {
     "active": false,
     "command": "-g \"%g\" -f",
-    "consoles": [
-      5
-    ],
-    "id": 3,
     "name": "Cemu",
-    "path": ""
+    "path": "",
+    "platforms": [
+      8
+    ]
   },
   {
     "active": false,
     "command": "-nogui -loadiso \"%g\"",
-    "consoles": [
-      6
-    ],
-    "id": 4,
     "name": "ePSXe",
-    "path": ""
+    "path": "",
+    "platforms": [
+      14
+    ]
   }
 ]
