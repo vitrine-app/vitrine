@@ -30,10 +30,37 @@
     "active": false,
     "command": "--batch --exec=\"%g\"",
     "name": "Dolphin",
-    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
+    "path": "",
     "platforms": [
       3,
       6
+    ]
+  },
+  {
+    "active": false,
+    "command": "\"%g\" -f",
+    "name": "mGBA",
+    "path": "",
+    "platforms": [
+      4
+    ]
+  },
+  {
+    "active": false,
+    "command": "\"%g\"",
+    "name": "DeSmuME",
+    "path": "",
+    "platforms": [
+      5
+    ]
+  },
+  {
+    "active": false,
+    "command": "\"%g\"",
+    "name": "Citra",
+    "path": "",
+    "platforms": [
+      7
     ]
   },
   {

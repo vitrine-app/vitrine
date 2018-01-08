@@ -61,7 +61,7 @@ export class EmulatorSettingsRow extends VitrineComponent {
 					<strong>{this.state.name}</strong>
 				</th>
 				<th>
-					{this.state.platforms.map((platforms) => platforms.folder).join(', ')}
+					{this.state.platforms.map((platforms) => platforms.name).join(', ')}
 				</th>
 				<th>
 					<input
