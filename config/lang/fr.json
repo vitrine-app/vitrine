@@ -76,6 +76,7 @@
   "emulatorCommandLineInstruction": "'%g' sera remplacé par l'emplacement de la ROM du jeu. Il doit être entre des guillemets doubles.",
   "emulatorConfigError": "doit avoir une configuration valide.",
   "emulatorPlatforms": "Consoles",
+  "loaderLoading": "Chargement...",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Combat",

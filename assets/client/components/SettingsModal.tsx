@@ -189,13 +189,13 @@ export class SettingsModal extends VitrineComponent {
 					<div className="modal-content">
 						<div
 							className="modal-header"
-							style={{display: (!this.props.firstLaunch) ? ('block') : ('none')}}
+							style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
 						>
 							{localizer.f('settings')}
 						</div>
 						<div className={`modal-body ${css(styles.modalBody)}`}>
 							<form>
-								<div style={{display: (this.props.firstLaunch) ? ('block') : ('none')}}>
+								<div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
 									<h1>{localizer.f('welcomeMessage')}</h1>
 									<p>{localizer.f('wizardText')}</p>
 								</div>
@@ -269,13 +269,13 @@ export class SettingsModal extends VitrineComponent {
 												</div>
 												<span
 													className="help-block"
-													style={{display: (this.state.steamError) ? ('inline') : ('none')}}
+													style={{ display: (this.state.steamError) ? ('inline') : ('none') }}
 												>
 													{localizer.f('pathError')}
 												</span>
 											</div>
 										</div>
-										<div style={{display: (this.state.originEnabled) ? ('block') : ('none')}}>
+										<div style={{ display: (this.state.originEnabled) ? ('block') : ('none') }}>
 											<hr/>
 											<h3>{localizer.f('originConfig')}</h3>
 											<div className={`form-group ${((this.state.originError) ? (' has-error') : (''))}`}>
@@ -300,13 +300,13 @@ export class SettingsModal extends VitrineComponent {
 												</div>
 												<span
 													className="help-block"
-													style={{display: (this.state.originError) ? ('inline') : ('none')}}
+													style={{ display: (this.state.originError) ? ('inline') : ('none') }}
 												>
 													{localizer.f('pathError')}
 												</span>
 											</div>
 										</div>
-										<div style={{display: (this.state.emulatedEnabled) ? ('block') : ('none')}}>
+										<div style={{ display: (this.state.emulatedEnabled) ? ('block') : ('none') }}>
 											<hr/>
 											<h3>{localizer.f('emulatedConfig')}</h3>
 											<div className={`form-group ${((this.state.emulatedError) ? (' has-error') : (''))}`}>
@@ -331,7 +331,7 @@ export class SettingsModal extends VitrineComponent {
 												</div>
 												<span
 													className="help-block"
-													style={{display: (this.state.emulatedError) ? ('inline') : ('none')}}
+													style={{ display: (this.state.emulatedError) ? ('inline') : ('none') }}
 												>
 													{localizer.f('pathError')}
 												</span>

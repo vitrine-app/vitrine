@@ -23,7 +23,7 @@ import { downloadImage, randomHashedString } from './helpers';
 export class VitrineServer {
 	private windowsList: any;
 	private mainEntryPoint: string;
-	private loadingEntryPoint: string;
+	private loaderEntryPoint: string;
 	private vitrineConfigFilePath: string;
 	private emulatorsConfigFilePath: string;
 	private tray: Tray;
@@ -37,18 +37,17 @@ export class VitrineServer {
 	public constructor(private vitrineConfig: any, configFolderPath: string) {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
-		this.loadingEntryPoint = path.resolve('file://', __dirname, 'loading.html');
+		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
 		this.vitrineConfigFilePath = path.resolve(configFolderPath, 'vitrine_config.json');
 		this.emulatorsConfigFilePath = path.resolve(configFolderPath, 'emulators.json');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
-		this.devTools = false;
 		this.gameLaunched = false;
 		this.appQuit = false;
 	}
 
 	public run(prod?: boolean) {
-		if (prod)
-			this.devTools = !prod;
+		this.devTools = !prod;
+		console.log(prod);
 		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
 			this.quitApplication();
 			return;
@@ -91,7 +90,6 @@ export class VitrineServer {
 		if (!this.vitrineConfig.firstLaunch) {
 			if (this.vitrineConfig.steam) {
 				findSteamUser(this.vitrineConfig.steam).then((steamUser: any) => {
-					// Object.assign(this.vitrineConfig.steam, steamUser);
 					this.vitrineConfig.steam = { ...steamUser };
 				}).catch((error: Error) => this.throwServerError(event, error));
 			}
@@ -104,7 +102,7 @@ export class VitrineServer {
 	}
 
 	private clientReady() {
-		this.windowsList.loadingWindow.destroy();
+		this.windowsList.loaderWindow.destroy();
 		this.windowsList.mainWindow.show();
 	}
 
@@ -313,9 +311,9 @@ export class VitrineServer {
 
 	private runVitrine() {
 		this.createTrayIcon();
-		this.createLoadingWindow();
-		this.handleUpdates();
-		this.createMainWindow();
+		this.createLoaderWindow();
+		// this.handleUpdates();
+		// this.createMainWindow();
 	}
 
 	private createTrayIcon() {
@@ -337,14 +335,16 @@ export class VitrineServer {
 		this.tray.on('double-click', this.restoreAndFocus.bind(this));
 	}
 
-	private createLoadingWindow() {
-		this.windowsList.loadingWindow = new BrowserWindow({
-			height: 400,
-			width: 700,
+	private createLoaderWindow() {
+		this.windowsList.loaderWindow = new BrowserWindow({
+			height: 300,
+			width: 500,
 			icon: this.iconPath,
 			frame: false
 		});
-		this.windowsList.loadingWindow.loadURL(this.loadingEntryPoint);
+		this.windowsList.loaderWindow.loadURL(this.loaderEntryPoint);
+		if (this.devTools)
+			this.windowsList.loaderWindow.webContents.openDevTools();
 	}
 
 	private createMainWindow() {

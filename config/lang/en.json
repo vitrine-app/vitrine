@@ -76,6 +76,7 @@
   "emulatorCommandLineInstruction": "'%g' will be replaced by the game ROM path. It must be between double quotes.",
   "emulatorConfigError": "must have a correct config.",
   "emulatorPlatforms": "Platforms",
+  "loaderLoading": "Loading...",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Fighting",
