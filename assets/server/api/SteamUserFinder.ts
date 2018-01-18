@@ -31,7 +31,7 @@ class SteamUserFinder {
 	}
 }
 
-export function getSteamUserFinder(steamConfig: any): Promise<any> {
+export function findSteamUser(steamConfig: any): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new SteamUserFinder(steamConfig).getActiveUser((error: Error, user: any) => {
 			if (error)

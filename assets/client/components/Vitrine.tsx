@@ -232,7 +232,7 @@ export class Vitrine extends VitrineComponent {
 
 	private keyDownHandler(event: KeyboardEvent) {
 		switch (event.code) {
-			case ('ArrowDown'): {
+			case 'ArrowDown': {
 				event.preventDefault();
 
 				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
@@ -242,7 +242,7 @@ export class Vitrine extends VitrineComponent {
 					});
 				break;
 			}
-			case ('ArrowUp'): {
+			case 'ArrowUp': {
 				event.preventDefault();
 
 				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
@@ -252,7 +252,7 @@ export class Vitrine extends VitrineComponent {
 					});
 				break;
 			}
-			case ('Enter'): {
+			case 'Enter': {
 				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
 					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible') ||
 					$('#settings-modal').is(':visible'))
@@ -286,6 +286,9 @@ export class Vitrine extends VitrineComponent {
 			.on('server.error', this.serverError.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
+		window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
+			console.log(e.gamepad);
+		});
 	}
 
 	public componentWillUnmount() {

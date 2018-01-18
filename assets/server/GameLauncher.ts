@@ -72,7 +72,7 @@ class GameLauncher {
 	}
 }
 
-export function getGameLauncher(game: PlayableGame): Promise<any> {
+export function launchGame(game: PlayableGame): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new GameLauncher(game).launch((error, minutesPlayed) => {
 			if (error)

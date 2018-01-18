@@ -26,6 +26,19 @@ export class VitrinePipeline {
 		this.launchMainClient(vitrineConfig);
 	}
 
+	public launchAsync() {
+		fs.ensureDir(this.configFolderPath)
+			.then(fs.ensureDir.bind(this, this.gamesFolderPath))
+			.then(() => {
+				this.vitrineConfigFilePath = path.resolve(this.configFolderPath, 'vitrine_config.json');
+				fs.ensureFile(this.vitrineConfigFilePath).then(() => {
+					fs.readJson(this.vitrineConfigFilePath, { throws: false }).then((vitrineConfig: any) => {
+						this.launchMainClient(this.includeEmulatorsConfig(vitrineConfig));
+					});
+				});
+			});
+	}
+
 	private registerDebugPromiseHandler() {
 		process.on('unhandledRejection', (reason: Error) => {
 			console.error('[PROCESS] Unhandled Promise Rejection');
@@ -49,6 +62,6 @@ export class VitrinePipeline {
 			this.registerDebugPromiseHandler();
 		this.serverInstance = new VitrineServer(vitrineConfig, this.configFolderPath);
 		this.serverInstance.registerEvents();
-		this.serverInstance.run(!this.prod);
+		this.serverInstance.run(this.prod);
 	}
 }

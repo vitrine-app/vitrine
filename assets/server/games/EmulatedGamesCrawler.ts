@@ -4,7 +4,7 @@ import * as glob from 'glob';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
+import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
 
 class EmulatedGamesCrawler {
@@ -87,7 +87,7 @@ class EmulatedGamesCrawler {
 								return;
 							}
 						}
-						getIgdbWrapperSearcher(romName, 1).then((game: any) => {
+						searchIgdbGame(romName, 1).then((game: any) => {
 							game = game[0];
 							delete game.name;
 							let potentialGame: PotentialGame = new PotentialGame(romName, game);
@@ -130,7 +130,7 @@ class EmulatedGamesCrawler {
 	}
 }
 
-export function getEmulatedGamesCrawler(emulatedConfig: any, playableGames?: PlayableGame[]): Promise<any> {
+export function searchEmulatedGames(emulatedConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new EmulatedGamesCrawler(emulatedConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)

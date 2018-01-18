@@ -2,6 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { app, BrowserWindow, Tray, Menu, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import { UpdateInfo } from 'builder-util-runtime';
 import * as rimraf from 'rimraf';
 import * as moment from 'moment';
 
@@ -9,14 +10,14 @@ import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
 import { getEnvFolder, uuidV5 } from '../models/env';
-import { getGameLauncher } from './GameLauncher';
-import { getSteamCrawler } from './games/SteamGamesCrawler';
-import { getPlayableGamesCrawler } from './games/PlayableGamesCrawler';
-import { getEmulatedGamesCrawler } from './games/EmulatedGamesCrawler';
-import { getOriginCrawler } from './games/OriginGamesCrawler';
-import { getIgdbWrapperFiller, getIgdbWrapperSearcher } from './api/IgdbWrapper';
-import { getSteamUserFinder } from './api/SteamUserFinder';
-import { getSteamPlayTimeWrapper } from './api/SteamPlayTimeWrapper';
+import { launchGame } from './GameLauncher';
+import { searchSteamGames } from './games/SteamGamesCrawler';
+import { getPlayableGames } from './games/PlayableGamesCrawler';
+import { searchEmulatedGames } from './games/EmulatedGamesCrawler';
+import { searchOriginGames } from './games/OriginGamesCrawler';
+import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
+import { findSteamUser } from './api/SteamUserFinder';
+import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
 import { downloadImage, randomHashedString } from './helpers';
 
 export class VitrineServer {
@@ -45,9 +46,9 @@ export class VitrineServer {
 		this.appQuit = false;
 	}
 
-	public run(devTools?: boolean) {
-		if (devTools)
-			this.devTools = devTools;
+	public run(prod?: boolean) {
+		if (prod)
+			this.devTools = !prod;
 		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
 			this.quitApplication();
 			return;
@@ -89,19 +90,16 @@ export class VitrineServer {
 		event.sender.send('server.init-settings', this.vitrineConfig);
 		if (!this.vitrineConfig.firstLaunch) {
 			if (this.vitrineConfig.steam) {
-				getSteamUserFinder(this.vitrineConfig.steam).then((steamUser: any) => {
-					Object.assign(this.vitrineConfig.steam, steamUser);
-				}).catch((error: Error) => {
-					return this.throwServerError(event, error);
-				});
+				findSteamUser(this.vitrineConfig.steam).then((steamUser: any) => {
+					// Object.assign(this.vitrineConfig.steam, steamUser);
+					this.vitrineConfig.steam = { ...steamUser };
+				}).catch((error: Error) => this.throwServerError(event, error));
 			}
-			getPlayableGamesCrawler().then((games: GamesCollection<PlayableGame>) => {
+			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
 				event.sender.send('server.add-playable-games', this.playableGames.games);
 				this.findPotentialGames(event);
-			}).catch((error: Error) => {
-				return this.throwServerError(event, error);
-			});
+			}).catch((error: Error) => this.throwServerError(event, error));
 		}
 	}
 
@@ -126,10 +124,10 @@ export class VitrineServer {
 	private handleUpdates() {
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: any) => {
-			this.windowsList.mainWindow.webContents.send('server.update-progress', progress)
+			this.windowsList.mainWindow.webContents.send('server.update-progress', progress);
 		});
-		autoUpdater.signals.updateDownloaded((version) => {
-			this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version)
+		autoUpdater.signals.updateDownloaded((version: UpdateInfo) => {
+			this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version);
 		});
 		autoUpdater.checkForUpdates();
 	}
@@ -144,7 +142,7 @@ export class VitrineServer {
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
-		getIgdbWrapperFiller(gameId, this.vitrineConfig.lang).then((game) => {
+		fillIgdbGame(gameId, this.vitrineConfig.lang).then((game) => {
 			event.sender.send('server.send-igdb-game', game);
 		}).catch((error: Error) => {
 			this.throwServerError(event, error);
@@ -152,11 +150,11 @@ export class VitrineServer {
 	}
 
 	private searchIgdbGames(event: Electron.Event, gameName: string, resultsNb?: number) {
-		getIgdbWrapperSearcher(gameName, resultsNb).then((games: any) => {
+		searchIgdbGame(gameName, resultsNb).then((games: any) => {
 			event.sender.send('server.send-igdb-searches', gameName, games);
 		}).catch((error: Error) => {
 			event.sender.send('server.server-error', error);
-		})
+		});
 	}
 
 	private addGame(event: Electron.Event, gameForm: any) {
@@ -186,7 +184,7 @@ export class VitrineServer {
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
-			getGameLauncher(launchingGame).then((secondsPlayed: number) => {
+			launchGame(launchingGame).then((secondsPlayed: number) => {
 				this.gameLaunched = false;
 				console.log('You played', secondsPlayed, 'seconds.');
 				launchingGame.addPlayTime(secondsPlayed, (error) => {
@@ -268,7 +266,7 @@ export class VitrineServer {
 				resolve();
 				return;
 			}
-			getSteamCrawler(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+			searchSteamGames(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 				this.potentialGames.addGames(games, () => {
 					resolve();
 				});
@@ -285,7 +283,7 @@ export class VitrineServer {
 				resolve();
 				return;
 			}
-			getOriginCrawler(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+			searchOriginGames(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 				this.potentialGames.addGames(games, () => {
 					resolve();
 				});
@@ -302,7 +300,7 @@ export class VitrineServer {
 				resolve();
 				return;
 			}
-			getEmulatedGamesCrawler(this.vitrineConfig.emulated, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
+			searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
 				this.potentialGames.addGames(games, () => {
 					resolve();
 				});
@@ -382,7 +380,7 @@ export class VitrineServer {
 
 	private registerGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
 		game.commandLine = [
-			gameForm.executable,
+			gameForm.executable
 		];
 		if (gameForm.arguments)
 			game.commandLine.push(gameForm.arguments);
@@ -424,7 +422,7 @@ export class VitrineServer {
 					delete game.details.background;
 
 				if (!editing && game.source === GameSource.STEAM) {
-					getSteamPlayTimeWrapper(this.vitrineConfig.steam, game).then((timedGame: PlayableGame) => {
+					getGamePlayTime(this.vitrineConfig.steam, game).then((timedGame: PlayableGame) => {
 						this.handleRegisteredGame(event, timedGame, configFilePath, editing);
 					}).catch((error: Error) => {
 						return this.throwServerError(event, error);

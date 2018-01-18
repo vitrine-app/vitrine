@@ -7,7 +7,7 @@ import * as glob from 'glob';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
+import { searchIgdbGame } from '../api/IgdbWrapper';
 import { getEnvFolder, uuidV5 } from '../../models/env';
 import { spatStr } from '../helpers';
 
@@ -102,7 +102,7 @@ class OriginGamesCrawler {
 				if (error)
 					this.callback(error, null);
 
-				getIgdbWrapperSearcher(gameName, 1).then((game: any) => {
+				searchIgdbGame(gameName, 1).then((game: any) => {
 					game = game[0];
 					delete game.name;
 					let potentialGame: PotentialGame = new PotentialGame(gameName, game);
@@ -148,7 +148,7 @@ class OriginGamesCrawler {
 	}
 }
 
-export function getOriginCrawler(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
+export function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new OriginGamesCrawler(originConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)

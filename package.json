@@ -113,13 +113,13 @@
   },
   "scripts": {
     "compile-cpp": "cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
-    "build": "webpack && electron .",
-    "run-server-electron": "webpack --config webpack.server.config.js && electron .",
-    "run-client-electron": "webpack --config webpack.client.config.js && electron .",
+    "build": "webpack --progress --color && electron .",
+    "run-server-electron": "webpack --config webpack.server.config.js --progress --color && electron .",
+    "run-client-electron": "webpack --config webpack.client.config.js --progress --color && electron .",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
-    "pack": "webpack && build --dir",
-    "dist": "npm test && webpack && build",
-    "release": "npm test && webpack && build --publish always"
+    "pack": "webpack --progress --color && build --dir",
+    "dist": "npm test && build",
+    "release": "npm test && build --publish always"
   }
 }
