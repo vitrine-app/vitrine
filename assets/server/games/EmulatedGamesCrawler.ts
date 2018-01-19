@@ -24,7 +24,6 @@ class EmulatedGamesCrawler {
 		glob(`${this.emulatedConfig.romsFolder}\\*`, (error: Error, folders: string[]) => {
 			if (error) {
 				this.callback(error, null);
-				console.log('A');
 				return;
 			}
 			let counter: number = 0;
@@ -54,7 +53,6 @@ class EmulatedGamesCrawler {
 			glob(`${romFolder}/*`, (error: Error, roms: string[]) => {
 				if (error) {
 					this.callback(error, null);
-					console.log('B');
 					return;
 				}
 				let secondCounter: number = 0;
@@ -109,7 +107,6 @@ class EmulatedGamesCrawler {
 								}
 							}
 						}).catch((error: Error) => {
-							console.log('C');
 							this.callback(error, null);
 						});
 					});

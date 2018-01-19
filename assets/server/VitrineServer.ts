@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { app, BrowserWindow, Tray, Menu, ipcMain, screen } from 'electron';
 import { autoUpdater, UpdateCheckResult } from 'electron-updater';
-import { UpdateInfo, ProgressInfo } from 'builder-util-runtime';
+import { ProgressInfo } from 'builder-util-runtime';
 import * as rimraf from 'rimraf';
 import * as moment from 'moment';
 
@@ -251,7 +251,7 @@ export class VitrineServer {
 		if (settingsForm.emulatedPath) {
 			config.emulated = {
 				romsFolder: settingsForm.emulatedPath
-			}
+			};
 		}
 		fs.outputJson(this.vitrineConfigFilePath, config, {
 			spaces: 2
@@ -261,6 +261,8 @@ export class VitrineServer {
 				...config.emulated,
 				emulators: settingsForm.emulators
 			};
+			if (!settingsForm.emulatedPath)
+				delete emulatorsConfig.romsFolder;
 			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, {
 				spaces: 2
 			}).then(() => {
