@@ -38,7 +38,7 @@ export class App extends React.Component<null, any> {
 		let counter: number = 0;
 		langFilesPaths.forEach((langFilePath: string) => {
 			let langName: string = path.basename(langFilePath).slice(0, -5);
-			let langFile: any = fs.readJSONSync(langFilePath);
+			let langFile: any = fs.readJsonSync(langFilePath);
 			localizer.addLanguage(langName, langFile);
 			if (!configLang && systemLang === langName)
 				localizer.setLanguage(langName);

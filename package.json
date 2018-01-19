@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "description": "A modern game library using Electron, Node and IGDB.",
   "main": "public/server.js",
   "author": "Paul Roman",
@@ -114,13 +114,13 @@
   },
   "scripts": {
     "compile-cpp": "cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
-    "build": "webpack --progress --color && electron .",
-    "run-server-electron": "webpack --config webpack.server.config.js --progress --color && electron .",
-    "run-client-electron": "webpack --config webpack.client.config.js --progress --color && electron .",
+    "build": "webpack --progress && electron .",
+    "run-server-electron": "webpack --progress --config webpack.server.config.js && electron .",
+    "run-client-electron": "webpack --progress --config webpack.client.config.js && electron .",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
-    "pack": "webpack --progress --color && build --dir",
-    "dist": "npm test && build",
-    "release": "npm test && build --publish always"
+    "pack": "webpack --progress && build --dir",
+    "dist": "npm test && webpack --progress && build",
+    "release": "npm test && webpack --progress && build --publish always"
   }
 }
