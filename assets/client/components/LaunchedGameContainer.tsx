@@ -13,6 +13,10 @@ export class LaunchedGameContainer extends VitrineComponent {
 	public render(): JSX.Element {
 		return (
 			<div>
+				<i
+					className={`fa fa-television ${css(styles.toggleDisplayIcon)}`}
+					onClick={this.props.clickHandler}
+				/>
 				<div className={css(styles.launchedGameDiv)}>
 					<span className={css(styles.launchedGameTitle)}>Vous êtes en train de jouer à {this.props.launchedGame.name}.</span>
 					<hr className={css(styles.launchedGameHr)}/>
@@ -42,7 +46,19 @@ const backgroundKeyframes: React.CSSProperties = {
 const styles: React.CSSProperties = StyleSheet.create({
 	launchedGameDiv: {
 		textAlign: 'center',
-		marginTop: 29..vh()
+		marginTop: 28..vh()
+	},
+	toggleDisplayIcon: {
+		display: 'block',
+		fontSize: 27,
+		textAlign: 'right',
+		paddingRight: 10,
+		paddingTop: 10,
+		cursor: 'pointer',
+		opacity: 0.5,
+		':hover': {
+			opacity: 0.8
+		}
 	},
 	launchedGameTitle: {
 		fontSize: 50,

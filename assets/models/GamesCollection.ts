@@ -1,4 +1,4 @@
-export class GamesCollection<T> {
+export class GamesCollection<T extends Object> {
 	private _games: T[];
 	private evaluatedKey: string;
 
@@ -45,7 +45,7 @@ export class GamesCollection<T> {
 
 	public editGame(game: T, callback?: Function) {
 		this.getGame(game['uuid']).then((currentGame: T) => {
-			Object.assign(currentGame, game);
+			currentGame = { ...<any>game };
 			if (callback)
 				callback();
 		}).catch((error: Error) => {

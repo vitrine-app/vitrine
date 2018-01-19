@@ -5,6 +5,7 @@ import { padding } from 'css-verbose';
 import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame } from '../../models/PotentialGame';
 import { BlurPicture } from './BlurPicture';
+import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
 export class AddPotentialGamesModal extends VitrineComponent {
@@ -22,7 +23,7 @@ export class AddPotentialGamesModal extends VitrineComponent {
 				<div className="modal-dialog modal-lg">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button type="button" className="close" data-dismiss="modal">&times;</button>
+							<CloseIcon onClick={'#add-potential-games-modal'}/>
 							<h4 className="modal-title">{localizer.f('addGames')}</h4>
 						</div>
 						<div className="modal-body">

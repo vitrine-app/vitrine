@@ -13,11 +13,11 @@ export class ErrorsWrapper extends React.Component<any, any> {
 		this.state = {};
 	}
 
-	private static quitApplication() {
+	private quitApplication() {
 		ipcRenderer.send('client.quit-application', false);
 	}
 
-	private static relaunchApplication() {
+	private relaunchApplication() {
 		ipcRenderer.send('client.quit-application', true);
 	}
 
@@ -48,13 +48,13 @@ export class ErrorsWrapper extends React.Component<any, any> {
 							</div>
 							<div className="modal-footer">
 								<button
-									onClick={ErrorsWrapper.quitApplication}
+									onClick={this.quitApplication}
 									className="btn btn-danger"
 								>
 									{localizer.f('quit')}
 								</button>
 								<button
-									onClick={ErrorsWrapper.relaunchApplication}
+									onClick={this.relaunchApplication}
 									className="btn btn-danger"
 								>
 									{localizer.f('relaunch')}

@@ -5,11 +5,13 @@ import { padding } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { GamesModule } from './GamesModule';
+import { EmulatorSettingsRow } from './EmulatorSettingsRow';
 import { localizer } from '../Localizer';
 import { openDirectory } from '../helpers';
 
 import * as steamIcon from '../images/steamIcon.png';
 import * as originIcon from '../images/originIcon.png';
+import * as emulatedIcon from '../images/emulatedIcon.png';
 
 export class SettingsModal extends VitrineComponent {
 	public constructor(props: any) {
@@ -20,10 +22,15 @@ export class SettingsModal extends VitrineComponent {
 			lang: localizer.getSelectedLanguage(),
 			steamEnabled: (this.props.settings && this.props.settings.steam) ? (true) : (false),
 			originEnabled: (this.props.settings && this.props.settings.origin) ? (true) : (false),
+			emulatedEnabled: (this.props.settings && this.props.settings.emulated.romsFolder) ? (true) : (false),
 			steamPath: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
 			originPath: (this.props.settings && this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
+			emulatedPath: (this.props.settings.emulated.romsFolder) ? (this.props.settings.emulated.romsFolder) : (''),
 			steamError: false,
-			originError: false
+			originError: false,
+			emulatedError: false,
+			emulatorsCurrentConfig: this.props.settings.emulated.emulators,
+			emulatorsError: ''
 		};
 	}
 
@@ -45,11 +52,22 @@ export class SettingsModal extends VitrineComponent {
 		}
 	}
 
+	private emulatedIconClickHandler(checked: boolean) {
+		if ((checked && !this.state.emulatedEnabled) || (!checked && this.state.emulatedEnabled)) {
+			this.setState({
+				emulatedEnabled: !this.state.emulatedEnabled,
+				emulatedError: false
+			});
+		}
+	}
+
+
+
 	private steamPathBtnClickHandler() {
 		let steamPath: string = openDirectory();
 		if (steamPath) {
 			this.setState({
-				steamPath: steamPath
+				steamPath
 			});
 		}
 	}
@@ -58,7 +76,16 @@ export class SettingsModal extends VitrineComponent {
 		let originPath: string = openDirectory();
 		if (originPath) {
 			this.setState({
-				originPath: originPath
+				originPath
+			});
+		}
+	}
+
+	private emulatedPathBtnClickHandler() {
+		let emulatedEnabled: string = openDirectory();
+		if (emulatedEnabled) {
+			this.setState({
+				emulatedEnabled
 			});
 		}
 	}
@@ -70,11 +97,20 @@ export class SettingsModal extends VitrineComponent {
 		});
 	}
 
+	private emulatorConfigChangeHandler(emulatorId: number, emulatorConfig: any) {
+		let emulatorsCurrentConfig: any[] = this.state.emulatorsCurrentConfig;
+		emulatorsCurrentConfig[emulatorId] = emulatorConfig;
+		this.setState({
+			emulatorsCurrentConfig
+		});
+	}
+
 	private submitBtnClickHandler() {
+		let canBeSent: boolean = true;
+
 		let form: any = {
 			lang: this.state.lang
 		};
-		let canBeSent: boolean = true;
 		if (this.state.steamEnabled) {
 			if (this.state.steamPath) {
 				form.steamPath = this.state.steamPath;
@@ -103,8 +139,41 @@ export class SettingsModal extends VitrineComponent {
 				});
 			}
 		}
-		if (canBeSent)
-			ipcRenderer.send('client.update-settings', form);
+		if (this.state.emulatedEnabled) {
+			if (this.state.emulatedPath) {
+				form.emulatedPath = this.state.emulatedPath;
+				this.setState({
+					emulatedError: false
+				});
+			}
+			else {
+				canBeSent = false;
+				this.setState({
+					emulatedError: true
+				});
+			}
+		}
+
+		let emulatorsError: string = '';
+		let counter: number = 0;
+		this.state.emulatorsCurrentConfig.forEach((emulatorConfig: any) => {
+			if (emulatorConfig.active && (!emulatorConfig.path || !emulatorConfig.command)) {
+				canBeSent = false;
+				emulatorsError += `${emulatorConfig.name} ${localizer.f('emulatorConfigError')} `;
+			}
+			counter++;
+			if (counter === this.state.emulatorsCurrentConfig.length) {
+				this.setState({
+					emulatorsError
+				});
+				if (canBeSent)
+					ipcRenderer.send('client.update-settings', { ...form, emulators: this.state.emulatorsCurrentConfig });
+			}
+		});
+	}
+
+	public componentDidMount() {
+		$('#options-pane-lang').find('select').selectpicker();
 	}
 
 	public render(): JSX.Element {
@@ -116,17 +185,17 @@ export class SettingsModal extends VitrineComponent {
 				data-keyboard={(this.props.firstLaunch) ? (false) : (true)}
 				data-backdrop={(this.props.firstLaunch) ? ('static') : (true)}
 			>
-				<div className="modal-dialog">
+				<div className={`modal-dialog ${css(styles.modalDialog)}`}>
 					<div className="modal-content">
 						<div
 							className="modal-header"
-							style={{display: (!this.props.firstLaunch) ? ('block') : ('none')}}
+							style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
 						>
 							{localizer.f('settings')}
 						</div>
 						<div className={`modal-body ${css(styles.modalBody)}`}>
 							<form>
-								<div style={{display: (this.props.firstLaunch) ? ('block') : ('none')}}>
+								<div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
 									<h1>{localizer.f('welcomeMessage')}</h1>
 									<p>{localizer.f('wizardText')}</p>
 								</div>
@@ -134,6 +203,11 @@ export class SettingsModal extends VitrineComponent {
 									<li className="active">
 										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-modules">
 											{localizer.f('modules')}
+										</a>
+									</li>
+									<li>
+										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-emulators">
+											{localizer.f('emulators')}
 										</a>
 									</li>
 									<li>
@@ -145,7 +219,7 @@ export class SettingsModal extends VitrineComponent {
 								<div className="tab-content">
 									<div id="options-pane-modules" className="tab-pane fade in active">
 										<div className="row">
-											<div className="col-md-offset-1 col-md-5">
+											<div className="col-md-offset-1 col-md-3">
 												<GamesModule
 													clicked={this.state.steamEnabled}
 													iconFile={steamIcon}
@@ -153,12 +227,20 @@ export class SettingsModal extends VitrineComponent {
 													clickHandler={this.steamIconClickHandler.bind(this)}
 												/>
 											</div>
-											<div className="col-md-6">
+											<div className="col-md-3">
 												<GamesModule
 													clicked={this.state.originEnabled}
 													iconFile={originIcon}
 													iconAlt={'Origin'}
 													clickHandler={this.originIconClickHandler.bind(this)}
+												/>
+											</div>
+											<div className="col-md-3">
+												<GamesModule
+													clicked={this.state.originEnabled}
+													iconFile={emulatedIcon}
+													iconAlt={'Origin'}
+													clickHandler={this.emulatedIconClickHandler.bind(this)}
 												/>
 											</div>
 										</div>
@@ -187,13 +269,13 @@ export class SettingsModal extends VitrineComponent {
 												</div>
 												<span
 													className="help-block"
-													style={{display: (this.state.steamError) ? ('inline') : ('none')}}
+													style={{ display: (this.state.steamError) ? ('inline') : ('none') }}
 												>
 													{localizer.f('pathError')}
 												</span>
 											</div>
 										</div>
-										<div style={{display: (this.state.originEnabled) ? ('block') : ('none')}}>
+										<div style={{ display: (this.state.originEnabled) ? ('block') : ('none') }}>
 											<hr/>
 											<h3>{localizer.f('originConfig')}</h3>
 											<div className={`form-group ${((this.state.originError) ? (' has-error') : (''))}`}>
@@ -218,7 +300,38 @@ export class SettingsModal extends VitrineComponent {
 												</div>
 												<span
 													className="help-block"
-													style={{display: (this.state.originError) ? ('inline') : ('none')}}
+													style={{ display: (this.state.originError) ? ('inline') : ('none') }}
+												>
+													{localizer.f('pathError')}
+												</span>
+											</div>
+										</div>
+										<div style={{ display: (this.state.emulatedEnabled) ? ('block') : ('none') }}>
+											<hr/>
+											<h3>{localizer.f('emulatedConfig')}</h3>
+											<div className={`form-group ${((this.state.emulatedError) ? (' has-error') : (''))}`}>
+												<label>{localizer.f('emulatedGamesPath')}</label>
+												<div className="input-group">
+													<input
+														className="form-control"
+														name="origin"
+														placeholder={localizer.f('emulatedGamesPath')}
+														value={this.state.emulatedPath}
+														disabled
+													/>
+													<span className="input-group-btn">
+														<button
+															className="btn btn-default"
+															type="button"
+															onClick={this.emulatedPathBtnClickHandler.bind(this)}
+														>
+															<i className="fa fa-folder-open-o"/>
+														</button>
+													</span>
+												</div>
+												<span
+													className="help-block"
+													style={{ display: (this.state.emulatedError) ? ('inline') : ('none') }}
 												>
 													{localizer.f('pathError')}
 												</span>
@@ -242,13 +355,41 @@ export class SettingsModal extends VitrineComponent {
 											)}
 										</select>
 									</div>
+									<div id="options-pane-emulators" className={`tab-pane fade in ${css(styles.tableDiv)}`}>
+										<p className={css(styles.emulatorsError)}>{this.state.emulatorsError}</p>
+										<table className={`table table-bordered ${css(styles.emulatorsTable)}`}>
+											<thead>
+											<tr>
+												<th className={css(styles.emulatorNameTh)}>{localizer.f('emulatorName')}</th>
+												<th className={css(styles.emulatorPlatformsTh)}>{localizer.f('emulatorPlatforms')}</th>
+												<th className={css(styles.emulatorActiveTh)}>{localizer.f('emulatorActive')}</th>
+												<th className={css(styles.emulatorPathTh)}>{localizer.f('emulatorPath')}</th>
+												<th className={css(styles.emulatorCommandTh)}>{localizer.f('emulatorCommand')}</th>
+											</tr>
+											</thead>
+											<tbody>
+											{Object.keys(this.props.settings.emulated.emulators).map((emulatorId: string, index: number) =>
+												<EmulatorSettingsRow
+													key={index}
+													id={emulatorId}
+													emulator={this.props.settings.emulated.emulators[emulatorId]}
+													platforms={this.props.settings.emulated.emulators[emulatorId].platforms.map(
+														(platformsId) => this.props.settings.emulated.platforms[platformsId]
+													)}
+													onChange={this.emulatorConfigChangeHandler.bind(this)}
+												/>
+											)}
+											</tbody>
+										</table>
+										<p className={css(styles.emulatorsCommandLineInstruction)}>{localizer.f('emulatorCommandLineInstruction')}</p>
+									</div>
 								</div>
 							</form>
 						</div>
 						<div className="modal-footer">
 							<button
 								className="btn btn-default"
-								style={{display: (!this.props.firstLaunch) ? ('inline-block') : ('none')}}
+								style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
 								data-dismiss="modal"
 							>
 								{localizer.f('cancel')}
@@ -272,8 +413,13 @@ const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
 		top: 10..vh()
 	},
+	modalDialog: {
+		width: 900..px()
+	},
 	modalBody: {
-		padding: padding(15, 40, 10)
+		padding: padding(15, 40, 10),
+		maxHeight: 63..vh(),
+		overflowY: 'auto'
 	},
 	langSelect: {
 		padding: padding(20, 0, 0)
@@ -283,5 +429,40 @@ const styles: React.CSSProperties = StyleSheet.create({
 			color: '#988F88',
 			border: 'none'
 		}
-	}
+	},
+	tableDiv: {
+		maxHeight: 50..vh(),
+		overflowY: 'auto'
+	},
+	emulatorsError: {
+		color: '#A94442',
+		marginTop: 15
+	},
+	emulatorsTable: {
+		marginTop: 5,
+		marginBottom: 5,
+		fontSize: 14
+	},
+	emulatorNameTh: {
+		width: 14..percents()
+	},
+	emulatorPlatformsTh: {
+		width: 9..percents()
+	},
+	emulatorActiveTh: {
+		width: 17..percents()
+	},
+	emulatorPathTh: {
+		width: 30..percents()
+	},
+	emulatorCommandTh: {
+		width: 30..percents()
+	},
+	emulatorsCommandLineInstruction: {
+		fontSize: 14,
+		marginBottom: 10,
+		paddingLeft: 10,
+		opacity: 0.5,
+		float: 'right'
+	},
 });

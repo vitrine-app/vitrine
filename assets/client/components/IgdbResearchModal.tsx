@@ -5,6 +5,7 @@ import { border, margin, padding, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
+import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
 export class IgdbResearchModal extends VitrineComponent {
@@ -153,7 +154,7 @@ export class IgdbResearchModal extends VitrineComponent {
 				<div className="modal-dialog">
 					<div className="modal-content">
 						<div className="modal-header">
-							<button type="button" className="close" data-dismiss="modal">&times;</button>
+							<CloseIcon onClick={'#igdb-research-modal'}/>
 							<h4 className="modal-title">{localizer.f('fillWithIgdb')}</h4>
 						</div>
 						<div className={`modal-body ${css(styles.modalBody)}`}>

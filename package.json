@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "A modern game library using Electron, Node and IGDB.",
   "main": "public/server.js",
   "author": "Paul Roman",
@@ -39,7 +39,8 @@
     ],
     "extraResources": [
       "config",
-      "scripts/*.exe"
+      "scripts/*.exe",
+      "*app-update.yml"
     ],
     "extraMetadata": {
       "env": "prod"
@@ -69,7 +70,6 @@
     "rimraf": "^2.6.2",
     "sass-percentage-circle": "^0.2.0",
     "steam-web": "^0.6.0",
-    "text-ellipsis": "^1.0.3",
     "uuid": "^3.1.0",
     "winreg": "^1.2.4",
     "xml2js": "^0.4.19"
@@ -114,13 +114,13 @@
   },
   "scripts": {
     "compile-cpp": "cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
-    "build": "webpack && electron .",
-    "run-server-electron": "webpack --config webpack.server.config.js && electron .",
-    "run-client-electron": "webpack --config webpack.client.config.js && electron .",
+    "build": "webpack --progress && electron .",
+    "run-server-electron": "webpack --progress --config webpack.server.config.js && electron .",
+    "run-client-electron": "webpack --progress --config webpack.client.config.js && electron .",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
-    "pack": "webpack && build --dir",
-    "dist": "npm test && webpack && build",
-    "release": "npm test && webpack && build --publish always"
+    "pack": "webpack --progress && build --dir",
+    "dist": "npm test && webpack --progress && build",
+    "release": "npm test && webpack --progress && build --publish always"
   }
 }

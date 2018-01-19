@@ -3,5 +3,5 @@ const clientConfig = require('./webpack.client.config');
 
 module.exports = [
 	serverConfig,
-	clientConfig
+	...clientConfig
 ];

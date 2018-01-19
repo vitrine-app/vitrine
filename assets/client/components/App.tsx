@@ -9,11 +9,15 @@ import { localizer } from '../Localizer';
 import { getEnvFolder } from '../../models/env';
 import { ErrorsWrapper } from './ErrorsWrapper';
 
-export class App extends React.Component {
-	private config: any;
+export class App extends React.Component<null, any> {
+	private settings: any;
 
 	public constructor() {
-		super(null);
+		super(undefined);
+
+		this.state = {
+			settingsReceived: false
+		};
 
 		this.initLanguages();
 		$(document).on('show.bs.modal', '.modal', function() {
@@ -27,36 +31,40 @@ export class App extends React.Component {
 
 	private initLanguages() {
 		let langFilesFolder: string = getEnvFolder('config/lang');
-		let configFilePath: string = path.resolve(getEnvFolder('config'), 'vitrine_config.json');
-		this.config = fs.readJSONSync(configFilePath, {throws: false});
-		let configLang: string = (this.config && this.config.lang) ? (this.config.lang) : ('');
+		let configLang: string = (this.settings && this.settings.lang) ? (this.settings.lang) : ('');
 		let systemLang: string = remote.app.getLocale();
 
 		let langFilesPaths: string[] = glob.sync(`${langFilesFolder}/*`);
 		let counter: number = 0;
 		langFilesPaths.forEach((langFilePath: string) => {
 			let langName: string = path.basename(langFilePath).slice(0, -5);
-			let langFile: any = fs.readJSONSync(langFilePath);
+			let langFile: any = fs.readJsonSync(langFilePath);
 			localizer.addLanguage(langName, langFile);
 			if (!configLang && systemLang === langName)
 				localizer.setLanguage(langName);
 			counter++;
 			if (counter === langFilesPaths.length && configLang)
-				localizer.setLanguage(configLang)
+				localizer.setLanguage(configLang);
 		});
 	}
 
 	public componentDidMount() {
-		ipcRenderer.send('client.ready');
+		ipcRenderer.on('server.init-settings', (event: Electron.Event, settings: any) => {
+			this.settings = settings;
+			this.setState({
+				settingsReceived: true
+			}, () => {
+				ipcRenderer.send('client.ready');
+			});
+		});
+		ipcRenderer.send('client.settings-asked');
 	}
 
 	public render(): JSX.Element {
-		return (
+		return (this.state.settingsReceived) ? (
 			<ErrorsWrapper>
-				<Vitrine
-					settings={this.config}
-				/>
+				<Vitrine settings={this.settings}/>
 			</ErrorsWrapper>
-		);
+		) : (null);
 	}
 }

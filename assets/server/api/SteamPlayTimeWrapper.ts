@@ -43,7 +43,7 @@ class SteamPlayTimeWrapper {
 	}
 }
 
-export function getSteamPlayTimeWrapper(steamConfig: any, game: PlayableGame): Promise<any> {
+export function getGamePlayTime(steamConfig: any, game: PlayableGame): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new SteamPlayTimeWrapper(steamConfig).getOwnedGames(game, (error: Error, timedGame: PlayableGame) => {
 			if (error)

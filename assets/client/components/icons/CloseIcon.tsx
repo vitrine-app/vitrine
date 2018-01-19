@@ -1,26 +1,37 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from '../VitrineComponent';
 
 export class CloseIcon extends VitrineComponent {
+	private colorStyles: any;
+
 	public constructor(props: any) {
 		super(props);
+		this.colorStyles = {
+			color: rgba(255, 255, 255, 0.3),
+			hover: rgba(255, 255, 255, 0.6)
+		};
 		this.state = {
-			color: this.props.colors.color
+			color: this.colorStyles.color
 		};
 	}
 
 	private mouseEnterHandler() {
 		this.setState({
-			color: this.props.colors.hover
+			color: this.colorStyles.hover
 		});
 	}
 
 	private mouseLeaveHandler() {
 		this.setState({
-			color: this.props.colors.color
+			color: this.colorStyles.color
 		});
+	}
+
+	private closeModal(domId: string) {
+		$(domId).modal('hide');
 	}
 
 	public render(): JSX.Element {
@@ -28,8 +39,8 @@ export class CloseIcon extends VitrineComponent {
 			<svg
 				width={16}
 				height={16}
-				className={css(this.props.styles)}
-				onClick={this.props.onClick}
+				className={`${css(styles.windowControlIcon)} ${(typeof this.props.onClick === 'string') ? (css(styles.modalClose)) : ('')}`}
+				onClick={(this.props.onClick instanceof Function) ? (this.props.onClick) : (this.closeModal.bind(this, this.props.onClick))}
 				onMouseEnter={this.mouseEnterHandler.bind(this)}
 				onMouseLeave={this.mouseLeaveHandler.bind(this)}
 			>
@@ -59,5 +70,15 @@ export class CloseIcon extends VitrineComponent {
 const styles: React.CSSProperties = StyleSheet.create({
 	btn: {
 		transition: `${200}ms ease`
+	},
+	windowControlIcon: {
+		cursor: 'pointer',
+		marginLeft: 14,
+		'-webkitAppRegion': 'no-drag'
+	},
+	modalClose: {
+		float: 'right',
+		marginTop: 6,
+		marginRight: 6
 	}
 });

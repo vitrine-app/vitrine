@@ -180,7 +180,7 @@ class IgdbWrapper {
 	}
 }
 
-export function getIgdbWrapperFiller(gameId: number, lang: string): Promise<any> {
+export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new IgdbWrapper(lang).findGameById(gameId, (error: Error, game: any) => {
 			if (error)
@@ -191,7 +191,7 @@ export function getIgdbWrapperFiller(gameId: number, lang: string): Promise<any>
 	});
 }
 
-export function getIgdbWrapperSearcher(gameName: string, resultsNb?: number): Promise<any> {
+export function searchIgdbGame(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new IgdbWrapper().searchGames(gameName,(error: Error, games: any) => {
 			if (error)

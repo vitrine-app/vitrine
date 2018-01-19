@@ -12,15 +12,10 @@ import { localizer } from '../Localizer';
 
 export class TaskBar extends VitrineComponent {
 	private currentWindow: BrowserWindow;
-	private colorStyles: any;
 
 	public constructor(props: any) {
 		super(props);
 		this.currentWindow = remote.getCurrentWindow();
-		this.colorStyles = {
-			color: rgba(255, 255, 255, 0.3),
-			hover: rgba(255, 255, 255, 0.6)
-		};
 	}
 
 	private minimizeBtnClickHandler() {
@@ -74,18 +69,6 @@ export class TaskBar extends VitrineComponent {
 						{localizer.f('potentialGamesAdd', this.props.potentialGames.games.length)}
 					</button>
 				</div>
-				<div
-					className="col-md-2"
-					style={{ visibility: (this.props.updateProgress) ? ('visible') : ('hidden') }}
-				>
-					<div className={`progress ${css(styles.updateBar)}`}>
-						<div
-							className="progress-bar progress-bar-striped active"
-							role="progressbar"
-							style={{ width: (this.props.updateProgress) ? (`${Math.round(this.props.updateProgress.percent)}%`) : ('0%') }}
-						/>
-					</div>
-				</div>
 			</div>
 		) : (null);
 
@@ -94,18 +77,12 @@ export class TaskBar extends VitrineComponent {
 				{taskBarElements}
 				<div className={css(styles.windowControlBtnGroup)}>
 					<MinimizeIcon
-						styles={styles.windowControlIcon}
-						colors={this.colorStyles}
 						onClick={this.minimizeBtnClickHandler.bind(this)}
 					/>
 					<MaximizeIcon
-						styles={styles.windowControlIcon}
-						colors={this.colorStyles}
 						onClick={this.maximizeBtnClickHandler.bind(this)}
 					/>
 					<CloseIcon
-						styles={styles.windowControlIcon}
-						colors={this.colorStyles}
 						onClick={this.closeBtnClickHandler.bind(this)}
 					/>
 				</div>
@@ -128,14 +105,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 	potentialGamesContainer: {
 		marginLeft: 18
 	},
-	updateBar: {
-		width: 250,
-		height: 13,
-		marginTop: 13,
-		marginBottom: 13,
-		borderRadius: 3,
-		backgroundColor: '#50453C'
-	},
 	controlBtn: {
 		'-webkitAppRegion': 'no-drag'
 	},
@@ -144,10 +113,5 @@ const styles: React.CSSProperties = StyleSheet.create({
 		top: 16,
 		right: 20,
 		zIndex: 1
-	},
-	windowControlIcon: {
-		cursor: 'pointer',
-		marginLeft: 14,
-		'-webkitAppRegion': 'no-drag'
 	}
 });

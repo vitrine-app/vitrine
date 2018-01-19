@@ -7,7 +7,7 @@ import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getEnvFolder, uuidV5 } from '../../models/env';
-import { getIgdbWrapperSearcher } from '../api/IgdbWrapper';
+import { searchIgdbGame } from '../api/IgdbWrapper';
 
 class SteamGamesCrawler {
 	private manifestRegEx: string;
@@ -49,7 +49,7 @@ class SteamGamesCrawler {
 		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
 
-			if (SteamGamesCrawler.isGameAlreadyAdded(gameManifest.name)) {
+			if (this.isGameAlreadyAdded(gameManifest.name)) {
 				counter++;
 				if (counter === array.length) {
 					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
@@ -69,7 +69,7 @@ class SteamGamesCrawler {
 					return;
 				}
 			}
-			getIgdbWrapperSearcher(gameManifest.name, 1).then((game: any) => {
+			searchIgdbGame(gameManifest.name, 1).then((game: any) => {
 				game = game[0];
 				delete game.name;
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
@@ -92,7 +92,7 @@ class SteamGamesCrawler {
 		});
 	}
 
-	private static isGameAlreadyAdded(name: string): boolean {
+	private isGameAlreadyAdded(name: string): boolean {
 		let gameUuid: string = uuidV5(name);
 
 		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
@@ -102,7 +102,7 @@ class SteamGamesCrawler {
 	}
 }
 
-export function getSteamCrawler(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
+export function searchSteamGames(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
 		new SteamGamesCrawler(steamConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 			if (error)

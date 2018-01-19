@@ -1,0 +1,92 @@
+[
+  {
+    "id": 0,
+    "name": "Nintendo Entertainment System",
+    "folder": "NES"
+  },
+  {
+    "id": 1,
+    "name": "Super Nintendo Entertainment System",
+    "folder": "SNES"
+  },
+  {
+    "id": 2,
+    "name": "Nintendo 64",
+    "folder": "N64"
+  },
+  {
+    "id": 3,
+    "name": "Nintendo GameCube",
+    "folder": "GameCube"
+  },
+  {
+    "id": 4,
+    "name": "Game Boy Advance",
+    "folder": "GBA"
+  },
+  {
+    "id": 5,
+    "name": "Nintendo DS",
+    "folder": "DS"
+  },
+  {
+    "id": 6,
+    "name": "Nintendo Wii",
+    "folder": "Wii"
+  },
+  {
+    "id": 7,
+    "name": "Nintendo 3DS",
+    "folder": "3DS"
+  },
+  {
+    "id": 8,
+    "name": "Nintendo Wii U",
+    "folder": "Wii U"
+  },
+  {
+    "id": 9,
+    "name": "Master System",
+    "folder": "Master System"
+  },
+  {
+    "id": 10,
+    "name": "Mega Drive",
+    "folder": "Mega Drive"
+  },
+  {
+    "id": 11,
+    "name": "Game Gear",
+    "folder": "Game Gear"
+  },
+  {
+    "id": 12,
+    "name": "Sega Saturn",
+    "folder": "Saturn"
+  },
+  {
+    "id": 13,
+    "name": "Dreamcast",
+    "folder": "Dreamcast"
+  },
+  {
+    "id": 14,
+    "name": "PlayStation",
+    "folder": "PS"
+  },
+  {
+    "id": 15,
+    "name": "PlayStation 2",
+    "folder": "PS2"
+  },
+  {
+    "id": 16,
+    "name": "PlayStation 3",
+    "folder": "PS3"
+  },
+  {
+    "id": 17,
+    "name": "Xbox",
+    "folder": "Xbox"
+  }
+]

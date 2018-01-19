@@ -12,7 +12,6 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
-import { UpdateModal } from './UpdateModal';
 import { SettingsModal } from './SettingsModal';
 import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
@@ -24,38 +23,15 @@ export class Vitrine extends VitrineComponent {
 		this.state = {
 			settings: this.props.settings,
 			firstLaunch: false,
-			updateProgress: null,
-			releaseVersion: null,
 			playableGames: new GamesCollection<PlayableGame>(),
 			potentialGames: new GamesCollection<PotentialGame>(),
 			refreshingGames: false,
+			launchedGamePictureActivated: true,
 			selectedGame: null,
 			launchedGame: null,
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
-	}
-
-	private firstLaunch() {
-		this.setState({
-			firstLaunch: true
-		}, () => {
-			$('#settings-modal').modal('show');
-		});
-	}
-
-	private updateProgress(event: Electron.Event, progress: any) {
-		this.setState({
-			updateProgress: progress
-		});
-	}
-
-	private updateDownloaded(event: Electron.Event, version: string) {
-		this.setState({
-			releaseVersion: version
-		}, () => {
-			$('#update-modal').modal('show');
-		});
 	}
 
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
@@ -222,14 +198,24 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private static deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+	private deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
 		ipcRenderer.send('client.remove-game', gameUuid);
 	}
 
+	private launchedGamePictureToggleHandler() {
+		this.setState({
+			launchedGamePictureActivated: false
+		}, () => {
+			this.setState({
+				selectedGame: this.state.selectedGame
+			});
+		});
+	}
+
 	private keyDownHandler(event: KeyboardEvent) {
 		switch (event.code) {
-			case ('ArrowDown'): {
+			case 'ArrowDown': {
 				event.preventDefault();
 
 				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
@@ -239,7 +225,7 @@ export class Vitrine extends VitrineComponent {
 					});
 				break;
 			}
-			case ('ArrowUp'): {
+			case 'ArrowUp': {
 				event.preventDefault();
 
 				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
@@ -249,9 +235,10 @@ export class Vitrine extends VitrineComponent {
 					});
 				break;
 			}
-			case ('Enter'): {
+			case 'Enter': {
 				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
-					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible'))
+					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible') ||
+					$('#settings-modal').is(':visible'))
 					break;
 				event.preventDefault();
 
@@ -262,10 +249,15 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('server.first-launch', this.firstLaunch.bind(this))
-			.on('server.update-progress', this.updateProgress.bind(this))
-			.on('server.update-downloaded', this.updateDownloaded.bind(this))
-			.on('server.add-playable-games', this.addPlayableGames.bind(this))
+		if (this.state.settings.firstLaunch) {
+			this.setState({
+				firstLaunch: true
+			}, () => {
+				$('#settings-modal').modal('show');
+			});
+		}
+
+		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this))
 			.on('server.add-playable-game', this.addPlayableGame.bind(this))
 			.on('server.edit-playable-game', this.editPlayableGame.bind(this))
 			.on('server.remove-playable-game', this.removePlayableGame.bind(this))
@@ -275,6 +267,9 @@ export class Vitrine extends VitrineComponent {
 			.on('server.error', this.serverError.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
+		window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
+			console.log(e.gamepad);
+		});
 	}
 
 	public componentWillUnmount() {
@@ -282,7 +277,7 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	public render(): JSX.Element {
-		let vitrineContent: JSX.Element = (!this.state.launchedGame) ? (
+		let vitrineContent: JSX.Element = (!this.state.launchedGame || !this.state.launchedGamePictureActivated) ? (
 			<div className={'full-height'}>
 				<SideBar
 					playableGames={this.state.playableGames}
@@ -302,9 +297,6 @@ export class Vitrine extends VitrineComponent {
 					potentialGames={this.state.potentialGames}
 					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
 				/>
-				<UpdateModal
-					releaseVersion={this.state.releaseVersion}
-				/>
 				<SettingsModal
 					settings={this.state.settings}
 					firstLaunch={this.state.firstLaunch}
@@ -316,7 +308,7 @@ export class Vitrine extends VitrineComponent {
 					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>
 						{localizer.f('edit')}
 					</MenuItem>
-					<MenuItem onClick={Vitrine.deleteGameContextClickHandler.bind(this)}>
+					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
 						{localizer.f('delete')}
 					</MenuItem>
 				</ContextMenu>
@@ -324,15 +316,15 @@ export class Vitrine extends VitrineComponent {
 		) : (
 			<LaunchedGameContainer
 				launchedGame={this.state.launchedGame}
+				clickHandler={this.launchedGamePictureToggleHandler.bind(this)}
 			/>
 		);
 		return (
 			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
 				<TaskBar
 					potentialGames={this.state.potentialGames}
-					isGameLaunched={(this.state.launchedGame) ? (true) : (false)}
+					isGameLaunched={this.state.launchedGame && this.state.launchedGamePictureActivated}
 					refreshingGames={this.state.refreshingGames}
-					updateProgress={this.state.updateProgress}
 					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
 				/>
 				{vitrineContent}

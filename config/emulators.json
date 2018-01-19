@@ -1,43 +1,84 @@
 [
   {
-    "id": 0,
-    "name": "ZSNES",
+    "active": false,
+    "command": "\"%g\"",
+    "name": "Nestopia",
+    "path": "",
+    "platforms": [
+      0
+    ]
+  },
+  {
+    "active": false,
     "command": "-m \"%g\"",
-    "consoles": [
+    "name": "ZSNES",
+    "path": "",
+    "platforms": [
       1
     ]
   },
   {
-    "id": 1,
-    "name": "Project64",
+    "active": false,
     "command": "\"%g\"",
-    "consoles": [
+    "name": "Project64",
+    "path": "",
+    "platforms": [
       2
     ]
   },
   {
-    "id": 2,
-    "name": "Dolphin",
+    "active": false,
     "command": "--batch --exec=\"%g\"",
-    "consoles": [
+    "name": "Dolphin",
+    "path": "",
+    "platforms": [
       3,
+      6
+    ]
+  },
+  {
+    "active": false,
+    "command": "\"%g\" -f",
+    "name": "mGBA",
+    "path": "",
+    "platforms": [
       4
     ]
   },
   {
-    "id": 3,
-    "name": "Cemu",
-    "command": "-g \"%g\" -f",
-    "consoles": [
+    "active": false,
+    "command": "\"%g\"",
+    "name": "DeSmuME",
+    "path": "",
+    "platforms": [
       5
     ]
   },
   {
-    "id": 4,
-    "name": "ePSXe",
+    "active": false,
+    "command": "\"%g\"",
+    "name": "Citra",
+    "path": "",
+    "platforms": [
+      7
+    ]
+  },
+  {
+    "active": false,
+    "command": "-g \"%g\" -f",
+    "name": "Cemu",
+    "path": "",
+    "platforms": [
+      8
+    ]
+  },
+  {
+    "active": false,
     "command": "-nogui -loadiso \"%g\"",
-    "consoles": [
-      6
+    "name": "ePSXe",
+    "path": "",
+    "platforms": [
+      14
     ]
   }
 ]
