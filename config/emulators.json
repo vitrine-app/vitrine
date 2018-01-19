@@ -27,10 +27,10 @@
     ]
   },
   {
-    "active": false,
+    "active": true,
     "command": "--batch --exec=\"%g\"",
     "name": "Dolphin",
-    "path": "",
+    "path": "C:\\Program Files\\Dolphin\\Dolphin.exe",
     "platforms": [
       3,
       6

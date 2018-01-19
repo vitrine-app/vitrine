@@ -248,12 +248,20 @@ export class VitrineServer {
 				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
 			};
 		}
-		fs.outputJSON(this.vitrineConfigFilePath, config, {
+		if (settingsForm.emulatedPath) {
+			config.emulated = {
+				romsFolder: settingsForm.emulatedPath
+			}
+		}
+		fs.outputJson(this.vitrineConfigFilePath, config, {
 			spaces: 2
 		}).then(() => {
-			let emulatorsConfig: any = this.vitrineConfig.emulated;
-			emulatorsConfig.emulators = settingsForm.emulators;
-			fs.outputJSON(this.emulatorsConfigFilePath, emulatorsConfig.emulators, {
+			let emulatorsConfig: any = {
+				...this.vitrineConfig.emulated,
+				...config.emulated,
+				emulators: settingsForm.emulators
+			};
+			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, {
 				spaces: 2
 			}).then(() => {
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
@@ -302,7 +310,7 @@ export class VitrineServer {
 
 	private searchEmulatedGames(event: Electron.Event): Promise<any> {
 		return new Promise((resolve) => {
-			if (!this.vitrineConfig.emulated) {
+			if (!this.vitrineConfig.emulated.romsFolder) {
 				resolve();
 				return;
 			}

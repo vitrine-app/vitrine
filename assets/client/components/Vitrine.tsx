@@ -137,9 +137,9 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private settingsUpdated(event: Event, newSettings: any) {
+	private settingsUpdated(event: Event, settings: any) {
 		this.setState({
-			settings: newSettings
+			settings
 		}, () => {
 			$('#settings-modal').modal('hide');
 			if (this.state.firstLaunch) {

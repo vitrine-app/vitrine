@@ -82,10 +82,10 @@ export class SettingsModal extends VitrineComponent {
 	}
 
 	private emulatedPathBtnClickHandler() {
-		let emulatedEnabled: string = openDirectory();
-		if (emulatedEnabled) {
+		let emulatedPath: string = openDirectory();
+		if (emulatedPath) {
 			this.setState({
-				emulatedEnabled
+				emulatedPath
 			});
 		}
 	}
@@ -237,7 +237,7 @@ export class SettingsModal extends VitrineComponent {
 											</div>
 											<div className="col-md-3">
 												<GamesModule
-													clicked={this.state.originEnabled}
+													clicked={this.state.emulatedEnabled}
 													iconFile={emulatedIcon}
 													iconAlt={'Origin'}
 													clickHandler={this.emulatedIconClickHandler.bind(this)}
