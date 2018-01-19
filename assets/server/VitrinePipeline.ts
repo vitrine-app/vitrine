@@ -11,8 +11,8 @@ export class VitrinePipeline {
 	private configFolderPath: string;
 	private vitrineConfigFilePath: string;
 
-	public constructor() {
-		this.prod = (getEnvData().env) ? (true) : (false);
+	public constructor(prod?: boolean) {
+		this.prod = (prod !== undefined) ? (prod) : ((getEnvData().env) ? (true) : (false));
 		this.gamesFolderPath = getEnvFolder('games');
 		this.configFolderPath = getEnvFolder('config');
 	}

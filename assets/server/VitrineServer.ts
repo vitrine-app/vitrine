@@ -1,8 +1,8 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { app, BrowserWindow, Tray, Menu, ipcMain, screen } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import { UpdateInfo } from 'builder-util-runtime';
+import { autoUpdater, UpdateCheckResult } from 'electron-updater';
+import { UpdateInfo, ProgressInfo } from 'builder-util-runtime';
 import * as rimraf from 'rimraf';
 import * as moment from 'moment';
 
@@ -47,12 +47,11 @@ export class VitrineServer {
 
 	public run(prod?: boolean) {
 		this.devTools = !prod;
-		console.log(prod);
 		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
 			this.quitApplication();
 			return;
 		}
-		app.on('ready', this.runVitrine.bind(this));
+		app.on('ready', this.createLoaderWindow.bind(this));
 		app.on('window-all-closed', () => {
 			if (process.platform !== 'darwin')
 				this.quitApplication();
@@ -64,6 +63,9 @@ export class VitrineServer {
 	}
 
 	public registerEvents() {
+		ipcMain.on('loader.ready', this.loaderReady.bind(this))
+			.on('loader.launch-client', this.createMainWindow.bind(this));
+
 		ipcMain.on('client.settings-asked', this.clientSettingsAsked.bind(this))
 			.on('client.ready', this.clientReady.bind(this))
 			.on('client.quit-application', this.quitApplication.bind(this))
@@ -80,6 +82,21 @@ export class VitrineServer {
 
 	public throwServerError(event: any, error: Error) {
 		return event.sender.send('server.error', error.name, error.stack);
+	}
+
+	private loaderReady(event: Electron.Event) {
+		autoUpdater.allowPrerelease = true;
+		autoUpdater.signals.progress((progress: ProgressInfo) => {
+			console.log(progress.percent);
+			// this.windowsList.mainWindow.webContents.send('server.update-progress', progress);
+		});
+		autoUpdater.signals.updateDownloaded((version: UpdateInfo) => {
+			// this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version);
+		});
+		autoUpdater.checkForUpdates().then((lastUpdate: UpdateCheckResult) => {
+			if (lastUpdate.updateInfo.version === autoUpdater.currentVersion)
+				event.sender.send('loaderServer.no-update-found');
+		});
 	}
 
 	private clientSettingsAsked(event: Electron.Event) {
@@ -102,6 +119,7 @@ export class VitrineServer {
 	}
 
 	private clientReady() {
+		this.createTrayIcon();
 		this.windowsList.loaderWindow.destroy();
 		this.windowsList.mainWindow.show();
 	}
@@ -117,17 +135,6 @@ export class VitrineServer {
 
 	private updateApp() {
 		autoUpdater.quitAndInstall(true, true);
-	}
-
-	private handleUpdates() {
-		autoUpdater.allowPrerelease = true;
-		autoUpdater.signals.progress((progress: any) => {
-			this.windowsList.mainWindow.webContents.send('server.update-progress', progress);
-		});
-		autoUpdater.signals.updateDownloaded((version: UpdateInfo) => {
-			this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version);
-		});
-		autoUpdater.checkForUpdates();
 	}
 
 	private restoreAndFocus() {
@@ -307,13 +314,6 @@ export class VitrineServer {
 				return this.throwServerError(event, error);
 			});
 		});
-	}
-
-	private runVitrine() {
-		this.createTrayIcon();
-		this.createLoaderWindow();
-		// this.handleUpdates();
-		// this.createMainWindow();
 	}
 
 	private createTrayIcon() {

@@ -10,14 +10,24 @@ export class VitrineLoader extends React.Component<null, any> {
 		super(undefined);
 
 		this.state = {
-			displayedInfo: null
+			displayedInfo: 'Loading...'
 		};
 	}
 
 	public componentDidMount() {
+		ipcRenderer.on('loaderServer.no-update-found', this.launchClient.bind(this));
+
 		ipcRenderer.send('loader.ready');
 		this.setState({
-			displayedInfo: 'Loading...'
+			displayedInfo: 'Searching for updates...'
+		});
+	}
+
+	private launchClient(event: Electron.Event) {
+		this.setState({
+			displayedInfo: 'Launching...'
+		}, () => {
+			event.sender.send('loader.launch-client');
 		});
 	}
 
