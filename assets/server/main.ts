@@ -1,3 +1,3 @@
 import { VitrinePipeline } from './VitrinePipeline';
 
-new VitrinePipeline().launch();
+new VitrinePipeline(false).launch();

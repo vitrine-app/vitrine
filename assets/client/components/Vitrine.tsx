@@ -12,7 +12,6 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
-import { UpdateModal } from './UpdateModal';
 import { SettingsModal } from './SettingsModal';
 import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
@@ -24,8 +23,6 @@ export class Vitrine extends VitrineComponent {
 		this.state = {
 			settings: this.props.settings,
 			firstLaunch: false,
-			updateProgress: null,
-			releaseVersion: null,
 			playableGames: new GamesCollection<PlayableGame>(),
 			potentialGames: new GamesCollection<PotentialGame>(),
 			refreshingGames: false,
@@ -35,20 +32,6 @@ export class Vitrine extends VitrineComponent {
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
-	}
-
-	private updateProgress(event: Electron.Event, progress: any) {
-		this.setState({
-			updateProgress: progress
-		});
-	}
-
-	private updateDownloaded(event: Electron.Event, version: string) {
-		this.setState({
-			releaseVersion: version
-		}, () => {
-			$('#update-modal').modal('show');
-		});
 	}
 
 	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
@@ -274,9 +257,7 @@ export class Vitrine extends VitrineComponent {
 			});
 		}
 
-		ipcRenderer.on('server.update-progress', this.updateProgress.bind(this))
-			.on('server.update-downloaded', this.updateDownloaded.bind(this))
-			.on('server.add-playable-games', this.addPlayableGames.bind(this))
+		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this))
 			.on('server.add-playable-game', this.addPlayableGame.bind(this))
 			.on('server.edit-playable-game', this.editPlayableGame.bind(this))
 			.on('server.remove-playable-game', this.removePlayableGame.bind(this))
@@ -316,9 +297,6 @@ export class Vitrine extends VitrineComponent {
 					potentialGames={this.state.potentialGames}
 					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
 				/>
-				<UpdateModal
-					releaseVersion={this.state.releaseVersion}
-				/>
 				<SettingsModal
 					settings={this.state.settings}
 					firstLaunch={this.state.firstLaunch}
@@ -347,7 +325,6 @@ export class Vitrine extends VitrineComponent {
 					potentialGames={this.state.potentialGames}
 					isGameLaunched={this.state.launchedGame && this.state.launchedGamePictureActivated}
 					refreshingGames={this.state.refreshingGames}
-					updateProgress={this.state.updateProgress}
 					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
 				/>
 				{vitrineContent}

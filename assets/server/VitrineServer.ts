@@ -64,12 +64,12 @@ export class VitrineServer {
 
 	public registerEvents() {
 		ipcMain.on('loader.ready', this.loaderReady.bind(this))
-			.on('loader.launch-client', this.createMainWindow.bind(this));
+			.on('loader.launch-client', this.createMainWindow.bind(this))
+			.on('loader.update-and-restart', this.updateApp.bind(this));
 
 		ipcMain.on('client.settings-asked', this.clientSettingsAsked.bind(this))
 			.on('client.ready', this.clientReady.bind(this))
 			.on('client.quit-application', this.quitApplication.bind(this))
-			.on('client.update-app', this.updateApp.bind(this))
 			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
 			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
 			.on('client.add-game', this.addGame.bind(this))
@@ -87,14 +87,15 @@ export class VitrineServer {
 	private loaderReady(event: Electron.Event) {
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {
-			console.log(progress.percent);
-			// this.windowsList.mainWindow.webContents.send('server.update-progress', progress);
+			event.sender.send('loaderServer.update-progress', progress);
 		});
-		autoUpdater.signals.updateDownloaded((version: UpdateInfo) => {
-			// this.windowsList.mainWindow.webContents.send('server.update-downloaded', version.version);
+		autoUpdater.signals.updateDownloaded(() => {
+			autoUpdater.quitAndInstall(true, true);
 		});
 		autoUpdater.checkForUpdates().then((lastUpdate: UpdateCheckResult) => {
-			if (lastUpdate.updateInfo.version === autoUpdater.currentVersion)
+			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion)
+				event.sender.send('loaderServer.update-found', lastUpdate.updateInfo.version);
+			else
 				event.sender.send('loaderServer.no-update-found');
 		});
 	}

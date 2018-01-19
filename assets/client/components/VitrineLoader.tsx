@@ -1,25 +1,50 @@
 import * as React from 'react';
 import { ipcRenderer } from 'electron';
+import { ProgressInfo } from 'builder-util-runtime';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
 
 import * as vitrineIcon from '../images/vitrine.ico';
 
 export class VitrineLoader extends React.Component<null, any> {
+	private lastUpdateVersion: string;
+
 	public constructor() {
 		super(undefined);
 
 		this.state = {
-			displayedInfo: 'Loading...'
+			displayedInfo: 'Loading...',
+			updateDownloadProgress: null
 		};
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('loaderServer.no-update-found', this.launchClient.bind(this));
+		ipcRenderer.on('loaderServer.update-found', this.startUpdateDownload.bind(this))
+			.on('loaderServer.update-progress', this.updateProgress.bind(this))
+			.on('loaderServer.no-update-found', this.launchClient.bind(this));
 
 		ipcRenderer.send('loader.ready');
 		this.setState({
 			displayedInfo: 'Searching for updates...'
+		});
+	}
+
+	private startUpdateDownload(event: Electron.Event, lastUpdateVersion: string) {
+		this.lastUpdateVersion = lastUpdateVersion;
+		this.setState({
+			displayedInfo: `Updating to ${this.lastUpdateVersion}...`,
+			updateDownloadProgress: 0
+		});
+	}
+
+	private updateProgress(event: Electron.Event, progress: ProgressInfo) {
+		let updateDownloadProgress: number = Math.round(progress.percent);
+		let displayedInfo: string = (updateDownloadProgress < 100)
+			? (`Updating to ${this.lastUpdateVersion}... | ${updateDownloadProgress.percents()}`)
+			: ('Restarting...');
+		this.setState({
+			updateDownloadProgress,
+			displayedInfo
 		});
 	}
 
@@ -48,6 +73,16 @@ export class VitrineLoader extends React.Component<null, any> {
 					{this.state.displayedInfo}
 					<i className={`fa fa-cog fa-fw fa-spin`}/>
 				</span>
+				<div
+					className={`progress ${css(styles.downloadBar)}`}
+					style={{ display: (this.state.updateDownloadProgress) ? ('block') : ('none') }}
+				>
+					<div
+						className={`progress-bar active ${css(styles.downloadBarProgress)}`}
+						role="progressbar"
+						style={{ width: (this.state.updateDownloadProgress) ? (this.state.updateDownloadProgress.percents()) : (0..percents()) }}
+					/>
+				</div>
 			</div>
 		);
 	}
@@ -62,7 +97,9 @@ const pulseKeyframes: any = {
 const styles: React.CSSProperties = StyleSheet.create({
 	loader: {
 		textAlign: 'center',
-		padding: 7
+		padding: 7,
+		userSelect: 'none',
+		cursor: 'default'
 	},
 	loaderDiv: {
 		margin: 4
@@ -88,5 +125,16 @@ const styles: React.CSSProperties = StyleSheet.create({
 		fontStyle: 'italic',
 		opacity: 0.4,
 		fontSize: 17
+	},
+	downloadBar: {
+		width: 46..percents(),
+		height: 8,
+		marginLeft: 27..percents(),
+		marginTop: 6,
+		borderRadius: 3,
+		backgroundColor: '#4A453F'
+	},
+	downloadBarProgress: {
+		backgroundColor: '#736E67'
 	}
 });

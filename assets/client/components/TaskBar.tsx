@@ -69,18 +69,6 @@ export class TaskBar extends VitrineComponent {
 						{localizer.f('potentialGamesAdd', this.props.potentialGames.games.length)}
 					</button>
 				</div>
-				<div
-					className="col-md-2"
-					style={{ visibility: (this.props.updateProgress) ? ('visible') : ('hidden') }}
-				>
-					<div className={`progress ${css(styles.updateBar)}`}>
-						<div
-							className="progress-bar progress-bar-striped active"
-							role="progressbar"
-							style={{ width: (this.props.updateProgress) ? (`${Math.round(this.props.updateProgress.percent)}%`) : ('0%') }}
-						/>
-					</div>
-				</div>
 			</div>
 		) : (null);
 
@@ -116,14 +104,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	potentialGamesContainer: {
 		marginLeft: 18
-	},
-	updateBar: {
-		width: 250,
-		height: 13,
-		marginTop: 13,
-		marginBottom: 13,
-		borderRadius: 3,
-		backgroundColor: '#50453C'
 	},
 	controlBtn: {
 		'-webkitAppRegion': 'no-drag'
