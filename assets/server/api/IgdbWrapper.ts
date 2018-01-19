@@ -43,7 +43,7 @@ class IgdbWrapper {
 
 	public searchGames(name: string, callback: Function, resultsNb?: number) {
 		this.client.games({
-			limit: (resultsNb) ? (resultsNb) : (this.levenshteinRefiner),
+			limit: resultsNb || this.levenshteinRefiner,
 			search: name.replace('²', '2')
 		}, ['name', 'cover']).then((response) => {
 			let counter: number = 0;

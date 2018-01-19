@@ -13,7 +13,7 @@ export class ImagesCollection extends VitrineComponent {
 		super(props);
 
 		this.state = {
-			images: (this.props.images) ? (this.props.images) : ([]),
+			images: this.props.images || [],
 			selectedImage: '',
 			customImage: false
 		};
@@ -53,7 +53,7 @@ export class ImagesCollection extends VitrineComponent {
 		let selectedImage: string = '';
 		if (props.images) {
 			images = props.images;
-			selectedImage = (this.state.selectedImage) ? (this.state.selectedImage) : (props.images[0]);
+			selectedImage = this.state.selectedImage || props.images[0];
 		}
 		this.setState({
 			images: images,

@@ -143,15 +143,15 @@ export class AddGameModal extends VitrineComponent {
 				source: gameToAdd.source,
 				executable: executable,
 				arguments: args,
-				series: (gameToAdd.details.series) ? (gameToAdd.details.series) : (''),
+				series: gameToAdd.details.series || '',
 				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate / 1000).format('DD/MM/YYYY')) : (''),
-				developer: (gameToAdd.details.developer) ? (gameToAdd.details.developer) : (''),
-				publisher: (gameToAdd.details.publisher) ? (gameToAdd.details.publisher) : (''),
+				developer: gameToAdd.details.developer || '',
+				publisher: gameToAdd.details.publisher || '',
 				genres: (gameToAdd.details.genres) ? (gameToAdd.details.genres.join(', ')) : (''),
-				rating: (gameToAdd.details.rating) ? (gameToAdd.details.rating) : (''),
-				summary: (gameToAdd.details.summary) ? (gameToAdd.details.summary) : (''),
+				rating: gameToAdd.details.rating || '',
+				summary: gameToAdd.details.summary || '',
 				potentialBackgrounds: (gameToAdd.details.backgroundScreen) ? ([gameToAdd.details.backgroundScreen]) : ([]),
-				backgroundScreen: (gameToAdd.details.backgroundScreen) ? (gameToAdd.details.backgroundScreen) : ('')
+				backgroundScreen: gameToAdd.details.backgroundScreen || ''
 			});
 		}
 	}

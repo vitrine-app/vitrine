@@ -3,7 +3,7 @@ export class GamesCollection<T extends Object> {
 	private evaluatedKey: string;
 
 	public constructor(games?: T[]) {
-		this._games = (games) ? (games) : ([]);
+		this._games = games || [];
 		this.evaluatedKey = 'name';
 	}
 

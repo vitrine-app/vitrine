@@ -21,7 +21,7 @@ class OriginGamesCrawler {
 	public constructor(private originConfig: any, playableGames?: PlayableGame[]) {
 		this.potentialGames = [];
 		this.regDetails = [];
-		this.playableGames = (playableGames) ? (playableGames) : ([]);
+		this.playableGames = playableGames || [];
 	}
 
 	public search(callback: Function) {

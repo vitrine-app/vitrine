@@ -16,7 +16,7 @@ class EmulatedGamesCrawler {
 	public constructor(private emulatedConfig: any, playableGames?: PlayableGame[]) {
 		this.potentialGames = [];
 		this.romsFolders = [];
-		this.playableGames = (playableGames) ? (playableGames) : ([]);
+		this.playableGames = playableGames || [];
 	}
 
 	public search(callback: Function) {

@@ -18,7 +18,7 @@ class SteamGamesCrawler {
 	public constructor(private steamConfig: any, playableGames?: PlayableGame[]) {
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.potentialGames = [];
-		this.playableGames = (playableGames) ? (playableGames) : ([]);
+		this.playableGames = playableGames || [];
 	}
 
 	public search(callback: Function) {

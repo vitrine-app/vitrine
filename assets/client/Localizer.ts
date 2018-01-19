@@ -3,7 +3,7 @@ class Localizer {
 	private selectedLanguage: string;
 
 	public constructor(languages?: any) {
-		this.languages = (languages) ? (languages) : ({});
+		this.languages = languages || {};
 		this.selectedLanguage = 'en';
 	}
 

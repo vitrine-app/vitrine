@@ -8,7 +8,7 @@ export class NumberPicker extends VitrineComponent {
 		super(props);
 
 		this.state = {
-			value: (this.props.value) ? (this.props.value) : ('')
+			value: this.props.value || ''
 		};
 	}
 
@@ -65,7 +65,7 @@ export class NumberPicker extends VitrineComponent {
 
 	public componentWillReceiveProps(props: any) {
 		this.setState({
-			value: (props.value) ? (props.value) : ('')
+			value: props.value || ''
 		});
 	}
 

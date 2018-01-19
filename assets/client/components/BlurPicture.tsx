@@ -11,8 +11,8 @@ export class BlurPicture extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 
-		let divWidth: number = (this.props.width) ? (this.props.width) : (3.136);
-		let divHeight: number = (this.props.height) ? (this.props.height) : (4.48);
+		let divWidth: number = this.props.width || 3.136;
+		let divHeight: number = this.props.height || 4.48;
 		this.pulseDuration = 165;
 
 		this.state = {

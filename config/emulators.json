@@ -27,7 +27,7 @@
     ]
   },
   {
-    "active": true,
+    "active": false,
     "command": "--batch --exec=\"%g\"",
     "name": "Dolphin",
     "path": "C:\\Program Files\\Dolphin\\Dolphin.exe",
