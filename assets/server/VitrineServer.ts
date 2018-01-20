@@ -24,7 +24,6 @@ export class VitrineServer {
 	private windowsList: any;
 	private mainEntryPoint: string;
 	private loaderEntryPoint: string;
-	private vitrineConfigFilePath: string;
 	private emulatorsConfigFilePath: string;
 	private tray: Tray;
 	private devTools: boolean;
@@ -34,11 +33,10 @@ export class VitrineServer {
 	private gameLaunched: boolean;
 	private appQuit: boolean;
 
-	public constructor(private vitrineConfig: any, configFolderPath: string) {
+	public constructor(private vitrineConfig: any, private vitrineConfigFilePath: string, configFolderPath: string) {
 		this.windowsList = {};
 		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
 		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
-		this.vitrineConfigFilePath = path.resolve(configFolderPath, 'vitrine_config.json');
 		this.emulatorsConfigFilePath = path.resolve(configFolderPath, 'emulators.json');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.gameLaunched = false;
@@ -80,7 +78,7 @@ export class VitrineServer {
 			.on('client.update-settings', this.updateSettings.bind(this));
 	}
 
-	public throwServerError(event: any, error: Error) {
+	private throwServerError(event: any, error: Error) {
 		return event.sender.send('server.error', error.name, error.stack);
 	}
 
@@ -108,7 +106,7 @@ export class VitrineServer {
 		if (!this.vitrineConfig.firstLaunch) {
 			if (this.vitrineConfig.steam) {
 				findSteamUser(this.vitrineConfig.steam).then((steamUser: any) => {
-					this.vitrineConfig.steam = { ...steamUser };
+					Object.assign(this.vitrineConfig.steam, { ...steamUser });
 				}).catch((error: Error) => this.throwServerError(event, error));
 			}
 			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {

@@ -6,7 +6,7 @@ class SteamPlayTimeWrapper {
 	private apiKey: string;
 	private client: SteamWeb;
 
-	public constructor(private steamConfig: any) {
+	public constructor() {
 		this.apiKey = '27853E803FB3CEFE82DBACEF152A905A';
 		this.client = new SteamWeb({
 			apiKey: this.apiKey,
@@ -14,9 +14,9 @@ class SteamPlayTimeWrapper {
 		});
 	}
 
-	public getOwnedGames(game: PlayableGame, callback: Function) {
+	public getOwnedGames(steamConfig: any, game: PlayableGame, callback: Function) {
 		this.client.getOwnedGames({
-			steamid: this.steamConfig.userId,
+			steamid: steamConfig.userId,
 			callback: (error: Error, data: any) => {
 				if (error)
 					callback(error, null);
@@ -43,9 +43,11 @@ class SteamPlayTimeWrapper {
 	}
 }
 
+let steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
+
 export function getGamePlayTime(steamConfig: any, game: PlayableGame): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamPlayTimeWrapper(steamConfig).getOwnedGames(game, (error: Error, timedGame: PlayableGame) => {
+		steamPlayTimeWrapper.getOwnedGames(steamConfig, game, (error: Error, timedGame: PlayableGame) => {
 			if (error)
 				reject(error);
 			else

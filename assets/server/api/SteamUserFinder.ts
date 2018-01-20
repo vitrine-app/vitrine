@@ -3,12 +3,15 @@ import * as path from 'path';
 import { AcfParser } from './AcfParser';
 
 class SteamUserFinder {
+	private steamConfig: any;
 	private loginUsersFilePath: string;
 	private loginUsersFile: any;
 
-	public constructor(private steamConfig: any) {
+	public setSteamConfig(steamConfig: any): this {
+		this.steamConfig = steamConfig;
 		this.loginUsersFilePath = path.resolve(this.steamConfig.installFolder, 'config', 'loginusers.vdf');
 		this.loginUsersFile = new AcfParser(this.loginUsersFilePath).toObject().users;
+		return this;
 	}
 
 	public getActiveUser(callback: Function) {
@@ -31,9 +34,11 @@ class SteamUserFinder {
 	}
 }
 
+let steamUserFinder: SteamUserFinder = new SteamUserFinder();
+
 export function findSteamUser(steamConfig: any): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamUserFinder(steamConfig).getActiveUser((error: Error, user: any) => {
+		steamUserFinder.setSteamConfig(steamConfig).getActiveUser((error: Error, user: any) => {
 			if (error)
 				reject(error);
 			else

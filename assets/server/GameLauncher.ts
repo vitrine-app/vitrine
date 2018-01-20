@@ -7,12 +7,14 @@ import { getEnvFolder } from '../models/env';
 
 class GameLauncher {
 	private watcherPath: string;
+	private game: PlayableGame;
 
-	public constructor(private game: PlayableGame) {
+	public constructor() {
 		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
 	}
 
-	public launch(callback: Function) {
+	public launch(game: PlayableGame, callback: Function) {
+		this.game = game;
 		switch (+this.game.source) {
 			case GameSource.LOCAL: {
 				this.launchStandardGame(callback);
@@ -72,9 +74,11 @@ class GameLauncher {
 	}
 }
 
+let gameLauncher: GameLauncher = new GameLauncher();
+
 export function launchGame(game: PlayableGame): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new GameLauncher(game).launch((error, minutesPlayed) => {
+		gameLauncher.launch(game,(error, minutesPlayed) => {
 			if (error)
 				reject(error);
 			else

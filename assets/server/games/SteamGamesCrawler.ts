@@ -10,18 +10,21 @@ import { getEnvFolder, uuidV5 } from '../../models/env';
 import { searchIgdbGame } from '../api/IgdbWrapper';
 
 class SteamGamesCrawler {
+	private steamConfig: any;
 	private manifestRegEx: string;
 	private potentialGames: PotentialGame[];
 	private playableGames: PlayableGame[];
 	private callback: Function;
 
-	public constructor(private steamConfig: any, playableGames?: PlayableGame[]) {
+	public setPlayableGames(playableGames?: PlayableGame[]): this {
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.potentialGames = [];
 		this.playableGames = playableGames || [];
+		return this;
 	}
 
-	public search(callback: Function) {
+	public search(steamConfig: any, callback: Function) {
+		this.steamConfig = steamConfig;
 		this.callback = callback;
 		this.steamConfig.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
@@ -102,13 +105,16 @@ class SteamGamesCrawler {
 	}
 }
 
+let steamGamesCrawler: SteamGamesCrawler = new SteamGamesCrawler();
+
 export function searchSteamGames(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamGamesCrawler(steamConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
-			if (error)
-				reject(error);
-			else
-				resolve(potentialGames);
-		});
+		steamGamesCrawler.setPlayableGames(playableGames)
+			.search(steamConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
+				if (error)
+					reject(error);
+				else
+					resolve(potentialGames);
+			});
 	});
 }

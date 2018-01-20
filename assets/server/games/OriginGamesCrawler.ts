@@ -12,19 +12,22 @@ import { getEnvFolder, uuidV5 } from '../../models/env';
 import { spatStr } from '../helpers';
 
 class OriginGamesCrawler {
+	private originConfig: any;
 	private regDetails: any[];
 	private potentialGames: PotentialGame[];
 	private playableGames: PlayableGame[];
 	private gamesFolder: string;
 	private callback: Function;
 
-	public constructor(private originConfig: any, playableGames?: PlayableGame[]) {
+	public setPlayableGames(playableGames?: PlayableGame[]): this {
 		this.potentialGames = [];
 		this.regDetails = [];
 		this.playableGames = playableGames || [];
+		return this;
 	}
 
-	public search(callback: Function) {
+	public search(originConfig: any, callback: Function) {
+		this.originConfig = originConfig;
 		this.callback = callback;
 
 		let xmlPath: string = path.resolve(this.originConfig.configFile.replace('%appdata%', process.env.APPDATA));
@@ -148,13 +151,16 @@ class OriginGamesCrawler {
 	}
 }
 
+let originGamesCrawler: OriginGamesCrawler = new OriginGamesCrawler();
+
 export function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new OriginGamesCrawler(originConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
-			if (error)
-				reject(error);
-			else
-				resolve(potentialGames);
-		});
+		originGamesCrawler.setPlayableGames(playableGames)
+			.search(originConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
+				if (error)
+					reject(error);
+				else
+					resolve(potentialGames);
+			});
 	});
 }

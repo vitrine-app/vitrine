@@ -1,4 +1,4 @@
-import { remote, ipcRenderer } from 'electron';
+import { remote } from 'electron';
 import { localizer } from './Localizer';
 
 function openDialog(options: any): string {

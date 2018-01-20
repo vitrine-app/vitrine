@@ -4,4 +4,5 @@
 /public/*.js*
 /games/*
 /config/vitrine_config.json
+/assets/server/api/apiKeys.json
 /github_token

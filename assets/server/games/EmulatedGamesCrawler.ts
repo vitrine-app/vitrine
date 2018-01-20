@@ -8,18 +8,21 @@ import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
 
 class EmulatedGamesCrawler {
+	private emulatedConfig: any;
 	private potentialGames: PotentialGame[];
 	private playableGames: PlayableGame[];
 	private callback: Function;
 	private romsFolders: any[];
 
-	public constructor(private emulatedConfig: any, playableGames?: PlayableGame[]) {
+	public setPlayableGames(playableGames?: PlayableGame[]): this {
 		this.potentialGames = [];
 		this.romsFolders = [];
 		this.playableGames = playableGames || [];
+		return this;
 	}
 
-	public search(callback: Function) {
+	public search(emulatedConfig: any, callback: Function) {
+		this.emulatedConfig = emulatedConfig;
 		this.callback = callback;
 		glob(`${this.emulatedConfig.romsFolder}\\*`, (error: Error, folders: string[]) => {
 			if (error) {
@@ -93,7 +96,7 @@ class EmulatedGamesCrawler {
 							let potentialGame: PotentialGame = new PotentialGame(romName, game);
 							potentialGame.source = GameSource.ROM;
 							potentialGame.commandLine = [
-								'PROGRAM',
+								emulator.path,
 								emulator.command.replace('%g', romPath)
 							];
 							this.potentialGames.push(potentialGame);
@@ -130,13 +133,16 @@ class EmulatedGamesCrawler {
 	}
 }
 
+let emulatedGamesCrawler: EmulatedGamesCrawler = new EmulatedGamesCrawler();
+
 export function searchEmulatedGames(emulatedConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new EmulatedGamesCrawler(emulatedConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
-			if (error)
-				reject(error);
-			else
-				resolve(potentialGames);
-		});
+		emulatedGamesCrawler.setPlayableGames(playableGames)
+			.search(emulatedConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
+				if (error)
+					reject(error);
+				else
+					resolve(potentialGames);
+			});
 	});
 }
