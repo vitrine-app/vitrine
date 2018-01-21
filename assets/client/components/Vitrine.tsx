@@ -13,6 +13,7 @@ import { GamesCollection } from '../../models/GamesCollection';
 import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { SettingsModal } from './SettingsModal';
+import { PlayedTimeModal } from './PlayedTimeModal';
 import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
 
@@ -175,7 +176,7 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private potentialGameToAddUpdateHandler(potentialGame: PotentialGame, gameWillBeEdited?: boolean) {
-		gameWillBeEdited = (gameWillBeEdited) ? (true) : (false);
+		gameWillBeEdited = gameWillBeEdited || false;
 		this.setState({
 			potentialGameToAdd: potentialGame,
 			gameWillBeEdited: gameWillBeEdited
@@ -184,12 +185,12 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private launchGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+	private launchGameContextClickHandler(event: any, data: any, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
 		this.launchGame(gameUuid);
 	}
 
-	private editGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+	private editGameContextClickHandler(event: any, data: any, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
 		this.state.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			this.potentialGameToAddUpdateHandler(selectedGame, true);
@@ -198,7 +199,20 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private deleteGameContextClickHandler(event: any, data: Object, target: HTMLElement) {
+	private editGamePlayTimeContextClickHandler(event: any, data: Object, target: HTMLElement) {
+		let gameUuid: string = target.children[0].id.replace('game-', '');
+		this.state.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
+			this.setState({
+				potentialGameToAdd: selectedGame
+			}, () => {
+				$('#played-time-modal').modal('show');
+			});
+		}).catch((error: Error) => {
+			return this.throwError(error);
+		});
+	}
+
+	private deleteGameContextClickHandler(event: any, data: any, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
 		ipcRenderer.send('client.remove-game', gameUuid);
 	}
@@ -301,12 +315,18 @@ export class Vitrine extends VitrineComponent {
 					settings={this.state.settings}
 					firstLaunch={this.state.firstLaunch}
 				/>
+				<PlayedTimeModal
+					editedGame={this.state.potentialGameToAdd}
+				/>
 				<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
 						{localizer.f('play')}
 					</MenuItem>
 					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>
 						{localizer.f('edit')}
+					</MenuItem>
+					<MenuItem onClick={this.editGamePlayTimeContextClickHandler.bind(this)}>
+						{localizer.f('editTimePlayed')}
 					</MenuItem>
 					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
 						{localizer.f('delete')}
