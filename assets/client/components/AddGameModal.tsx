@@ -134,7 +134,7 @@ export class AddGameModal extends VitrineComponent {
 	public componentWillReceiveProps(props: any) {
 		if (props.potentialGameToAdd) {
 			let gameToAdd: PotentialGame = props.potentialGameToAdd;
-			let [executable, args]: string[] = gameToAdd.commandLine;
+			let [executable, args]: string[] = (gameToAdd.commandLine.length > 1) ? (gameToAdd.commandLine) : ([gameToAdd.commandLine[0], '']);
 
 			this.setState({
 				isEditing: props.isEditing,
@@ -218,7 +218,7 @@ export class AddGameModal extends VitrineComponent {
 														onChange={this.dateChangeHandler.bind(this)}
 													/>
 												</div>
-											</div>
+											</div>*
 											<div className="row">
 												<div className="form-group col-md-6">
 													<label>{localizer.f('developer')}</label>

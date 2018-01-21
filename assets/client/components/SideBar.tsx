@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import { margin, padding, border, rgba } from 'css-verbose';
