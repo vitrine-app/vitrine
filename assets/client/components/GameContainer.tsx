@@ -81,8 +81,14 @@ export class GameContainer extends VitrineComponent {
 								</div>
 							</div>
 							<hr className={css(styles.selectedGameCoreHr)}/>
-							{/* TODO: Handle carriage return in game summary */}
-							<p className={css(styles.selectedGameDesc)}>{this.state.selectedGame.details.summary}</p>
+							<p className={css(styles.selectedGameDesc)}>
+								{this.state.selectedGame.details.summary.split('\n').map((section: string, index: number) =>
+									<span key={index}>
+										{section}
+										<br/>
+									</span>
+								)}
+							</p>
 						</div>
 					</div>
 					<div className="col-md-4">
