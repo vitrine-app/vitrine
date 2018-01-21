@@ -1,11 +1,12 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { app, BrowserWindow, Tray, Menu, ipcMain, screen } from 'electron';
+import { ipcMain } from 'electron';
 import { autoUpdater, UpdateCheckResult } from 'electron-updater';
 import { ProgressInfo } from 'builder-util-runtime';
 import * as rimraf from 'rimraf';
 import * as moment from 'moment';
 
+import { WindowsHandler } from './WindowsHandler';
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
@@ -21,53 +22,30 @@ import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
 import { downloadImage, isAlreadyStored, randomHashedString } from './helpers';
 
 export class VitrineServer {
-	private windowsList: any;
-	private mainEntryPoint: string;
-	private loaderEntryPoint: string;
+	private windowsHandler: WindowsHandler;
 	private emulatorsConfigFilePath: string;
-	private tray: Tray;
-	private devTools: boolean;
-	private iconPath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
-	private appQuit: boolean;
 
 	public constructor(private vitrineConfig: any, private vitrineConfigFilePath: string, configFolderPath: string) {
-		this.windowsList = {};
-		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
-		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
+		this.windowsHandler = new WindowsHandler();
 		this.emulatorsConfigFilePath = path.resolve(configFolderPath, 'emulators.json');
-		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.gameLaunched = false;
-		this.appQuit = false;
 	}
 
 	public run(prod?: boolean) {
-		this.devTools = !prod;
-		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
-			this.quitApplication();
-			return;
-		}
-		app.on('ready', this.createLoaderWindow.bind(this));
-		app.on('window-all-closed', () => {
-			if (process.platform !== 'darwin')
-				this.quitApplication();
-		});
-		app.on('activate', () => {
-			if (!this.windowsList.mainWindow)
-				this.createMainWindow();
-		});
+		this.windowsHandler.run(!prod);
 	}
 
 	public registerEvents() {
 		ipcMain.on('loader.ready', this.loaderReady.bind(this))
-			.on('loader.launch-client', this.createMainWindow.bind(this))
+			.on('loader.launch-client', () => this.windowsHandler.createMainWindow())
 			.on('loader.update-and-restart', this.updateApp.bind(this));
 
 		ipcMain.on('client.settings-asked', this.clientSettingsAsked.bind(this))
-			.on('client.ready', this.clientReady.bind(this))
-			.on('client.quit-application', this.quitApplication.bind(this))
+			.on('client.ready', () => this.windowsHandler.clientReady())// this.clientReady.bind(this))
+			.on('client.quit-application', (event: Electron.Event, mustRelaunch?: boolean) => this.windowsHandler.quitApplication(mustRelaunch))// this.quitApplication.bind(this))
 			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
 			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
 			.on('client.add-game', this.addGame.bind(this))
@@ -118,32 +96,8 @@ export class VitrineServer {
 		}
 	}
 
-	private clientReady() {
-		this.createTrayIcon();
-		this.windowsList.loaderWindow.destroy();
-		this.windowsList.mainWindow.show();
-	}
-
-	private quitApplication(event?: Electron.Event, mustRelaunch?: boolean) {
-		if (mustRelaunch)
-			app.relaunch();
-		this.appQuit = true;
-		if (this.tray)
-			this.tray.destroy();
-		app.quit();
-	}
-
 	private updateApp() {
 		autoUpdater.quitAndInstall(true, true);
-	}
-
-	private restoreAndFocus() {
-		if (this.windowsList.mainWindow) {
-			this.windowsList.mainWindow.show();
-			if (this.windowsList.mainWindow.isMinimized())
-				this.windowsList.mainWindow.restore();
-			this.windowsList.mainWindow.focus();
-		}
 	}
 
 	private fillIgdbGame(event: Electron.Event, gameId: number) {
@@ -341,68 +295,6 @@ export class VitrineServer {
 				return this.throwServerError(event, error);
 			});
 		});
-	}
-
-	private createTrayIcon() {
-		this.tray = new Tray(this.iconPath);
-		this.tray.setTitle('Vitrine');
-		this.tray.setToolTip('Vitrine');
-		this.tray.setContextMenu(Menu.buildFromTemplate([
-			{
-				label: 'Show',
-				type: 'normal',
-				click: this.restoreAndFocus.bind(this)
-			},
-			{
-				label: 'Quit',
-				type: 'normal',
-				click: this.quitApplication.bind(this)
-			}
-		]));
-		this.tray.on('double-click', this.restoreAndFocus.bind(this));
-	}
-
-	private createLoaderWindow() {
-		this.windowsList.loaderWindow = new BrowserWindow({
-			height: 300,
-			width: 500,
-			icon: this.iconPath,
-			frame: false
-		});
-		this.windowsList.loaderWindow.loadURL(this.loaderEntryPoint);
-		if (this.devTools)
-			this.windowsList.loaderWindow.webContents.openDevTools();
-	}
-
-	private createMainWindow() {
-		if (!screen)
-			return;
-		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-		this.windowsList.mainWindow = new BrowserWindow({
-			minWidth: width,
-			minHeight: height,
-			icon: this.iconPath,
-			show: false,
-			frame: false,
-			width,
-			height
-		});
-		this.windowsList.mainWindow.setMenu(null);
-		this.windowsList.mainWindow.maximize();
-		this.windowsList.mainWindow.loadURL(this.mainEntryPoint);
-		this.windowsList.mainWindow.hide();
-		if (this.devTools)
-			this.windowsList.mainWindow.webContents.openDevTools();
-
-		this.windowsList.mainWindow.on('close', (event: Event) => {
-			if (!this.appQuit) {
-				event.preventDefault();
-				this.windowsList.mainWindow.hide();
-			}
-			else
-				delete this.windowsList.mainWindow;
-		});
-
 	}
 
 	private registerGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
