@@ -115,13 +115,13 @@ export class AddGameModal extends VitrineComponent {
 		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.isEditing;
-		if (gameInfos.cover && !gameInfos.cover.startsWith('http'))
+		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
-		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http'))
+		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
 			gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
 
 		if (this.state.isEditing)
-			ipcRenderer.send('client.edit-game',this.props.potentialGameToAdd.uuid, gameInfos);
+			ipcRenderer.send('client.edit-game', this.props.potentialGameToAdd.uuid, gameInfos);
 		else
 			ipcRenderer.send('client.add-game', gameInfos);
 	}

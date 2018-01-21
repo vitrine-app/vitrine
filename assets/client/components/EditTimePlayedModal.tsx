@@ -6,7 +6,7 @@ import { NumberPicker } from './NumberPicker';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
-export class PlayedTimeModal extends VitrineComponent {
+export class EditTimePlayedModal extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
 

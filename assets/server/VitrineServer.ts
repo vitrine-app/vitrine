@@ -18,7 +18,7 @@ import { searchOriginGames } from './games/OriginGamesCrawler';
 import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
-import { downloadImage, randomHashedString } from './helpers';
+import { downloadImage, isAlreadyStored, randomHashedString } from './helpers';
 
 export class VitrineServer {
 	private windowsList: any;
@@ -173,7 +173,12 @@ export class VitrineServer {
 		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
 			editedGame.name = gameForm.name;
 			editedGame.commandLine = [];
-			editedGame.details = gameForm;
+			let { backgroundScreen, cover } = editedGame.details;
+			editedGame.details = {
+				...gameForm,
+				backgroundScreen,
+				cover
+			};
 
 			this.registerGame(event, editedGame, gameForm, true);
 		}).catch((error: Error) => {
@@ -403,52 +408,62 @@ export class VitrineServer {
 		delete game.details.executable;
 		delete game.details.arguments;
 
+		if (!editing && game.source === GameSource.STEAM) {
+			getGamePlayTime(this.vitrineConfig.steam, game.details.steamId).then((timePlayed: number) => {
+				game.timePlayed = timePlayed;
+				this.ensureRegisteredGame(event, game, gameForm, editing);
+			}).catch((error: Error) => {
+				return this.throwServerError(event, error);
+			});
+		}
+		else
+			this.ensureRegisteredGame(event, game, gameForm, editing);
+	}
+
+	private ensureRegisteredGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
 		let gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
-
 		if (!editing && fs.existsSync(configFilePath))
 			return;
 		fs.ensureDirSync(gameDirectory);
 
-		let gameHash: string = randomHashedString(8);
-		let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
-		let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
-		let backgroundScreen: string = game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge');
+		if (!isAlreadyStored(game.details.backgroundScreen, gameForm.backgroundScreen) || !isAlreadyStored(game.details.cover, gameForm.cover)) {
+			let gameHash: string = randomHashedString(8);
+			let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
+			let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
 
-		let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (backgroundScreen);
-		let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
-		this.downloadGamePictures(event, configFilePath, game, {backgroundUrl, backgroundPath, coverUrl, coverPath}, editing);
+			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
+			let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
+			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}, editing).then(() => {
+				this.sendRegisteredGame(event, game, configFilePath, editing);
+			}).catch((error: Error) => this.throwServerError(event, error));
+		}
+		else
+			this.sendRegisteredGame(event, game, configFilePath, editing);
 	}
 
-	private downloadGamePictures(event: Electron.Event, configFilePath: string, game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any, editing: boolean) {
-		downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
-			game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
-			downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
-				game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
-				if (game.details.steamId)
-					delete game.details.screenshots;
-				else
-					delete game.details.background;
+	private downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any, editing: boolean): Promise<any> {
+		return new Promise((resolve, reject) => {
+			downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
+				game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
+				downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
+					game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
+					if (game.details.steamId)
+						delete game.details.screenshots;
+					else
+						delete game.details.background;
 
-				if (!editing && game.source === GameSource.STEAM) {
-					getGamePlayTime(this.vitrineConfig.steam, game).then((timedGame: PlayableGame) => {
-						this.handleRegisteredGame(event, timedGame, configFilePath, editing);
-					}).catch((error: Error) => {
-						return this.throwServerError(event, error);
-					});
-				}
-				else
-					this.handleRegisteredGame(event, game, configFilePath, editing);
-
+					resolve();
+				}).catch((error: Error) => {
+					reject(error);
+				});
 			}).catch((error: Error) => {
-				return this.throwServerError(event, error);
+				reject(error);
 			});
-		}).catch((error: Error) => {
-			return this.throwServerError(event, error);
 		});
 	}
 
-	private handleRegisteredGame(event: any, game: PlayableGame, configFilePath: string, editing: boolean) {
+	private sendRegisteredGame(event: any, game: PlayableGame, configFilePath: string, editing: boolean) {
 		fs.outputJSON(configFilePath, game , {
 			spaces: 2
 		}).then(() => {

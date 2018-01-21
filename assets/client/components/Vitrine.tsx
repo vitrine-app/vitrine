@@ -13,7 +13,7 @@ import { GamesCollection } from '../../models/GamesCollection';
 import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { SettingsModal } from './SettingsModal';
-import { PlayedTimeModal } from './PlayedTimeModal';
+import { EditTimePlayedModal } from './EditTimePlayedModal';
 import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
 
@@ -315,7 +315,7 @@ export class Vitrine extends VitrineComponent {
 					settings={this.state.settings}
 					firstLaunch={this.state.firstLaunch}
 				/>
-				<PlayedTimeModal
+				<EditTimePlayedModal
 					editedGame={this.state.potentialGameToAdd}
 				/>
 				<ContextMenu id="sidebar-games-context-menu">

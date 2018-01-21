@@ -81,6 +81,7 @@ export class GameContainer extends VitrineComponent {
 								</div>
 							</div>
 							<hr className={css(styles.selectedGameCoreHr)}/>
+							{/* TODO: Handle carriage return in game summary */}
 							<p className={css(styles.selectedGameDesc)}>{this.state.selectedGame.details.summary}</p>
 						</div>
 					</div>

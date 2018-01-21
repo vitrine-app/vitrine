@@ -14,27 +14,26 @@ class SteamPlayTimeWrapper {
 		});
 	}
 
-	public getOwnedGames(steamConfig: any, game: PlayableGame, callback: Function) {
+	public getOwnedGames(steamConfig: any, steamId: number, callback: Function) {
 		this.client.getOwnedGames({
 			steamid: steamConfig.userId,
 			callback: (error: Error, data: any) => {
 				if (error)
 					callback(error, null);
 				else
-					this.handleGames(game, data.response.games, callback);
+					this.handleGames(steamId, data.response.games, callback);
 			}
 		});
 	}
 
-	private handleGames(game: PlayableGame, timedGames: any[], callback: Function) {
+	private handleGames(steamId: number, timedGames: any[], callback: Function) {
 		let found: boolean = false;
 		let counter: number = 0;
 
 		timedGames.forEach((timedGame: any) => {
-			if (game.details.steamId == timedGame.appid) {
+			if (steamId == timedGame.appid) {
 				found = true;
-				game.timePlayed = timedGame.playtime_forever * 60;
-				callback(null, game);
+				callback(null, timedGame.playtime_forever * 60);
 			}
 			counter++;
 			if (counter === timedGame.length && !found)
@@ -45,13 +44,13 @@ class SteamPlayTimeWrapper {
 
 let steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
 
-export function getGamePlayTime(steamConfig: any, game: PlayableGame): Promise<any> {
+export function getGamePlayTime(steamConfig: any, steamId: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		steamPlayTimeWrapper.getOwnedGames(steamConfig, game, (error: Error, timedGame: PlayableGame) => {
+		steamPlayTimeWrapper.getOwnedGames(steamConfig, steamId, (error: Error, timePlayed: number) => {
 			if (error)
 				reject(error);
 			else
-				resolve(timedGame);
+				resolve(timePlayed);
 		});
 	});
 }
