@@ -218,7 +218,7 @@ export class AddGameModal extends VitrineComponent {
 														onChange={this.dateChangeHandler.bind(this)}
 													/>
 												</div>
-											</div>*
+											</div>
 											<div className="row">
 												<div className="form-group col-md-6">
 													<label>{localizer.f('developer')}</label>
