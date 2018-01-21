@@ -73,10 +73,13 @@ export class Vitrine extends VitrineComponent {
 						selectedGame: game
 					}, () => {
 						$('#add-game-modal').modal('hide');
+						$('#edit-time-played-modal').modal('hide');
 					});
 				}
-				else
+				else {
 					$('#add-game-modal').modal('hide');
+					$('#edit-time-played-modal').modal('hide');
+				}
 			});
 		});
 	}
@@ -205,7 +208,7 @@ export class Vitrine extends VitrineComponent {
 			this.setState({
 				potentialGameToAdd: selectedGame
 			}, () => {
-				$('#played-time-modal').modal('show');
+				$('#edit-time-played-modal').modal('show');
 			});
 		}).catch((error: Error) => {
 			return this.throwError(error);

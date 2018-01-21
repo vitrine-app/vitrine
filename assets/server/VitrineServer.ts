@@ -72,6 +72,7 @@ export class VitrineServer {
 			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
 			.on('client.add-game', this.addGame.bind(this))
 			.on('client.edit-game', this.editGame.bind(this))
+			.on('client.edit-game-time-played', this.editGameTimePlayed.bind(this))
 			.on('client.launch-game', this.launchGame.bind(this))
 			.on('client.remove-game', this.removeGame.bind(this))
 			.on('client.refresh-potential-games', this.findPotentialGames.bind(this))
@@ -181,6 +182,18 @@ export class VitrineServer {
 			};
 
 			this.registerGame(event, editedGame, gameForm, true);
+		}).catch((error: Error) => {
+			return this.throwServerError(event, error);
+		});
+	}
+
+	private editGameTimePlayed(event: Electron.Event, gameUuid: string, timePlayed: number) {
+		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
+			let gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
+			let configFilePath: string = path.resolve(gameDirectory, 'config.json');
+
+			editedGame.timePlayed = timePlayed;
+			this.sendRegisteredGame(event, editedGame, configFilePath, true);
 		}).catch((error: Error) => {
 			return this.throwServerError(event, error);
 		});
@@ -434,7 +447,7 @@ export class VitrineServer {
 
 			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
 			let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
-			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}, editing).then(() => {
+			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}).then(() => {
 				this.sendRegisteredGame(event, game, configFilePath, editing);
 			}).catch((error: Error) => this.throwServerError(event, error));
 		}
@@ -442,7 +455,7 @@ export class VitrineServer {
 			this.sendRegisteredGame(event, game, configFilePath, editing);
 	}
 
-	private downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any, editing: boolean): Promise<any> {
+	private downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
 		return new Promise((resolve, reject) => {
 			downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
 				game.details.cover = (isStored) ? (coverPath) : (game.details.cover);

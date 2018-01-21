@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from './VitrineComponent';
@@ -32,31 +33,24 @@ export class EditTimePlayedModal extends VitrineComponent {
 		}
 	}
 
-	private changeHoursHandler(value: number) {
+	private changeTimeHandler(field: string, value: number) {
 		this.setState({
-			hours: value
+			[field]: value
 		});
 	}
 
-	private changeMinutesHandler(value: number) {
-		this.setState({
-			minutes: value
-		});
-	}
-
-	private changeSecondsHandler(value: number) {
-		this.setState({
-			seconds: value
-		});
+	private submitBtnClickHandler() {
+		let timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
+		ipcRenderer.send('client.edit-game-time-played', this.props.editedGame.uuid, timePlayed);
 	}
 
 	public render(): JSX.Element {
 		return (
-			<div id="played-time-modal" className={`modal fade ${css(styles.modal)}`} role="dialog">
+			<div id="edit-time-played-modal" className={`modal fade ${css(styles.modal)}`} role="dialog">
 				<div className="modal-dialog modal-sm">
 					<div className="modal-content">
 						<div className="modal-header">
-							<CloseIcon onClick={'#played-time-modal'}/>
+							<CloseIcon onClick={'#edit-time-played-modal'}/>
 							<h4 className="modal-title">{(this.props.editedGame) ? (this.props.editedGame.name) : ('')}</h4>
 						</div>
 						<div className={`modal-body`}>
@@ -69,7 +63,7 @@ export class EditTimePlayedModal extends VitrineComponent {
 										value={this.state.hours}
 										name="hours"
 										placeholder={localizer.f('hours')}
-										onChange={this.changeHoursHandler.bind(this)}
+										onChange={(value: number) => this.changeTimeHandler('hours', value)}
 									/>
 								</div>
 								<div className="form-group col-md-4">
@@ -80,7 +74,7 @@ export class EditTimePlayedModal extends VitrineComponent {
 										value={this.state.minutes}
 										name="minutes"
 										placeholder={localizer.f('minutes')}
-										onChange={this.changeMinutesHandler.bind(this)}
+										onChange={(value: number) => this.changeTimeHandler('minutes', value)}
 									/>
 								</div>
 								<div className="form-group col-md-4">
@@ -91,13 +85,16 @@ export class EditTimePlayedModal extends VitrineComponent {
 										value={this.state.seconds}
 										name="seconds"
 										placeholder={localizer.f('seconds')}
-										onChange={this.changeSecondsHandler.bind(this)}
+										onChange={(value: number) => this.changeTimeHandler('seconds', value)}
 									/>
 								</div>
 							</div>
 						</div>
 						<div className="modal-footer">
-							<button className="btn btn-primary">
+							<button
+								className="btn btn-primary"
+								onClick={this.submitBtnClickHandler.bind(this)}
+							>
 								{localizer.f('confirm')}
 							</button>
 						</div>
