@@ -400,7 +400,7 @@ export class VitrineServer {
 			game.commandLine.push(gameForm.arguments);
 		game.details.rating = parseInt(game.details.rating);
 		game.details.genres = game.details.genres.split(', ');
-		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix();
+		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
 		if (!editing && game.source == GameSource.STEAM)
 			game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
 		delete game.details.name;
