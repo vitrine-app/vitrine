@@ -48,21 +48,15 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 
 			if (this.isGameAlreadyAdded(gameManifest.name)) {
 				counter++;
-				if (counter === array.length) {
-					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-					potentialGames.games = this.potentialGames;
-					this.callback(null, potentialGames);
-				}
+				if (counter === array.length)
+					this.sendResults();
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (gameManifest.appid == playableGame.details.steamId) {
 					counter++;
-					if (counter === array.length) {
-						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-						potentialGames.games = this.potentialGames;
-						this.callback(null, potentialGames);
-					}
+					if (counter === array.length)
+						this.sendResults();
 					return;
 				}
 			}
@@ -78,11 +72,8 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 				potentialGame.details.steamId = parseInt(gameManifest.appid);
 				this.potentialGames.push(potentialGame);
 				counter++;
-				if (counter === array.length) {
-					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-					potentialGames.games = this.potentialGames;
-					this.callback(null, potentialGames);
-				}
+				if (counter === array.length)
+					this.sendResults();
 			}).catch((error: Error) => {
 				this.callback(error, null);
 			});

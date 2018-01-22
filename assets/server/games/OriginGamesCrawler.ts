@@ -76,21 +76,15 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 
 			if (this.isGameAlreadyAdded(gameName)) {
 				counter++;
-				if (counter === files.length) {
-					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-					potentialGames.games = this.potentialGames;
-					this.callback(null, potentialGames);
-				}
+				if (counter === files.length)
+					this.sendResults();
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (spatStr(gameName) === spatStr(playableGame.name)) {
 					counter++;
-					if (counter === files.length) {
-						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-						potentialGames.games = this.potentialGames;
-						this.callback(null, potentialGames);
-					}
+					if (counter === files.length)
+						this.sendResults();
 					return;
 				}
 			}
@@ -109,11 +103,8 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 					];
 					this.potentialGames.push(potentialGame);
 					counter++;
-					if (counter === files.length) {
-						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-						potentialGames.games = this.potentialGames;
-						this.callback(null, potentialGames);
-					}
+					if (counter === files.length)
+						this.sendResults();
 				}).catch((error: Error) => {
 					this.callback(error, null);
 				});

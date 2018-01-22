@@ -4,6 +4,7 @@ import * as path from 'path';
 import { PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { getEnvFolder, uuidV5 } from '../../models/env';
+import { GamesCollection } from '../../models/GamesCollection';
 
 export abstract class PotentialGamesCrawler {
 	protected potentialGames: PotentialGame[];
@@ -19,6 +20,11 @@ export abstract class PotentialGamesCrawler {
 	public search(moduleConfig: any, callback: Function) {
 		this.moduleConfig = moduleConfig;
 		this.callback = callback;
+	}
+
+	protected sendResults() {
+		let potentialGames: GamesCollection<PotentialGame> = new GamesCollection(this.potentialGames);
+		this.callback(null, potentialGames);
 	}
 
 	protected isGameAlreadyAdded(name: string): boolean {

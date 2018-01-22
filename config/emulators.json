@@ -2,6 +2,7 @@
   {
     "active": false,
     "command": "\"%g\"",
+    "glob": "*.nes",
     "name": "Nestopia",
     "path": "",
     "platforms": [
@@ -12,24 +13,27 @@
     "active": false,
     "command": "-m \"%g\"",
     "name": "ZSNES",
+    "glob": "*.sfc",
     "path": "",
     "platforms": [
       1
     ]
   },
   {
-    "active": true,
+    "active": false,
     "command": "\"%g\"",
     "name": "Project64",
+    "glob": "*.n64",
     "path": "C:\\Program Files (x86)\\Project64 2.3\\Project64.exe",
     "platforms": [
       2
     ]
   },
   {
-    "active": true,
+    "active": false,
     "command": "--batch --exec=\"%g\"",
     "name": "Dolphin",
+    "glob": "*.iso",
     "path": "C:\\Program Files\\Dolphin\\Dolphin.exe",
     "platforms": [
       3,
@@ -37,10 +41,11 @@
     ]
   },
   {
-    "active": false,
+    "active": true,
     "command": "\"%g\" -f",
+    "glob": "*.gba",
     "name": "mGBA",
-    "path": "",
+    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
     "platforms": [
       4
     ]
@@ -49,6 +54,7 @@
     "active": false,
     "command": "\"%g\"",
     "name": "DeSmuME",
+    "glob": "*.nds",
     "path": "",
     "platforms": [
       5
@@ -58,16 +64,18 @@
     "active": false,
     "command": "\"%g\"",
     "name": "Citra",
+    "glob": "*.3ds",
     "path": "",
     "platforms": [
       7
     ]
   },
   {
-    "active": false,
+    "active": true,
     "command": "-g \"%g\" -f",
     "name": "Cemu",
-    "path": "",
+    "glob": "*/code/*.rpx",
+    "path": "C:\\Program Files (x86)\\Cemu\\Cemu.exe",
     "platforms": [
       8
     ]
@@ -76,6 +84,7 @@
     "active": false,
     "command": "-nogui -loadiso \"%g\"",
     "name": "ePSXe",
+    "glob": "*.bin",
     "path": "",
     "platforms": [
       14
