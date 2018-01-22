@@ -279,9 +279,7 @@ export class VitrineServer {
 	}
 
 	private registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
-		game.commandLine = [
-			gameForm.executable
-		];
+		game.commandLine = [ gameForm.executable ];
 		if (gameForm.arguments)
 			game.commandLine.push(gameForm.arguments);
 		game.details.rating = parseInt(game.details.rating);

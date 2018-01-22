@@ -98,9 +98,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 					delete game.name;
 					let potentialGame: PotentialGame = new PotentialGame(gameName, game);
 					potentialGame.source = GameSource.ORIGIN;
-					potentialGame.commandLine = [
-						path.resolve(gamePath)
-					];
+					potentialGame.commandLine = [ path.resolve(gamePath) ];
 					this.potentialGames.push(potentialGame);
 					counter++;
 					if (counter === files.length)
