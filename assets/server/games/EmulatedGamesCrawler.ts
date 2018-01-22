@@ -1,30 +1,25 @@
 import * as path from 'path';
 import * as glob from 'glob';
 
+import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
 
-class EmulatedGamesCrawler {
-	private emulatedConfig: any;
-	private potentialGames: PotentialGame[];
-	private playableGames: PlayableGame[];
-	private callback: Function;
+class EmulatedGamesCrawler extends PotentialGamesCrawler {
 	private romsFolders: any[];
 
 	public setPlayableGames(playableGames?: PlayableGame[]): this {
-		this.potentialGames = [];
+		super.setPlayableGames(playableGames);
 		this.romsFolders = [];
-		this.playableGames = playableGames || [];
 		return this;
 	}
 
-	public search(emulatedConfig: any, callback: Function) {
-		this.emulatedConfig = emulatedConfig;
-		this.callback = callback;
-		glob(`${this.emulatedConfig.romsFolder}\\*`, (error: Error, folders: string[]) => {
+	public search(moduleConfig: any, callback: Function) {
+		super.search(moduleConfig, callback);
+		glob(`${this.moduleConfig.romsFolder}\\*`, (error: Error, folders: string[]) => {
 			if (error) {
 				this.callback(error, null);
 				return;
@@ -32,14 +27,14 @@ class EmulatedGamesCrawler {
 			let counter: number = 0;
 			folders.forEach((folder: string) => {
 				let secondCounter: number = 0;
-				this.emulatedConfig.platforms.forEach((platforms: any) => {
+				this.moduleConfig.platforms.forEach((platforms: any) => {
 					if (platforms.folder === path.basename(folder))
 						this.romsFolders.push({
 							platforms,
 							folder
 						});
 					secondCounter++;
-					if (secondCounter === this.emulatedConfig.platforms.length) {
+					if (secondCounter === this.moduleConfig.platforms.length) {
 						counter++;
 						if (counter === folders.length) {
 							this.analyzeFolders();
@@ -121,7 +116,7 @@ class EmulatedGamesCrawler {
 	private getEmulator(romPlatform: any, callback: Function) {
 		let counter: number = 0;
 		let found: boolean = false;
-		this.emulatedConfig.emulators.forEach((emulator: any) => {
+		this.moduleConfig.emulators.forEach((emulator: any) => {
 			if (emulator.platforms.indexOf(romPlatform.id) !== -1) {
 				callback(null, emulator);
 				found = true;
