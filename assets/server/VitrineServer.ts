@@ -131,7 +131,6 @@ export class VitrineServer {
 				backgroundScreen,
 				cover
 			};
-
 			this.registerGame(editedGame, gameForm, true);
 		}).catch((error: Error) => this.throwServerError(error));
 	}
@@ -153,7 +152,6 @@ export class VitrineServer {
 			this.gameLaunched = true;
 			launchGame(launchingGame).then((secondsPlayed: number) => {
 				this.gameLaunched = false;
-				console.log('You played', secondsPlayed, 'seconds.');
 				launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
 				this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
 			}).catch((error: Error) => {

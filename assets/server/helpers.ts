@@ -42,25 +42,29 @@ export function downloadImage(src: string, dest: string): Promise<any> {
 				let fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
 				deleteFiles(fileGlob, dest).then(() => {
 					resolve(true);
-				}).catch((error: Error) => {
-					reject(error);
-				});
-			}).catch((error: Error) => {
-				reject(error);
-			});
+				}).catch((error: Error) => reject(error));
+			}).catch((error: Error) => reject(error));
 		}
 		else {
 			let filename: string = dest.split('\\').pop();
 			dest = dest.substring(0, dest.indexOf(filename));
+			let fileDownloaded: boolean = false;
 			downloadFile(src, {
 				directory: dest,
 				filename: filename
 			}, (error: Error) => {
+				fileDownloaded = true;
 				if (error)
 					reject(error);
 				else
 					resolve(true);
 			});
+			setTimeout(() => {
+				if (!fileDownloaded) {
+					console.log('timeout.');
+					resolve(false);
+				}
+			}, 10000);
 		}
 	});
 }
