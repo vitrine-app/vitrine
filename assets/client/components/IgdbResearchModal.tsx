@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ipcRenderer, shell } from 'electron';
+import { shell } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 
@@ -70,7 +70,7 @@ export class IgdbResearchModal extends VitrineComponent {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('server.send-igdb-searches', (event: Electron.Event, research: string, researches: any[]) => {
+		serverListener.listen('send-igdb-searches', (research: string, researches: any[]) => {
 			this.setState({
 				loading: false,
 				research: research,

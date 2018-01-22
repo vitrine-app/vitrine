@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
@@ -36,7 +35,7 @@ export class Vitrine extends VitrineComponent {
 		};
 	}
 
-	private addPlayableGames(event: Electron.Event, games: PlayableGame[]) {
+	private addPlayableGames(games: PlayableGame[]) {
 		let firstTime: boolean = this.state.playableGames.games.length === 0;
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.addGames(new GamesCollection<PlayableGame>(games), () => {
@@ -51,7 +50,7 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private addPlayableGame(event: Electron.Event, game: PlayableGame) {
+	private addPlayableGame(game: PlayableGame) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.addGame(game);
 		this.setState({
@@ -63,7 +62,7 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private editPlayableGame(event: Electron.Event, game: PlayableGame) {
+	private editPlayableGame(game: PlayableGame) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.editGame(game, () => {
 			this.setState({
@@ -85,7 +84,7 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private removePlayableGame(event: Electron.Event, gameUuid: string) {
+	private removePlayableGame(gameUuid: string) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.removeGame(gameUuid, (error, game: PlayableGame, index: number) => {
 			if (error)
@@ -106,7 +105,7 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private addPotentialGames(event: Electron.Event, potentialGames: PotentialGame[]) {
+	private addPotentialGames(potentialGames: PotentialGame[]) {
 		this.setState({
 			potentialGames: new GamesCollection<PotentialGame>(potentialGames),
 			refreshingGames: false
@@ -126,7 +125,7 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private stopGame(event: Electron.Event, gameUuid: string, totalTimePlayed: number) {
+	private stopGame(gameUuid: string, totalTimePlayed: number) {
 		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
 		currentPlayableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			selectedGame.timePlayed = totalTimePlayed;
@@ -142,7 +141,7 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private settingsUpdated(event: Event, settings: any) {
+	private settingsUpdated(settings: any) {
 		this.setState({
 			settings
 		}, () => {
@@ -155,7 +154,7 @@ export class Vitrine extends VitrineComponent {
 		});
 	}
 
-	private serverError(event: Event, errorName: string, errorStack: string) {
+	private serverError(errorName: string, errorStack: string) {
 		let error: Error = new Error(errorName);
 		error.stack = errorStack;
 		error.name = errorName;
@@ -275,14 +274,14 @@ export class Vitrine extends VitrineComponent {
 			});
 		}
 
-		ipcRenderer.on('server.add-playable-games', this.addPlayableGames.bind(this))
-			.on('server.add-playable-game', this.addPlayableGame.bind(this))
-			.on('server.edit-playable-game', this.editPlayableGame.bind(this))
-			.on('server.remove-playable-game', this.removePlayableGame.bind(this))
-			.on('server.add-potential-games', this.addPotentialGames.bind(this))
-			.on('server.stop-game', this.stopGame.bind(this))
-			.on('server.settings-updated', this.settingsUpdated.bind(this))
-			.on('server.error', this.serverError.bind(this));
+		serverListener.listen('add-playable-games', this.addPlayableGames.bind(this))
+			.listen('add-playable-game', this.addPlayableGame.bind(this))
+			.listen('edit-playable-game', this.editPlayableGame.bind(this))
+			.listen('remove-playable-game', this.removePlayableGame.bind(this))
+			.listen('add-potential-games', this.addPotentialGames.bind(this))
+			.listen('stop-game', this.stopGame.bind(this))
+			.listen('settings-updated', this.settingsUpdated.bind(this))
+			.listen('error', this.serverError.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
 		window.addEventListener('gamepadconnected', (e: GamepadEvent) => {

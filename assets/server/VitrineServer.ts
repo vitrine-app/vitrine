@@ -148,8 +148,6 @@ export class VitrineServer {
 
 	private launchGame(gameUuid: string) {
 		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
-			if (launchingGame.uuid !== uuidV5(launchingGame.name))
-				return this.throwServerError(new Error('Hashed codes don\'t match. Your game is probably corrupted.'));
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;

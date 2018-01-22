@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as DateTime from 'react-datetime';
-import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
 import { border, rgb, rgba } from 'css-verbose';
@@ -42,7 +41,7 @@ export class AddGameModal extends VitrineComponent {
 		this.state = this.emptyState;
 	}
 
-	private fillIgdbGame(event: Electron.Event, gameInfos: any) {
+	private fillIgdbGame(gameInfos: any) {
 		$('#igdb-research-modal').modal('hide');
 		this.setState({
 			name: gameInfos.name,
@@ -129,7 +128,7 @@ export class AddGameModal extends VitrineComponent {
 
 	public componentDidMount() {
 		$('#add-game-modal').on('hidden.bs.modal', this.hideModalHandler.bind(this));
-		ipcRenderer.on('server.send-igdb-game', this.fillIgdbGame.bind(this));
+		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this));
 	}
 
 	public componentWillReceiveProps(props: any) {

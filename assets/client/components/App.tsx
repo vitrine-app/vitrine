@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { remote, ipcRenderer } from 'electron';
+import { remote } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
@@ -50,7 +50,7 @@ export class App extends React.Component<null, any> {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('server.init-settings', (event: Electron.Event, settings: any) => {
+		serverListener.listen('init-settings', (settings: any) => {
 			this.settings = settings;
 			this.setState({
 				settingsReceived: true
