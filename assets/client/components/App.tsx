@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { remote, ipcRenderer } from 'electron';
+import { remote } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
+import { serverListener } from '../ServerListener';
 import { Vitrine } from './Vitrine';
 import { localizer } from '../Localizer';
 import { getEnvFolder } from '../../models/env';
@@ -49,15 +50,15 @@ export class App extends React.Component<null, any> {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('server.init-settings', (event: Electron.Event, settings: any) => {
+		serverListener.listen('init-settings', (settings: any) => {
 			this.settings = settings;
 			this.setState({
 				settingsReceived: true
 			}, () => {
-				ipcRenderer.send('client.ready');
+				serverListener.send('ready');
 			});
 		});
-		ipcRenderer.send('client.settings-asked');
+		serverListener.send('settings-asked');
 	}
 
 	public render(): JSX.Element {

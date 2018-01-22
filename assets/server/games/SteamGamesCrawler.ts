@@ -2,32 +2,29 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
+import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 import { AcfParser } from '../api/AcfParser';
+import { searchIgdbGame } from '../api/IgdbWrapper';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
-import { getEnvFolder, uuidV5 } from '../../models/env';
-import { searchIgdbGame } from '../api/IgdbWrapper';
 
-class SteamGamesCrawler {
+class SteamGamesCrawler extends PotentialGamesCrawler {
 	private manifestRegEx: string;
-	private potentialGames: PotentialGame[];
-	private playableGames: PlayableGame[];
-	private callback: Function;
 
-	public constructor(private steamConfig: any, playableGames?: PlayableGame[]) {
+	public setPlayableGames(playableGames?: PlayableGame[]): this {
+		super.setPlayableGames(playableGames);
 		this.manifestRegEx = 'appmanifest_*.acf';
-		this.potentialGames = [];
-		this.playableGames = (playableGames) ? (playableGames) : ([]);
+		return this;
 	}
 
-	public search(callback: Function) {
-		this.callback = callback;
-		this.steamConfig.gamesFolders.forEach((folder) => {
+	public search(moduleConfig: any, callback: Function) {
+		super.search(moduleConfig, callback);
+		this.moduleConfig.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
 
 			if (folder.startsWith('~')) {
-				gameFolder = path.resolve(this.steamConfig.installFolder, folder.substr(1), this.manifestRegEx);
+				gameFolder = path.resolve(this.moduleConfig.installFolder, folder.substr(1), this.manifestRegEx);
 			}
 			else
 				gameFolder = path.resolve(folder, this.manifestRegEx);
@@ -51,21 +48,15 @@ class SteamGamesCrawler {
 
 			if (this.isGameAlreadyAdded(gameManifest.name)) {
 				counter++;
-				if (counter === array.length) {
-					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-					potentialGames.games = this.potentialGames;
-					this.callback(null, potentialGames);
-				}
+				if (counter === array.length)
+					this.sendResults();
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (gameManifest.appid == playableGame.details.steamId) {
 					counter++;
-					if (counter === array.length) {
-						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-						potentialGames.games = this.potentialGames;
-						this.callback(null, potentialGames);
-					}
+					if (counter === array.length)
+						this.sendResults();
 					return;
 				}
 			}
@@ -75,40 +66,31 @@ class SteamGamesCrawler {
 				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				potentialGame.source = GameSource.STEAM;
 				potentialGame.commandLine = [
-					path.resolve(this.steamConfig.installFolder, 'steam.exe'),
-					this.steamConfig.launchCommand.replace('%id', gameManifest.appid)
+					path.resolve(this.moduleConfig.installFolder, 'steam.exe'),
+					this.moduleConfig.launchCommand.replace('%id', gameManifest.appid)
 				];
 				potentialGame.details.steamId = parseInt(gameManifest.appid);
 				this.potentialGames.push(potentialGame);
 				counter++;
-				if (counter === array.length) {
-					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-					potentialGames.games = this.potentialGames;
-					this.callback(null, potentialGames);
-				}
+				if (counter === array.length)
+					this.sendResults();
 			}).catch((error: Error) => {
 				this.callback(error, null);
 			});
 		});
 	}
-
-	private isGameAlreadyAdded(name: string): boolean {
-		let gameUuid: string = uuidV5(name);
-
-		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
-		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
-
-		return fs.existsSync(configFilePath);
-	}
 }
+
+let steamGamesCrawler: SteamGamesCrawler = new SteamGamesCrawler();
 
 export function searchSteamGames(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new SteamGamesCrawler(steamConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
-			if (error)
-				reject(error);
-			else
-				resolve(potentialGames);
-		});
+		steamGamesCrawler.setPlayableGames(playableGames)
+			.search(steamConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
+				if (error)
+					reject(error);
+				else
+					resolve(potentialGames);
+			});
 	});
 }

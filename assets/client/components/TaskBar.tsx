@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ipcRenderer, remote, BrowserWindow } from 'electron';
+import { BrowserWindow, remote } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { border, padding, rgba } from 'css-verbose';
 
@@ -9,6 +9,8 @@ import { MinimizeIcon } from './icons/MinimizeIcon';
 import { MaximizeIcon } from './icons/MaximizeIcon';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
+
+import { faPlus, faSyncAlt, faCogs } from '@fortawesome/fontawesome-free-solid';
 
 export class TaskBar extends VitrineComponent {
 	private currentWindow: BrowserWindow;
@@ -40,21 +42,22 @@ export class TaskBar extends VitrineComponent {
 					<div className="row">
 						<div className="col-md-4">
 							<Button
-								iconName={'plus'}
+								icon={faPlus}
 								tooltip={localizer.f('addGameLabel')}
 								onClick='#add-game-modal'
 							/>
 						</div>
 						<div className="col-md-4">
 							<Button
-								iconName={(this.props.refreshingGames) ? ('refresh fa-spin') : ('refresh')}
+								icon={faSyncAlt}
+								spin={this.props.refreshingGames}
 								tooltip={localizer.f('refreshLabel')}
 								onClick={this.props.refreshBtnCallback}
 							/>
 						</div>
 						<div className="col-md-4">
 							<Button
-								iconName={'cogs'}
+								icon={faCogs}
 								tooltip={localizer.f('settings')}
 								onClick='#settings-modal'
 							/>

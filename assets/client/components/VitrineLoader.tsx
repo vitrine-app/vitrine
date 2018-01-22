@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 import { ProgressInfo } from 'builder-util-runtime';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
+import { loaderServerListener } from '../ServerListener';
+
+import { faCog } from '@fortawesome/fontawesome-free-solid';
 import * as vitrineIcon from '../images/vitrine.ico';
 
 export class VitrineLoader extends React.Component<null, any> {
@@ -19,17 +22,17 @@ export class VitrineLoader extends React.Component<null, any> {
 	}
 
 	public componentDidMount() {
-		ipcRenderer.on('loaderServer.update-found', this.startUpdateDownload.bind(this))
-			.on('loaderServer.update-progress', this.updateProgress.bind(this))
-			.on('loaderServer.no-update-found', this.launchClient.bind(this));
+		loaderServerListener.listen('update-found', this.startUpdateDownload.bind(this))
+			.listen('update-progress', this.updateProgress.bind(this))
+			.listen('no-update-found', this.launchClient.bind(this));
 
-		ipcRenderer.send('loader.ready');
+		loaderServerListener.send('ready');
 		this.setState({
 			displayedInfo: 'Searching for updates...'
 		});
 	}
 
-	private startUpdateDownload(event: Electron.Event, lastUpdateVersion: string) {
+	private startUpdateDownload(lastUpdateVersion: string) {
 		this.lastUpdateVersion = lastUpdateVersion;
 		this.setState({
 			displayedInfo: `Updating to ${this.lastUpdateVersion}...`,
@@ -37,7 +40,7 @@ export class VitrineLoader extends React.Component<null, any> {
 		});
 	}
 
-	private updateProgress(event: Electron.Event, progress: ProgressInfo) {
+	private updateProgress(progress: ProgressInfo) {
 		let updateDownloadProgress: number = Math.round(progress.percent);
 		let displayedInfo: string = (updateDownloadProgress < 100)
 			? (`Updating to ${this.lastUpdateVersion}... | ${updateDownloadProgress.percents()}`)
@@ -48,11 +51,11 @@ export class VitrineLoader extends React.Component<null, any> {
 		});
 	}
 
-	private launchClient(event: Electron.Event) {
+	private launchClient() {
 		this.setState({
 			displayedInfo: 'Launching...'
 		}, () => {
-			event.sender.send('loader.launch-client');
+			loaderServerListener.send('launch-client');
 		});
 	}
 
@@ -70,8 +73,7 @@ export class VitrineLoader extends React.Component<null, any> {
 					className={css(styles.infosSpan)}
 					style={{ display: (this.state.displayedInfo) ? ('inline') : ('none') }}
 				>
-					{this.state.displayedInfo}
-					<i className={`fa fa-cog fa-fw fa-spin`}/>
+					{this.state.displayedInfo} <FontAwesomeIcon icon={faCog} spin={true}/>
 				</span>
 				<div
 					className={`progress ${css(styles.downloadBar)}`}

@@ -17,6 +17,11 @@ class IgdbWrapper {
 		this.callback = null;
 	}
 
+	public setLang(lang: string): this {
+		this.lang = lang;
+		return this;
+	}
+
 	public findGameById(id: number, callback: Function) {
 		this.client.games({
 			ids: [id]
@@ -43,7 +48,7 @@ class IgdbWrapper {
 
 	public searchGames(name: string, callback: Function, resultsNb?: number) {
 		this.client.games({
-			limit: (resultsNb) ? (resultsNb) : (this.levenshteinRefiner),
+			limit: resultsNb || this.levenshteinRefiner,
 			search: name.replace('²', '2')
 		}, ['name', 'cover']).then((response) => {
 			let counter: number = 0;
@@ -180,9 +185,11 @@ class IgdbWrapper {
 	}
 }
 
+let igdbWrapper: IgdbWrapper = new IgdbWrapper();
+
 export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper(lang).findGameById(gameId, (error: Error, game: any) => {
+		igdbWrapper.setLang(lang).findGameById(gameId, (error: Error, game: any) => {
 			if (error)
 				reject(error);
 			else
@@ -193,7 +200,7 @@ export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
 
 export function searchIgdbGame(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new IgdbWrapper().searchGames(gameName,(error: Error, games: any) => {
+		igdbWrapper.searchGames(gameName,(error: Error, games: any) => {
 			if (error)
 				reject(error);
 			else

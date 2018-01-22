@@ -16,6 +16,7 @@
   "removeGame": "Remove game",
   "editGame": "Edit game",
   "edit": "Edit",
+  "editTimePlayed": "Edit played time",
   "delete": "Delete",
   "potentialGamesAdd": "%1 game(s) can be added",
   "addGameLabel": "Add game",
@@ -44,6 +45,10 @@
   "quit": "Quit",
   "relaunch": "Relaunch",
   "show": "Show",
+
+  "hours": "Hours",
+  "minutes": "Minutes",
+  "seconds": "Seconds",
   "hoursPlur": "hours",
   "hoursSing": "hour",
   "minutesPlur": "minutes",

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import * as DateTime from 'react-datetime';
-import { ipcRenderer, remote} from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
-import { border, rgb, rgba } from 'css-verbose';
+import { border, rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
+import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame, GameSource } from '../../models/PotentialGame';
 import { BlurPicture } from './BlurPicture';
@@ -14,6 +15,8 @@ import { ImagesCollection } from './ImagesCollection';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 import { openExecutableDialog, openImageDialog } from '../helpers';
+
+import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 export class AddGameModal extends VitrineComponent {
 	private emptyState: any;
@@ -41,7 +44,7 @@ export class AddGameModal extends VitrineComponent {
 		this.state = this.emptyState;
 	}
 
-	private fillIgdbGame(event: Electron.Event, gameInfos: any) {
+	private fillIgdbGame(gameInfos: any) {
 		$('#igdb-research-modal').modal('hide');
 		this.setState({
 			name: gameInfos.name,
@@ -108,33 +111,33 @@ export class AddGameModal extends VitrineComponent {
 
 	private searchIgdbBtnClickHandler() {
 		$('#igdb-research-modal').modal('show');
-		ipcRenderer.send('client.search-igdb-games', this.state.name);
+		serverListener.send('search-igdb-games', this.state.name);
 	}
 
 	private addGameBtnClickHandler() {
 		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.isEditing;
-		if (gameInfos.cover && !gameInfos.cover.startsWith('http'))
+		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
-		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http'))
+		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
 			gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
 
 		if (this.state.isEditing)
-			ipcRenderer.send('client.edit-game',this.props.potentialGameToAdd.uuid, gameInfos);
+			serverListener.send('edit-game', this.props.potentialGameToAdd.uuid, gameInfos);
 		else
-			ipcRenderer.send('client.add-game', gameInfos);
+			serverListener.send('add-game', gameInfos);
 	}
 
 	public componentDidMount() {
 		$('#add-game-modal').on('hidden.bs.modal', this.hideModalHandler.bind(this));
-		ipcRenderer.on('server.send-igdb-game', this.fillIgdbGame.bind(this));
+		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this));
 	}
 
 	public componentWillReceiveProps(props: any) {
 		if (props.potentialGameToAdd) {
 			let gameToAdd: PotentialGame = props.potentialGameToAdd;
-			let [executable, args]: string[] = gameToAdd.commandLine;
+			let [executable, args]: string[] = (gameToAdd.commandLine.length > 1) ? (gameToAdd.commandLine) : ([gameToAdd.commandLine[0], '']);
 
 			this.setState({
 				isEditing: props.isEditing,
@@ -143,15 +146,15 @@ export class AddGameModal extends VitrineComponent {
 				source: gameToAdd.source,
 				executable: executable,
 				arguments: args,
-				series: (gameToAdd.details.series) ? (gameToAdd.details.series) : (''),
+				series: gameToAdd.details.series || '',
 				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate / 1000).format('DD/MM/YYYY')) : (''),
-				developer: (gameToAdd.details.developer) ? (gameToAdd.details.developer) : (''),
-				publisher: (gameToAdd.details.publisher) ? (gameToAdd.details.publisher) : (''),
+				developer: gameToAdd.details.developer || '',
+				publisher: gameToAdd.details.publisher || '',
 				genres: (gameToAdd.details.genres) ? (gameToAdd.details.genres.join(', ')) : (''),
-				rating: (gameToAdd.details.rating) ? (gameToAdd.details.rating) : (''),
-				summary: (gameToAdd.details.summary) ? (gameToAdd.details.summary) : (''),
+				rating: gameToAdd.details.rating || '',
+				summary: gameToAdd.details.summary || '',
 				potentialBackgrounds: (gameToAdd.details.backgroundScreen) ? ([gameToAdd.details.backgroundScreen]) : ([]),
-				backgroundScreen: (gameToAdd.details.backgroundScreen) ? (gameToAdd.details.backgroundScreen) : ('')
+				backgroundScreen: gameToAdd.details.backgroundScreen || ''
 			});
 		}
 	}
@@ -175,7 +178,7 @@ export class AddGameModal extends VitrineComponent {
 										<div className={css(styles.coverDiv)}>
 											<label>{localizer.f('coverLabel')}</label>
 											<BlurPicture
-												faIcon={'folder-open-o'}
+												faIcon={faFolderOpen}
 												fontSize={55}
 												background={this.state.cover}
 												clickHandler={this.gameCoverClickHandler.bind(this)}
@@ -293,7 +296,7 @@ export class AddGameModal extends VitrineComponent {
 															type="button"
 															onClick={this.executableBtnClickHandler.bind(this)}
 														>
-															<i className="fa fa-folder-open-o"/>
+															<FontAwesomeIcon icon={faFolderOpen}/>
 														</button>
 													</span>
 												</div>

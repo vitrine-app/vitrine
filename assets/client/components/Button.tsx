@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { padding, rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
 import { VitrineComponent } from './VitrineComponent';
 import * as ReactTooltip from 'react-tooltip';
@@ -34,7 +35,11 @@ export class Button extends VitrineComponent {
 	}
 
 	public render(): JSX.Element {
-		let icon: JSX.Element = <i className={`fa fa-${this.props.iconName} ${css(styles.icon)} ${this.state.iconClassName}`}/>;
+		let icon: JSX.Element = <FontAwesomeIcon
+			icon={this.props.icon}
+			className={`${css(styles.icon)} ${this.state.iconClassName}`}
+			spin={this.props.spin}
+		/>;
 		let button: JSX.Element = (this.props.onClick instanceof Function) ? (
 			<div
 				className={`${css(styles.button)} ${this.state.buttonClassName}`}

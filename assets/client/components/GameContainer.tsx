@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
@@ -8,6 +9,7 @@ import { CirclePercentage } from './CirclePercentage';
 import { formatTimePlayed, urlify } from '../helpers';
 import { localizer } from '../Localizer';
 
+import { faPlay } from '@fortawesome/fontawesome-free-solid';
 import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class GameContainer extends VitrineComponent {
@@ -50,7 +52,7 @@ export class GameContainer extends VitrineComponent {
 								onClick={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
 								className="btn btn-primary"
 							>
-								<i className="fa fa-play"/> {localizer.f('play')}
+								<FontAwesomeIcon icon={faPlay} size={'sm'}/> {localizer.f('play')}
 							</button>
 							<span className={css(styles.selectedGameInfosSpan)}>
 								{(this.state.selectedGame.timePlayed) ? (formatTimePlayed(this.state.selectedGame.timePlayed)) : ('')}
@@ -81,13 +83,20 @@ export class GameContainer extends VitrineComponent {
 								</div>
 							</div>
 							<hr className={css(styles.selectedGameCoreHr)}/>
-							<p className={css(styles.selectedGameDesc)}>{this.state.selectedGame.details.summary}</p>
+							<p className={css(styles.selectedGameDesc)}>
+								{this.state.selectedGame.details.summary.split('\n').map((section: string, index: number) =>
+									<span key={index}>
+										{section}
+										<br/>
+									</span>
+								)}
+							</p>
 						</div>
 					</div>
 					<div className="col-md-4">
 						<div className={css(styles.coverDiv)}>
 							<BlurPicture
-								faIcon={'play'}
+								faIcon={faPlay}
 								fontSize={125}
 								background={this.state.selectedGame.details.cover}
 								clickHandler={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}

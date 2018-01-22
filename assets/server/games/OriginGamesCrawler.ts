@@ -4,30 +4,27 @@ import { parseString as parseXmlString } from 'xml2js';
 import * as Registry from 'winreg';
 import * as glob from 'glob';
 
+import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { searchIgdbGame } from '../api/IgdbWrapper';
-import { getEnvFolder, uuidV5 } from '../../models/env';
 import { spatStr } from '../helpers';
 
-class OriginGamesCrawler {
+class OriginGamesCrawler extends PotentialGamesCrawler {
 	private regDetails: any[];
-	private potentialGames: PotentialGame[];
-	private playableGames: PlayableGame[];
 	private gamesFolder: string;
-	private callback: Function;
 
-	public constructor(private originConfig: any, playableGames?: PlayableGame[]) {
-		this.potentialGames = [];
+	public setPlayableGames(playableGames?: PlayableGame[]): this {
+		super.setPlayableGames([]);
 		this.regDetails = [];
-		this.playableGames = (playableGames) ? (playableGames) : ([]);
+		return this;
 	}
 
-	public search(callback: Function) {
-		this.callback = callback;
+	public search(moduleConfig: any, callback: Function) {
+		super.search(moduleConfig, callback);
 
-		let xmlPath: string = path.resolve(this.originConfig.configFile.replace('%appdata%', process.env.APPDATA));
+		let xmlPath: string = path.resolve(this.moduleConfig.configFile.replace('%appdata%', process.env.APPDATA));
 		parseXmlString(fs.readFileSync(xmlPath).toString(), (error: Error, result: any) => {
 			if (error)
 				this.callback(error, null);
@@ -39,8 +36,8 @@ class OriginGamesCrawler {
 
 	private parseRegistry() {
 		let regKey = new Registry({
-			hive: Registry[this.originConfig.regHive],
-			key: this.originConfig.regKey
+			hive: Registry[this.moduleConfig.regHive],
+			key: this.moduleConfig.regKey
 		});
 		regKey.keys((error: Error, items: Winreg.Registry[]) => {
 			if (error)
@@ -79,21 +76,15 @@ class OriginGamesCrawler {
 
 			if (this.isGameAlreadyAdded(gameName)) {
 				counter++;
-				if (counter === files.length) {
-					let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-					potentialGames.games = this.potentialGames;
-					this.callback(null, potentialGames);
-				}
+				if (counter === files.length)
+					this.sendResults();
 				return;
 			}
 			for (let playableGame of this.playableGames) {
 				if (spatStr(gameName) === spatStr(playableGame.name)) {
 					counter++;
-					if (counter === files.length) {
-						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-						potentialGames.games = this.potentialGames;
-						this.callback(null, potentialGames);
-					}
+					if (counter === files.length)
+						this.sendResults();
 					return;
 				}
 			}
@@ -107,16 +98,11 @@ class OriginGamesCrawler {
 					delete game.name;
 					let potentialGame: PotentialGame = new PotentialGame(gameName, game);
 					potentialGame.source = GameSource.ORIGIN;
-					potentialGame.commandLine = [
-						path.resolve(gamePath)
-					];
+					potentialGame.commandLine = [ path.resolve(gamePath) ];
 					this.potentialGames.push(potentialGame);
 					counter++;
-					if (counter === files.length) {
-						let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-						potentialGames.games = this.potentialGames;
-						this.callback(null, potentialGames);
-					}
+					if (counter === files.length)
+						this.sendResults();
 				}).catch((error: Error) => {
 					this.callback(error, null);
 				});
@@ -137,24 +123,18 @@ class OriginGamesCrawler {
 				callback(new Error('Registry not matching.'), null);
 		});
 	}
-
-	private isGameAlreadyAdded(name: string): boolean {
-		let gameUuid: string = uuidV5(name);
-
-		let gameDirectory = path.resolve(getEnvFolder('games'), gameUuid);
-		let configFilePath = path.resolve(gameDirectory, 'config.json');
-
-		return fs.existsSync(configFilePath);
-	}
 }
+
+let originGamesCrawler: OriginGamesCrawler = new OriginGamesCrawler();
 
 export function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new OriginGamesCrawler(originConfig, playableGames).search((error: Error, potentialGames: GamesCollection<PotentialGame>) => {
-			if (error)
-				reject(error);
-			else
-				resolve(potentialGames);
-		});
+		originGamesCrawler.setPlayableGames(playableGames)
+			.search(originConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
+				if (error)
+					reject(error);
+				else
+					resolve(potentialGames);
+			});
 	});
 }

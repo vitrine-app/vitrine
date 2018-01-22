@@ -26,43 +26,51 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 	});
 }
 
-export function downloadImage(url: string, path: string): Promise<any> {
+export function downloadImage(src: string, dest: string): Promise<any> {
 	return new Promise((resolve, reject) => {
-		if (!url || (url.startsWith('file://') && !fs.existsSync(url.substring(7)))) {
+		if (!src || (src.startsWith('file://') && !fs.existsSync(src.substring(7)))) {
 			resolve(false);
 			return;
 		}
-		if (url.startsWith('file://')) {
-			url = url.substring(7);
-			if (url === path) {
+		if (src.startsWith('file://')) {
+			src = src.substring(7);
+			if (src === dest) {
 				resolve(true);
 				return;
 			}
-			fs.copy(url, path).then(() => {
-				let fileGlob: string = path.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
-				deleteFiles(fileGlob, path).then(() => {
+			fs.copy(src, dest).then(() => {
+				let fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
+				deleteFiles(fileGlob, dest).then(() => {
 					resolve(true);
-				}).catch((error: Error) => {
-					reject(error);
-				});
-			}).catch((error: Error) => {
-				reject(error);
-			});
+				}).catch((error: Error) => reject(error));
+			}).catch((error: Error) => reject(error));
 		}
 		else {
-			let filename: string = path.split('\\').pop();
-			path = path.substring(0, path.indexOf(filename));
-			downloadFile(url, {
-				directory: path,
+			let filename: string = dest.split('\\').pop();
+			dest = dest.substring(0, dest.indexOf(filename));
+			let fileDownloaded: boolean = false;
+			downloadFile(src, {
+				directory: dest,
 				filename: filename
 			}, (error: Error) => {
+				fileDownloaded = true;
 				if (error)
 					reject(error);
 				else
 					resolve(true);
 			});
+			setTimeout(() => {
+				if (!fileDownloaded) {
+					console.log('timeout.');
+					resolve(false);
+				}
+			}, 10000);
 		}
 	});
+}
+
+export function isAlreadyStored(imageSrcPath: string, imageDestPath: string): boolean {
+	return imageSrcPath === imageDestPath && imageSrcPath.startsWith('file://');
 }
 
 export function randomHashedString(length?: number): string {

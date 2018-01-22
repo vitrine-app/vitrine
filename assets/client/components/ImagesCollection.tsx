@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
 import { localizer } from '../Localizer';
 import { openImageDialog } from '../helpers';
 
+import { faPlus } from '@fortawesome/fontawesome-free-solid';
 import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
 export class ImagesCollection extends VitrineComponent {
@@ -13,7 +15,7 @@ export class ImagesCollection extends VitrineComponent {
 		super(props);
 
 		this.state = {
-			images: (this.props.images) ? (this.props.images) : ([]),
+			images: this.props.images || [],
 			selectedImage: '',
 			customImage: false
 		};
@@ -53,7 +55,7 @@ export class ImagesCollection extends VitrineComponent {
 		let selectedImage: string = '';
 		if (props.images) {
 			images = props.images;
-			selectedImage = (this.state.selectedImage) ? (this.state.selectedImage) : (props.images[0]);
+			selectedImage = this.state.selectedImage || props.images[0];
 		}
 		this.setState({
 			images: images,
@@ -69,7 +71,7 @@ export class ImagesCollection extends VitrineComponent {
 					type="button"
 					onClick={this.addImageBtnClick.bind(this)}
 				>
-					<i className="fa fa-plus"/> {localizer.f('addCustomBgImage')}
+					<FontAwesomeIcon icon={faPlus}/> {localizer.f('addCustomBgImage')}
 				</button>
 				<div className={css(styles.imagesContainer)}>
 					{this.state.images.map((image: string, index: number) =>

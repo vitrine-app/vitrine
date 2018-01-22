@@ -3,7 +3,7 @@ export class GamesCollection<T extends Object> {
 	private evaluatedKey: string;
 
 	public constructor(games?: T[]) {
-		this._games = (games) ? (games) : ([]);
+		this._games = games || [];
 		this.evaluatedKey = 'name';
 	}
 
@@ -45,7 +45,7 @@ export class GamesCollection<T extends Object> {
 
 	public editGame(game: T, callback?: Function) {
 		this.getGame(game['uuid']).then((currentGame: T) => {
-			currentGame = { ...<any>game };
+			Object.assign(currentGame, game);
 			if (callback)
 				callback();
 		}).catch((error: Error) => {
