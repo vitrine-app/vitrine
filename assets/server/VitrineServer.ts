@@ -1,6 +1,5 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { ipcMain } from 'electron';
 import { autoUpdater, UpdateCheckResult } from 'electron-updater';
 import { ProgressInfo } from 'builder-util-runtime';
 import * as rimraf from 'rimraf';
@@ -39,60 +38,60 @@ export class VitrineServer {
 	}
 
 	public registerEvents() {
-		ipcMain.on('loader.ready', this.loaderReady.bind(this))
-			.on('loader.launch-client', () => this.windowsHandler.createMainWindow())
-			.on('loader.update-and-restart', this.updateApp.bind(this));
+		this.windowsHandler.listenToLoader('ready', this.loaderReady.bind(this))
+			.listenToLoader('launch-client', () => this.windowsHandler.createMainWindow())
+			.listenToLoader('update-and-restart', this.updateApp.bind(this));
 
-		ipcMain.on('client.settings-asked', this.clientSettingsAsked.bind(this))
-			.on('client.ready', () => this.windowsHandler.clientReady())// this.clientReady.bind(this))
-			.on('client.quit-application', (event: Electron.Event, mustRelaunch?: boolean) => this.windowsHandler.quitApplication(mustRelaunch))// this.quitApplication.bind(this))
-			.on('client.fill-igdb-game', this.fillIgdbGame.bind(this))
-			.on('client.search-igdb-games', this.searchIgdbGames.bind(this))
-			.on('client.add-game', this.addGame.bind(this))
-			.on('client.edit-game', this.editGame.bind(this))
-			.on('client.edit-game-time-played', this.editGameTimePlayed.bind(this))
-			.on('client.launch-game', this.launchGame.bind(this))
-			.on('client.remove-game', this.removeGame.bind(this))
-			.on('client.refresh-potential-games', this.findPotentialGames.bind(this))
-			.on('client.update-settings', this.updateSettings.bind(this));
+		this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
+			.listenToClient('ready', () => this.windowsHandler.clientReady())
+			.listenToClient('quit-application', (mustRelaunch?: boolean) => this.windowsHandler.quitApplication(mustRelaunch))
+			.listenToClient('fill-igdb-game', this.fillIgdbGame.bind(this))
+			.listenToClient('search-igdb-games', this.searchIgdbGames.bind(this))
+			.listenToClient('add-game', this.addGame.bind(this))
+			.listenToClient('edit-game', this.editGame.bind(this))
+			.listenToClient('edit-game-time-played', this.editGameTimePlayed.bind(this))
+			.listenToClient('launch-game', this.launchGame.bind(this))
+			.listenToClient('remove-game', this.removeGame.bind(this))
+			.listenToClient('refresh-potential-games', this.findPotentialGames.bind(this))
+			.listenToClient('update-settings', this.updateSettings.bind(this));
 	}
 
-	private throwServerError(event: any, error: Error) {
-		return event.sender.send('server.error', error.name, error.stack);
+	private throwServerError(error: Error) {
+		return this.windowsHandler.sendToClient('error', error.name, error.stack);
 	}
 
-	private loaderReady(event: Electron.Event) {
+	private loaderReady() {
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {
-			event.sender.send('loaderServer.update-progress', progress);
+			this.windowsHandler.sendToLoader('update-progress', progress);
 		});
 		autoUpdater.signals.updateDownloaded(() => {
 			autoUpdater.quitAndInstall(true, true);
 		});
 		autoUpdater.checkForUpdates().then((lastUpdate: UpdateCheckResult) => {
 			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion)
-				event.sender.send('loaderServer.update-found', lastUpdate.updateInfo.version);
+				this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
 			else
-				event.sender.send('loaderServer.no-update-found');
+				this.windowsHandler.sendToLoader('no-update-found');
 		});
 	}
 
-	private clientSettingsAsked(event: Electron.Event) {
+	private clientSettingsAsked() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
-		event.sender.send('server.init-settings', this.vitrineConfig);
+		this.windowsHandler.sendToClient('init-settings', this.vitrineConfig);
 		if (!this.vitrineConfig.firstLaunch) {
 			if (this.vitrineConfig.steam) {
 				findSteamUser(this.vitrineConfig.steam).then((steamUser: any) => {
 					Object.assign(this.vitrineConfig.steam, { ...steamUser });
-				}).catch((error: Error) => this.throwServerError(event, error));
+				}).catch((error: Error) => this.throwServerError(error));
 			}
 			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
-				event.sender.send('server.add-playable-games', this.playableGames.games);
-				this.findPotentialGames(event);
-			}).catch((error: Error) => this.throwServerError(event, error));
+				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.games);
+				this.findPotentialGames();
+			}).catch((error: Error) => this.throwServerError(error));
 		}
 	}
 
@@ -100,31 +99,29 @@ export class VitrineServer {
 		autoUpdater.quitAndInstall(true, true);
 	}
 
-	private fillIgdbGame(event: Electron.Event, gameId: number) {
+	private fillIgdbGame(gameId: number) {
 		fillIgdbGame(gameId, this.vitrineConfig.lang).then((game) => {
-			event.sender.send('server.send-igdb-game', game);
-		}).catch((error: Error) => {
-			this.throwServerError(event, error);
-		});
+			this.windowsHandler.sendToClient('send-igdb-game', game);
+		}).catch((error: Error) => this.throwServerError(error));
 	}
 
-	private searchIgdbGames(event: Electron.Event, gameName: string, resultsNb?: number) {
+	private searchIgdbGames(gameName: string, resultsNb?: number) {
 		searchIgdbGame(gameName, resultsNb).then((games: any) => {
-			event.sender.send('server.send-igdb-searches', gameName, games);
+			this.windowsHandler.sendToClient('send-igdb-searches', gameName, games);
 		}).catch((error: Error) => {
-			event.sender.send('server.server-error', error);
+			this.windowsHandler.sendToClient('server-error', error);
 		});
 	}
 
-	private addGame(event: Electron.Event, gameForm: any) {
+	private addGame(gameForm: any) {
 		let gameName: string = gameForm.name;
 		let addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
 		addedGame.source = gameForm.source;
 
-		this.registerGame(event, addedGame, gameForm, false);
+		this.registerGame(addedGame, gameForm, false);
 	}
 
-	private editGame(event: Electron.Event, gameUuid: string, gameForm: any) {
+	private editGame(gameUuid: string, gameForm: any) {
 		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
 			editedGame.name = gameForm.name;
 			editedGame.commandLine = [];
@@ -135,69 +132,61 @@ export class VitrineServer {
 				cover
 			};
 
-			this.registerGame(event, editedGame, gameForm, true);
-		}).catch((error: Error) => {
-			return this.throwServerError(event, error);
-		});
+			this.registerGame(editedGame, gameForm, true);
+		}).catch((error: Error) => this.throwServerError(error));
 	}
 
-	private editGameTimePlayed(event: Electron.Event, gameUuid: string, timePlayed: number) {
+	private editGameTimePlayed(gameUuid: string, timePlayed: number) {
 		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
 			let gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
 			let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 			editedGame.timePlayed = timePlayed;
-			this.sendRegisteredGame(event, editedGame, configFilePath, true);
-		}).catch((error: Error) => {
-			return this.throwServerError(event, error);
-		});
+			this.sendRegisteredGame(editedGame, configFilePath, true);
+		}).catch((error: Error) => this.throwServerError(error));
 	}
 
-	private launchGame(event: Electron.Event, gameUuid: string) {
+	private launchGame(gameUuid: string) {
 		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
 			if (launchingGame.uuid !== uuidV5(launchingGame.name))
-				return this.throwServerError(event, new Error('Hashed codes don\'t match. Your game is probably corrupted.'));
+				return this.throwServerError(new Error('Hashed codes don\'t match. Your game is probably corrupted.'));
 			if (this.gameLaunched)
 				return;
 			this.gameLaunched = true;
 			launchGame(launchingGame).then((secondsPlayed: number) => {
 				this.gameLaunched = false;
 				console.log('You played', secondsPlayed, 'seconds.');
-				launchingGame.addPlayTime(secondsPlayed, (error) => {
-					return this.throwServerError(event, error);
-				});
-				event.sender.send('server.stop-game', gameUuid, launchingGame.timePlayed);
+				launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
+				this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
 			}).catch((error: Error) => {
 				this.gameLaunched = false;
-				return this.throwServerError(event, error);
+				this.throwServerError(error);
 			});
-		}).catch((error: Error) => {
-			return this.throwServerError(event, error);
-		});
+		}).catch((error: Error) => this.throwServerError(error));
 	}
 
-	private removeGame(event: Electron.Event, gameUuid: string) {
+	private removeGame(gameUuid: string) {
 		this.playableGames.removeGame(gameUuid, (error) => {
 			if (error)
-				event.sender.send('server.server-error', error);
+				this.windowsHandler.sendToClient('server-error', error);
 			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 			rimraf(gameDirectory, () => {
-				event.sender.send('server.remove-playable-game', gameUuid);
+				this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
 			});
 		});
 	}
 
-	private findPotentialGames(event: Electron.Event) {
+	private findPotentialGames() {
 		this.potentialGames.games = [];
-		this.searchSteamGames(event)
-			.then(this.searchOriginGames.bind(this, event))
-			.then(this.searchEmulatedGames.bind(this, event))
+		this.searchSteamGames()
+			.then(this.searchOriginGames.bind(this))
+			.then(this.searchEmulatedGames.bind(this))
 			.then(() => {
-				event.sender.send('server.add-potential-games', this.potentialGames.games);
+				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.games);
 			});
 	}
 
-	private updateSettings(event: Electron.Event, settingsForm: any) {
+	private updateSettings(settingsForm: any) {
 		let config: any = {
 			lang: settingsForm.lang
 		};
@@ -237,16 +226,12 @@ export class VitrineServer {
 				spaces: 2
 			}).then(() => {
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
-				event.sender.send('server.settings-updated', this.vitrineConfig);
-			}).catch((error: Error) => {
-				return this.throwServerError(event, error);
-			});
-		}).catch((error: Error) => {
-			return this.throwServerError(event, error);
-		});
+				this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
+			}).catch((error: Error) => this.throwServerError(error));
+		}).catch((error: Error) => this.throwServerError(error));
 	}
 
-	private searchSteamGames(event: Electron.Event): Promise<any> {
+	private searchSteamGames(): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.steam) {
 				resolve();
@@ -258,12 +243,12 @@ export class VitrineServer {
 				});
 			}).catch((error: Error) => {
 				resolve();
-				return this.throwServerError(event, error);
+				this.throwServerError(error);
 			});
 		});
 	}
 
-	private searchOriginGames(event: Electron.Event): Promise<any> {
+	private searchOriginGames(): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.origin) {
 				resolve();
@@ -275,12 +260,12 @@ export class VitrineServer {
 				});
 			}).catch((error: Error) => {
 				resolve();
-				return this.throwServerError(event, error);
+				this.throwServerError(error);
 			});
 		});
 	}
 
-	private searchEmulatedGames(event: Electron.Event): Promise<any> {
+	private searchEmulatedGames(): Promise<any> {
 		return new Promise((resolve) => {
 			if (!this.vitrineConfig.emulated.romsFolder) {
 				resolve();
@@ -292,12 +277,12 @@ export class VitrineServer {
 				});
 			}).catch((error: Error) => {
 				resolve();
-				return this.throwServerError(event, error);
+				this.throwServerError(error);
 			});
 		});
 	}
 
-	private registerGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
+	private registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
 		game.commandLine = [
 			gameForm.executable
 		];
@@ -316,16 +301,14 @@ export class VitrineServer {
 		if (!editing && game.source === GameSource.STEAM) {
 			getGamePlayTime(this.vitrineConfig.steam, game.details.steamId).then((timePlayed: number) => {
 				game.timePlayed = timePlayed;
-				this.ensureRegisteredGame(event, game, gameForm, editing);
-			}).catch((error: Error) => {
-				return this.throwServerError(event, error);
-			});
+				this.ensureRegisteredGame(game, gameForm, editing);
+			}).catch((error: Error) => this.throwServerError(error));
 		}
 		else
-			this.ensureRegisteredGame(event, game, gameForm, editing);
+			this.ensureRegisteredGame(game, gameForm, editing);
 	}
 
-	private ensureRegisteredGame(event: Electron.Event, game: PlayableGame, gameForm: any, editing: boolean) {
+	private ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
 		let gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 		if (!editing && fs.existsSync(configFilePath))
@@ -340,11 +323,11 @@ export class VitrineServer {
 			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
 			let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
 			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}).then(() => {
-				this.sendRegisteredGame(event, game, configFilePath, editing);
-			}).catch((error: Error) => this.throwServerError(event, error));
+				this.sendRegisteredGame(game, configFilePath, editing);
+			}).catch((error: Error) => this.throwServerError(error));
 		}
 		else
-			this.sendRegisteredGame(event, game, configFilePath, editing);
+			this.sendRegisteredGame(game, configFilePath, editing);
 	}
 
 	private downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
@@ -368,23 +351,21 @@ export class VitrineServer {
 		});
 	}
 
-	private sendRegisteredGame(event: any, game: PlayableGame, configFilePath: string, editing: boolean) {
+	private sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
 		fs.outputJSON(configFilePath, game , {
 			spaces: 2
 		}).then(() => {
 			if (!editing && game.source !== GameSource.LOCAL)
-				this.findPotentialGames(event);
+				this.findPotentialGames();
 			if (!editing) {
-				event.sender.send('server.add-playable-game', game);
+				this.windowsHandler.sendToClient('add-playable-game', game);
 				this.playableGames.addGame(game);
 			}
 			else {
 				this.playableGames.editGame(game, () => {
-					event.sender.send('server.edit-playable-game', game);
+					this.windowsHandler.sendToClient('edit-playable-game', game);
 				});
 			}
-		}).catch((error: Error) => {
-			return this.throwServerError(event, error);
-		});
+		}).catch((error: Error) => this.throwServerError(error));
 	}
 }

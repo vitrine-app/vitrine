@@ -1,5 +1,5 @@
-import { app, BrowserWindow, Menu, screen, Tray } from 'electron';
-import * as path from "path";
+import { app, BrowserWindow, ipcMain, Menu, screen, Tray } from 'electron';
+import * as path from 'path';
 
 export class WindowsHandler {
 	private loaderWindow: BrowserWindow;
@@ -92,6 +92,38 @@ export class WindowsHandler {
 		app.quit();
 	}
 
+	public sendToLoader(channelName, ...args) {
+		let sentArgs: any[] = [
+			`loaderServer.${channelName}`,
+			...args
+		];
+		this.loaderWindow.webContents.send.apply(this.loaderWindow.webContents, sentArgs);
+	}
+
+	public sendToClient(channelName, ...args) {
+		let sentArgs: any[] = [
+			`server.${channelName}`,
+			...args
+		];
+		this.clientWindow.webContents.send.apply(this.clientWindow.webContents, sentArgs);
+	}
+
+	public listenToLoader(channelName: string, callbackFunction: Function): this {
+		ipcMain.on(`loader.${channelName}`, (...args) => {
+			args.shift();
+			callbackFunction.apply(null, args);
+		});
+		return this;
+	}
+
+	public listenToClient(channelName: string, callbackFunction: Function): this {
+		ipcMain.on(`client.${channelName}`, (...args) => {
+			args.shift();
+			callbackFunction.apply(null, args);
+		});
+		return this;
+	}
+
 	private createTrayIcon() {
 		this.tray = new Tray(this.iconPath);
 		this.tray.setTitle('Vitrine');
@@ -105,7 +137,7 @@ export class WindowsHandler {
 			{
 				label: 'Quit',
 				type: 'normal',
-				click: this.quitApplication.bind(this)
+				click: this.quitApplication.bind(this, false)
 			}
 		]));
 		this.tray.on('double-click', this.restoreAndFocus.bind(this));
