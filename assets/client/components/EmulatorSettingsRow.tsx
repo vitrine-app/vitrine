@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
 import { openExecutableDialog } from '../helpers';
+
+import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 export class EmulatorSettingsRow extends VitrineComponent {
 	public constructor(props: any) {
@@ -84,7 +87,7 @@ export class EmulatorSettingsRow extends VitrineComponent {
 								onClick={this.programBtnClickHandler.bind(this)}
 								disabled={!this.state.active}
 							>
-								<i className="fa fa-folder-open-o"/>
+								<FontAwesomeIcon icon={faFolderOpen}/>
 							</button>
 						</span>
 					</div>

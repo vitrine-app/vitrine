@@ -8,6 +8,8 @@ import { BlurPicture } from './BlurPicture';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
+import { faPlusCircle } from '@fortawesome/fontawesome-free-solid';
+
 export class AddPotentialGamesModal extends VitrineComponent {
 	public constructor(props: any) {
 		super(props)
@@ -31,7 +33,7 @@ export class AddPotentialGamesModal extends VitrineComponent {
 								{this.props.potentialGames.games.map((potentialGame: PotentialGame, index: number) =>
 									<div key={index} className={`col-md-3 ${css(styles.potentialGameCell)}`}>
 										<BlurPicture
-											faIcon={'plus-circle'}
+											faIcon={faPlusCircle}
 											fontSize={55}
 											background={potentialGame.details.cover}
 											clickHandler={this.gameCoverClickHandler.bind(this, potentialGame)}

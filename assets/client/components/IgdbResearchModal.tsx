@@ -2,12 +2,15 @@ import * as React from 'react';
 import { shell } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
+
+import { faSearch, faCircleNotch } from '@fortawesome/fontawesome-free-solid';
 
 export class IgdbResearchModal extends VitrineComponent {
 	public constructor(props: any) {
@@ -114,7 +117,7 @@ export class IgdbResearchModal extends VitrineComponent {
 							type="button"
 							onClick={this.igdbSearchBtnClickHandler.bind(this)}
 						>
-							<i className="fa fa-search"/>
+							<FontAwesomeIcon icon={faSearch}/>
 						</button>
 					</div>
 				</div>
@@ -146,7 +149,11 @@ export class IgdbResearchModal extends VitrineComponent {
 			</form>
 		) : (
 			<div className={css(styles.loadingContainer)}>
-				<i className={`fa fa-circle-o-notch fa-spin ${css(styles.loadingIcon)}`}/>
+				<FontAwesomeIcon
+					icon={faCircleNotch}
+					spin={true}
+					className={css(styles.loadingIcon)}
+				/>
 			</div>
 		);
 

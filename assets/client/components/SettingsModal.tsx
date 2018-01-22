@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { padding } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
@@ -9,6 +10,7 @@ import { EmulatorSettingsRow } from './EmulatorSettingsRow';
 import { localizer } from '../Localizer';
 import { openDirectory } from '../helpers';
 
+import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import * as steamIcon from '../images/steamIcon.png';
 import * as originIcon from '../images/originIcon.png';
 import * as emulatedIcon from '../images/emulatedIcon.png';
@@ -263,7 +265,7 @@ export class SettingsModal extends VitrineComponent {
 															type="button"
 															onClick={this.steamPathBtnClickHandler.bind(this)}
 														>
-															<i className="fa fa-folder-open-o"/>
+															<FontAwesomeIcon icon={faFolderOpen}/>
 														</button>
 													</span>
 												</div>
@@ -294,7 +296,7 @@ export class SettingsModal extends VitrineComponent {
 															type="button"
 															onClick={this.originPathBtnClickHandler.bind(this)}
 														>
-															<i className="fa fa-folder-open-o"/>
+															<FontAwesomeIcon icon={faFolderOpen}/>
 														</button>
 													</span>
 												</div>
@@ -325,7 +327,7 @@ export class SettingsModal extends VitrineComponent {
 															type="button"
 															onClick={this.emulatedPathBtnClickHandler.bind(this)}
 														>
-															<i className="fa fa-folder-open-o"/>
+															<FontAwesomeIcon icon={faFolderOpen}/>
 														</button>
 													</span>
 												</div>

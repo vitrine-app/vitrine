@@ -47,6 +47,10 @@
     }
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.2",
+    "@fortawesome/fontawesome-free-brands": "^5.0.4",
+    "@fortawesome/fontawesome-free-solid": "^5.0.4",
+    "@fortawesome/react-fontawesome": "0.0.17",
     "animate.sass": "^1.0.1",
     "aphrodite": "^1.2.5",
     "bootstrap-datepicker": "^1.7.1",
@@ -54,7 +58,6 @@
     "css-verbose": "^0.3.0",
     "download-file": "^0.1.5",
     "electron-updater": "^2.16.3",
-    "font-awesome": "^4.7.0",
     "fs-extra": "^4.0.2",
     "glob": "^7.1.2",
     "google-translate-api": "^2.3.0",
@@ -75,6 +78,7 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-common-types": "^0.1.1",
     "@types/aphrodite": "^0.5.6",
     "@types/bootstrap-datepicker": "0.0.9",
     "@types/bootstrap-select": "^1.11.1",

@@ -2,8 +2,11 @@ import * as React from 'react';
 import { ProgressInfo } from 'builder-util-runtime';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { loaderServerListener } from '../ServerListener';
+
+import { faCog } from '@fortawesome/fontawesome-free-solid';
 import * as vitrineIcon from '../images/vitrine.ico';
 
 export class VitrineLoader extends React.Component<null, any> {
@@ -70,8 +73,7 @@ export class VitrineLoader extends React.Component<null, any> {
 					className={css(styles.infosSpan)}
 					style={{ display: (this.state.displayedInfo) ? ('inline') : ('none') }}
 				>
-					{this.state.displayedInfo}
-					<i className={`fa fa-cog fa-fw fa-spin`}/>
+					{this.state.displayedInfo} <FontAwesomeIcon icon={faCog} spin={true}/>
 				</span>
 				<div
 					className={`progress ${css(styles.downloadBar)}`}

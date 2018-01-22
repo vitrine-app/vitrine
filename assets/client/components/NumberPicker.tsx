@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { css, StyleSheet } from 'aphrodite';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
+
+import { faCaretUp, faCaretDown } from '@fortawesome/fontawesome-free-solid';
 
 export class NumberPicker extends VitrineComponent {
 	public constructor(props: any) {
@@ -86,14 +89,20 @@ export class NumberPicker extends VitrineComponent {
 						type="button"
 						onClick={this.increaseCounterHandler.bind(this)}
 					>
-						<i className={`fa fa-caret-up ${css(styles.verticalBtnIcon)}`}/>
+						<FontAwesomeIcon
+							icon={faCaretUp}
+							className={css(styles.verticalBtnIcon)}
+						/>
 					</button>
 					<button
 						className={`btn btn-default ${css(styles.verticalBtn)} ${css(styles.lastVerticalBtn)}`}
 						type="button"
 						onClick={this.decreaseCounterHandler.bind(this)}
 					>
-						<i className={`fa fa-caret-down ${css(styles.verticalBtnIcon)}`}/>
+						<FontAwesomeIcon
+							icon={faCaretDown}
+							className={css(styles.verticalBtnIcon)}
+						/>
 					</button>
 				</div>
 				{this.checkErrors()}

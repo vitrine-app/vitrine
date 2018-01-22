@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { margin, rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
+
+import { faTv } from '@fortawesome/fontawesome-free-solid';
 
 export class LaunchedGameContainer extends VitrineComponent {
 	public constructor(props: any) {
@@ -13,8 +16,9 @@ export class LaunchedGameContainer extends VitrineComponent {
 	public render(): JSX.Element {
 		return (
 			<div>
-				<i
-					className={`fa fa-television ${css(styles.toggleDisplayIcon)}`}
+				<FontAwesomeIcon
+					icon={faTv}
+					className={css(styles.toggleDisplayIcon)}
 					onClick={this.props.clickHandler}
 				/>
 				<div className={css(styles.launchedGameDiv)}>

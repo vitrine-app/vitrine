@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as DateTime from 'react-datetime';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
-import { border, rgb, rgba } from 'css-verbose';
+import { border, rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
@@ -14,6 +15,8 @@ import { ImagesCollection } from './ImagesCollection';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 import { openExecutableDialog, openImageDialog } from '../helpers';
+
+import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 export class AddGameModal extends VitrineComponent {
 	private emptyState: any;
@@ -175,7 +178,7 @@ export class AddGameModal extends VitrineComponent {
 										<div className={css(styles.coverDiv)}>
 											<label>{localizer.f('coverLabel')}</label>
 											<BlurPicture
-												faIcon={'folder-open-o'}
+												faIcon={faFolderOpen}
 												fontSize={55}
 												background={this.state.cover}
 												clickHandler={this.gameCoverClickHandler.bind(this)}
@@ -293,7 +296,7 @@ export class AddGameModal extends VitrineComponent {
 															type="button"
 															onClick={this.executableBtnClickHandler.bind(this)}
 														>
-															<i className="fa fa-folder-open-o"/>
+															<FontAwesomeIcon icon={faFolderOpen}/>
 														</button>
 													</span>
 												</div>

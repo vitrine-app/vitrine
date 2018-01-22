@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
@@ -99,8 +100,9 @@ export class BlurPicture extends VitrineComponent {
 				style={this.state.divStyle}
 			>
 				<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
-				<i
-					className={`fa fa-${this.props.faIcon} ${css(styles.icon)} ${this.state.iconClassName}`}
+				<FontAwesomeIcon
+					icon={this.props.faIcon}
+					className={`${css(styles.icon)} ${this.state.iconClassName}`}
 					style={{ ...this.state.iconStyle }}
 				/>
 				{this.checkErrors()}
