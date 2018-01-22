@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
+import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';
 import { SideBar } from './SideBar';
@@ -113,7 +114,7 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private launchGame(gameUuid: string) {
-		ipcRenderer.send('client.launch-game', gameUuid);
+		serverListener.send('launch-game', gameUuid);
 		this.state.playableGames.getGame(gameUuid).then((launchedGame: PlayableGame) => {
 			setTimeout(() => {
 				this.setState({
@@ -162,7 +163,7 @@ export class Vitrine extends VitrineComponent {
 	}
 
 	private taskBarRefreshBtnClickHandler() {
-		ipcRenderer.send('client.refresh-potential-games');
+		serverListener.send('refresh-potential-games');
 		this.setState({
 			refreshingGames: true
 		});
@@ -217,7 +218,7 @@ export class Vitrine extends VitrineComponent {
 
 	private deleteGameContextClickHandler(event: any, data: any, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
-		ipcRenderer.send('client.remove-game', gameUuid);
+		serverListener.send('remove-game', gameUuid);
 	}
 
 	private launchedGamePictureToggleHandler() {

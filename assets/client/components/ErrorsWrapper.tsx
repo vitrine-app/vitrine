@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { remote, ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 
+import { serverListener } from '../ServerListener';
 import { localizer } from '../Localizer';
-import { ReactNode } from 'react';
 
 export class ErrorsWrapper extends React.Component<any, any> {
 	constructor(props: any) {
@@ -14,11 +13,11 @@ export class ErrorsWrapper extends React.Component<any, any> {
 	}
 
 	private quitApplication() {
-		ipcRenderer.send('client.quit-application', false);
+		serverListener.send('quit-application', false);
 	}
 
 	private relaunchApplication() {
-		ipcRenderer.send('client.quit-application', true);
+		serverListener.send('quit-application', true);
 	}
 
 	public componentDidCatch(error: Error) {

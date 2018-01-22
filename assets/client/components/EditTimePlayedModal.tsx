@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 
+import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
 import { CloseIcon } from './icons/CloseIcon';
@@ -41,7 +41,7 @@ export class EditTimePlayedModal extends VitrineComponent {
 
 	private submitBtnClickHandler() {
 		let timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
-		ipcRenderer.send('client.edit-game-time-played', this.props.editedGame.uuid, timePlayed);
+		serverListener.send('edit-game-time-played', this.props.editedGame.uuid, timePlayed);
 	}
 
 	public render(): JSX.Element {

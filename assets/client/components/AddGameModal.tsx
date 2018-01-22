@@ -1,10 +1,11 @@
 import * as React from 'react';
 import * as DateTime from 'react-datetime';
-import { ipcRenderer, remote} from 'electron';
+import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
 import { border, rgb, rgba } from 'css-verbose';
 
+import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame, GameSource } from '../../models/PotentialGame';
 import { BlurPicture } from './BlurPicture';
@@ -108,7 +109,7 @@ export class AddGameModal extends VitrineComponent {
 
 	private searchIgdbBtnClickHandler() {
 		$('#igdb-research-modal').modal('show');
-		ipcRenderer.send('client.search-igdb-games', this.state.name);
+		serverListener.send('search-igdb-games', this.state.name);
 	}
 
 	private addGameBtnClickHandler() {
@@ -121,9 +122,9 @@ export class AddGameModal extends VitrineComponent {
 			gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
 
 		if (this.state.isEditing)
-			ipcRenderer.send('client.edit-game', this.props.potentialGameToAdd.uuid, gameInfos);
+			serverListener.send('edit-game', this.props.potentialGameToAdd.uuid, gameInfos);
 		else
-			ipcRenderer.send('client.add-game', gameInfos);
+			serverListener.send('add-game', gameInfos);
 	}
 
 	public componentDidMount() {

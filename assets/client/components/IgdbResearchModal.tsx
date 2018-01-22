@@ -3,6 +3,7 @@ import { ipcRenderer, shell } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 
+import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
 import { CloseIcon } from './icons/CloseIcon';
@@ -51,7 +52,7 @@ export class IgdbResearchModal extends VitrineComponent {
 		this.setState({
 			loading: true
 		}, () => {
-			ipcRenderer.send('client.search-igdb-games', this.state.research, this.state.resultsNb);
+			serverListener.send('search-igdb-games', this.state.research, this.state.resultsNb);
 		});
 	}
 
@@ -59,7 +60,7 @@ export class IgdbResearchModal extends VitrineComponent {
 		this.setState({
 			loading: true
 		}, () => {
-			ipcRenderer.send('client.fill-igdb-game', this.state.selectedResearchId);
+			serverListener.send('fill-igdb-game', this.state.selectedResearchId);
 		});
 	}
 

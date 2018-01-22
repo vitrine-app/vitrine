@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ipcRenderer } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { padding } from 'css-verbose';
 
+import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { GamesModule } from './GamesModule';
 import { EmulatorSettingsRow } from './EmulatorSettingsRow';
@@ -167,7 +167,7 @@ export class SettingsModal extends VitrineComponent {
 					emulatorsError
 				});
 				if (canBeSent)
-					ipcRenderer.send('client.update-settings', { ...form, emulators: this.state.emulatorsCurrentConfig });
+					serverListener.send('update-settings', { ...form, emulators: this.state.emulatorsCurrentConfig });
 			}
 		});
 	}
