@@ -55,7 +55,8 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					return this.callback(error, null);
 				let secondCounter: number = 0;
 				roms.forEach((romPath: string) => {
-					let romName = path.parse(romPath).name;
+					let parsedPath: string[] = romPath.split('/');
+					let romName = parsedPath[parsedPath.length - romEmulator.glob.split('/').length].replace(/(\w+)\.(\w+)/g, '$1');
 					for (let playableGame of this.playableGames) {
 						if (spatStr(romName) === spatStr(playableGame.name)) {
 							secondCounter++;
