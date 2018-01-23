@@ -255,7 +255,7 @@ export class Vitrine extends VitrineComponent {
 			case 'Enter': {
 				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
 					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible') ||
-					$('#settings-modal').is(':visible'))
+					$('#settings-modal').is(':visible') || $('#edit-time-played-modal').is(':visible'))
 					break;
 				event.preventDefault();
 

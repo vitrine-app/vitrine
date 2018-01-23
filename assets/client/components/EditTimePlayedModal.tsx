@@ -7,6 +7,7 @@ import { NumberPicker } from './NumberPicker';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
+// TODO: fix bug
 export class EditTimePlayedModal extends VitrineComponent {
 	public constructor(props: any) {
 		super(props);
@@ -21,10 +22,9 @@ export class EditTimePlayedModal extends VitrineComponent {
 	public componentWillReceiveProps(props: any) {
 		if (props.editedGame) {
 			let timePlayed: number = props.editedGame.timePlayed;
-			let seconds: number = timePlayed % 60;
-			let minutes: number = Math.floor(timePlayed / 60);
-			let hours: number = Math.floor(minutes / 60);
-			minutes = minutes % 60;
+			let hours: number = Math.floor(timePlayed / 3600);
+			let minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
+			let seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
 			this.setState({
 				hours,
 				minutes,

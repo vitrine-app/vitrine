@@ -30,7 +30,7 @@ export class NumberPicker extends VitrineComponent {
 			value: newVal
 		}, () => {
 			if (this.props.onChange)
-				this.props.onChange(this.state.value);
+				this.props.onChange(parseInt(this.state.value));
 		});
 	}
 
@@ -49,14 +49,14 @@ export class NumberPicker extends VitrineComponent {
 			value: newVal
 		}, () => {
 			if (this.props.onChange)
-				this.props.onChange(this.state.value);
+				this.props.onChange(parseInt(this.state.value));
 		});
 	}
 
 	private inputChangeHandler(event) {
-		let value: any = event.target.value;
+		let value: number = parseInt(event.target.value);
 		if (isNaN(value))
-			return;
+			value = this.props.min;
 
 		this.setState({
 			value: value

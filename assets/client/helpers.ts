@@ -9,38 +9,26 @@ function openDialog(options: any): string {
 }
 
 export function formatTimePlayed(timePlayed: number): string {
-	if (timePlayed < 60) {
-		let secondsStr: string;
-		if (timePlayed == 1)
-			secondsStr = localizer.f('secondsSing');
-		else
-			secondsStr = localizer.f('secondsPlur');
-		return timePlayed + ' ' + secondsStr;
+	let hours: number = Math.floor(timePlayed / 3600);
+	let minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
+	let seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
+
+
+	if (hours && minutes && seconds) {
+		let hoursStr: string = localizer.f((hours !== 1) ? ('hoursPlur') : ('hoursSing'));
+		let minutesStr: string = localizer.f((minutes) ? ((minutes === 1) ? ('minutesPlur') : ('minutesSing')) : (''));
+		return hours + ' ' + hoursStr + ((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''));
 	}
-	let minutes: number = Math.floor(timePlayed / 60);
-	if (minutes < 60) {
-		let minutesStr: string;
-		if (minutes == 1)
-			minutesStr = localizer.f('minutesSing');
-		else
-			minutesStr = localizer.f('minutesPlur');
+	else if (minutes && seconds) {
+		let minutesStr: string = localizer.f((minutes !== 1) ? ('minutesPlur') : ('minutesSing'));
 		return minutes + ' ' + minutesStr;
 	}
-	let hours: number = Math.floor(minutes / 60);
-	let hoursStr: string;
-	if (hours == 1)
-		hoursStr = localizer.f('hoursSing');
+	else if (seconds) {
+		let secondsStr: string = localizer.f((seconds !== 1) ? ('secondsPlur') : ('secondsSing'));
+		return timePlayed + ' ' + secondsStr;
+	}
 	else
-		hoursStr = localizer.f('hoursPlur');
-	minutes = minutes % 60;
-	let minutesStr: string;
-	if (!minutes)
-		minutesStr = null;
-	if (minutes == 1)
-		minutesStr = localizer.f('minutesSing');
-	else
-		minutesStr = localizer.f('minutesPlur');
-	return hours + ' ' + hoursStr + ((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''));
+		return '';
 }
 
 export function openDirectory(): string {

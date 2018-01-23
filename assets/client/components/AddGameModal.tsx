@@ -285,10 +285,10 @@ export class AddGameModal extends VitrineComponent {
 														className="form-control"
 														name="executable"
 														placeholder={localizer.f('executable')}
-														value={this.state.executable}
-														onChange={this.inputChangeHandler.bind(this)}
-														readOnly={true}
+														value={this.state.executable}/*
+														onChange={this.inputChangeHandler.bind(this)}*/
 														onClick={this.executableBtnClickHandler.bind(this)}
+														readOnly={true}
 													/>
 													<span className="input-group-btn">
 														<button

@@ -257,7 +257,8 @@ export class SettingsModal extends VitrineComponent {
 														name="steam"
 														placeholder={localizer.f('steamPath')}
 														value={this.state.steamPath}
-														disabled
+														onClick={this.steamPathBtnClickHandler.bind(this)}
+														readOnly={true}
 													/>
 													<span className="input-group-btn">
 														<button
@@ -288,7 +289,8 @@ export class SettingsModal extends VitrineComponent {
 														name="origin"
 														placeholder={localizer.f('originGamesPath')}
 														value={this.state.originPath}
-														disabled
+														onClick={this.originPathBtnClickHandler.bind(this)}
+														readOnly={true}
 													/>
 													<span className="input-group-btn">
 														<button
@@ -319,7 +321,8 @@ export class SettingsModal extends VitrineComponent {
 														name="origin"
 														placeholder={localizer.f('emulatedGamesPath')}
 														value={this.state.emulatedPath}
-														disabled
+														onClick={this.emulatedPathBtnClickHandler.bind(this)}
+														readOnly={true}
 													/>
 													<span className="input-group-btn">
 														<button
