@@ -9,7 +9,7 @@ import { WindowsHandler } from './WindowsHandler';
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
-import { getEnvFolder, uuidV5 } from '../models/env';
+import { getEnvFolder } from '../models/env';
 import { launchGame } from './GameLauncher';
 import { searchSteamGames } from './games/SteamGamesCrawler';
 import { getPlayableGames } from './games/PlayableGamesCrawler';
@@ -172,6 +172,7 @@ export class VitrineServer {
 		});
 	}
 
+	// TODO: Improve potential games pipeline
 	private findPotentialGames() {
 		this.potentialGames.games = [];
 		this.searchSteamGames()

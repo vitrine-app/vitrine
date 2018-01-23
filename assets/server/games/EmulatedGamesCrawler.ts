@@ -19,22 +19,21 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 
 	public search(moduleConfig: any, callback: Function) {
 		super.search(moduleConfig, callback);
-		glob(`${this.moduleConfig.romsFolder}\\*`, (error: Error, folders: string[]) => {
+		glob(`${this.moduleConfig.romsFolder}/*`, (error: Error, folders: string[]) => {
 			if (error)
 				return this.callback(error, null);
 			let counter: number = 0;
 			folders.forEach((romFolder: string) => {
 				let secondCounter: number = 0;
 				this.moduleConfig.platforms.forEach((platform: any) => {
-					if (platform.folder === path.basename(romFolder)) {
-						this.getEmulator(platform, (error: Error, romEmulator: any) => {
-							if (error || !romEmulator.active)
-								return;
+					if (platform.folder.toUpperCase() === path.basename(romFolder).toUpperCase()) {
+						let romEmulator: any = this.moduleConfig.emulators.filter((emulator: any) => emulator.platforms
+							.filter((platformId: number) => platformId === platform.id).length)[0];
+						if (romEmulator.active)
 							this.romsFolders.push({
 								romFolder,
 								romEmulator
 							});
-						});
 					}
 					secondCounter++;
 					if (secondCounter === this.moduleConfig.platforms.length) {

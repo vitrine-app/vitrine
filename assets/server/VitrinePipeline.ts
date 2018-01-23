@@ -1,11 +1,8 @@
-import { app } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as glob from 'glob';
 
 import { VitrineServer } from './VitrineServer';
 import { getEnvData, getEnvFolder } from '../models/env';
-import { localizer } from '../client/Localizer';
 
 export class VitrinePipeline {
 	private serverInstance: VitrineServer;
@@ -51,7 +48,7 @@ export class VitrinePipeline {
 			let platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
 			let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
 			let emulated: any = this.vitrineConfig.emulated || {};
-			let newVitrineConfig: any = (this.vitrineConfig) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
+			let newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
 			newVitrineConfig.emulated.platforms = fs.readJsonSync(platformsConfigFilePath, { throws: false });
 			newVitrineConfig.emulated.emulators = fs.readJsonSync(emulatorsConfigFilePath, { throws: false });
 			this.vitrineConfig = newVitrineConfig;
