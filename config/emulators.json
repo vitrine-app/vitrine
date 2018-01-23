@@ -12,8 +12,8 @@
   {
     "active": false,
     "command": "-m \"%g\"",
-    "name": "ZSNES",
     "glob": "*.sfc",
+    "name": "ZSNES",
     "path": "",
     "platforms": [
       1
@@ -22,9 +22,9 @@
   {
     "active": false,
     "command": "\"%g\"",
-    "name": "Project64",
     "glob": "*.n64",
-    "path": "C:\\Program Files (x86)\\Project64 2.3\\Project64.exe",
+    "name": "Project64",
+    "path": "",
     "platforms": [
       2
     ]
@@ -32,20 +32,20 @@
   {
     "active": false,
     "command": "--batch --exec=\"%g\"",
-    "name": "Dolphin",
     "glob": "*.iso",
-    "path": "C:\\Program Files\\Dolphin\\Dolphin.exe",
+    "name": "Dolphin",
+    "path": "",
     "platforms": [
       3,
       6
     ]
   },
   {
-    "active": true,
+    "active": false,
     "command": "\"%g\" -f",
     "glob": "*.gba",
     "name": "mGBA",
-    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
+    "path": "",
     "platforms": [
       4
     ]
@@ -53,8 +53,8 @@
   {
     "active": false,
     "command": "\"%g\"",
-    "name": "DeSmuME",
     "glob": "*.nds",
+    "name": "DeSmuME",
     "path": "",
     "platforms": [
       5
@@ -63,19 +63,19 @@
   {
     "active": false,
     "command": "\"%g\"",
-    "name": "Citra",
     "glob": "*.3ds",
+    "name": "Citra",
     "path": "",
     "platforms": [
       7
     ]
   },
   {
-    "active": true,
+    "active": false,
     "command": "-g \"%g\" -f",
-    "name": "Cemu",
     "glob": "*/code/*.rpx",
-    "path": "C:\\Program Files (x86)\\Cemu\\Cemu.exe",
+    "name": "Cemu",
+    "path": "",
     "platforms": [
       8
     ]
@@ -83,8 +83,8 @@
   {
     "active": false,
     "command": "-nogui -loadiso \"%g\"",
-    "name": "ePSXe",
     "glob": "*.bin",
+    "name": "ePSXe",
     "path": "",
     "platforms": [
       14

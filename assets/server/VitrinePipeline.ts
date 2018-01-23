@@ -51,7 +51,7 @@ export class VitrinePipeline {
 			let platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
 			let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
 			let emulated: any = this.vitrineConfig.emulated || {};
-			let newVitrineConfig: any = (this.vitrineConfig) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
+			let newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
 			newVitrineConfig.emulated.platforms = fs.readJsonSync(platformsConfigFilePath, { throws: false });
 			newVitrineConfig.emulated.emulators = fs.readJsonSync(emulatorsConfigFilePath, { throws: false });
 			this.vitrineConfig = newVitrineConfig;

@@ -17,7 +17,8 @@ export class EmulatorSettingsRow extends VitrineComponent {
 			platforms: props.platforms,
 			active: props.emulator.active,
 			path: props.emulator.path,
-			command: props.emulator.command
+			command: props.emulator.command,
+			glob: props.emulator.glob
 		};
 	}
 
