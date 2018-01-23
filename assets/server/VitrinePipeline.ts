@@ -1,11 +1,8 @@
-import { app } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import * as glob from 'glob';
 
 import { VitrineServer } from './VitrineServer';
 import { getEnvData, getEnvFolder } from '../models/env';
-import { localizer } from '../client/Localizer';
 
 export class VitrinePipeline {
 	private serverInstance: VitrineServer;
