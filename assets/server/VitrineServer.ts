@@ -199,7 +199,6 @@ export class VitrineServer {
 		if (settingsForm.originPath) {
 			config.origin = {
 				installFolder: settingsForm.originPath,
-				configFile: '%appdata%/Origin/local.xml',
 				regHive: 'HKLM',
 				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
 			};

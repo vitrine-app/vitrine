@@ -24,39 +24,31 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 	public search(moduleConfig: any, callback: Function) {
 		super.search(moduleConfig, callback);
 
-		let xmlPath: string = path.resolve(this.moduleConfig.configFile.replace('%appdata%', process.env.APPDATA));
-		parseXmlString(fs.readFileSync(xmlPath).toString(), (error: Error, result: any) => {
-			if (error)
-				this.callback(error, null);
-
-			this.gamesFolder = result.Settings.Setting[0].$.value;
-			this.parseRegistry();
-		});
-	}
-
-	private parseRegistry() {
+		this.gamesFolder = path.resolve(this.moduleConfig.installFolder);
 		let regKey = new Registry({
 			hive: Registry[this.moduleConfig.regHive],
 			key: this.moduleConfig.regKey
 		});
-		regKey.keys((error: Error, items: Winreg.Registry[]) => {
-			if (error)
-				this.callback(error, null);
+		regKey.keys(this.parseRegistry.bind(this));
+	}
 
-			let counter: number = 0;
-			items.forEach((key: Winreg.Registry) => {
-				key.values((error: Error, values: Winreg.RegistryItem[]) => {
-					if (error)
-						this.callback(error, null);
+	private parseRegistry(error: Error, items: Winreg.Registry[]) {
+		if (error)
+			this.callback(error, null);
 
-					this.regDetails.push({
-						path: values[1].value,
-						exe: values[5].value
-					});
-					counter++;
-					if (counter === items.length)
-						glob(`${this.gamesFolder}*`, this.parseFolder.bind(this));
+		let counter: number = 0;
+		items.forEach((key: Winreg.Registry) => {
+			key.values((error: Error, values: Winreg.RegistryItem[]) => {
+				if (error)
+					this.callback(error, null);
+
+				this.regDetails.push({
+					path: values[1].value,
+					exe: values[5].value
 				});
+				counter++;
+				if (counter === items.length)
+					glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
 			});
 		});
 	}
@@ -64,7 +56,6 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 	private parseFolder(error: Error, files: string[]) {
 		if (error)
 			this.callback(error, null);
-
 		if (!files.length) {
 			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
