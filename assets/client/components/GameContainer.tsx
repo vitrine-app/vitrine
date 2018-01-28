@@ -23,8 +23,14 @@ export class GameContainer extends VitrineComponent {
 	}
 
 	public componentWillReceiveProps(props: any) {
-		if (!props.selectedGame)
+		if (!props.selectedGame) {
+			this.setState({
+				selectedGame: null,
+				backgroundImage: 'none',
+				mainColor: bootstrapVariables.brandPrimary
+			});
 			return;
+		}
 		this.setState({
 			selectedGame: props.selectedGame
 		}, () => {
