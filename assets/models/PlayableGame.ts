@@ -6,10 +6,12 @@ import { getEnvFolder } from './env';
 
 export class PlayableGame extends PotentialGame {
 	public timePlayed: number;
+	public ambientColor: string;
 
 	public constructor(name: string, details?: any) {
 		super(name, details);
 		this.timePlayed = 0;
+		this.ambientColor = null;
 	}
 
 	public addPlayTime(timePlayed: number, errorCallback?: Function) {

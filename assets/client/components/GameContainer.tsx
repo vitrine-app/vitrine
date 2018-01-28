@@ -6,7 +6,7 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
 import { CirclePercentage } from './CirclePercentage';
-import { formatTimePlayed, urlify } from '../helpers';
+import { editColor, formatTimePlayed, urlify } from '../helpers';
 import { localizer } from '../Localizer';
 
 import { faPlay } from '@fortawesome/fontawesome-free-solid';
@@ -17,26 +17,31 @@ export class GameContainer extends VitrineComponent {
 		super(props);
 		this.state = {
 			selectedGame: props.selectedGame,
-			backgroundImage: 'none'
+			backgroundImage: 'none',
+			mainColor: bootstrapVariables.brandPrimary
 		};
 	}
 
 	public componentWillReceiveProps(props: any) {
-		if (props.selectedGame) {
+		if (!props.selectedGame)
+			return;
+		this.setState({
+			selectedGame: props.selectedGame
+		}, () => {
+			let backgroundImage, mainColor: string;
+			if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
+				backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+				mainColor = props.selectedGame.ambientColor;
+			}
+			else {
+				backgroundImage = 'none';
+				mainColor = bootstrapVariables.brandPrimary;
+			}
 			this.setState({
-				selectedGame: props.selectedGame
-			}, () => {
-				let backgroundImage: string;
-				if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
-					backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
-				}
-				else
-					backgroundImage = 'none';
-				this.setState({
-					backgroundImage
-				});
+				backgroundImage,
+				mainColor
 			});
-		}
+		});
 	}
 
 	public render(): JSX.Element {
@@ -51,6 +56,7 @@ export class GameContainer extends VitrineComponent {
 							<button
 								onClick={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
 								className="btn btn-primary"
+								style={{ backgroundColor: this.state.mainColor, borderColor: editColor(this.state.mainColor, -20) }}
 							>
 								<FontAwesomeIcon icon={faPlay} size={'sm'}/> {localizer.f('play')}
 							</button>
@@ -79,7 +85,10 @@ export class GameContainer extends VitrineComponent {
 									</div>
 								</div>
 								<div className="col-md-4">
-									<CirclePercentage percentage={this.state.selectedGame.details.rating} />
+									<CirclePercentage
+										percentage={this.state.selectedGame.details.rating}
+										color={this.state.mainColor}
+									/>
 								</div>
 							</div>
 							<hr className={css(styles.selectedGameCoreHr)}/>

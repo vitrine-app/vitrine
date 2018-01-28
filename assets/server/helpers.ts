@@ -60,10 +60,8 @@ export function downloadImage(src: string, dest: string): Promise<any> {
 					resolve(true);
 			});
 			setTimeout(() => {
-				if (!fileDownloaded) {
-					console.log('timeout.');
+				if (!fileDownloaded)
 					resolve(false);
-				}
 			}, 10000);
 		}
 	});

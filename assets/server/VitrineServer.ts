@@ -4,6 +4,8 @@ import { autoUpdater, UpdateCheckResult } from 'electron-updater';
 import { ProgressInfo } from 'builder-util-runtime';
 import * as rimraf from 'rimraf';
 import * as moment from 'moment';
+import Vibrant = require('node-vibrant');
+import { Palette } from 'node-vibrant/lib/color';
 
 import { WindowsHandler } from './WindowsHandler';
 import { GamesCollection } from '../models/GamesCollection';
@@ -208,9 +210,7 @@ export class VitrineServer {
 				romsFolder: settingsForm.emulatedPath
 			};
 		}
-		fs.outputJson(this.vitrineConfigFilePath, config, {
-			spaces: 2
-		}).then(() => {
+		fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 }).then(() => {
 			let emulatorsConfig: any = {
 				...this.vitrineConfig.emulated,
 				...config.emulated,
@@ -218,9 +218,7 @@ export class VitrineServer {
 			};
 			if (!settingsForm.emulatedPath)
 				delete emulatorsConfig.romsFolder;
-			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, {
-				spaces: 2
-			}).then(() => {
+			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 }).then(() => {
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
 				this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
 			}).catch((error: Error) => this.throwServerError(error));
@@ -314,7 +312,8 @@ export class VitrineServer {
 			let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
 			let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
 
-			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
+			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
+				: (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
 			let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
 			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}).then(() => {
 				this.sendRegisteredGame(game, configFilePath, editing);
@@ -326,16 +325,23 @@ export class VitrineServer {
 
 	private downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
 		return new Promise((resolve, reject) => {
-			downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
-				game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
-				downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
-					game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
-					if (game.details.steamId)
-						delete game.details.screenshots;
+			downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
+				game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
+				if (game.details.steamId)
+					delete game.details.screenshots;
+				else
+					delete game.details.background;
+				downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
+					game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
+					if (isStored) {
+						game.details.cover = coverPath;
+						Vibrant.from(game.details.cover).getPalette().then((palette: Palette) => {
+							game.ambientColor = palette.DarkVibrant.getHex();
+							resolve();
+						}).catch(() => resolve());
+					}
 					else
-						delete game.details.background;
-
-					resolve();
+						resolve();
 				}).catch((error: Error) => {
 					reject(error);
 				});
@@ -346,9 +352,7 @@ export class VitrineServer {
 	}
 
 	private sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
-		fs.outputJSON(configFilePath, game , {
-			spaces: 2
-		}).then(() => {
+		fs.outputJSON(configFilePath, game , { spaces: 2 }).then(() => {
 			if (!editing && game.source !== GameSource.LOCAL)
 				this.findPotentialGames();
 			if (!editing) {

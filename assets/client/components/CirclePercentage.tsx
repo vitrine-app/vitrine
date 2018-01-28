@@ -23,6 +23,7 @@ export class CirclePercentage extends VitrineComponent {
 					className={css(styles.circle)}
 					d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
 					strokeDasharray={`${this.props.percentage}, 100`}
+					style={{ stroke: this.props.color }}
 				/>
 				<text
 					x={9}
@@ -58,7 +59,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 		margin: margin(10, 'auto')
 	},
 	circle: {
-		stroke: bootstrapVariables.brandPrimary,
 		fill: 'none',
 		strokeWidth: 2.8,
 		strokeLinecap: 'round',

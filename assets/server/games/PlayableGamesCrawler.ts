@@ -37,6 +37,7 @@ class PlayableGamesCrawler {
 					playableGame.commandLine = rawGame.commandLine;
 					playableGame.timePlayed = parseInt(rawGame.timePlayed);
 					playableGame.source = rawGame.source;
+					playableGame.ambientColor = rawGame.ambientColor;
 
 					this.playableGames.push(playableGame);
 				}
