@@ -25,7 +25,8 @@ export function addPlayableGames(playableGames: PlayableGame[]): Action {
 	return {
 		type: ActionType.ADD_PLAYABLE_GAMES,
 		payload: {
-			playableGames
+			playableGames,
+			selectedGame: (playableGames.length) ? (playableGames[0]) : (null)
 		}
 	}
 }
@@ -39,11 +40,12 @@ export function editPlayableGame(playableGame: PlayableGame): Action {
 	};
 }
 
-export function removePlayableGame(gameUuid: string): Action {
+export function removePlayableGame(gameUuid: string, selectedGame: PlayableGame): Action {
 	return {
 		type: ActionType.REMOVE_PLAYABLE_GAME,
 		payload: {
-			gameUuid
+			gameUuid,
+			selectedGame
 		}
 	}
 }
@@ -63,6 +65,15 @@ export function stopGame(playedGame: PlayableGame): Action {
 		payload: {
 			playedGame,
 			launchedGame: null
+		}
+	}
+}
+
+export function selectGame(selectedGame: PlayableGame): Action {
+	return {
+		type: ActionType.SELECT_GAME,
+		payload: {
+			selectedGame
 		}
 	}
 }

@@ -3,17 +3,6 @@ import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 
-export function launchedGame(state: PlayableGame = null, action: Action): PlayableGame {
-	switch (action.type) {
-		case ActionType.LAUNCH_GAME:
-			return action.payload.launchedGame;
-		case ActionType.STOP_GAME:
-			return action.payload.launchedGame;
-		default:
-			return state;
-	}
-}
-
 export function refreshingGames(state: boolean = false, action: Action): boolean {
 	switch (action.type) {
 		case ActionType.REFRESH_GAMES:
@@ -44,6 +33,33 @@ export function playableGames(state: GamesCollection<PlayableGame> = null, actio
 			return new GamesCollection<PlayableGame>(state.games).removeGameSync(action.payload.gameUuid);
 		case ActionType.STOP_GAME:
 			return new GamesCollection<PlayableGame>(state.games).editGameSync(action.payload.playedGame);
+		default:
+			return state;
+	}
+}
+
+export function selectedGame(state: PlayableGame = null, action: Action): PlayableGame {
+	switch (action.type) {
+		case ActionType.SELECT_GAME:
+			return action.payload.selectedGame;
+		case ActionType.ADD_PLAYABLE_GAMES:
+			return action.payload.selectedGame;
+		case ActionType.REMOVE_PLAYABLE_GAME:
+			return action.payload.selectedGame;
+		case ActionType.STOP_GAME:
+			return action.payload.playedGame;
+		default:
+			return state;
+	}
+}
+
+
+export function launchedGame(state: PlayableGame = null, action: Action): PlayableGame {
+	switch (action.type) {
+		case ActionType.LAUNCH_GAME:
+			return action.payload.launchedGame;
+		case ActionType.STOP_GAME:
+			return action.payload.launchedGame;
 		default:
 			return state;
 	}

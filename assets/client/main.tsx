@@ -11,7 +11,7 @@ import { Provider } from 'react-redux';
 import { App } from './app/containers/App';
 import { initialState, VitrineState } from './app/VitrineState';
 import { settings } from './app/reducers/settings';
-import { launchedGame, playableGames, potentialGames, refreshingGames } from './app/reducers/games';
+import { launchedGame, playableGames, potentialGames, refreshingGames, selectedGame } from './app/reducers/games';
 
 import './resources/sass/main.scss';
 
@@ -19,6 +19,7 @@ let store: Store<VitrineState> = createStore(combineReducers({
 	settings,
 	potentialGames,
 	playableGames,
+	selectedGame,
 	launchedGame,
 	refreshingGames
 }), initialState);

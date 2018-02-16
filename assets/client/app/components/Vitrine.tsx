@@ -6,12 +6,12 @@ import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
+import { SideBar } from '../containers/SideBar';
 import { TaskBar } from '../containers/TaskBar';
 import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
 import { VitrineComponent } from './VitrineComponent';
-import { SideBar } from './SideBar';
 import { GameContainer } from './GameContainer';
 import { AddGameModal } from './AddGameModal';
 import { EditTimePlayedModal } from './EditTimePlayedModal';
@@ -21,6 +21,7 @@ interface Props {
 	settings: any,
 	potentialGames: GamesCollection<PotentialGame>,
 	playableGames: GamesCollection<PlayableGame>,
+	selectedGame: PlayableGame,
 	launchedGame: PlayableGame,
 	updateSettings: Function | any,
 	addPotentialGames: Function | any,
@@ -28,13 +29,13 @@ interface Props {
 	editPlayableGame: Function | any,
 	removePlayableGame: Function | any,
 	launchGame: Function | any,
-	stopGame: Function | any
+	stopGame: Function | any,
+	selectGame: Function | any
 }
 
 interface State {
 	firstLaunch: boolean,
 	launchedGamePictureActivated: boolean,
-	selectedGame: PlayableGame,
 	potentialGameToAdd: PotentialGame,
 	gameWillBeEdited: boolean
 }
@@ -46,51 +47,25 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.state = {
 			firstLaunch: false,
 			launchedGamePictureActivated: true,
-			selectedGame: null,
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
 	}
 
-	private addPlayableGames(games: PlayableGame[]) {
-		let firstTime: boolean = this.props.playableGames.games.length === 0;
-		this.props.addPlayableGames(games);
-		if (firstTime)
-			this.setState({
-				selectedGame: this.props.playableGames.games[0]
-			});
-	}
-
 	private addPlayableGame(game: PlayableGame) {
-		this.props.addPlayableGames([game]);this.setState({
-			selectedGame: game
-		}, () => {
-			$('#add-game-modal').modal('hide');
-			$('#add-potential-games-modal').modal('hide');
-		});
+		this.props.addPlayableGames([game]);
+		$('#add-game-modal').modal('hide');
+		$('#add-potential-games-modal').modal('hide');
 	}
 
 	private editPlayableGame(game: PlayableGame) {
 		this.props.editPlayableGame(game);
-		if (game.uuid === this.state.selectedGame.uuid) {
-			this.setState({
-				selectedGame: game
-			}, () => {
-				$('#add-game-modal').modal('hide');
-				$('#edit-time-played-modal').modal('hide');
-			});
-		}
-		else {
-			$('#add-game-modal').modal('hide');
-			$('#edit-time-played-modal').modal('hide');
-		}
+		$('#add-game-modal').modal('hide');
+		$('#edit-time-played-modal').modal('hide');
 	}
 
 	private removePlayableGame(gameUuid: string) {
-		this.props.removePlayableGame(gameUuid);
-		this.setState({
-			selectedGame: (this.props.playableGames.games.length) ? (this.props.playableGames.games[0]) : (null)
-		});
+		this.props.removePlayableGame(gameUuid, (this.props.playableGames.games.length) ? (this.props.playableGames.games[0]) : (null));
 	}
 
 	private launchGame(gameUuid: string) {
@@ -102,11 +77,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		let playedGame: PlayableGame = this.props.playableGames.getGameSync(gameUuid);
 		playedGame.timePlayed = totalTimePlayed;
 		this.props.stopGame(playedGame);
-		this.setState({
-			selectedGame: playedGame
-		}, () => {
-			this.forceUpdate()
-		});
+		this.forceUpdate();
 	}
 
 	private settingsUpdated(settings: any) {
@@ -127,13 +98,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private sideBarGameClickHandler(uuid: string) {
-		this.props.playableGames.getGame(uuid).then((selectedGame: PlayableGame) => {
-			this.setState({
-				selectedGame
-			});
-		}).catch((error: Error) => {
-			return this.throwError(error);
-		});
+		this.props.selectGame(this.props.playableGames.getGameSync(uuid));
 	}
 
 	private potentialGameToAddUpdateHandler(potentialGameToAdd: PotentialGame, gameWillBeEdited?: boolean) {
@@ -182,11 +147,11 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	private launchedGamePictureToggleHandler() {
 		this.setState({
 			launchedGamePictureActivated: false
-		}, () => {
+		}/*, () => {
 			this.setState({
 				selectedGame: this.state.selectedGame
 			});
-		});
+		}*/);
 	}
 
 	private keyDownHandler(event: KeyboardEvent) {
@@ -194,21 +159,17 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			case 'ArrowDown': {
 				event.preventDefault();
 
-				let index: number = this.props.playableGames.games.indexOf(this.state.selectedGame);
+				let index: number = this.props.playableGames.games.indexOf(this.props.selectedGame);
 				if (index < this.props.playableGames.games.length - 1)
-					this.setState({
-						selectedGame: this.props.playableGames.games[index + 1]
-					});
+					this.props.selectGame(this.props.playableGames.games[index + 1]);
 				break;
 			}
 			case 'ArrowUp': {
 				event.preventDefault();
 
-				let index: number = this.props.playableGames.games.indexOf(this.state.selectedGame);
+				let index: number = this.props.playableGames.games.indexOf(this.props.selectedGame);
 				if (index)
-					this.setState({
-						selectedGame: this.props.playableGames.games[index - 1]
-					});
+					this.props.selectGame(this.props.playableGames.games[index - 1]);
 				break;
 			}
 			case 'Enter': {
@@ -218,7 +179,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					break;
 				event.preventDefault();
 
-				this.launchGame(this.state.selectedGame.uuid);
+				this.launchGame(this.props.selectedGame.uuid);
 				break;
 			}
 		}
@@ -233,7 +194,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			});
 		}
 
-		serverListener.listen('add-playable-games', this.addPlayableGames.bind(this))
+		serverListener.listen('add-playable-games', this.props.addPlayableGames.bind(this))
 			.listen('add-playable-game', this.addPlayableGame.bind(this))
 			.listen('edit-playable-game', this.editPlayableGame.bind(this))
 			.listen('remove-playable-game', this.removePlayableGame.bind(this))
@@ -256,13 +217,11 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
 			<div className={'full-height'}>
 				<SideBar
-					playableGames={this.props.playableGames}
-					selectedGame={this.state.selectedGame}
 					gameClickHandler={this.sideBarGameClickHandler.bind(this)}
 					launchGameCallback={this.launchGame.bind(this)}
 				/>
 				<GameContainer
-					selectedGame={this.state.selectedGame}
+					selectedGame={this.props.selectedGame}
 					launchGameCallback={this.launchGame.bind(this)}
 				/>
 				<AddGameModal
