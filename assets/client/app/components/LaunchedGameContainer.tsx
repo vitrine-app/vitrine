@@ -3,7 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 import { margin, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { PlayableGame } from '../../models/PlayableGame';
+import { PlayableGame } from '../../../models/PlayableGame';
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
 
@@ -15,10 +15,6 @@ interface Props {
 }
 
 export class LaunchedGameContainer extends VitrineComponent<Props, {}> {
-	public constructor(props: Props) {
-		super(props);
-	}
-
 	public render(): JSX.Element {
 		return (
 			<div>

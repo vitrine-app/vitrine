@@ -20,11 +20,11 @@
     ]
   },
   {
-    "active": false,
+    "active": true,
     "command": "\"%g\"",
     "glob": "*.n64",
     "name": "Project64",
-    "path": "",
+    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
     "platforms": [
       2
     ]

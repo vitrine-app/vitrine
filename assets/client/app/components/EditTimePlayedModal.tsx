@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-import { PotentialGame } from '../../models/PotentialGame';
-import { PlayableGame } from '../../models/PlayableGame';
+import { PotentialGame } from '../../../models/PotentialGame';
+import { PlayableGame } from '../../../models/PlayableGame';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';

@@ -3,7 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from './VitrineComponent';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
 
 interface Props {
 	clicked: boolean,

@@ -8,7 +8,7 @@ import { localizer } from '../Localizer';
 import { openImageDialog } from '../helpers';
 
 import { faPlus } from '@fortawesome/fontawesome-free-solid';
-import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
 
 interface Props {
 	images?: string[]
@@ -69,8 +69,8 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 			selectedImage = this.state.selectedImage || props.images[0];
 		}
 		this.setState({
-			images: images,
-			selectedImage: selectedImage
+			images,
+			selectedImage
 		});
 	}
 

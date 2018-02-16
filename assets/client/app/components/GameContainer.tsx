@@ -3,7 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
-import { PlayableGame } from '../../models/PlayableGame';
+import { PlayableGame } from '../../../models/PlayableGame';
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
 import { CirclePercentage } from './CirclePercentage';
@@ -11,7 +11,7 @@ import { editColor, formatTimePlayed, urlify } from '../helpers';
 import { localizer } from '../Localizer';
 
 import { faPlay } from '@fortawesome/fontawesome-free-solid';
-import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
 
 interface Props {
 	selectedGame: PlayableGame

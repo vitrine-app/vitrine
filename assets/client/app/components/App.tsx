@@ -4,21 +4,24 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
-import { getEnvFolder } from '../../models/env';
+import { getEnvFolder } from '../../../models/env';
 import { serverListener } from '../ServerListener';
-import { Vitrine } from './Vitrine';
+import { Vitrine } from '../containers/Vitrine';
 import { localizer } from '../Localizer';
 import { ErrorsWrapper } from './ErrorsWrapper';
+
+interface Props {
+	settings: any,
+	updateSettings: Function | any
+}
 
 interface State {
 	settingsReceived: boolean
 }
 
-export class App extends React.Component<{}, State> {
-	private settings: any;
-
-	public constructor() {
-		super(undefined);
+export class App extends React.Component<Props, State> {
+	public constructor(props: Props) {
+		super(props);
 
 		this.state = {
 			settingsReceived: false
@@ -36,7 +39,7 @@ export class App extends React.Component<{}, State> {
 
 	private initLanguages() {
 		let langFilesFolder: string = getEnvFolder('config/lang');
-		let configLang: string = (this.settings && this.settings.lang) ? (this.settings.lang) : ('');
+		let configLang: string = (this.props.settings && this.props.settings.lang) ? (this.props.settings.lang) : ('');
 		let systemLang: string = remote.app.getLocale();
 
 		let langFilesPaths: string[] = glob.sync(`${langFilesFolder}/*`);
@@ -55,7 +58,7 @@ export class App extends React.Component<{}, State> {
 
 	public componentDidMount() {
 		serverListener.listen('init-settings', (settings: any) => {
-			this.settings = settings;
+			this.props.updateSettings(settings);
 			this.setState({
 				settingsReceived: true
 			}, () => {
@@ -68,7 +71,7 @@ export class App extends React.Component<{}, State> {
 	public render(): JSX.Element {
 		return (this.state.settingsReceived) ? (
 			<ErrorsWrapper>
-				<Vitrine settings={this.settings}/>
+				<Vitrine/>
 			</ErrorsWrapper>
 		) : (null);
 	}
