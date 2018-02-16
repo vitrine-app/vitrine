@@ -1,10 +1,10 @@
 [
   {
-    "active": false,
+    "active": true,
     "command": "\"%g\"",
     "glob": "*.nes",
     "name": "Nestopia",
-    "path": "",
+    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
     "platforms": [
       0
     ]

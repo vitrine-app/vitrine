@@ -6,23 +6,23 @@ import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
+import { SettingsModal } from '../containers/SettingsModal';
 import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';
 import { SideBar } from './SideBar';
 import { GameContainer } from './GameContainer';
 import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
-import { SettingsModal } from './SettingsModal';
 import { EditTimePlayedModal } from './EditTimePlayedModal';
 import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
 
 interface Props {
-	settings: any
+	settings: any,
+	updateSettings: Function | any
 }
 
 interface State {
-	settings: any,
 	firstLaunch: boolean,
 	playableGames: GamesCollection<PlayableGame>,
 	potentialGames: GamesCollection<PotentialGame>,
@@ -39,7 +39,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		super(props);
 
 		this.state = {
-			settings: this.props.settings,
 			firstLaunch: false,
 			playableGames: new GamesCollection<PlayableGame>(),
 			potentialGames: new GamesCollection<PotentialGame>(),
@@ -159,16 +158,13 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private settingsUpdated(settings: any) {
-		this.setState({
-			settings
-		}, () => {
-			$('#settings-modal').modal('hide');
-			if (this.state.firstLaunch) {
-				this.setState({
-					firstLaunch: false
-				});
-			}
-		});
+		this.props.updateSettings(settings);
+		$('#settings-modal').modal('hide');
+		if (this.state.firstLaunch) {
+			this.setState({
+				firstLaunch: false
+			});
+		}
 	}
 
 	private serverError(errorName: string, errorStack: string) {
@@ -283,7 +279,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	public componentDidMount() {
-		if (this.state.settings.firstLaunch) {
+		if (this.props.settings.firstLaunch) {
 			this.setState({
 				firstLaunch: true
 			}, () => {
@@ -332,7 +328,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
 				/>
 				<SettingsModal
-					settings={this.state.settings}
 					firstLaunch={this.state.firstLaunch}
 				/>
 				<EditTimePlayedModal
