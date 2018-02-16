@@ -19,7 +19,6 @@ interface State {
 	seconds: number
 }
 
-// TODO: fix bug
 export class EditTimePlayedModal extends VitrineComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);

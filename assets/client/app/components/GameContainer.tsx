@@ -15,20 +15,20 @@ import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass
 
 interface Props {
 	selectedGame: PlayableGame
-	launchGameCallback: Function
+	launchGame: Function
 }
 
 interface State {
-	selectedGame: PlayableGame,
 	backgroundImage: string,
 	mainColor: string
 }
 
+// TODO: edited game need refresh
 export class GameContainer extends VitrineComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);
+
 		this.state = {
-			selectedGame: props.selectedGame,
 			backgroundImage: 'none',
 			mainColor: bootstrapVariables.brandPrimary
 		};
@@ -37,49 +37,44 @@ export class GameContainer extends VitrineComponent<Props, State> {
 	public componentWillReceiveProps(props: Props) {
 		if (!props.selectedGame) {
 			this.setState({
-				selectedGame: null,
 				backgroundImage: 'none',
 				mainColor: bootstrapVariables.brandPrimary
 			});
 			return;
 		}
+		let backgroundImage, mainColor: string;
+		if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
+			backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
+			mainColor = props.selectedGame.ambientColor;
+		}
+		else {
+			backgroundImage = 'none';
+			mainColor = bootstrapVariables.brandPrimary;
+		}
 		this.setState({
-			selectedGame: props.selectedGame
-		}, () => {
-			let backgroundImage, mainColor: string;
-			if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
-				backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
-				mainColor = props.selectedGame.ambientColor;
-			}
-			else {
-				backgroundImage = 'none';
-				mainColor = bootstrapVariables.brandPrimary;
-			}
-			this.setState({
-				backgroundImage,
-				mainColor
-			});
+			backgroundImage,
+			mainColor
 		});
 	}
 
 	public render(): JSX.Element {
 		let gameContainer: JSX.Element;
 
-		if (this.state.selectedGame) {
+		if (this.props.selectedGame) {
 			gameContainer = (
 				<div className={`row ${css(styles.selectedGameCore)}`}>
 					<div className="col-md-8">
-						<h1 className={css(styles.selectedGameCoreH1)}>{this.state.selectedGame.name}</h1>
+						<h1 className={css(styles.selectedGameCoreH1)}>{this.props.selectedGame.name}</h1>
 						<div className={css(styles.selectedGameInfos)}>
 							<button
-								onClick={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
+								onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
 								className="btn btn-primary"
 								style={{ backgroundColor: this.state.mainColor, borderColor: editColor(this.state.mainColor, -20) }}
 							>
 								<FontAwesomeIcon icon={faPlay} size={'sm'}/> {localizer.f('play')}
 							</button>
 							<span className={css(styles.selectedGameInfosSpan)}>
-								{(this.state.selectedGame.timePlayed) ? (formatTimePlayed(this.state.selectedGame.timePlayed)) : ('')}
+								{(this.props.selectedGame.timePlayed) ? (formatTimePlayed(this.props.selectedGame.timePlayed)) : ('')}
 							</span>
 						</div>
 						<div className={css(styles.selectedGameInfos)}>
@@ -90,7 +85,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 											<strong>{localizer.f('developerLabel')}</strong>
 										</div>
 										<div className="col-md-8">
-											{this.state.selectedGame.details.developer}
+											{this.props.selectedGame.details.developer}
 										</div>
 									</div>
 									<div className="row">
@@ -98,20 +93,20 @@ export class GameContainer extends VitrineComponent<Props, State> {
 											<strong>{localizer.f('publisherLabel')}</strong>
 										</div>
 										<div className="col-md-8">
-											{this.state.selectedGame.details.publisher}
+											{this.props.selectedGame.details.publisher}
 										</div>
 									</div>
 								</div>
 								<div className="col-md-4">
 									<CirclePercentage
-										percentage={this.state.selectedGame.details.rating}
+										percentage={this.props.selectedGame.details.rating}
 										color={this.state.mainColor}
 									/>
 								</div>
 							</div>
 							<hr className={css(styles.selectedGameCoreHr)}/>
 							<p className={css(styles.selectedGameDesc)}>
-								{this.state.selectedGame.details.summary.split('\n').map((section: string, index: number) =>
+								{this.props.selectedGame.details.summary.split('\n').map((section: string, index: number) =>
 									<span key={index}>
 										{section}
 										<br/>
@@ -125,8 +120,8 @@ export class GameContainer extends VitrineComponent<Props, State> {
 							<BlurPicture
 								faIcon={faPlay}
 								fontSize={125}
-								background={this.state.selectedGame.details.cover}
-								clickHandler={this.props.launchGameCallback.bind(null, this.state.selectedGame.uuid)}
+								background={this.props.selectedGame.details.cover}
+								clickHandler={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
 							/>
 						</div>
 					</div>

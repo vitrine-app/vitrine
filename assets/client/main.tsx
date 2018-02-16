@@ -5,15 +5,25 @@ import 'bootstrap-select'
 
 import * as React from 'react';
 import { render } from 'react-dom';
-import { combineReducers, createStore, Store } from 'redux';
+import { applyMiddleware, combineReducers, createStore, Middleware, Store } from 'redux';
 import { Provider } from 'react-redux';
 
 import { App } from './app/containers/App';
 import { initialState, VitrineState } from './app/VitrineState';
 import { settings } from './app/reducers/settings';
-import { launchedGame, playableGames, potentialGames, refreshingGames, selectedGame } from './app/reducers/games';
+import {
+	launchedGame, playableGames, potentialGames, potentialGameToAdd, refreshingGames,
+	selectedGame
+} from './app/reducers/games';
 
 import './resources/sass/main.scss';
+
+const logger: Middleware = (store: any) => (next: any) => (action: any): any => {
+	console.log('Dispatching: ', action);
+	let result = next(action);
+	console.log('New state: ', store.getState(), '\n===============');
+	return result;
+};
 
 let store: Store<VitrineState> = createStore(combineReducers({
 	settings,
@@ -21,10 +31,9 @@ let store: Store<VitrineState> = createStore(combineReducers({
 	playableGames,
 	selectedGame,
 	launchedGame,
-	refreshingGames
-}), initialState);
-
-store.subscribe(() => console.log('New state computed:', store.getState()));
+	refreshingGames,
+	potentialGameToAdd
+}), initialState, applyMiddleware(logger));
 
 render(
 	<Provider store={store}>

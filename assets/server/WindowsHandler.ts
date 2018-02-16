@@ -49,8 +49,6 @@ export class WindowsHandler {
 			frame: false
 		});
 		this.loaderWindow.loadURL(this.loaderEntryPoint);
-		if (this.devTools)
-			this.loaderWindow.webContents.openDevTools();
 	}
 
 	public createMainWindow() {

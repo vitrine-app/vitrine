@@ -10,13 +10,14 @@ import { VitrineComponent } from './VitrineComponent';
 interface Props {
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
-	gameClickHandler: Function,
-	launchGameCallback: Function
+	selectGame: Function | any,
+	launchGame: Function
 }
 
 export class SideBar extends VitrineComponent<Props, {}> {
 	private clickGameHandler(event: any) {
-		this.props.gameClickHandler(event.target.id.replace('game-', ''));
+		let selectedGame: PlayableGame = this.props.playableGames.getGameSync(event.target.id.replace('game-', ''));
+		this.props.selectGame(selectedGame);
 	}
 
 	public render(): JSX.Element {
@@ -36,7 +37,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 										((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
 									}
 									onClick={this.clickGameHandler.bind(this)}
-									onDoubleClick={this.props.launchGameCallback.bind(null, game.uuid)}
+									onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
 								>
 									{game.name}
 								</li>

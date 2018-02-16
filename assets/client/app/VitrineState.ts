@@ -8,7 +8,8 @@ export interface VitrineState {
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
 	launchedGame: PlayableGame,
-	refreshingGames: boolean
+	refreshingGames: boolean,
+	potentialGameToAdd: PotentialGame
 }
 
 export const initialState = {
@@ -18,4 +19,5 @@ export const initialState = {
 	selectedGame: null,
 	launchedGame: null,
 	refreshingGames: false,
+	potentialGameToAdd: null
 };

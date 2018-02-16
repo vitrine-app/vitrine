@@ -8,13 +8,13 @@ import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { SideBar } from '../containers/SideBar';
 import { TaskBar } from '../containers/TaskBar';
+import { GameContainer } from '../containers/GameContainer';
+import { AddGameModal } from '../containers/AddGameModal';
 import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
+import { EditTimePlayedModal } from '../containers/EditTimePlayedModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
 import { VitrineComponent } from './VitrineComponent';
-import { GameContainer } from './GameContainer';
-import { AddGameModal } from './AddGameModal';
-import { EditTimePlayedModal } from './EditTimePlayedModal';
 import { localizer } from '../Localizer';
 
 interface Props {
@@ -30,13 +30,13 @@ interface Props {
 	removePlayableGame: Function | any,
 	launchGame: Function | any,
 	stopGame: Function | any,
-	selectGame: Function | any
+	selectGame: Function | any,
+	setPotentialGameToAdd: Function | any
 }
 
 interface State {
 	firstLaunch: boolean,
 	launchedGamePictureActivated: boolean,
-	potentialGameToAdd: PotentialGame,
 	gameWillBeEdited: boolean
 }
 
@@ -47,7 +47,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.state = {
 			firstLaunch: false,
 			launchedGamePictureActivated: true,
-			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
 	}
@@ -60,6 +59,8 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	private editPlayableGame(game: PlayableGame) {
 		this.props.editPlayableGame(game);
+		if (game.uuid === this.props.selectedGame.uuid)
+			this.props.selectGame(game);
 		$('#add-game-modal').modal('hide');
 		$('#edit-time-played-modal').modal('hide');
 	}
@@ -97,14 +98,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.throwError(error);
 	}
 
-	private sideBarGameClickHandler(uuid: string) {
-		this.props.selectGame(this.props.playableGames.getGameSync(uuid));
-	}
-
 	private potentialGameToAddUpdateHandler(potentialGameToAdd: PotentialGame, gameWillBeEdited?: boolean) {
 		gameWillBeEdited = gameWillBeEdited || false;
+		this.props.setPotentialGameToAdd(potentialGameToAdd);
 		this.setState({
-			potentialGameToAdd,
 			gameWillBeEdited
 		}, () => {
 			$('#add-game-modal').modal('show');
@@ -125,10 +122,11 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		});
 	}
 
-	// TODO: Move this went Redux exodus is finished
 	private editGamePlayTimeContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.props.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
+		this.props.setPotentialGameToAdd(this.props.playableGames.getGameSync(gameUuid));
+		$('#edit-time-played-modal').modal('show');
+		/*this.props.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			this.setState({
 				potentialGameToAdd: selectedGame
 			}, () => {
@@ -136,7 +134,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			});
 		}).catch((error: Error) => {
 			return this.throwError(error);
-		});
+		});*/
 	}
 
 	private deleteGameContextClickHandler(event: any, data: any, target: HTMLElement) {
@@ -147,11 +145,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	private launchedGamePictureToggleHandler() {
 		this.setState({
 			launchedGamePictureActivated: false
-		}/*, () => {
-			this.setState({
-				selectedGame: this.state.selectedGame
-			});
-		}*/);
+		});
 	}
 
 	private keyDownHandler(event: KeyboardEvent) {
@@ -217,15 +211,12 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
 			<div className={'full-height'}>
 				<SideBar
-					gameClickHandler={this.sideBarGameClickHandler.bind(this)}
-					launchGameCallback={this.launchGame.bind(this)}
+					launchGame={this.launchGame.bind(this)}
 				/>
 				<GameContainer
-					selectedGame={this.props.selectedGame}
-					launchGameCallback={this.launchGame.bind(this)}
+					launchGame={this.launchGame.bind(this)}
 				/>
 				<AddGameModal
-					potentialGameToAdd={this.state.potentialGameToAdd}
 					isEditing={this.state.gameWillBeEdited}
 				/>
 				<AddPotentialGamesModal
@@ -234,9 +225,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<SettingsModal
 					firstLaunch={this.state.firstLaunch}
 				/>
-				<EditTimePlayedModal
-					editedGame={this.state.potentialGameToAdd}
-				/>
+				<EditTimePlayedModal/>
 				<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
 						{localizer.f('play')}

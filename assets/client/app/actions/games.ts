@@ -26,7 +26,8 @@ export function addPlayableGames(playableGames: PlayableGame[]): Action {
 		type: ActionType.ADD_PLAYABLE_GAMES,
 		payload: {
 			playableGames,
-			selectedGame: (playableGames.length) ? (playableGames[0]) : (null)
+			selectedGame: (playableGames.length) ? (playableGames[0]) : (null),
+			potentialGameToAdd: null
 		}
 	}
 }
@@ -35,7 +36,8 @@ export function editPlayableGame(playableGame: PlayableGame): Action {
 	return {
 		type: ActionType.EDIT_PLAYABLE_GAME,
 		payload: {
-			playableGame
+			playableGame,
+			potentialGameToAdd: null
 		}
 	};
 }
@@ -74,6 +76,15 @@ export function selectGame(selectedGame: PlayableGame): Action {
 		type: ActionType.SELECT_GAME,
 		payload: {
 			selectedGame
+		}
+	}
+}
+
+export function setPotentialGameToAdd(potentialGameToAdd: PotentialGame): Action {
+	return {
+		type: ActionType.SET_POTENTIAL_GAME_TO_ADD,
+		payload: {
+			potentialGameToAdd
 		}
 	}
 }

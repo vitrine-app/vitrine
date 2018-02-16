@@ -5,6 +5,7 @@ import { Action } from '../actions/actionsTypes';
 import { updateSettings } from '../actions/settings';
 import {
 	addPlayableGames, addPotentialGames, editPlayableGame, launchGame, removePlayableGame, selectGame,
+	setPotentialGameToAdd,
 	stopGame
 } from '../actions/games';
 import { Vitrine as VisualVitrine } from '../components/Vitrine';
@@ -28,7 +29,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => dispatch(removePlayableGame(gameUuid, selectedGame)),
 	launchGame: (launchedGame: PlayableGame) => dispatch(launchGame(launchedGame)),
 	stopGame: (playedGame: PlayableGame) => dispatch(stopGame(playedGame)),
-	selectGame: (selectedGame: PlayableGame) => dispatch(selectGame(selectedGame))
+	selectGame: (selectedGame: PlayableGame) => dispatch(selectGame(selectedGame)),
+	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => dispatch(setPotentialGameToAdd(potentialGameToAdd))
 });
 
 export const Vitrine = connect(mapStateToProps, mapDispatchToProps)(VisualVitrine);

@@ -53,13 +53,25 @@ export function selectedGame(state: PlayableGame = null, action: Action): Playab
 	}
 }
 
-
 export function launchedGame(state: PlayableGame = null, action: Action): PlayableGame {
 	switch (action.type) {
 		case ActionType.LAUNCH_GAME:
 			return action.payload.launchedGame;
 		case ActionType.STOP_GAME:
 			return action.payload.launchedGame;
+		default:
+			return state;
+	}
+}
+
+export function potentialGameToAdd(state: PotentialGame = null, action: Action): PotentialGame {
+	switch (action.type) {
+		case ActionType.SET_POTENTIAL_GAME_TO_ADD:
+			return action.payload.potentialGameToAdd;
+		case ActionType.ADD_PLAYABLE_GAMES:
+			return action.payload.potentialGameToAdd;
+		case ActionType.EDIT_PLAYABLE_GAME:
+			return action.payload.potentialGameToAdd;
 		default:
 			return state;
 	}
