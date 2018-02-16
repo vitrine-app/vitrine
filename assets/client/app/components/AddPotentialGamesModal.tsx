@@ -17,10 +17,6 @@ interface Props {
 }
 
 export class AddPotentialGamesModal extends VitrineComponent<Props, {}> {
-	public constructor(props: Props) {
-		super(props)
-	}
-
 	private gameCoverClickHandler(potentialGame: PotentialGame) {
 		this.props.potentialGameUpdateCallback(potentialGame);
 	}

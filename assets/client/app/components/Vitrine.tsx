@@ -7,13 +7,13 @@ import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { TaskBar } from '../containers/TaskBar';
+import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
 import { VitrineComponent } from './VitrineComponent';
 import { SideBar } from './SideBar';
 import { GameContainer } from './GameContainer';
 import { AddGameModal } from './AddGameModal';
-import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { EditTimePlayedModal } from './EditTimePlayedModal';
 import { localizer } from '../Localizer';
 
@@ -21,7 +21,6 @@ interface Props {
 	settings: any,
 	potentialGames: GamesCollection<PotentialGame>,
 	launchedGame: PlayableGame,
-	refreshingGames: boolean,
 	updateSettings: Function | any,
 	addPotentialGames: Function | any,
 	launchGame: Function | any
@@ -120,10 +119,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private addPotentialGames(potentialGames: PotentialGame[]) {
-		this.props.addPotentialGames(potentialGames);
-	}
-
 	private launchGame(gameUuid: string) {
 		serverListener.send('launch-game', gameUuid);
 		this.state.playableGames.getGame(gameUuid).then((launchedGame: PlayableGame) => {
@@ -202,6 +197,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		});
 	}
 
+	// TODO: Move this went Redux exodus is finished
 	private editGamePlayTimeContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
 		this.state.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
@@ -278,7 +274,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			.listen('add-playable-game', this.addPlayableGame.bind(this))
 			.listen('edit-playable-game', this.editPlayableGame.bind(this))
 			.listen('remove-playable-game', this.removePlayableGame.bind(this))
-			.listen('add-potential-games', this.addPotentialGames.bind(this))
+			.listen('add-potential-games', this.props.addPotentialGames.bind(this))
 			.listen('stop-game', this.stopGame.bind(this))
 			.listen('settings-updated', this.settingsUpdated.bind(this))
 			.listen('error', this.serverError.bind(this));
@@ -311,7 +307,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					isEditing={this.state.gameWillBeEdited}
 				/>
 				<AddPotentialGamesModal
-					potentialGames={this.props.potentialGames}
 					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
 				/>
 				<SettingsModal
