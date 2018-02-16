@@ -6,5 +6,7 @@ export interface Action {
 export enum ActionType {
 	UPDATE_SETTINGS,
 
-	LAUNCH_GAME
+	LAUNCH_GAME,
+	REFRESH_GAMES,
+	ADD_POTENTIAL_GAMES
 }

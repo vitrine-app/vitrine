@@ -9,16 +9,18 @@ import { combineReducers, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
 
 import { App } from './app/containers/App';
-import { VitrineState } from './app/VitrineState';
+import { initialState, VitrineState } from './app/VitrineState';
 import { settings } from './app/reducers/settings';
-import { launchedGame } from './app/reducers/games';
+import { launchedGame, potentialGames, refreshingGames } from './app/reducers/games';
 
 import './resources/sass/main.scss';
 
 let store: Store<VitrineState> = createStore(combineReducers({
 	settings,
-	launchedGame
-}));
+	potentialGames,
+	launchedGame,
+	refreshingGames
+}), initialState);
 
 store.subscribe(() => console.log('New state computed:', store.getState()));
 

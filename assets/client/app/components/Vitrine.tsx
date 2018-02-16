@@ -6,10 +6,10 @@ import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
+import { TaskBar } from '../containers/TaskBar';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
 import { VitrineComponent } from './VitrineComponent';
-import { TaskBar } from './TaskBar';
 import { SideBar } from './SideBar';
 import { GameContainer } from './GameContainer';
 import { AddGameModal } from './AddGameModal';
@@ -19,16 +19,17 @@ import { localizer } from '../Localizer';
 
 interface Props {
 	settings: any,
+	potentialGames: GamesCollection<PotentialGame>,
 	launchedGame: PlayableGame,
+	refreshingGames: boolean,
 	updateSettings: Function | any,
+	addPotentialGames: Function | any,
 	launchGame: Function | any
 }
 
 interface State {
 	firstLaunch: boolean,
 	playableGames: GamesCollection<PlayableGame>,
-	potentialGames: GamesCollection<PotentialGame>,
-	refreshingGames: boolean,
 	launchedGamePictureActivated: boolean,
 	selectedGame: PlayableGame,
 	potentialGameToAdd: PotentialGame,
@@ -42,8 +43,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.state = {
 			firstLaunch: false,
 			playableGames: new GamesCollection<PlayableGame>(),
-			potentialGames: new GamesCollection<PotentialGame>(),
-			refreshingGames: false,
 			launchedGamePictureActivated: true,
 			selectedGame: null,
 			potentialGameToAdd: null,
@@ -122,10 +121,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private addPotentialGames(potentialGames: PotentialGame[]) {
-		this.setState({
-			potentialGames: new GamesCollection<PotentialGame>(potentialGames),
-			refreshingGames: false
-		});
+		this.props.addPotentialGames(potentialGames);
 	}
 
 	private launchGame(gameUuid: string) {
@@ -170,13 +166,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		error.stack = errorStack;
 		error.name = errorName;
 		this.throwError(error);
-	}
-
-	private taskBarRefreshBtnClickHandler() {
-		serverListener.send('refresh-potential-games');
-		this.setState({
-			refreshingGames: true
-		});
 	}
 
 	private sideBarGameClickHandler(uuid: string) {
@@ -322,7 +311,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					isEditing={this.state.gameWillBeEdited}
 				/>
 				<AddPotentialGamesModal
-					potentialGames={this.state.potentialGames}
+					potentialGames={this.props.potentialGames}
 					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
 				/>
 				<SettingsModal
@@ -354,10 +343,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		return (
 			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
 				<TaskBar
-					potentialGames={this.state.potentialGames}
 					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
-					refreshingGames={this.state.refreshingGames}
-					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
 				/>
 				{vitrineContent}
 				{this.checkErrors()}

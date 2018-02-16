@@ -13,12 +13,13 @@ import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
 import { faPlus, faSyncAlt, faCogs } from '@fortawesome/fontawesome-free-solid';
+import { serverListener } from '../ServerListener';
 
 interface Props {
 	potentialGames: GamesCollection<PotentialGame>,
-	isGameLaunched: boolean,
 	refreshingGames: boolean,
-	refreshBtnCallback: React.MouseEventHandler<any>
+	refreshGames: Function | any,
+	isGameLaunched: boolean
 }
 
 export class TaskBar extends VitrineComponent<Props, {}> {
@@ -44,6 +45,11 @@ export class TaskBar extends VitrineComponent<Props, {}> {
 		this.currentWindow.close();
 	}
 
+	private taskBarRefreshBtnClickHandler() {
+		serverListener.send('refresh-potential-games');
+		this.props.refreshGames();
+	}
+
 	public render(): JSX.Element {
 		let taskBarElements: JSX.Element = (!this.props.isGameLaunched) ? (
 			<div className="row">
@@ -61,7 +67,7 @@ export class TaskBar extends VitrineComponent<Props, {}> {
 								icon={faSyncAlt}
 								spin={this.props.refreshingGames}
 								tooltip={localizer.f('refreshLabel')}
-								onClick={this.props.refreshBtnCallback}
+								onClick={this.taskBarRefreshBtnClickHandler.bind(this)}
 							/>
 						</div>
 						<div className="col-md-4">
