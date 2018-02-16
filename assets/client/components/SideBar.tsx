@@ -14,28 +14,9 @@ interface Props {
 	launchGameCallback: Function
 }
 
-// TODO: inspect potential useless state
-interface State {
-	playableGames: GamesCollection<PlayableGame>
-}
-
-export class SideBar extends VitrineComponent<Props, State> {
-	public constructor(props: Props) {
-		super(props);
-
-		this.state = {
-			playableGames: props.playableGames
-		}
-	}
-
+export class SideBar extends VitrineComponent<Props, {}> {
 	private clickGameHandler(event: any) {
 		this.props.gameClickHandler(event.target.id.replace('game-', ''));
-	}
-
-	public componentWillReceiveProps(props: Props) {
-		this.setState({
-			playableGames: props.playableGames
-		});
 	}
 
 	public render(): JSX.Element {
@@ -43,7 +24,7 @@ export class SideBar extends VitrineComponent<Props, State> {
 			<div className={`col-sm-4 col-lg-2 ${css(styles.sideBarContainer)}`}>
 				<div className={css(styles.sideBarContent)}>
 					<ul id="playable-games-list" className={css(styles.gamesListUl)}>
-						{this.state.playableGames.games.map((game: PlayableGame, index: number) =>
+						{this.props.playableGames.games.map((game: PlayableGame, index: number) =>
 							<ContextMenuTrigger
 								id="sidebar-games-context-menu"
 								key={index}
