@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
-import { getEnvFolder } from '../../models/env';
+import { getEnvFolder } from '../../../models/env';
 import { serverListener } from '../ServerListener';
 import { Vitrine } from './Vitrine';
 import { localizer } from '../Localizer';

@@ -2,9 +2,9 @@ import * as React from 'react';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
-import { PotentialGame } from '../../models/PotentialGame';
-import { PlayableGame } from '../../models/PlayableGame';
-import { GamesCollection } from '../../models/GamesCollection';
+import { PotentialGame } from '../../../models/PotentialGame';
+import { PlayableGame } from '../../../models/PlayableGame';
+import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';

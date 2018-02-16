@@ -2,8 +2,8 @@ import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { padding } from 'css-verbose';
 
-import { GamesCollection } from '../../models/GamesCollection';
-import { PotentialGame } from '../../models/PotentialGame';
+import { GamesCollection } from '../../../models/GamesCollection';
+import { PotentialGame } from '../../../models/PotentialGame';
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
 import { CloseIcon } from './icons/CloseIcon';

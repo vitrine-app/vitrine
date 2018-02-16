@@ -4,9 +4,9 @@ import { padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
+import { randomHashedString } from '../../../models/env';
 import { VitrineComponent } from './VitrineComponent';
 import * as ReactTooltip from 'react-tooltip';
-import { randomHashedString } from '../../server/helpers';
 
 interface Props {
 	icon: IconDefinition,

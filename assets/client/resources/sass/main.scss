@@ -8,9 +8,9 @@
 
 /* Bootstrap */
 @import 'bootstrap.variables';
-@import '~bootstrap-sass/assets/stylesheets/bootstrap';
-@import '~bootstrap-select/sass/bootstrap-select';
-@import '~react-datetime/css/react-datetime.css';
+@import '../../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+@import '../../../../node_modules/bootstrap-select/sass/bootstrap-select';
+@import '../../../../node_modules/react-datetime/css/react-datetime.css';
 @import 'reactDateTime';
 
 .form-control {
@@ -27,7 +27,7 @@
 }
 
 /* Animate.css */
-@import '~animate.sass/scss/animate';
+@import '../../../../node_modules/animate.sass/scss/animate';
 
 /* React context menu */
 @import 'contextMenus';

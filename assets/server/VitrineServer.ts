@@ -11,7 +11,7 @@ import { WindowsHandler } from './WindowsHandler';
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
-import { getEnvFolder } from '../models/env';
+import { getEnvFolder, randomHashedString } from '../models/env';
 import { launchGame } from './GameLauncher';
 import { searchSteamGames } from './games/SteamGamesCrawler';
 import { getPlayableGames } from './games/PlayableGamesCrawler';
@@ -20,7 +20,7 @@ import { searchOriginGames } from './games/OriginGamesCrawler';
 import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
-import { downloadImage, isAlreadyStored, randomHashedString } from './helpers';
+import { downloadImage, isAlreadyStored } from './helpers';
 
 export class VitrineServer {
 	private windowsHandler: WindowsHandler;

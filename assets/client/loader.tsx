@@ -5,7 +5,7 @@ import 'bootstrap-sass';
 import * as React from 'react';
 import { render } from 'react-dom';
 
-import './sass/main.scss';
-import { VitrineLoader } from './components/VitrineLoader';
+import './resources/sass/main.scss';
+import { VitrineLoader } from './app/components/VitrineLoader';
 
 render(<VitrineLoader/>, document.getElementById('app'));

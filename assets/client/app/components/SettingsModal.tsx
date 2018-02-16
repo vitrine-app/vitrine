@@ -11,9 +11,9 @@ import { localizer } from '../Localizer';
 import { openDirectory } from '../helpers';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
-import * as steamIcon from '../images/steamIcon.png';
-import * as originIcon from '../images/originIcon.png';
-import * as emulatedIcon from '../images/emulatedIcon.png';
+import * as steamIcon from '../../resources/images/steamIcon.png';
+import * as originIcon from '../../resources/images/originIcon.png';
+import * as emulatedIcon from '../../resources/images/emulatedIcon.png';
 
 interface Props {
 	settings: any,

@@ -3,8 +3,8 @@ import { StyleSheet, css } from 'aphrodite';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import { margin, padding, border, rgba } from 'css-verbose';
 
-import { PlayableGame } from '../../models/PlayableGame';
-import { GamesCollection } from '../../models/GamesCollection';
+import { PlayableGame } from '../../../models/PlayableGame';
+import { GamesCollection } from '../../../models/GamesCollection';
 import { VitrineComponent } from './VitrineComponent';
 
 interface Props {

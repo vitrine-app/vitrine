@@ -4,7 +4,7 @@ import { margin, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
+import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
 
 interface Props {
 	percentage: number,

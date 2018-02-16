@@ -7,7 +7,7 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { loaderServerListener } from '../ServerListener';
 
 import { faCog } from '@fortawesome/fontawesome-free-solid';
-import * as vitrineIcon from '../images/vitrine.ico';
+import * as vitrineIcon from '../../resources/images/vitrine.ico';
 
 interface State {
 	displayedInfo: string,

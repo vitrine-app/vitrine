@@ -3,8 +3,8 @@ import { BrowserWindow, remote } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { border, padding, rgba } from 'css-verbose';
 
-import { PotentialGame } from '../../models/PotentialGame';
-import { GamesCollection } from '../../models/GamesCollection';
+import { PotentialGame } from '../../../models/PotentialGame';
+import { GamesCollection } from '../../../models/GamesCollection';
 import { VitrineComponent } from './VitrineComponent';
 import { Button } from './Button';
 import { MinimizeIcon } from './icons/MinimizeIcon';

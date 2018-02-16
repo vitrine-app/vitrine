@@ -3,7 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 import { margin, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { PlayableGame } from '../../models/PlayableGame';
+import { PlayableGame } from '../../../models/PlayableGame';
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
 
