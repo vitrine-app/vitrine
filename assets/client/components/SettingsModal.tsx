@@ -15,8 +15,29 @@ import * as steamIcon from '../images/steamIcon.png';
 import * as originIcon from '../images/originIcon.png';
 import * as emulatedIcon from '../images/emulatedIcon.png';
 
-export class SettingsModal extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	settings: any,
+	firstLaunch: boolean
+}
+
+interface State {
+	langs: any[],
+	lang: string,
+	steamEnabled: boolean,
+	originEnabled: boolean,
+	emulatedEnabled: boolean,
+	steamPath: string,
+	originPath: string,
+	emulatedPath: string,
+	steamError: boolean,
+	originError: boolean,
+	emulatedError: boolean,
+	emulatorsCurrentConfig: any,
+	emulatorsError: string
+}
+
+export class SettingsModal extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {

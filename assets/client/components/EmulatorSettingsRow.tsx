@@ -8,8 +8,24 @@ import { openExecutableDialog } from '../helpers';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
-export class EmulatorSettingsRow extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	id: string,
+	emulator: any,
+	platforms: any[],
+	onChange: Function
+}
+
+interface State {
+	name: string,
+	platforms: any[],
+	active: boolean,
+	path: string,
+	command: string,
+	glob: string
+}
+
+export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {

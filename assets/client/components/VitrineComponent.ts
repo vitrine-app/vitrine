@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { ReactNode } from 'react';
 
-export abstract class VitrineComponent extends React.Component<any, any> {
-	public constructor(props?: any) {
+interface State {
+	error?: Error
+}
+
+export abstract class VitrineComponent<P, S> extends React.Component<P, S & State> {
+	public constructor(props?: P) {
 		super(props);
-		this.state = {};
+
+		this.state = {} as any;
 	}
 
 	protected throwError(error: Error) {

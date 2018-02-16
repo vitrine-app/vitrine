@@ -3,6 +3,8 @@ import { BrowserWindow, remote } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
 import { border, padding, rgba } from 'css-verbose';
 
+import { PotentialGame } from '../../models/PotentialGame';
+import { GamesCollection } from '../../models/GamesCollection';
 import { VitrineComponent } from './VitrineComponent';
 import { Button } from './Button';
 import { MinimizeIcon } from './icons/MinimizeIcon';
@@ -12,10 +14,17 @@ import { localizer } from '../Localizer';
 
 import { faPlus, faSyncAlt, faCogs } from '@fortawesome/fontawesome-free-solid';
 
-export class TaskBar extends VitrineComponent {
+interface Props {
+	potentialGames: GamesCollection<PotentialGame>,
+	isGameLaunched: boolean,
+	refreshingGames: boolean,
+	refreshBtnCallback: React.MouseEventHandler<any>
+}
+
+export class TaskBar extends VitrineComponent<Props, {}> {
 	private currentWindow: BrowserWindow;
 
-	public constructor(props: any) {
+	public constructor(props: Props) {
 		super(props);
 		this.currentWindow = remote.getCurrentWindow();
 	}

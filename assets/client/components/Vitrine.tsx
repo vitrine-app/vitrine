@@ -2,14 +2,14 @@ import * as React from 'react';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
+import { PotentialGame } from '../../models/PotentialGame';
+import { PlayableGame } from '../../models/PlayableGame';
+import { GamesCollection } from '../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';
 import { SideBar } from './SideBar';
 import { GameContainer } from './GameContainer';
-import { PotentialGame } from '../../models/PotentialGame';
-import { PlayableGame } from '../../models/PlayableGame';
-import { GamesCollection } from '../../models/GamesCollection';
 import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { SettingsModal } from './SettingsModal';
@@ -17,7 +17,24 @@ import { EditTimePlayedModal } from './EditTimePlayedModal';
 import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
 
-export class Vitrine extends VitrineComponent {
+interface Props {
+	settings: any
+}
+
+interface State {
+	settings: any,
+	firstLaunch: boolean,
+	playableGames: GamesCollection<PlayableGame>,
+	potentialGames: GamesCollection<PotentialGame>,
+	refreshingGames: boolean,
+	launchedGamePictureActivated: boolean,
+	selectedGame: PlayableGame,
+	launchedGame: PlayableGame,
+	potentialGameToAdd: PotentialGame,
+	gameWillBeEdited: boolean
+}
+
+export class Vitrine extends VitrineComponent<Props, State> {
 	public constructor(props: any) {
 		super(props);
 

@@ -1,15 +1,27 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
+import { PotentialGame } from '../../models/PotentialGame';
+import { PlayableGame } from '../../models/PlayableGame';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
 import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
+interface Props {
+	editedGame: PotentialGame
+}
+
+interface State {
+	hours: number,
+	minutes: number,
+	seconds: number
+}
+
 // TODO: fix bug
-export class EditTimePlayedModal extends VitrineComponent {
-	public constructor(props: any) {
+export class EditTimePlayedModal extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {
@@ -19,9 +31,9 @@ export class EditTimePlayedModal extends VitrineComponent {
 		};
 	}
 
-	public componentWillReceiveProps(props: any) {
+	public componentWillReceiveProps(props: Props) {
 		if (props.editedGame) {
-			let timePlayed: number = props.editedGame.timePlayed;
+			let timePlayed: number = (props.editedGame as PlayableGame).timePlayed;
 			let hours: number = Math.floor(timePlayed / 3600);
 			let minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
 			let seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
@@ -33,7 +45,7 @@ export class EditTimePlayedModal extends VitrineComponent {
 		}
 	}
 
-	private changeTimeHandler(field: string, value: number) {
+	private changeTimeHandler(field: any, value: number) {
 		this.setState({
 			[field]: value
 		});

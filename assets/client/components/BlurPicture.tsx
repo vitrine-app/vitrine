@@ -2,14 +2,32 @@ import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
 
-export class BlurPicture extends VitrineComponent {
+interface Props {
+	width?: number,
+	height?: number,
+	fontSize: number,
+	background: string,
+	faIcon: IconDefinition,
+	clickHandler: Function
+}
+
+interface State {
+	divClassName: string,
+	iconClassName: string,
+	divStyle: React.CSSProperties,
+	imageStyle: React.CSSProperties,
+	iconStyle: React.CSSProperties
+}
+
+export class BlurPicture extends VitrineComponent<Props, State> {
 	private pulseDuration: number;
 
-	public constructor(props: any) {
+	public constructor(props: Props) {
 		super(props);
 
 		let divWidth: number = this.props.width || 3.136;
@@ -81,7 +99,7 @@ export class BlurPicture extends VitrineComponent {
 		this.props.clickHandler();
 	}
 
-	public componentWillReceiveProps(props: any) {
+	public componentWillReceiveProps(props: Props) {
 		this.setState({
 			imageStyle: {
 				backgroundImage: urlify(props.background),
@@ -115,7 +133,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 	container: {
 		overflow: 'hidden',
 		position: 'relative',
-		//left: 40,
 		color: '#F1F1F1',
 		textShadow: `${0} ${0} ${10..px()} ${rgba(8, 8, 8, 0.17)}`,
 		boxShadow: `${0} ${0} ${10..px()} ${rgba(0, 0, 0, 0.55)}`

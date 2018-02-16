@@ -12,9 +12,17 @@ import { localizer } from '../Localizer';
 
 import { faSearch, faCircleNotch } from '@fortawesome/fontawesome-free-solid';
 
-export class IgdbResearchModal extends VitrineComponent {
-	public constructor(props: any) {
-		super(props);
+interface State {
+	loading: boolean,
+	research: string,
+	resultsNb: number,
+	researches: any[],
+	selectedResearchId: number | string
+}
+
+export class IgdbResearchModal extends VitrineComponent<{}, State> {
+	public constructor() {
+		super();
 
 		this.state = {
 			loading: true,
@@ -77,8 +85,8 @@ export class IgdbResearchModal extends VitrineComponent {
 			this.setState({
 				loading: false,
 				research: research,
-				researches: researches,
-				selectedResearchId: ''
+				selectedResearchId: '',
+				researches
 			}, () => {
 				if (!$('#igdb-research-modal').is(':visible'))
 					$('#igdb-research-modal').modal('show');

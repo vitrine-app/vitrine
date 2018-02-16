@@ -6,8 +6,13 @@ import { VitrineComponent } from './VitrineComponent';
 
 import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
-export class CirclePercentage extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	percentage: number,
+	color: string
+}
+
+export class CirclePercentage extends VitrineComponent<Props, {}> {
+	public constructor(props: Props) {
 		super(props);
 	}
 

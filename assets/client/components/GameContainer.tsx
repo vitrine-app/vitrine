@@ -3,6 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
+import { PlayableGame } from '../../models/PlayableGame';
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
 import { CirclePercentage } from './CirclePercentage';
@@ -12,8 +13,19 @@ import { localizer } from '../Localizer';
 import { faPlay } from '@fortawesome/fontawesome-free-solid';
 import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
-export class GameContainer extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	selectedGame: PlayableGame
+	launchGameCallback: Function
+}
+
+interface State {
+	selectedGame: PlayableGame,
+	backgroundImage: string,
+	mainColor: string
+}
+
+export class GameContainer extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 		this.state = {
 			selectedGame: props.selectedGame,
@@ -22,7 +34,7 @@ export class GameContainer extends VitrineComponent {
 		};
 	}
 
-	public componentWillReceiveProps(props: any) {
+	public componentWillReceiveProps(props: Props) {
 		if (!props.selectedGame) {
 			this.setState({
 				selectedGame: null,

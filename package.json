@@ -119,8 +119,8 @@
   "scripts": {
     "compile-cpp": "cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
     "build": "webpack --progress && electron .",
-    "run-server-electron": "webpack --progress --config webpack.server.config.js && electron .",
-    "run-client-electron": "webpack --progress --config webpack.client.config.js && electron .",
+    "run-server": "webpack --progress --config webpack.server.config.js && electron .",
+    "run-client": "webpack --progress --config webpack.client.config.js && electron .",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "pack": "webpack --progress && build --dir",

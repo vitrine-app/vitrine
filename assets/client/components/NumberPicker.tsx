@@ -6,8 +6,21 @@ import { VitrineComponent } from './VitrineComponent';
 
 import { faCaretUp, faCaretDown } from '@fortawesome/fontawesome-free-solid';
 
-export class NumberPicker extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	min: number,
+	max: number,
+	name: string,
+	placeholder: string
+	value: number,
+	onChange?: Function
+}
+
+interface State {
+	value: string | React.ReactText
+}
+
+export class NumberPicker extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {
@@ -17,7 +30,7 @@ export class NumberPicker extends VitrineComponent {
 
 	private increaseCounterHandler() {
 		let newVal: number;
-		let currentVal: number = parseInt(this.state.value);
+		let currentVal: number = parseInt(this.state.value as string);
 
 		if (isNaN(currentVal) || currentVal < this.props.min)
 			newVal = this.props.min;
@@ -30,13 +43,13 @@ export class NumberPicker extends VitrineComponent {
 			value: newVal
 		}, () => {
 			if (this.props.onChange)
-				this.props.onChange(parseInt(this.state.value));
+				this.props.onChange(parseInt(this.state.value as string));
 		});
 	}
 
 	private decreaseCounterHandler() {
 		let newVal: number;
-		let currentVal: number = parseInt(this.state.value);
+		let currentVal: number = parseInt(this.state.value as string);
 
 		if (isNaN(currentVal) || currentVal <= this.props.min)
 			newVal = this.props.min;
@@ -49,7 +62,7 @@ export class NumberPicker extends VitrineComponent {
 			value: newVal
 		}, () => {
 			if (this.props.onChange)
-				this.props.onChange(parseInt(this.state.value));
+				this.props.onChange(parseInt(this.state.value as string));
 		});
 	}
 
@@ -66,7 +79,7 @@ export class NumberPicker extends VitrineComponent {
 		});
 	}
 
-	public componentWillReceiveProps(props: any) {
+	public componentWillReceiveProps(props: Props) {
 		this.setState({
 			value: (props.value !== undefined) ? (props.value) : ('')
 		});

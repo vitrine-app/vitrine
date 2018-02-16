@@ -3,13 +3,19 @@ import { StyleSheet, css } from 'aphrodite';
 import { margin, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
+import { PlayableGame } from '../../models/PlayableGame';
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
 
 import { faTv } from '@fortawesome/fontawesome-free-solid';
 
-export class LaunchedGameContainer extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	launchedGame: PlayableGame
+	clickHandler: Function
+}
+
+export class LaunchedGameContainer extends VitrineComponent<Props, {}> {
+	public constructor(props: Props) {
 		super(props);
 	}
 

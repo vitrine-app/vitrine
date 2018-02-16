@@ -5,8 +5,19 @@ import { VitrineComponent } from './VitrineComponent';
 
 import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
-export class GamesModule extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	clicked: boolean,
+	iconFile: any,
+	iconAlt: string,
+	clickHandler: Function
+}
+
+interface State {
+
+}
+
+export class GamesModule extends VitrineComponent<Props, any> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {

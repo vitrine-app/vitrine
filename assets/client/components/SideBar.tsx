@@ -3,11 +3,24 @@ import { StyleSheet, css } from 'aphrodite';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import { margin, padding, border, rgba } from 'css-verbose';
 
-import { VitrineComponent } from './VitrineComponent';
 import { PlayableGame } from '../../models/PlayableGame';
+import { GamesCollection } from '../../models/GamesCollection';
+import { VitrineComponent } from './VitrineComponent';
 
-export class SideBar extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	playableGames: GamesCollection<PlayableGame>,
+	selectedGame: PlayableGame,
+	gameClickHandler: Function,
+	launchGameCallback: Function
+}
+
+// TODO: inspect potential useless state
+interface State {
+	playableGames: GamesCollection<PlayableGame>
+}
+
+export class SideBar extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {
@@ -19,7 +32,7 @@ export class SideBar extends VitrineComponent {
 		this.props.gameClickHandler(event.target.id.replace('game-', ''));
 	}
 
-	public componentWillReceiveProps(props: any) {
+	public componentWillReceiveProps(props: Props) {
 		this.setState({
 			playableGames: props.playableGames
 		});

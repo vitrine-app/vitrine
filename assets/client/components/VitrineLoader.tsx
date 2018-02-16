@@ -9,7 +9,12 @@ import { loaderServerListener } from '../ServerListener';
 import { faCog } from '@fortawesome/fontawesome-free-solid';
 import * as vitrineIcon from '../images/vitrine.ico';
 
-export class VitrineLoader extends React.Component<null, any> {
+interface State {
+	displayedInfo: string,
+	updateDownloadProgress: number
+}
+
+export class VitrineLoader extends React.Component<null, State> {
 	private lastUpdateVersion: string;
 
 	public constructor() {

@@ -5,7 +5,11 @@ import { rgba } from 'css-verbose';
 import { serverListener } from '../ServerListener';
 import { localizer } from '../Localizer';
 
-export class ErrorsWrapper extends React.Component<any, any> {
+interface State {
+	error?: Error
+}
+
+export class ErrorsWrapper extends React.Component<{}, State> {
 	constructor(props: any) {
 		super(props);
 

@@ -5,9 +5,9 @@ import * as moment from 'moment';
 import { border, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
+import { PotentialGame, GameSource } from '../../models/PotentialGame';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
-import { PotentialGame, GameSource } from '../../models/PotentialGame';
 import { BlurPicture } from './BlurPicture';
 import { NumberPicker } from './NumberPicker';
 import { IgdbResearchModal } from './IgdbResearchModal';
@@ -18,10 +18,33 @@ import { openExecutableDialog, openImageDialog } from '../helpers';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
-export class AddGameModal extends VitrineComponent {
+interface Props {
+	potentialGameToAdd: PotentialGame
+	isEditing: boolean
+}
+
+interface State {
+	name: string,
+	series: string,
+	date: string,
+	developer: string,
+	publisher: string,
+	genres: string,
+	rating: number,
+	summary: string,
+	executable: string,
+	arguments: string,
+	cover: string,
+	backgroundScreen: string,
+	potentialBackgrounds: string[],
+	source: GameSource,
+	isEditing: boolean
+}
+
+export class AddGameModal extends VitrineComponent<Props, State> {
 	private emptyState: any;
 
-	public constructor(props: any) {
+	public constructor(props: Props) {
 		super(props);
 
 		this.emptyState = {
@@ -74,7 +97,7 @@ export class AddGameModal extends VitrineComponent {
 	}
 
 	private inputChangeHandler(event: any) {
-		let name: string = event.target.name;
+		let name: string | any = event.target.name;
 		let value: string = event.target.value;
 
 		this.setState({
@@ -88,7 +111,7 @@ export class AddGameModal extends VitrineComponent {
 		});
 	}
 
-	private ratingChangeHandler(value: number) {
+	private ratingChangeHandler(value: number | any) {
 		this.setState({
 			rating: value
 		});
@@ -134,7 +157,7 @@ export class AddGameModal extends VitrineComponent {
 		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this));
 	}
 
-	public componentWillReceiveProps(props: any) {
+	public componentWillReceiveProps(props: Props) {
 		if (props.potentialGameToAdd) {
 			let gameToAdd: PotentialGame = props.potentialGameToAdd;
 			let [executable, args]: string[] = (gameToAdd.commandLine.length > 1) ? (gameToAdd.commandLine) : ([gameToAdd.commandLine[0], '']);

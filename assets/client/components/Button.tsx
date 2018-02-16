@@ -2,12 +2,25 @@ import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 import { VitrineComponent } from './VitrineComponent';
 import * as ReactTooltip from 'react-tooltip';
 import { randomHashedString } from '../../server/helpers';
 
-export class Button extends VitrineComponent {
+interface Props {
+	icon: IconDefinition,
+	spin?: boolean,
+	tooltip?: string,
+	onClick?: React.MouseEventHandler<any> | string
+}
+
+interface State {
+	buttonClassName: string,
+	iconClassName: string
+}
+
+export class Button extends VitrineComponent<Props, State> {
 	private id: string;
 
 	public constructor() {

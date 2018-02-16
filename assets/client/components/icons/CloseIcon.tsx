@@ -4,10 +4,18 @@ import { rgba } from 'css-verbose';
 
 import { VitrineComponent } from '../VitrineComponent';
 
-export class CloseIcon extends VitrineComponent {
+interface Props {
+	onClick: React.MouseEventHandler<any> | string
+}
+
+interface State {
+	color: string
+}
+
+export class CloseIcon extends VitrineComponent<Props, State> {
 	private colorStyles: any;
 
-	public constructor(props: any) {
+	public constructor(props: Props) {
 		super(props);
 		this.colorStyles = {
 			color: rgba(255, 255, 255, 0.3),

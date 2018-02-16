@@ -10,8 +10,19 @@ import { openImageDialog } from '../helpers';
 import { faPlus } from '@fortawesome/fontawesome-free-solid';
 import * as bootstrapVariables from '!!sass-variable-loader!../sass/bootstrap.variables.scss';
 
-export class ImagesCollection extends VitrineComponent {
-	public constructor(props: any) {
+interface Props {
+	images?: string[]
+	onChange: Function
+}
+
+interface State {
+	images: string[],
+	selectedImage: string,
+	customImage: boolean
+}
+
+export class ImagesCollection extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {
@@ -50,7 +61,7 @@ export class ImagesCollection extends VitrineComponent {
 		});
 	}
 
-	public componentWillReceiveProps(props: any) {
+	public componentWillReceiveProps(props: Props) {
 		let images: string[] = [];
 		let selectedImage: string = '';
 		if (props.images) {
