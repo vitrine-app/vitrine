@@ -66,16 +66,16 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private removePlayableGame(gameUuid: string) {
-		this.props.removePlayableGame(gameUuid, (this.props.playableGames.games.length) ? (this.props.playableGames.games[0]) : (null));
+		this.props.removePlayableGame(gameUuid, (this.props.playableGames.size() - 1) ? (this.props.playableGames.getGame(0)) : (null));
 	}
 
 	private launchGame(gameUuid: string) {
 		serverListener.send('launch-game', gameUuid);
-		this.props.launchGame(this.props.playableGames.getGameSync(gameUuid));
+		this.props.launchGame(this.props.playableGames.getGame(gameUuid));
 	}
 
 	private stopGame(gameUuid: string, totalTimePlayed: number) {
-		let playedGame: PlayableGame = this.props.playableGames.getGameSync(gameUuid);
+		let playedGame: PlayableGame = this.props.playableGames.getGame(gameUuid);
 		playedGame.timePlayed = totalTimePlayed;
 		this.props.stopGame(playedGame);
 		this.forceUpdate();
@@ -115,26 +115,13 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	private editGameContextClickHandler(event: any, data: any, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.props.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
-			this.potentialGameToAddUpdateHandler(selectedGame, true);
-		}).catch((error: Error) => {
-			return this.throwError(error);
-		});
+		this.potentialGameToAddUpdateHandler(this.props.playableGames.getGame(gameUuid), true);
 	}
 
 	private editGamePlayTimeContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.props.setPotentialGameToAdd(this.props.playableGames.getGameSync(gameUuid));
+		this.props.setPotentialGameToAdd(this.props.playableGames.getGame(gameUuid));
 		$('#edit-time-played-modal').modal('show');
-		/*this.props.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
-			this.setState({
-				potentialGameToAdd: selectedGame
-			}, () => {
-				$('#edit-time-played-modal').modal('show');
-			});
-		}).catch((error: Error) => {
-			return this.throwError(error);
-		});*/
 	}
 
 	private deleteGameContextClickHandler(event: any, data: any, target: HTMLElement) {
@@ -153,17 +140,17 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			case 'ArrowDown': {
 				event.preventDefault();
 
-				let index: number = this.props.playableGames.games.indexOf(this.props.selectedGame);
-				if (index < this.props.playableGames.games.length - 1)
-					this.props.selectGame(this.props.playableGames.games[index + 1]);
+				let index: number = this.props.playableGames.getIndex(this.props.selectedGame);
+				if (index < this.props.playableGames.size() - 1)
+					this.props.selectGame(this.props.playableGames.getGame(index + 1));
 				break;
 			}
 			case 'ArrowUp': {
 				event.preventDefault();
 
-				let index: number = this.props.playableGames.games.indexOf(this.props.selectedGame);
+				let index: number = this.props.playableGames.getIndex(this.props.selectedGame);
 				if (index)
-					this.props.selectGame(this.props.playableGames.games[index - 1]);
+					this.props.selectGame(this.props.playableGames.getGame(index - 1));
 				break;
 			}
 			case 'Enter': {

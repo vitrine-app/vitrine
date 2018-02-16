@@ -91,7 +91,7 @@ export class VitrineServer {
 			}
 			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
-				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.games);
+				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
 				this.findPotentialGames();
 			}).catch((error: Error) => this.throwServerError(error));
 		}
@@ -124,64 +124,57 @@ export class VitrineServer {
 	}
 
 	private editGame(gameUuid: string, gameForm: any) {
-		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
-			editedGame.name = gameForm.name;
-			editedGame.commandLine = [];
-			let { backgroundScreen, cover } = editedGame.details;
-			editedGame.details = {
-				...gameForm,
-				backgroundScreen,
-				cover
-			};
-			this.registerGame(editedGame, gameForm, true);
-		}).catch((error: Error) => this.throwServerError(error));
+		let editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		editedGame.name = gameForm.name;
+		editedGame.commandLine = [];
+		let { backgroundScreen, cover } = editedGame.details;
+		editedGame.details = {
+			...gameForm,
+			backgroundScreen,
+			cover
+		};
+		this.registerGame(editedGame, gameForm, true);
 	}
 
 	private editGameTimePlayed(gameUuid: string, timePlayed: number) {
-		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
-			let gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
-			let configFilePath: string = path.resolve(gameDirectory, 'config.json');
+		let editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
+		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
-			editedGame.timePlayed = timePlayed;
-			this.sendRegisteredGame(editedGame, configFilePath, true);
-		}).catch((error: Error) => this.throwServerError(error));
+		editedGame.timePlayed = timePlayed;
+		this.sendRegisteredGame(editedGame, configFilePath, true);
 	}
 
 	private launchGame(gameUuid: string) {
-		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
-			if (this.gameLaunched)
-				return;
-			this.gameLaunched = true;
-			launchGame(launchingGame).then((secondsPlayed: number) => {
-				this.gameLaunched = false;
-				launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
-				this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
-			}).catch((error: Error) => {
-				this.gameLaunched = false;
-				this.throwServerError(error);
-			});
-		}).catch((error: Error) => this.throwServerError(error));
+		if (this.gameLaunched)
+			return;
+		let launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);this.gameLaunched = true;
+		launchGame(launchingGame).then((secondsPlayed: number) => {
+			this.gameLaunched = false;
+			launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
+			this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
+		}).catch((error: Error) => {
+			this.gameLaunched = false;
+			this.throwServerError(error);
+		});
 	}
 
 	private removeGame(gameUuid: string) {
-		this.playableGames.removeGame(gameUuid, (error) => {
-			if (error)
-				this.windowsHandler.sendToClient('server-error', error);
-			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
-			rimraf(gameDirectory, () => {
-				this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
-			});
+		this.potentialGames.removeGame(gameUuid);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
+		rimraf(gameDirectory, () => {
+			this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
 		});
 	}
 
 	// TODO: Improve potential games pipeline
 	private findPotentialGames() {
-		this.potentialGames.games = [];
+		this.potentialGames.clean();
 		this.searchSteamGames()
 			.then(this.searchOriginGames.bind(this))
 			.then(this.searchEmulatedGames.bind(this))
 			.then(() => {
-				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.games);
+				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 			});
 	}
 
@@ -231,10 +224,9 @@ export class VitrineServer {
 				resolve();
 				return;
 			}
-			searchSteamGames(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games, () => {
-					resolve();
-				});
+			searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames()).then((games: GamesCollection<PotentialGame>) => {
+				this.potentialGames.addGames(games.getGames());
+				resolve();
 			}).catch((error: Error) => {
 				resolve();
 				this.throwServerError(error);
@@ -248,10 +240,9 @@ export class VitrineServer {
 				resolve();
 				return;
 			}
-			searchOriginGames(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games, () => {
-					resolve();
-				});
+			searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames()).then((games: GamesCollection<PotentialGame>) => {
+				this.potentialGames.addGames(games.getGames());
+				resolve();
 			}).catch((error: Error) => {
 				resolve();
 				this.throwServerError(error);
@@ -265,10 +256,9 @@ export class VitrineServer {
 				resolve();
 				return;
 			}
-			searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games, () => {
-					resolve();
-				});
+			searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames()).then((games: GamesCollection<PotentialGame>) => {
+				this.potentialGames.addGames(games.getGames());
+				resolve();
 			}).catch((error: Error) => {
 				resolve();
 				this.throwServerError(error);
@@ -356,13 +346,12 @@ export class VitrineServer {
 			if (!editing && game.source !== GameSource.LOCAL)
 				this.findPotentialGames();
 			if (!editing) {
-				this.windowsHandler.sendToClient('add-playable-game', game);
 				this.playableGames.addGame(game);
+				this.windowsHandler.sendToClient('add-playable-game', game);
 			}
 			else {
-				this.playableGames.editGame(game, () => {
-					this.windowsHandler.sendToClient('edit-playable-game', game);
-				});
+				this.playableGames.editGame(game);
+				this.windowsHandler.sendToClient('edit-playable-game', game);
 			}
 		}).catch((error: Error) => this.throwServerError(error));
 	}

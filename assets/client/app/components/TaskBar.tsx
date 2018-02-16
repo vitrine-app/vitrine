@@ -81,10 +81,14 @@ export class TaskBar extends VitrineComponent<Props, {}> {
 				</div>
 				<div
 					className={`potential-games-container col-md-2 ${css(styles.potentialGamesContainer)}`}
-					style={{ visibility: (this.props.potentialGames.games.length) ? ('visible') : ('hidden') }}
+					style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
 				>
-					<button className={`btn btn-primary ${css(styles.controlBtn)}`} data-toggle="modal" data-target="#add-potential-games-modal">
-						{localizer.f('potentialGamesAdd', this.props.potentialGames.games.length)}
+					<button
+						className={`btn btn-primary ${css(styles.controlBtn)}`}
+						data-toggle="modal"
+						data-target="#add-potential-games-modal"
+					>
+						{localizer.f('potentialGamesAdd', this.props.potentialGames.size())}
 					</button>
 				</div>
 			</div>

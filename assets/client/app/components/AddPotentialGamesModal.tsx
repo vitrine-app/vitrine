@@ -32,7 +32,7 @@ export class AddPotentialGamesModal extends VitrineComponent<Props, {}> {
 						</div>
 						<div className="modal-body">
 							<div className={`row ${css(styles.potentialGamesRow)}`}>
-								{this.props.potentialGames.games.map((potentialGame: PotentialGame, index: number) =>
+								{this.props.potentialGames.map((potentialGame: PotentialGame, index: number) =>
 									<div key={index} className={`col-md-3 ${css(styles.potentialGameCell)}`}>
 										<BlurPicture
 											faIcon={faPlusCircle}

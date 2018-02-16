@@ -16,7 +16,7 @@ interface Props {
 
 export class SideBar extends VitrineComponent<Props, {}> {
 	private clickGameHandler(event: any) {
-		let selectedGame: PlayableGame = this.props.playableGames.getGameSync(event.target.id.replace('game-', ''));
+		let selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('game-', ''));
 		this.props.selectGame(selectedGame);
 	}
 
@@ -25,7 +25,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 			<div className={`col-sm-4 col-lg-2 ${css(styles.sideBarContainer)}`}>
 				<div className={css(styles.sideBarContent)}>
 					<ul id="playable-games-list" className={css(styles.gamesListUl)}>
-						{this.props.playableGames.games.map((game: PlayableGame, index: number) =>
+						{this.props.playableGames.map((game: PlayableGame, index: number) =>
 							<ContextMenuTrigger
 								id="sidebar-games-context-menu"
 								key={index}

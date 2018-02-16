@@ -44,7 +44,7 @@ class PlayableGamesCrawler {
 				counter++;
 				if (counter === files.length) {
 					let playableGames: GamesCollection<PlayableGame> = new GamesCollection();
-					playableGames.games = this.playableGames;
+					playableGames.setGames(this.playableGames);
 					this.callback(null, playableGames);
 					delete this.callback;
 				}

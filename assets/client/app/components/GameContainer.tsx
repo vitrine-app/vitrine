@@ -23,7 +23,6 @@ interface State {
 	mainColor: string
 }
 
-// TODO: edited game need refresh
 export class GameContainer extends VitrineComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);

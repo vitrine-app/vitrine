@@ -1,111 +1,82 @@
 export class GamesCollection<T extends Object> {
-	private _games: T[];
+	private games: T[];
 	private evaluatedKey: string;
+	private idKey: string;
 
 	public constructor(games?: T[]) {
-		this._games = games || [];
+		this.games = games || [];
 		this.evaluatedKey = 'name';
+		this.idKey = 'uuid'
 	}
 
-	get games(): T[] {
-		return this._games;
+	public getGames(): T[] {
+		return this.games;
 	}
 
-	set games(games: T[]) {
-		this._games = games;
+	public setGames(games: T[]) {
+		this.games = games;
 	}
 
-	public getGame(gameUuid: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			let counter: number = 0;
-			let found: boolean = false;
-
-			this._games.forEach((game: T) => {
-				if (game['uuid'] === gameUuid) {
-					found = true;
-					resolve(game);
-				}
-				counter++;
-				if (counter === this._games.length && !found)
-					reject(new Error('Game not found.'));
-			});
-		});
+	public size(): number {
+		return this.games.length;
 	}
 
-	public getGameSync(gameUuid: string): T {
-		return this._games.filter((game: T) => game['uuid'] === gameUuid)[0];
+	public clean() {
+		this.games = [];
 	}
 
-	public addGame(game: T) {
-		this._games.push(game);
+	public getIndex(game: T): number {
+		return this.games.indexOf(game);
+	}
+
+	public getGame(gameUuid: string | number): T {
+		if (typeof gameUuid === 'string')
+			return this.games.filter((game: T) => game[this.idKey] === gameUuid)[0];
+		return this.games[gameUuid];
+	}
+
+	public addGame(game: T): this {
+		this.games.push(game);
 		this.sort();
+		return this;
 	}
 
-	public addGames(games: GamesCollection<T>, callback: Function) {
-		this.games = this.removeDuplicates(this.games.concat(games.games));
-		this.sort();
-		callback();
-	}
-
-	public addGamesSync(games: T[]): this {
+	public addGames(games: T[]): this {
 		this.games = this.removeDuplicates(this.games.concat(games));
 		this.sort();
 		return this;
 	}
 
-	public editGame(game: T, callback?: Function) {
-		this.getGame(game['uuid']).then((currentGame: T) => {
-			Object.assign(currentGame, game);
-			if (callback)
-				callback();
-		}).catch((error: Error) => {
-			throw error;
-		});
-	}
-
-	public editGameSync(game: T): this {
-		let index: number = this._games.indexOf(this.getGameSync(game['uuid']));
-		this._games[index] = game;
+	public editGame(game: T): this {
+		let index: number = this.getIndex(this.getGame(game[this.idKey]));
+		this.games[index] = game;
 		this.sort();
 		return this;
 	}
 
-	public removeGame(gameUuid: string, callback: Function) {
-		let counter: number = 0;
-		let found: boolean = false;
-
-		this._games.forEach((game: any) => {
-			if (game.uuid === gameUuid) {
-				found = true;
-				let index: number = this._games.indexOf(game);
-				this._games.splice(index, 1);
-				callback(null, game, index);
-			}
-			counter++;
-			if (counter === this._games.length && !found)
-				callback('Game not found.', null, null);
-		});
-	}
-
-	public removeGameSync(gameUuid: string) {
-		let index: number = this._games.indexOf(this.getGameSync(gameUuid));
-		this._games.splice(index, 1);
+	public removeGame(gameUuid: string) {
+		let index: number = this.getIndex(this.getGame(gameUuid));
+		this.games.splice(index, 1);
 		return this;
 	}
 
-	public sort() {
-		if (this._games.length)
-			this._games.sort(this.alphabeticSort.bind(this));
+	public map(loopCallBack: (value: T, index: number, array: T[]) => any): T[] {
+		return this.games.map(loopCallBack);
 	}
 
 	public forEach(loopCallBack: Function, endCallBack?: Function) {
 		let counter: number = 0;
-		this._games.forEach((game: any) => {
+		this.games.forEach((game: any) => {
 			loopCallBack(game);
 			counter++;
-			if (counter === this._games.length && endCallBack)
+			if (counter === this.games.length && endCallBack)
 				endCallBack();
 		})
+	}
+
+	private sort() {
+		if (this.games.length)
+			this.games.sort(this.alphabeticSort.bind(this));
 	}
 
 	private alphabeticSort(nodeA: T, nodeB: T): number {
@@ -113,8 +84,6 @@ export class GamesCollection<T extends Object> {
 	}
 
 	private removeDuplicates(array: T[]) {
-		return array.filter((value, index, array) => {
-			return array.indexOf(value) == index;
-		});
+		return array.filter((value, index, array) => array.indexOf(value) == index);
 	}
 }
