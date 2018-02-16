@@ -69,8 +69,8 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 			selectedImage = this.state.selectedImage || props.images[0];
 		}
 		this.setState({
-			images: images,
-			selectedImage: selectedImage
+			images,
+			selectedImage
 		});
 	}
 

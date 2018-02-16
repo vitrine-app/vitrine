@@ -92,7 +92,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		let cover: string = openImageDialog();
 		if (cover)
 			this.setState({
-				cover: cover
+				cover
 			});
 	}
 
@@ -167,7 +167,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				name: gameToAdd.name,
 				cover: gameToAdd.details.cover,
 				source: gameToAdd.source,
-				executable: executable,
+				executable,
 				arguments: args,
 				series: gameToAdd.details.series || '',
 				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate / 1000).format('DD/MM/YYYY')) : (''),

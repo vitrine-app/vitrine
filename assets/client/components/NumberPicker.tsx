@@ -72,7 +72,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 			value = this.props.min;
 
 		this.setState({
-			value: value
+			value
 		}, () => {
 			if (this.props.onChange)
 				this.props.onChange(this.state.value);

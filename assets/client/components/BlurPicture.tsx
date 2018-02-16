@@ -65,7 +65,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 				filter: `blur(${4..px()})`
 			},
 			iconClassName: 'animated zoomIn',
-			iconStyle: iconStyle
+			iconStyle
 		});
 	}
 
@@ -81,7 +81,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 				filter: ''
 			},
 			iconClassName: 'animated zoomOut',
-			iconStyle: iconStyle
+			iconStyle
 		});
 	}
 

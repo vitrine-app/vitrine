@@ -195,11 +195,11 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private potentialGameToAddUpdateHandler(potentialGame: PotentialGame, gameWillBeEdited?: boolean) {
+	private potentialGameToAddUpdateHandler(potentialGameToAdd: PotentialGame, gameWillBeEdited?: boolean) {
 		gameWillBeEdited = gameWillBeEdited || false;
 		this.setState({
-			potentialGameToAdd: potentialGame,
-			gameWillBeEdited: gameWillBeEdited
+			potentialGameToAdd,
+			gameWillBeEdited
 		}, () => {
 			$('#add-game-modal').modal('show');
 		});
