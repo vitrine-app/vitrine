@@ -1,3 +1,6 @@
+import { PlayableGame } from '../../models/PlayableGame';
+
 export interface VitrineState {
-	settings: any
+	settings: any,
+	launchedGame: PlayableGame
 }

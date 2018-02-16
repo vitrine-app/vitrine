@@ -4,5 +4,7 @@ export interface Action {
 }
 
 export enum ActionType {
-	UPDATE_SETTINGS
+	UPDATE_SETTINGS,
+
+	LAUNCH_GAME
 }

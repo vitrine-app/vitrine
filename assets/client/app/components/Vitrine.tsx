@@ -7,6 +7,7 @@ import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { SettingsModal } from '../containers/SettingsModal';
+import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
 import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';
 import { SideBar } from './SideBar';
@@ -14,12 +15,13 @@ import { GameContainer } from './GameContainer';
 import { AddGameModal } from './AddGameModal';
 import { AddPotentialGamesModal } from './AddPotentialGamesModal';
 import { EditTimePlayedModal } from './EditTimePlayedModal';
-import { LaunchedGameContainer } from './LaunchedGameContainer';
 import { localizer } from '../Localizer';
 
 interface Props {
 	settings: any,
-	updateSettings: Function | any
+	launchedGame: PlayableGame,
+	updateSettings: Function | any,
+	launchGame: Function | any
 }
 
 interface State {
@@ -29,7 +31,6 @@ interface State {
 	refreshingGames: boolean,
 	launchedGamePictureActivated: boolean,
 	selectedGame: PlayableGame,
-	launchedGame: PlayableGame,
 	potentialGameToAdd: PotentialGame,
 	gameWillBeEdited: boolean
 }
@@ -45,7 +46,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			refreshingGames: false,
 			launchedGamePictureActivated: true,
 			selectedGame: null,
-			launchedGame: null,
 			potentialGameToAdd: null,
 			gameWillBeEdited: false
 		};
@@ -132,9 +132,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		serverListener.send('launch-game', gameUuid);
 		this.state.playableGames.getGame(gameUuid).then((launchedGame: PlayableGame) => {
 			setTimeout(() => {
-				this.setState({
-					launchedGame
-				});
+				this.props.launchGame(launchedGame);
 			}, 100);
 		}).catch((error: Error) => {
 			this.throwError(error);
@@ -146,9 +144,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		currentPlayableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			selectedGame.timePlayed = totalTimePlayed;
 			currentPlayableGames.editGame(selectedGame, () => {
+				this.props.launchGame(null);
 				this.setState({
 					playableGames: currentPlayableGames,
-					launchedGame: null,
 					selectedGame
 				}, this.forceUpdate.bind(this));
 			});
@@ -307,7 +305,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		let vitrineContent: JSX.Element = (!this.state.launchedGame || !this.state.launchedGamePictureActivated) ? (
+		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
 			<div className={'full-height'}>
 				<SideBar
 					playableGames={this.state.playableGames}
@@ -350,7 +348,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			</div>
 		) : (
 			<LaunchedGameContainer
-				launchedGame={this.state.launchedGame}
 				clickHandler={this.launchedGamePictureToggleHandler.bind(this)}
 			/>
 		);
@@ -358,7 +355,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
 				<TaskBar
 					potentialGames={this.state.potentialGames}
-					isGameLaunched={this.state.launchedGame && this.state.launchedGamePictureActivated}
+					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
 					refreshingGames={this.state.refreshingGames}
 					refreshBtnCallback={this.taskBarRefreshBtnClickHandler.bind(this)}
 				/>

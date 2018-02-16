@@ -15,10 +15,6 @@ interface Props {
 }
 
 export class LaunchedGameContainer extends VitrineComponent<Props, {}> {
-	public constructor(props: Props) {
-		super(props);
-	}
-
 	public render(): JSX.Element {
 		return (
 			<div>
