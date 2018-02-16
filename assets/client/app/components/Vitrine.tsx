@@ -20,15 +20,19 @@ import { localizer } from '../Localizer';
 interface Props {
 	settings: any,
 	potentialGames: GamesCollection<PotentialGame>,
+	playableGames: GamesCollection<PlayableGame>,
 	launchedGame: PlayableGame,
 	updateSettings: Function | any,
 	addPotentialGames: Function | any,
-	launchGame: Function | any
+	addPlayableGames: Function | any,
+	editPlayableGame: Function | any,
+	removePlayableGame: Function | any,
+	launchGame: Function | any,
+	stopGame: Function | any
 }
 
 interface State {
 	firstLaunch: boolean,
-	playableGames: GamesCollection<PlayableGame>,
 	launchedGamePictureActivated: boolean,
 	selectedGame: PlayableGame,
 	potentialGameToAdd: PotentialGame,
@@ -41,7 +45,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 		this.state = {
 			firstLaunch: false,
-			playableGames: new GamesCollection<PlayableGame>(),
 			launchedGamePictureActivated: true,
 			selectedGame: null,
 			potentialGameToAdd: null,
@@ -50,25 +53,16 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private addPlayableGames(games: PlayableGame[]) {
-		let firstTime: boolean = this.state.playableGames.games.length === 0;
-		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.addGames(new GamesCollection<PlayableGame>(games), () => {
+		let firstTime: boolean = this.props.playableGames.games.length === 0;
+		this.props.addPlayableGames(games);
+		if (firstTime)
 			this.setState({
-				playableGames: currentPlayableGames
-			}, () => {
-				if (firstTime)
-					this.setState({
-						selectedGame: this.state.playableGames.games[0]
-					});
+				selectedGame: this.props.playableGames.games[0]
 			});
-		});
 	}
 
 	private addPlayableGame(game: PlayableGame) {
-		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.addGame(game);
-		this.setState({
-			playableGames: currentPlayableGames,
+		this.props.addPlayableGames([game]);this.setState({
 			selectedGame: game
 		}, () => {
 			$('#add-game-modal').modal('hide');
@@ -77,72 +71,41 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private editPlayableGame(game: PlayableGame) {
-		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.editGame(game, () => {
+		this.props.editPlayableGame(game);
+		if (game.uuid === this.state.selectedGame.uuid) {
 			this.setState({
-				playableGames: currentPlayableGames
+				selectedGame: game
 			}, () => {
-				if (game.uuid === this.state.selectedGame.uuid) {
-					this.setState({
-						selectedGame: game
-					}, () => {
-						$('#add-game-modal').modal('hide');
-						$('#edit-time-played-modal').modal('hide');
-					});
-				}
-				else {
-					$('#add-game-modal').modal('hide');
-					$('#edit-time-played-modal').modal('hide');
-				}
+				$('#add-game-modal').modal('hide');
+				$('#edit-time-played-modal').modal('hide');
 			});
-		});
+		}
+		else {
+			$('#add-game-modal').modal('hide');
+			$('#edit-time-played-modal').modal('hide');
+		}
 	}
 
 	private removePlayableGame(gameUuid: string) {
-		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.removeGame(gameUuid, (error, game: PlayableGame, index: number) => {
-			if (error)
-				return this.throwError(error);
-			let currentSelectedGame: PlayableGame = this.state.selectedGame;
-			if (currentPlayableGames.games.length) {
-				if (index)
-					currentSelectedGame = currentPlayableGames.games[index - 1];
-				else
-					currentSelectedGame = currentPlayableGames.games[index];
-			}
-			else
-				currentSelectedGame = null;
-			this.setState({
-				playableGames: currentPlayableGames,
-				selectedGame: currentSelectedGame
-			});
+		this.props.removePlayableGame(gameUuid);
+		this.setState({
+			selectedGame: (this.props.playableGames.games.length) ? (this.props.playableGames.games[0]) : (null)
 		});
 	}
 
 	private launchGame(gameUuid: string) {
 		serverListener.send('launch-game', gameUuid);
-		this.state.playableGames.getGame(gameUuid).then((launchedGame: PlayableGame) => {
-			setTimeout(() => {
-				this.props.launchGame(launchedGame);
-			}, 100);
-		}).catch((error: Error) => {
-			this.throwError(error);
-		});
+		this.props.launchGame(this.props.playableGames.getGameSync(gameUuid));
 	}
 
 	private stopGame(gameUuid: string, totalTimePlayed: number) {
-		let currentPlayableGames: GamesCollection<PlayableGame> = this.state.playableGames;
-		currentPlayableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
-			selectedGame.timePlayed = totalTimePlayed;
-			currentPlayableGames.editGame(selectedGame, () => {
-				this.props.launchGame(null);
-				this.setState({
-					playableGames: currentPlayableGames,
-					selectedGame
-				}, this.forceUpdate.bind(this));
-			});
-		}).catch((error: Error) => {
-			this.throwError(error);
+		let playedGame: PlayableGame = this.props.playableGames.getGameSync(gameUuid);
+		playedGame.timePlayed = totalTimePlayed;
+		this.props.stopGame(playedGame);
+		this.setState({
+			selectedGame: playedGame
+		}, () => {
+			this.forceUpdate()
 		});
 	}
 
@@ -164,7 +127,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private sideBarGameClickHandler(uuid: string) {
-		this.state.playableGames.getGame(uuid).then((selectedGame: PlayableGame) => {
+		this.props.playableGames.getGame(uuid).then((selectedGame: PlayableGame) => {
 			this.setState({
 				selectedGame
 			});
@@ -190,7 +153,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	private editGameContextClickHandler(event: any, data: any, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.state.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
+		this.props.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			this.potentialGameToAddUpdateHandler(selectedGame, true);
 		}).catch((error: Error) => {
 			return this.throwError(error);
@@ -200,7 +163,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	// TODO: Move this went Redux exodus is finished
 	private editGamePlayTimeContextClickHandler(event: any, data: Object, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.state.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
+		this.props.playableGames.getGame(gameUuid).then((selectedGame: PlayableGame) => {
 			this.setState({
 				potentialGameToAdd: selectedGame
 			}, () => {
@@ -231,20 +194,20 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			case 'ArrowDown': {
 				event.preventDefault();
 
-				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
-				if (index < this.state.playableGames.games.length - 1)
+				let index: number = this.props.playableGames.games.indexOf(this.state.selectedGame);
+				if (index < this.props.playableGames.games.length - 1)
 					this.setState({
-						selectedGame: this.state.playableGames.games[index + 1]
+						selectedGame: this.props.playableGames.games[index + 1]
 					});
 				break;
 			}
 			case 'ArrowUp': {
 				event.preventDefault();
 
-				let index: number = this.state.playableGames.games.indexOf(this.state.selectedGame);
+				let index: number = this.props.playableGames.games.indexOf(this.state.selectedGame);
 				if (index)
 					this.setState({
-						selectedGame: this.state.playableGames.games[index - 1]
+						selectedGame: this.props.playableGames.games[index - 1]
 					});
 				break;
 			}
@@ -293,7 +256,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
 			<div className={'full-height'}>
 				<SideBar
-					playableGames={this.state.playableGames}
+					playableGames={this.props.playableGames}
 					selectedGame={this.state.selectedGame}
 					gameClickHandler={this.sideBarGameClickHandler.bind(this)}
 					launchGameCallback={this.launchGame.bind(this)}

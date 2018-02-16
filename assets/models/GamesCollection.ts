@@ -32,6 +32,10 @@ export class GamesCollection<T extends Object> {
 		});
 	}
 
+	public getGameSync(gameUuid: string): T {
+		return this._games.filter((game: T) => game['uuid'] === gameUuid)[0];
+	}
+
 	public addGame(game: T) {
 		this._games.push(game);
 		this.sort();
@@ -43,6 +47,12 @@ export class GamesCollection<T extends Object> {
 		callback();
 	}
 
+	public addGamesSync(games: T[]): this {
+		this.games = this.removeDuplicates(this.games.concat(games));
+		this.sort();
+		return this;
+	}
+
 	public editGame(game: T, callback?: Function) {
 		this.getGame(game['uuid']).then((currentGame: T) => {
 			Object.assign(currentGame, game);
@@ -51,6 +61,13 @@ export class GamesCollection<T extends Object> {
 		}).catch((error: Error) => {
 			throw error;
 		});
+	}
+
+	public editGameSync(game: T): this {
+		let index: number = this._games.indexOf(this.getGameSync(game['uuid']));
+		this._games[index] = game;
+		this.sort();
+		return this;
 	}
 
 	public removeGame(gameUuid: string, callback: Function) {
@@ -68,6 +85,12 @@ export class GamesCollection<T extends Object> {
 			if (counter === this._games.length && !found)
 				callback('Game not found.', null, null);
 		});
+	}
+
+	public removeGameSync(gameUuid: string) {
+		let index: number = this._games.indexOf(this.getGameSync(gameUuid));
+		this._games.splice(index, 1);
+		return this;
 	}
 
 	public sort() {

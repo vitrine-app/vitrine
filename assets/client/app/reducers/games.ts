@@ -7,6 +7,8 @@ export function launchedGame(state: PlayableGame = null, action: Action): Playab
 	switch (action.type) {
 		case ActionType.LAUNCH_GAME:
 			return action.payload.launchedGame;
+		case ActionType.STOP_GAME:
+			return action.payload.launchedGame;
 		default:
 			return state;
 	}
@@ -27,6 +29,21 @@ export function potentialGames(state: GamesCollection<PotentialGame> = null, act
 	switch (action.type) {
 		case ActionType.ADD_POTENTIAL_GAMES:
 			return new GamesCollection<PotentialGame>(action.payload.potentialGames);
+		default:
+			return state;
+	}
+}
+
+export function playableGames(state: GamesCollection<PlayableGame> = null, action: Action): GamesCollection<PlayableGame> {
+	switch (action.type) {
+		case ActionType.ADD_PLAYABLE_GAMES:
+			return new GamesCollection<PlayableGame>(state.games).addGamesSync(action.payload.playableGames);
+		case ActionType.EDIT_PLAYABLE_GAME:
+			return new GamesCollection<PlayableGame>(state.games).editGameSync(action.payload.playableGame);
+		case ActionType.REMOVE_PLAYABLE_GAME:
+			return new GamesCollection<PlayableGame>(state.games).removeGameSync(action.payload.gameUuid);
+		case ActionType.STOP_GAME:
+			return new GamesCollection<PlayableGame>(state.games).editGameSync(action.payload.playedGame);
 		default:
 			return state;
 	}
