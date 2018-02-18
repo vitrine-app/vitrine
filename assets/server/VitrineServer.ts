@@ -218,52 +218,49 @@ export class VitrineServer {
 		}).catch((error: Error) => this.throwServerError(error));
 	}
 
-	private searchSteamGames(): Promise<any> {
-		return new Promise((resolve) => {
-			if (!this.vitrineConfig.steam) {
-				resolve();
-				return;
-			}
-			searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames()).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games.getGames());
-				resolve();
-			}).catch((error: Error) => {
-				resolve();
-				this.throwServerError(error);
-			});
-		});
+	private async searchSteamGames(): Promise<any> {
+		if (!this.vitrineConfig.steam) {
+			return;
+		}
+		try {
+			let games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
+			return;
+		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
 	}
 
-	private searchOriginGames(): Promise<any> {
-		return new Promise((resolve) => {
-			if (!this.vitrineConfig.origin) {
-				resolve();
-				return;
-			}
-			searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames()).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games.getGames());
-				resolve();
-			}).catch((error: Error) => {
-				resolve();
-				this.throwServerError(error);
-			});
-		});
+	private async searchOriginGames(): Promise<any> {
+		if (!this.vitrineConfig.origin) {
+			return;
+		}
+		try {
+			let games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
+			return;
+		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
 	}
 
-	private searchEmulatedGames(): Promise<any> {
-		return new Promise((resolve) => {
-			if (!this.vitrineConfig.emulated.romsFolder) {
-				resolve();
-				return;
-			}
-			searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames()).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games.getGames());
-				resolve();
-			}).catch((error: Error) => {
-				resolve();
-				this.throwServerError(error);
-			});
-		});
+	private async searchEmulatedGames(): Promise<any> {
+		if (!this.vitrineConfig.emulated.romsFolder) {
+			return;
+		}
+		try {
+			let games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
+			return;
+		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
 	}
 
 	private registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
@@ -313,32 +310,36 @@ export class VitrineServer {
 			this.sendRegisteredGame(game, configFilePath, editing);
 	}
 
-	private downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
-		return new Promise((resolve, reject) => {
-			downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
-				game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
-				if (game.details.steamId)
-					delete game.details.screenshots;
-				else
-					delete game.details.background;
-				downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
-					game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
-					if (isStored) {
-						game.details.cover = coverPath;
-						Vibrant.from(game.details.cover).getPalette().then((palette: Palette) => {
-							game.ambientColor = palette.DarkVibrant.getHex();
-							resolve();
-						}).catch(() => resolve());
+	private async downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
+		try {
+			let isStored: boolean = await downloadImage(backgroundUrl, backgroundPath);
+			game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
+			if (game.details.steamId)
+				delete game.details.screenshots;
+			else
+				delete game.details.background;
+			try {
+				let isStored: boolean = await downloadImage(coverUrl, coverPath);
+				game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
+				if (isStored) {
+					game.details.cover = coverPath;
+					try {
+						let palette: Palette = await Vibrant.from(game.details.cover).getPalette();
+						game.ambientColor = palette.DarkVibrant.getHex();
+						return;
 					}
-					else
-						resolve();
-				}).catch((error: Error) => {
-					reject(error);
-				});
-			}).catch((error: Error) => {
-				reject(error);
-			});
-		});
+					catch (error) {
+						return;
+					}
+				}
+			}
+			catch (error) {
+				return error;
+			}
+		}
+		catch (error) {
+			return error;
+		}
 	}
 
 	private sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
