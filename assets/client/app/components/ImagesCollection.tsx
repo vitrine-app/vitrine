@@ -8,7 +8,6 @@ import { localizer } from '../Localizer';
 import { openImageDialog } from '../helpers';
 
 import { faPlus } from '@fortawesome/fontawesome-free-solid';
-import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
 
 interface Props {
 	images?: string[]
@@ -112,7 +111,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		width: 400,
 		height: 270,
 		margin: 5,
-		borderRadius: bootstrapVariables.borderRadiusBase,
+		borderRadius: 1,
 		boxShadow: `${0} ${0} ${6..px()} ${rgba(0, 0, 0, 0.46)}`,
 		filter: `brightness(${65}%)`
 	},

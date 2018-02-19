@@ -111,6 +111,7 @@
     "electron-builder": "^19.55.2",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "less-vars-loader": "^1.1.0",
     "mocha": "^3.5.3",
     "node-sass": "^4.7.2",
     "parallel-webpack": "^2.2.0",

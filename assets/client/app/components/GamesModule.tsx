@@ -3,7 +3,7 @@ import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from './VitrineComponent';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
+import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../resources/less/theme/globals/site.variables';
 
 interface Props {
 	clicked: boolean,
@@ -64,6 +64,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	clickedGamesModuleIcon: {
 		opacity: 1,
-		filter: `opacity(${0.5}) drop-shadow(${0} ${0} ${0} ${bootstrapVariables.brandPrimary})`
+		filter: `opacity(${0.5}) drop-shadow(${0} ${0} ${0} ${lessVars.primaryColor})`
 	}
 });

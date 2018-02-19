@@ -253,7 +253,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					<Grid.Column
 						className={css(styles.case2)}
 					>
-						wesh wesh les amis
+						<GameContainer
+							launchGame={this.launchGame.bind(this)}
+						/>
 					</Grid.Column>
 				</Grid>
 			</div>

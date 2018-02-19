@@ -80,13 +80,13 @@ export function editColor(color: string, amount: number) {
 	else if (red < 0)
 		red = 0;
 
-	let blue = ((num >> 8) & 0x00FF) + amount;
+	let blue: number = ((num >> 8) & 0x00FF) + amount;
 	if (blue > 255) {
 		blue = 255;
 	} else if (blue < 0) {
 		blue = 0;
 	}
-	let green = (num & 0x0000FF) + amount;
+	let green: number = (num & 0x0000FF) + amount;
 	if (green > 255)
 		green = 255;
 	else if (green < 0)

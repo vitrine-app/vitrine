@@ -17,7 +17,6 @@ import {
 } from './app/reducers/games';
 
 import 'semantic-ui-less/semantic.less';
-// import './resources/sass/main.scss';
 
 const logger: Middleware = (store: any) => (next: any) => (action: any): any => {
 	console.log('Dispatching: ', action);
@@ -34,7 +33,7 @@ let store: Store<VitrineState> = createStore(combineReducers({
 	launchedGame,
 	refreshingGames,
 	potentialGameToAdd
-}), initialState, applyMiddleware(logger));
+}), initialState, /*applyMiddleware(logger)*/);
 
 render(
 	<Provider store={store}>

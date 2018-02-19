@@ -11,7 +11,7 @@ import { editColor, formatTimePlayed, urlify } from '../helpers';
 import { localizer } from '../Localizer';
 
 import { faPlay } from '@fortawesome/fontawesome-free-solid';
-import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
+import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../resources/less/theme/globals/site.variables';
 
 interface Props {
 	selectedGame: PlayableGame
@@ -29,7 +29,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 
 		this.state = {
 			backgroundImage: 'none',
-			mainColor: bootstrapVariables.brandPrimary
+			mainColor: lessVars.primaryColor
 		};
 	}
 
@@ -37,18 +37,18 @@ export class GameContainer extends VitrineComponent<Props, State> {
 		if (!props.selectedGame) {
 			this.setState({
 				backgroundImage: 'none',
-				mainColor: bootstrapVariables.brandPrimary
+				mainColor: lessVars.primaryColor
 			});
 			return;
 		}
 		let backgroundImage, mainColor: string;
 		if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
 			backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
-			mainColor = props.selectedGame.ambientColor;
+			mainColor = props.selectedGame.ambientColor || lessVars.primaryColor;
 		}
 		else {
 			backgroundImage = 'none';
-			mainColor = bootstrapVariables.brandPrimary;
+			mainColor = lessVars.primaryColor;
 		}
 		this.setState({
 			backgroundImage,
@@ -187,7 +187,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		fontWeight: 400,
 		fontSize: 33,
 		marginBottom: 40,
-		color: bootstrapVariables.textColor
+		color: lessVars.textColor
 	},
 	selectedGameCoreHr: {
 		borderTop: `solid ${1..px()} ${rgba(210, 210, 210, 0.15)}`
