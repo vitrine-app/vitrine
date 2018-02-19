@@ -16,7 +16,8 @@ import {
 	selectedGame
 } from './app/reducers/games';
 
-import './resources/sass/main.scss';
+import 'semantic-ui-less/semantic.less';
+// import './resources/sass/main.scss';
 
 const logger: Middleware = (store: any) => (next: any) => (action: any): any => {
 	console.log('Dispatching: ', action);
@@ -39,5 +40,5 @@ render(
 	<Provider store={store}>
 		<App/>
 	</Provider>,
-	document.getElementById('app')
+	document.getElementById('app-root')
 );

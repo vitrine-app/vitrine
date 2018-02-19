@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Menu, screen, Tray } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import * as path from 'path';
 
 export class WindowsHandler {
@@ -52,20 +52,17 @@ export class WindowsHandler {
 	}
 
 	public createMainWindow() {
-		if (!screen)
-			return;
-		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 		this.clientWindow = new BrowserWindow({
-			minWidth: width,
-			minHeight: height,
+			minWidth: 1000,
+			minHeight: 625,
 			icon: this.iconPath,
 			show: false,
 			frame: false,
-			width,
-			height
+			width: 1450,
+			height: 900
 		});
 		this.clientWindow.setMenu(null);
-		this.clientWindow.maximize();
+		//this.clientWindow.maximize();
 		this.clientWindow.loadURL(this.mainEntryPoint);
 		this.clientWindow.hide();
 		if (this.devTools)

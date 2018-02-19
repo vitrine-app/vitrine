@@ -1,4 +1,5 @@
 declare module '*.scss';
+declare module '*.less';
 
 declare module '*.jpeg';
 declare module '*.jpg';

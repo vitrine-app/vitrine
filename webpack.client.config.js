@@ -1,10 +1,15 @@
+const path = require('path');
+
 let clientConfig = {
 	node: {
 		__dirname: false,
 		__filename: false
 	},
 	resolve: {
-		extensions: ['.ts', '.tsx', '.js']
+		extensions: ['.ts', '.tsx', '.js'],
+		alias: {
+			'../../theme.config$': path.join(__dirname, 'assets/client/resources/less/theme.config.less')
+		}
 	},
 	target: 'electron-renderer',
 	module: {
@@ -13,7 +18,7 @@ let clientConfig = {
 				test: /\.(ts|tsx)?$/,
 				loader: 'ts-loader'
 			},
-			{
+			/*{
 				test: /\.(css|scss)?$/,
 				use: [
 					{
@@ -24,6 +29,20 @@ let clientConfig = {
 					},
 					{
 						loader: 'sass-loader'
+					}
+				]
+			},*/
+			{
+				test: /\.less$/,
+				use: [
+					{
+						loader: 'style-loader'
+					},
+					{
+						loader: 'css-loader'
+					},
+					{
+						loader: 'less-loader'
 					}
 				]
 			},
@@ -43,12 +62,12 @@ module.exports = [
 			filename: 'public/client.js'
 		},
 		...clientConfig
-	},
+	}/*,
 	{
 		entry: './assets/client/loader.tsx',
 		output: {
 			filename: 'public/loader.js'
 		},
 		...clientConfig
-	}
+	}*/
 ];

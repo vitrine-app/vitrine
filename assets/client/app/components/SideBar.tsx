@@ -6,12 +6,21 @@ import { margin, padding, border, rgba } from 'css-verbose';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { VitrineComponent } from './VitrineComponent';
+import { Button } from './Button';
+import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
+import { localizer } from '../Localizer';
+import { PotentialGame } from '../../../models/PotentialGame';
+import { serverListener } from '../ServerListener';
 
 interface Props {
+	potentialGames: GamesCollection<PotentialGame>,
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
 	selectGame: Function | any,
-	launchGame: Function
+	launchGame: Function,
+	refreshingGames: boolean,
+	refreshGames: Function | any
+	isGameLaunched: boolean
 }
 
 export class SideBar extends VitrineComponent<Props, {}> {
@@ -20,11 +29,51 @@ export class SideBar extends VitrineComponent<Props, {}> {
 		this.props.selectGame(selectedGame);
 	}
 
+	private taskBarRefreshBtnClickHandler() {
+		serverListener.send('refresh-potential-games');
+		this.props.refreshGames();
+	}
+
 	public render(): JSX.Element {
+		let taskBarElements: JSX.Element = (!this.props.isGameLaunched) ? (
+			<div className="row">
+				<Button
+					icon={faPlus}
+					tooltip={localizer.f('addGameLabel')}
+					onClick='#add-game-modal'
+				/>
+				<Button
+					icon={faSyncAlt}
+					spin={this.props.refreshingGames}
+					tooltip={localizer.f('refreshLabel')}
+					onClick={this.taskBarRefreshBtnClickHandler.bind(this)}
+				/>
+				<Button
+					icon={faCogs}
+					tooltip={localizer.f('settings')}
+					onClick='#settings-modal'
+				/>
+				<div
+					className={`potential-games-container col-md-2 ${css(styles.potentialGamesContainer)}`}
+					style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
+				>
+					<button
+						className={`btn btn-primary ${css(styles.controlBtn)}`}
+						data-toggle="modal"
+						data-target="#add-potential-games-modal"
+					>
+						{localizer.f('potentialGamesAdd', this.props.potentialGames.size())}
+					</button>
+				</div>
+			</div>
+		) : (null);
 		return (
-			<div className={`col-sm-4 col-lg-2 ${css(styles.sideBarContainer)}`}>
+			<div className={css(styles.sideBarContainer)}>
+				<div className={css(styles.commandsGroup)}>
+					here comes the commands
+				</div>
 				<div className={css(styles.sideBarContent)}>
-					<ul id="playable-games-list" className={css(styles.gamesListUl)}>
+					<ul className={css(styles.gamesListUl)}>
 						{this.props.playableGames.map((game: PlayableGame, index: number) =>
 							<ContextMenuTrigger
 								id="sidebar-games-context-menu"
@@ -53,17 +102,26 @@ export class SideBar extends VitrineComponent<Props, {}> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	sideBarContainer: {
-		height: 95..percents(),
+		/*height: 95..percents(),
 		padding: 0,
 		position: 'absolute',
 		backgroundColor: rgba(0, 0, 0, 0),
 		width: 16..percents(),
-		boxShadow: `${6..px()} ${6..px()} ${9..px()} ${rgba(0, 0, 0, 0.2)}`
+		boxShadow: `${6..px()} ${6..px()} ${9..px()} ${rgba(0, 0, 0, 0.2)}`,*/
+		position: 'absolute',
+		width: 15.5.percents(),
+		zIndex: 1,
+		height: `calc(${100..percents()} - ${22..px()})`
+	},
+	commandsGroup: {
+		height: 45,
+		backgroundColor: '#23211F'
 	},
 	sideBarContent: {
-		height: 100..percents(),
+		height: `calc(${100..percents()} - ${45..px()})`,
 		overflowX: 'hidden',
-		overflowY: 'auto'
+		overflowY: 'auto',
+		backgroundColor: '#292724'
 	},
 	sideBarHr: {
 		margin: 0,
@@ -91,7 +149,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		backgroundColor: rgba(175, 153, 124, 0.14),
 		color: '#AFACA7',
 		fontWeight: 600,
-		paddingLeft: 35,
+		paddingLeft: 30,
+		paddingRight: 10,
 		transition: `${250}ms`
 	}
 });

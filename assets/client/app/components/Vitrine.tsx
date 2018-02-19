@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Grid } from 'semantic-ui-react';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
@@ -7,7 +8,6 @@ import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { SideBar } from '../containers/SideBar';
-import { TaskBar } from '../containers/TaskBar';
 import { GameContainer } from '../containers/GameContainer';
 import { AddGameModal } from '../containers/AddGameModal';
 import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
@@ -15,6 +15,7 @@ import { EditTimePlayedModal } from '../containers/EditTimePlayedModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
 import { VitrineComponent } from './VitrineComponent';
+import { TaskBar } from './TaskBar';
 import { localizer } from '../Localizer';
 
 interface Props {
@@ -196,10 +197,8 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	public render(): JSX.Element {
 		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
-			<div className={'full-height'}>
-				<SideBar
-					launchGame={this.launchGame.bind(this)}
-				/>
+			<div>
+				{/*<SideBar/>
 				<GameContainer
 					launchGame={this.launchGame.bind(this)}
 				/>
@@ -226,20 +225,37 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
 						{localizer.f('delete')}
 					</MenuItem>
-				</ContextMenu>
+				</ContextMenu>*/}
 			</div>
 		) : (
 			<LaunchedGameContainer
 				clickHandler={this.launchedGamePictureToggleHandler.bind(this)}
 			/>
 		);
-		return (
+		/*return (
 			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
 				<TaskBar
 					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
 				/>
 				{vitrineContent}
 				{this.checkErrors()}
+			</div>
+		);*/
+		return (
+			<div style={{ height: 100..percents() }}>
+				<TaskBar/>
+				<SideBar
+					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
+					launchGame={this.launchGame.bind(this)}
+				/>
+				<Grid className={css(styles.mainContainer)}>
+					<Grid.Column className={css(styles.case1)}/>
+					<Grid.Column
+						className={css(styles.case2)}
+					>
+						wesh wesh les amis
+					</Grid.Column>
+				</Grid>
 			</div>
 		);
 	}
@@ -252,5 +268,15 @@ const styles: React.CSSProperties = StyleSheet.create({
 		userSelect: 'none',
 		overflow: 'hidden',
 		cursor: 'default'
+	},
+	mainContainer: {
+		height: `calc(${100..percents()} - ${22..px()})`,
+		margin: 0
+	},
+	case1: {
+		width: 15.5.percents()
+	},
+	case2: {
+		width: 84.5.percents()
 	}
 });
