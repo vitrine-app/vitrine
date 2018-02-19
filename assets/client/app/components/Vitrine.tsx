@@ -211,7 +211,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<SettingsModal
 					firstLaunch={this.state.firstLaunch}
 				/>
-				<EditTimePlayedModal/>
+				<EditTimePlayedModal/>*/}
 				<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
 						{localizer.f('play')}
@@ -225,7 +225,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
 						{localizer.f('delete')}
 					</MenuItem>
-				</ContextMenu>*/}
+				</ContextMenu>
 			</div>
 		) : (
 			<LaunchedGameContainer

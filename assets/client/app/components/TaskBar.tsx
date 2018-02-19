@@ -58,12 +58,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 		backgroundColor: '#23211F',
 		'-webkitAppRegion': 'drag'
 	},
-	potentialGamesContainer: {
-		marginLeft: 18
-	},
-	controlBtn: {
-		'-webkitAppRegion': 'no-drag'
-	},
 	windowControlBtnGroup: {
 		position: 'absolute',
 		right: 0,

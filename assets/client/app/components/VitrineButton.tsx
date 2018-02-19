@@ -20,7 +20,7 @@ interface State {
 	iconClassName: string
 }
 
-export class Button extends VitrineComponent<Props, State> {
+export class VitrineButton extends VitrineComponent<Props, State> {
 	private id: string;
 
 	public constructor() {
@@ -75,7 +75,7 @@ export class Button extends VitrineComponent<Props, State> {
 		);
 
 		return (
-			<div>
+			<div className={css(styles.buttonWrapper)}>
 				{button}
 				{(this.props.tooltip) ? (
 					<ReactTooltip
@@ -94,6 +94,9 @@ export class Button extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
+	buttonWrapper: {
+		display: 'inline-block'
+	},
 	button: {
 		display: 'inline-block',
 		padding: padding(5, 8, 4, 8),
