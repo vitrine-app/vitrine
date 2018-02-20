@@ -19,7 +19,7 @@ interface Props {
 
 interface State {
 	iconVisible: boolean,
-	divClassName: string,
+	pulseVisible: boolean,
 	divStyle: React.CSSProperties,
 	imageStyle: React.CSSProperties
 }
@@ -36,7 +36,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
 		this.state = {
 			iconVisible: false,
-			divClassName: '',
+			pulseVisible: true,
 			divStyle: {
 				width: divWidth.em(),
 				height: divHeight.em(),
@@ -77,13 +77,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
 	private clickHandler() {
 		this.setState({
-			divClassName: 'animated pulse'
-		}, () => {
-			setTimeout(10, () => {
-				this.setState({
-					divClassName: ''
-				});
-			}, this.pulseDuration);
+			pulseVisible: !this.state.pulseVisible
 		});
 
 		this.props.clickHandler();
@@ -100,27 +94,32 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
 	public render(): JSX.Element {
 		return (
-			<div
-				className={`${css(styles.container)} ${this.state.divClassName}`}
-				onMouseEnter={this.mouseEnterHandler.bind(this)}
-				onMouseLeave={this.mouseLeaveHandler.bind(this)}
-				onClick={this.clickHandler.bind(this)}
-				style={this.state.divStyle}
+			<Transition
+				visible={this.state.pulseVisible}
+				animation={'pulse'}
+				duration={this.pulseDuration}
 			>
-				<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
-				<Transition
-					visible={this.state.iconVisible}
-					animation={'scale'}
-					duration={75}
-					style={{}}
+				<div
+					className={css(styles.container)}
+					onMouseEnter={this.mouseEnterHandler.bind(this)}
+					onMouseLeave={this.mouseLeaveHandler.bind(this)}
+					onClick={this.clickHandler.bind(this)}
+					style={this.state.divStyle}
 				>
-					<FontAwesomeIcon
-						icon={this.props.faIcon}
-						className={css(styles.icon)}
-					/>
-				</Transition>
-				{this.checkErrors()}
-			</div>
+					<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
+					<Transition
+						visible={this.state.iconVisible}
+						animation={'scale'}
+						duration={75}
+					>
+						<FontAwesomeIcon
+							icon={this.props.faIcon}
+							className={css(styles.icon)}
+						/>
+					</Transition>
+					{this.checkErrors()}
+				</div>
+			</Transition>
 		);
 	}
 }

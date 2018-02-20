@@ -33,7 +33,7 @@ let store: Store<VitrineState> = createStore(combineReducers({
 	launchedGame,
 	refreshingGames,
 	potentialGameToAdd
-}), initialState, /*applyMiddleware(logger)*/);
+}), initialState, applyMiddleware(logger));
 
 render(
 	<Provider store={store}>
