@@ -12,7 +12,8 @@ interface Props {
 	icon: IconDefinition,
 	spin?: boolean,
 	tooltip?: string,
-	onClick?: React.MouseEventHandler<any> | string
+	onClick?: React.MouseEventHandler<any> | string,
+	className?: string
 }
 
 interface State {
@@ -75,7 +76,7 @@ export class VitrineButton extends VitrineComponent<Props, State> {
 		);
 
 		return (
-			<div className={css(styles.buttonWrapper)}>
+			<div className={`${css(styles.buttonWrapper)} ${this.props.className || ''}`}>
 				{button}
 				{(this.props.tooltip) ? (
 					<ReactTooltip

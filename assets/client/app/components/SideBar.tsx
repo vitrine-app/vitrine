@@ -37,22 +37,25 @@ export class SideBar extends VitrineComponent<Props, {}> {
 
 	public render(): JSX.Element {
 		let taskBarElements: JSX.Element = (!this.props.isGameLaunched) ? (
-			<div>
+			<div className={css(styles.commandsGroup)}>
 				<VitrineButton
 					icon={faPlus}
 					tooltip={localizer.f('addGameLabel')}
 					onClick='#add-game-modal'
+					className={css(styles.commandBtn)}
 				/>
 				<VitrineButton
 					icon={faSyncAlt}
 					spin={this.props.refreshingGames}
 					tooltip={localizer.f('refreshLabel')}
 					onClick={this.taskBarRefreshBtnClickHandler.bind(this)}
+					className={css(styles.commandBtn)}
 				/>
 				<VitrineButton
 					icon={faCogs}
 					tooltip={localizer.f('settings')}
 					onClick='#settings-modal'
+					className={css(styles.commandBtn)}
 				/>
 				<Button
 					primary={true}
@@ -65,9 +68,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 		) : (null);
 		return (
 			<div className={css(styles.sideBarContainer)}>
-				<div className={css(styles.commandsGroup)}>
-					{taskBarElements}
-				</div>
+				{taskBarElements}
 				<div className={css(styles.sideBarContent)}>
 					<ul className={css(styles.gamesListUl)}>
 						{this.props.playableGames.map((game: PlayableGame, index: number) =>
@@ -105,7 +106,11 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	commandsGroup: {
 		height: 45,
-		backgroundColor: '#23211F'
+		backgroundColor: '#23211F',
+		paddingLeft: 10..percents()
+	},
+	commandBtn: {
+		margin: margin(0, 13)
 	},
 	sideBarContent: {
 		height: `calc(${100..percents()} - ${45..px()})`,

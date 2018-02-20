@@ -35,4 +35,4 @@ class Localizer {
 	}
 }
 
-export let localizer: Localizer = new Localizer();
+export const localizer: Localizer = new Localizer();

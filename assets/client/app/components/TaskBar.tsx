@@ -31,6 +31,7 @@ export class TaskBar extends VitrineComponent<{}, {}> {
 	public render(): JSX.Element {
 		return (
 			<div className={css(styles.taskBar)}>
+				<span className={css(styles.title)}>Vitrine</span>
 				<div className={css(styles.windowControlBtnGroup)}>
 					<WindowControlIcon
 						icon={WindowControl.MinimizeIcon}
@@ -56,10 +57,16 @@ const styles: React.CSSProperties = StyleSheet.create({
 	taskBar: {
 		height: 22,
 		backgroundColor: '#23211F',
+		textAlign: 'center',
 		'-webkitAppRegion': 'drag'
+	},
+	title: {
+		fontSize: 13,
+		opacity: 0.4
 	},
 	windowControlBtnGroup: {
 		position: 'absolute',
+		top: 0,
 		right: 0,
 		'-webkitAppRegion': 'no-drag'
 	}
