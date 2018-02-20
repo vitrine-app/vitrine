@@ -53,12 +53,12 @@ export class WindowsHandler {
 
 	public createMainWindow() {
 		this.clientWindow = new BrowserWindow({
-			minWidth: 1000,
-			minHeight: 625,
+			minWidth: 1450,
+			minHeight: 700,
 			icon: this.iconPath,
 			show: false,
 			frame: false,
-			width: 1450,
+			width: 1650,
 			height: 900
 		});
 		this.clientWindow.setMenu(null);

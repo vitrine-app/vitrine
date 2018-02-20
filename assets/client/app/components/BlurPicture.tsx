@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Transition } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
@@ -17,11 +18,10 @@ interface Props {
 }
 
 interface State {
+	iconVisible: boolean,
 	divClassName: string,
-	iconClassName: string,
 	divStyle: React.CSSProperties,
-	imageStyle: React.CSSProperties,
-	iconStyle: React.CSSProperties
+	imageStyle: React.CSSProperties
 }
 
 export class BlurPicture extends VitrineComponent<Props, State> {
@@ -35,6 +35,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 		this.pulseDuration = 165;
 
 		this.state = {
+			iconVisible: false,
 			divClassName: '',
 			divStyle: {
 				width: divWidth.em(),
@@ -44,44 +45,33 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 			},
 			imageStyle: {
 				backgroundImage: urlify(this.props.background)
-			},
-			iconClassName: '',
-			iconStyle: {
-				display: 'none',
-				animationDuration: '75ms'
 			}
 		};
 	}
 
 	private mouseEnterHandler() {
 		let imageStyle: any = this.state.imageStyle;
-		let iconStyle: any = this.state.iconStyle;
 		imageStyle.filter = `blur(${4..px()})`;
-		iconStyle.display = 'inline';
 
 		this.setState({
+			iconVisible: true,
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
 				filter: `blur(${4..px()})`
-			},
-			iconClassName: 'animated zoomIn',
-			iconStyle
+			}
 		});
 	}
 
 	private mouseLeaveHandler() {
 		let imageStyle: any = this.state.imageStyle;
-		let iconStyle: any = this.state.iconStyle;
 		imageStyle.filter = '';
-		iconStyle.display = 'none';
 
 		this.setState({
+			iconVisible: false,
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
 				filter: ''
-			},
-			iconClassName: 'animated zoomOut',
-			iconStyle
+			}
 		});
 	}
 
@@ -118,11 +108,17 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 				style={this.state.divStyle}
 			>
 				<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
-				<FontAwesomeIcon
-					icon={this.props.faIcon}
-					className={`${css(styles.icon)} ${this.state.iconClassName}`}
-					style={{ ...this.state.iconStyle }}
-				/>
+				<Transition
+					visible={this.state.iconVisible}
+					animation={'scale'}
+					duration={75}
+					style={{}}
+				>
+					<FontAwesomeIcon
+						icon={this.props.faIcon}
+						className={css(styles.icon)}
+					/>
+				</Transition>
 				{this.checkErrors()}
 			</div>
 		);
@@ -131,11 +127,12 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	container: {
+		width: 100..percents(),
+		height: 100..percents(),
 		overflow: 'hidden',
 		position: 'relative',
 		color: '#F1F1F1',
-		textShadow: `${0} ${0} ${10..px()} ${rgba(8, 8, 8, 0.17)}`,
-		boxShadow: `${0} ${0} ${10..px()} ${rgba(0, 0, 0, 0.55)}`
+		borderRadius: 4
 	},
 	picture: {
 		width: 100..percents(),
@@ -143,13 +140,14 @@ const styles: React.CSSProperties = StyleSheet.create({
 		cursor: 'pointer',
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: `${100..percents()} ${100..percents()}`,
-		transition: `${75}ms filter linear`
+		transition: `${75}ms filter linear`,
+		boxShadow: `${0} ${0} ${0} ${2..px()} ${rgba(255, 255, 255, 0.12)} inset`
 	},
 	icon: {
 		position: 'absolute',
-		opacity: 0.6,
-		left: 1.268.em(),
-		top: 1.74.em(),
+		color: rgba(255, 255, 255, 0.6),
+		left: 40..percents(),
+		top: 40..percents(),
 		cursor: 'pointer'
 	}
 });
