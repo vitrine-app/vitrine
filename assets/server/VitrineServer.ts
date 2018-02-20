@@ -4,8 +4,6 @@ import { autoUpdater, UpdateCheckResult } from 'electron-updater';
 import { ProgressInfo } from 'builder-util-runtime';
 import * as rimraf from 'rimraf';
 import * as moment from 'moment';
-import Vibrant = require('node-vibrant');
-import { Palette } from 'node-vibrant/lib/color';
 
 import { WindowsHandler } from './WindowsHandler';
 import { GamesCollection } from '../models/GamesCollection';
@@ -269,7 +267,7 @@ export class VitrineServer {
 			game.commandLine.push(gameForm.arguments);
 		game.details.rating = parseInt(game.details.rating);
 		game.details.genres = game.details.genres.split(', ');
-		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
+		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix()/* * 1000*/;
 		if (!editing && game.source == GameSource.STEAM)
 			game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
 		delete game.details.name;
@@ -323,14 +321,15 @@ export class VitrineServer {
 				game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
 				if (isStored) {
 					game.details.cover = coverPath;
-					try {
+					return;
+					/*try {
 						let palette: Palette = await Vibrant.from(game.details.cover).getPalette();
 						game.ambientColor = palette.DarkVibrant.getHex();
 						return;
 					}
 					catch (error) {
 						return;
-					}
+					}*/
 				}
 			}
 			catch (error) {

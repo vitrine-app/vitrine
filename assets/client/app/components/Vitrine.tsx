@@ -250,13 +250,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				/>
 				<Grid className={css(styles.mainContainer)}>
 					<Grid.Column className={css(styles.case1)}/>
-					<Grid.Column
-						className={css(styles.case2)}
-					>
-						<GameContainer
-							launchGame={this.launchGame.bind(this)}
-						/>
-					</Grid.Column>
+					<GameContainer
+						launchGame={this.launchGame.bind(this)}
+					/>
 				</Grid>
 			</div>
 		);
@@ -277,8 +273,5 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	case1: {
 		width: 15.5.percents()
-	},
-	case2: {
-		width: 84.5.percents()
 	}
 });

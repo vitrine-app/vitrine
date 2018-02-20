@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Button, Grid } from 'semantic-ui-react';
+import * as moment from 'moment';
 import { StyleSheet, css } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
@@ -7,7 +9,7 @@ import { PlayableGame } from '../../../models/PlayableGame';
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
 import { CirclePercentage } from './CirclePercentage';
-import { editColor, formatTimePlayed, urlify } from '../helpers';
+import { formatTimePlayed, urlify } from '../helpers';
 import { localizer } from '../Localizer';
 
 import { faPlay } from '@fortawesome/fontawesome-free-solid';
@@ -59,52 +61,68 @@ export class GameContainer extends VitrineComponent<Props, State> {
 	public render(): JSX.Element {
 		let gameContainer: JSX.Element;
 
-		if (this.props.selectedGame) {
+		if (this.props.selectedGame)
 			gameContainer = (
-				<div className={`row ${css(styles.selectedGameCore)}`}>
-					<div className="col-md-8">
-						<h1 className={css(styles.selectedGameCoreH1)}>{this.props.selectedGame.name}</h1>
-						<div className={css(styles.selectedGameInfos)}>
-							<button
+				<Grid className={css(styles.gameCore)}>
+					<Grid.Column width={11}>
+						<h1 className={css(styles.gameCoreTitle)}>{this.props.selectedGame.name}</h1>
+						<div className={css(styles.gameInfosRegion)}>
+							<Button
 								onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
-								className="btn btn-primary"
-								style={{ backgroundColor: this.state.mainColor, borderColor: editColor(this.state.mainColor, -20) }}
+								primary={true}
+								/*style={{ backgroundColor: this.state.mainColor, borderColor: editColor(this.state.mainColor, -20) }}*/
 							>
 								<FontAwesomeIcon icon={faPlay} size={'sm'}/> {localizer.f('play')}
-							</button>
-							<span className={css(styles.selectedGameInfosSpan)}>
+							</Button>
+							<span className={css(styles.gameTimePlayed)}>
 								{(this.props.selectedGame.timePlayed) ? (formatTimePlayed(this.props.selectedGame.timePlayed)) : ('')}
 							</span>
 						</div>
-						<div className={css(styles.selectedGameInfos)}>
-							<div className="row">
-								<div className="col-md-8">
-									<div className="row">
-										<div className="col-md-4">
+						<div className={css(styles.gameInfosRegion)}>
+							<Grid>
+								<Grid.Column width={11}>
+									<Grid>
+										<Grid.Column width={5} className={css(styles.developerGridColumn)}>
 											<strong>{localizer.f('developerLabel')}</strong>
-										</div>
-										<div className="col-md-8">
+										</Grid.Column>
+										<Grid.Column width={11} className={css(styles.developerGridColumn)}>
 											{this.props.selectedGame.details.developer}
-										</div>
-									</div>
-									<div className="row">
-										<div className="col-md-4">
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={5} className={css(styles.publisherGridColumn)}>
 											<strong>{localizer.f('publisherLabel')}</strong>
-										</div>
-										<div className="col-md-8">
+										</Grid.Column>
+										<Grid.Column width={11} className={css(styles.publisherGridColumn)}>
 											{this.props.selectedGame.details.publisher}
-										</div>
-									</div>
-								</div>
-								<div className="col-md-4">
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={5} className={css(styles.developerGridColumn)}>
+											<strong>{localizer.f('releaseDateLabel')}</strong>
+										</Grid.Column>
+										<Grid.Column width={11} className={css(styles.developerGridColumn)}>
+											{moment.unix(this.props.selectedGame.details.releaseDate/* / 1000 */).format('DD/MM/YYYY')}
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={5} className={css(styles.publisherGridColumn)}>
+											<strong>{localizer.f('genresLabel')}</strong>
+										</Grid.Column>
+										<Grid.Column width={11} className={css(styles.publisherGridColumn)}>
+											{this.props.selectedGame.details.genres.map((genre: string) => localizer.genre(genre)).join(', ')}
+										</Grid.Column>
+									</Grid>
+								</Grid.Column>
+								<Grid.Column width={5}>
 									<CirclePercentage
 										percentage={this.props.selectedGame.details.rating}
 										color={this.state.mainColor}
 									/>
-								</div>
-							</div>
-							<hr className={css(styles.selectedGameCoreHr)}/>
-							<p className={css(styles.selectedGameDesc)}>
+								</Grid.Column>
+							</Grid>
+							<hr className={css(styles.gameCoreHr)}/>
+							<p className={css(styles.gameDesc)}>
 								{this.props.selectedGame.details.summary.split('\n').map((section: string, index: number) =>
 									<span key={index}>
 										{section}
@@ -113,21 +131,18 @@ export class GameContainer extends VitrineComponent<Props, State> {
 								)}
 							</p>
 						</div>
-					</div>
-					<div className="col-md-4">
-						<div className={css(styles.coverDiv)}>
-							<BlurPicture
-								faIcon={faPlay}
-								fontSize={125}
-								background={this.props.selectedGame.details.cover}
-								clickHandler={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
-							/>
-						</div>
-					</div>
-				</div>
+					</Grid.Column>
+					<Grid.Column width={5} style={{ height: 75..percents() }}>
+						<BlurPicture
+							faIcon={faPlay}
+							fontSize={125}
+							background={this.props.selectedGame.details.cover}
+							clickHandler={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
+						/>
+					</Grid.Column>
+				</Grid>
 			);
-		}
-		else {
+		else
 			gameContainer = (
 				<div className={css(styles.noSelectedGame)}>
 					<h1>{localizer.f('welcomeMessage')}</h1>
@@ -135,64 +150,65 @@ export class GameContainer extends VitrineComponent<Props, State> {
 					<p>{localizer.f('desc')}</p>
 				</div>
 			);
-		}
 
 		return (
-			<div className="row full-height">
-				<div className={`col-sm-8 col-lg-10 col-sm-offset-4 col-lg-offset-2 ${css(styles.selectedGameContainer)}`}>
-					<div className={`full-height selected-game-background`}>
-						{gameContainer}
-						<div
-							className={css(styles.selectedGameBackground)}
-							style={{ backgroundImage: this.state.backgroundImage }}
-						/>
-					</div>
+			<Grid.Column className={css(styles.gameContainerWrapper)}>
+				<div className={css(styles.gameContainer)}>
+					{gameContainer}
+					<div
+						className={css(styles.gameBackground)}
+						style={{ backgroundImage: this.state.backgroundImage }}
+					/>
 				</div>
 				{this.checkErrors()}
-			</div>
+			</Grid.Column>
 		);
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
-	selectedGameContainer: {
+	gameContainerWrapper: {
+		width: 84.5.percents(),
+		padding: 0,
+		overflow: 'hidden'
+	},
+	gameContainer: {
 		height: `${100}%`,
 		background: `radial-gradient(ellipse at center, ${rgba(131, 131, 131, 0.08)} ${0}%, ${rgba(0, 0, 0, 0.76)} ${120..percents()})`,
 		overflow: 'hidden'
 	},
-	selectedGameBackground: {
+	gameBackground: {
 		position: 'absolute',
 		zIndex: -1,
-		width: 100..percents(),
-		height: 100..percents(),
-		top: 0,
-		left: 0,
-		opacity: 0.8,
+		width: 101..percents(),
+		height: 101..percents(),
+		top: -5,
+		left: -5,
+		opacity: 0.5,
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: `${100..percents()} ${100..percents()}`,
 		filter: `blur(${4..px()})`,
 		transition: `${150}ms ease`
 	},
-	noSelectedGame: {
-		padding: 50
+	gameCore: {
+		padding: padding(50, 25, 50),
+		margin: 0,
+		height: 100..percents()
 	},
-	noSelectedGameH1: {
-		fontWeight: 300,
-		fontSize: 50
-	},
-	selectedGameCore: {
-		padding: padding(25, 50)
-	},
-	selectedGameCoreH1: {
+	gameCoreTitle: {
 		fontWeight: 400,
 		fontSize: 33,
 		marginBottom: 40,
 		color: lessVars.textColor
 	},
-	selectedGameCoreHr: {
-		borderTop: `solid ${1..px()} ${rgba(210, 210, 210, 0.15)}`
+	gameCoreHr: {
+		border: 'none',
+		borderTop: `solid ${1..px()} ${rgba(210, 210, 210, 0.15)}`,
+		marginTop: 30,
+		marginBottom: 30,
+		width: 97..percents()
 	},
-	selectedGameInfos: {
+	gameInfosRegion: {
 		backgroundColor: rgba(0, 0, 0, 0.49),
 		padding: padding(13, 24),
 		color: '#E4E4E4',
@@ -200,16 +216,33 @@ const styles: React.CSSProperties = StyleSheet.create({
 		borderRadius: 3,
 		margin: margin(10, 0)
 	},
-	selectedGameInfosSpan: {
+	developerGridColumn: {
+		paddingBottom: 5
+	},
+	publisherGridColumn: {
+		paddingTop: 5
+	},
+	gameTimePlayed: {
 		marginLeft: 15
 	},
-	selectedGameDesc: {
-		maxHeight: 170,
+	gameDesc: {
+		padding: 20,
+		maxHeight: 210,
+		minHeight: 160,
+		lineHeight: 1.5,
 		overflowY: 'auto',
 		backgroundColor: rgba(0, 0, 0, 0.2),
 		borderRadius: 3
 	},
-	coverDiv: {
-		paddingLeft: 40
+	gameCover: {
+		height: 80..percents(),
+		paddingTop: 25
+	},
+	noSelectedGame: {
+		padding: 50
+	},
+	noSelectedGameH1: {
+		fontWeight: 300,
+		fontSize: 50
 	}
 });

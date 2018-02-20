@@ -72,7 +72,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		this.setState({
 			name: gameInfos.name,
 			series: gameInfos.series,
-			date: moment.unix(gameInfos.releaseDate / 1000).format('DD/MM/YYYY'),
+			date: moment.unix(gameInfos.releaseDate/* / 1000*/).format('DD/MM/YYYY'),
 			developer: gameInfos.developer,
 			publisher: gameInfos.publisher,
 			genres: gameInfos.genres.join(', '),
@@ -170,7 +170,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				executable,
 				arguments: args,
 				series: gameToAdd.details.series || '',
-				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate / 1000).format('DD/MM/YYYY')) : (''),
+				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate/* / 1000*/).format('DD/MM/YYYY')) : (''),
 				developer: gameToAdd.details.developer || '',
 				publisher: gameToAdd.details.publisher || '',
 				genres: (gameToAdd.details.genres) ? (gameToAdd.details.genres.join(', ')) : (''),

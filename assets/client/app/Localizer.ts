@@ -28,6 +28,11 @@ class Localizer {
 			return this.languages[this.selectedLanguage][key];
 		return this.languages[this.selectedLanguage][key].replace('%1', arg);
 	}
+
+	public genre(key: string): string {
+		let genre: string = (this.languages[this.selectedLanguage]).genresNames[key];
+		return genre || key;
+	}
 }
 
 export let localizer: Localizer = new Localizer();
