@@ -19,8 +19,9 @@ interface Props {
 	selectedGame: PlayableGame,
 	selectGame: Function | any,
 	launchGame: Function,
+	openAddGameModal: Function,
 	refreshingGames: boolean,
-	refreshGames: Function | any
+	refreshGames: Function | any,
 	isGameLaunched: boolean
 }
 
@@ -41,7 +42,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				<VitrineButton
 					icon={faPlus}
 					tooltip={localizer.f('addGameLabel')}
-					onClick='#add-game-modal'
+					onClick={() => this.props.openAddGameModal()}
 					className={css(styles.commandBtn)}
 				/>
 				<VitrineButton
@@ -54,7 +55,6 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				<VitrineButton
 					icon={faCogs}
 					tooltip={localizer.f('settings')}
-					onClick='#settings-modal'
 					className={css(styles.commandBtn)}
 				/>
 				<Button

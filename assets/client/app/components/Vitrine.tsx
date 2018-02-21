@@ -38,7 +38,8 @@ interface Props {
 interface State {
 	firstLaunch: boolean,
 	launchedGamePictureActivated: boolean,
-	gameWillBeEdited: boolean
+	gameWillBeEdited: boolean,
+	addGameModalOpen: boolean
 }
 
 export class Vitrine extends VitrineComponent<Props, State> {
@@ -48,7 +49,8 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.state = {
 			firstLaunch: false,
 			launchedGamePictureActivated: true,
-			gameWillBeEdited: false
+			gameWillBeEdited: false,
+			addGameModalOpen: false
 		};
 	}
 
@@ -242,11 +244,12 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			</div>
 		);*/
 		return (
-			<div style={{ height: 100..percents() }}>
+			<div className={css(styles.vitrineApp)}>
 				<TaskBar/>
 				<SideBar
 					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
 					launchGame={this.launchGame.bind(this)}
+					openAddGameModal={() => this.setState({ addGameModalOpen: true })}
 				/>
 				<Grid className={css(styles.mainContainer)}>
 					<Grid.Column className={css(styles.case1)}/>
@@ -254,6 +257,11 @@ export class Vitrine extends VitrineComponent<Props, State> {
 						launchGame={this.launchGame.bind(this)}
 					/>
 				</Grid>
+				<AddGameModal
+					isEditing={this.state.gameWillBeEdited}
+					open={this.state.addGameModalOpen}
+					close={() => this.setState({ addGameModalOpen: false })}
+				/>
 			</div>
 		);
 	}
@@ -261,10 +269,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	vitrineApp: {
-		padding: 0,
-		height:100..percents(),
+		//padding: 0,
+		height: 100..percents(),
 		userSelect: 'none',
-		overflow: 'hidden',
+		//overflow: 'hidden',
 		cursor: 'default'
 	},
 	mainContainer: {

@@ -204,8 +204,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	gameCoreHr: {
 		border: 'none',
 		borderTop: `solid ${1..px()} ${rgba(210, 210, 210, 0.15)}`,
-		marginTop: 30,
-		marginBottom: 30,
+		margin: margin(30, 0),
 		width: 97..percents()
 	},
 	gameInfosRegion: {

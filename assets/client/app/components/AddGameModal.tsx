@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
 import * as DateTime from 'react-datetime';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
-import { border, rgba } from 'css-verbose';
+import { border, margin, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { PotentialGame, GameSource } from '../../../models/PotentialGame';
@@ -20,6 +21,8 @@ import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	potentialGameToAdd: PotentialGame
+	open: boolean,
+	close: Function,
 	isEditing: boolean
 }
 
@@ -42,7 +45,7 @@ interface State {
 }
 
 export class AddGameModal extends VitrineComponent<Props, State> {
-	private emptyState: any;
+	private emptyState: State;
 
 	public constructor(props: Props) {
 		super(props);
@@ -54,7 +57,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			developer: '',
 			publisher: '',
 			genres: '',
-			rating: '',
+			rating: undefined,
 			summary: '',
 			executable: '',
 			arguments: '',
@@ -184,6 +187,180 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 
 	public render(): JSX.Element {
 		return (
+			<Modal
+				open={this.props.open}
+				onClose={() => this.props.close()}
+				size={'large'}
+				className={css(styles.modal)}
+			>
+				<Modal.Header>{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
+				<Modal.Content>
+					<Grid>
+						<Grid.Column width={3}/>
+						<Grid.Column width={1}/>
+						<Grid.Column width={12}>
+							<Form>
+								<Form.Field>
+									<label>{localizer.f('gameName')}</label>
+									<Input
+										name={'name'}
+										size={'large'}
+										placeholder={localizer.f('gameName')}
+										value={this.state.name}
+										onChange={this.inputChangeHandler.bind(this)}
+									/>
+								</Form.Field>
+								<Grid>
+									<Grid.Column width={11}>
+										<Form.Field>
+											<label>{localizer.f('gamesSeries')}</label>
+											<Input
+												name={'series'}
+												size={'large'}
+												placeholder={localizer.f('gamesSeries')}
+												value={this.state.series}
+												onChange={this.inputChangeHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+									<Grid.Column width={5}>
+										<Form.Field>
+											<label>{localizer.f('releaseDate')}</label>
+											<Input
+												name={'date'}
+												size={'large'}
+												readOnly={true}
+												placeholder={localizer.f('releaseDate')}
+												value={this.state.date}
+												onChange={this.dateChangeHandler.bind(this)}
+											/>
+											{/*<DateTime
+											value={this.state.date}
+											dateFormat={'DD/MM/YYYY'}
+											timeFormat={false}
+											inputProps={{
+												placeholder: localizer.f('releaseDate'),
+												readOnly: true
+											}}
+											onChange={this.dateChangeHandler.bind(this)}
+										/>*/}
+										</Form.Field>
+									</Grid.Column>
+								</Grid>
+								<Grid>
+									<Grid.Column width={8}>
+										<Form.Field>
+											<label>{localizer.f('developer')}</label>
+											<Input
+												name={'developer'}
+												size={'large'}
+												placeholder={localizer.f('developer')}
+												value={this.state.developer}
+												onChange={this.inputChangeHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+									<Grid.Column width={8}>
+										<Form.Field>
+											<label>{localizer.f('publisher')}</label>
+											<Input
+												name={'publisher'}
+												size={'large'}
+												placeholder={localizer.f('publisher')}
+												value={this.state.publisher}
+												onChange={this.inputChangeHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+								</Grid>
+								<Grid>
+									<Grid.Column style={{ width: 84.5.percents() }}>
+										<Form.Field>
+											<label>{localizer.f('genres')}</label>
+											<Input
+												name={'genres'}
+												size={'large'}
+												placeholder={localizer.f('genres')}
+												value={this.state.genres}
+												onChange={this.inputChangeHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+									<Grid.Column width={2}>
+										<Form.Field>
+											<label>{localizer.f('rating')}</label>
+											<NumberPicker
+												min={1}
+												max={100}
+												name={'rating'}
+												placeholder={localizer.f('rating')}
+												value={this.state.rating}
+												onChange={this.ratingChangeHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+								</Grid>
+								<Grid>
+									<Grid.Column width={16}>
+										<Form.Field>
+											<label>{localizer.f('summary')}</label>
+											<TextArea
+												name={'summary'}
+												rows={7}
+												className={css(styles.formTextArea)}
+												placeholder={localizer.f('summary')}
+												value={this.state.summary}
+												onChange={this.inputChangeHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+								</Grid>
+								<hr className={css(styles.formHr)}/>
+								<Grid>
+									<Grid.Column width={16}>
+										<Form.Field>
+											<label>{localizer.f('executable')}</label>
+											<Input
+												label={
+													<Button
+														secondary={true}
+														onClick={this.executableBtnClickHandler.bind(this)}
+													>
+														<FontAwesomeIcon icon={faFolderOpen}/>
+													</Button>
+												}
+												labelPosition={'right'}
+												name={'executable'}
+												size={'large'}
+												placeholder={localizer.f('executable')}
+												value={this.state.executable}
+												onClick={this.executableBtnClickHandler.bind(this)}
+												readOnly={true}
+											/>
+										</Form.Field>
+									</Grid.Column>
+								</Grid>
+							</Form>
+						</Grid.Column>
+					</Grid>
+				</Modal.Content>
+				<Modal.Actions>
+					<Button
+						primary={true}
+						disabled={!this.state.name}
+					>
+						{localizer.f('fillWithIgdb')}
+					</Button>
+					<Button
+						primary={true}
+					>
+						{(this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
+					</Button>
+				</Modal.Actions>
+				{this.checkErrors()}
+			</Modal>
+		);
+		/*return (
 			<div>
 				<IgdbResearchModal/>
 				<div id="add-game-modal" className="modal fade" role="dialog">
@@ -308,8 +485,8 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 														className="form-control"
 														name="executable"
 														placeholder={localizer.f('executable')}
-														value={this.state.executable}/*
-														onChange={this.inputChangeHandler.bind(this)}*/
+														value={this.state.executable}/!*
+														onChange={this.inputChangeHandler.bind(this)}*!/
 														onClick={this.executableBtnClickHandler.bind(this)}
 														readOnly={true}
 													/>
@@ -387,17 +564,23 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				</div>
 				{this.checkErrors()}
 			</div>
-		);
+		);*/
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
+	modal: {
+		cursor: 'default',
+		userSelect: 'none'
+	},
 	modalBody: {
 		maxHeight: 82..vh(),
 		overflowY: 'auto'
 	},
 	formHr: {
-		borderTop: border(1, 'solid', rgba(238, 238, 238, 0.15))
+		border: 'none',
+		borderTop: border(1, 'solid', rgba(238, 238, 238, 0.15)),
+		margin: margin(30, 0, 16)
 	},
 	formTextArea: {
 		resize: 'none',

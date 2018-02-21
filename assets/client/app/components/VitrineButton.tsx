@@ -12,7 +12,7 @@ interface Props {
 	icon: IconDefinition,
 	spin?: boolean,
 	tooltip?: string,
-	onClick?: React.MouseEventHandler<any> | string,
+	onClick?: React.MouseEventHandler<any>,
 	className?: string
 }
 
@@ -54,7 +54,7 @@ export class VitrineButton extends VitrineComponent<Props, State> {
 			className={`${css(styles.icon)} ${this.state.iconClassName}`}
 			spin={this.props.spin}
 		/>;
-		let button: JSX.Element = (this.props.onClick instanceof Function) ? (
+		let button: JSX.Element = (
 			<div
 				className={`${css(styles.button)} ${this.state.buttonClassName}`}
 				data-tip
@@ -62,16 +62,6 @@ export class VitrineButton extends VitrineComponent<Props, State> {
 				onMouseEnter={this.mouseEnterHandler.bind(this)}
 				onMouseLeave={this.mouseLeaveHandler.bind(this)}
 				onClick={this.props.onClick}
-			>{icon}</div>
-		) : (
-			<div
-				className={`${css(styles.button)} ${this.state.buttonClassName}`}
-				data-tip
-				data-for={this.id}
-				data-toggle={'modal'}
-				data-target={this.props.onClick}
-				onMouseEnter={this.mouseEnterHandler.bind(this)}
-				onMouseLeave={this.mouseLeaveHandler.bind(this)}
 			>{icon}</div>
 		);
 
