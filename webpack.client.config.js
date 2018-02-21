@@ -18,20 +18,6 @@ let clientConfig = {
 				test: /\.(ts|tsx)?$/,
 				loader: 'ts-loader'
 			},
-			/*{
-				test: /\.(css|scss)?$/,
-				use: [
-					{
-						loader: 'style-loader'
-					},
-					{
-						loader: 'css-loader'
-					},
-					{
-						loader: 'sass-loader'
-					}
-				]
-			},*/
 			{
 				test: /\.less$/,
 				use: [
@@ -51,8 +37,7 @@ let clientConfig = {
 				loader: 'base64-inline-loader?name=[name].[ext]'
 			}
 		]
-	},
-	devtool: 'source-map'
+	}
 };
 
 module.exports = [
