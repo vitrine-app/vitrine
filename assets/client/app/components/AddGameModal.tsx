@@ -226,21 +226,14 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									<Grid.Column width={5}>
 										<Form.Field>
 											<label>{localizer.f('releaseDate')}</label>
-											{/*<Input
-												name={'date'}
-												size={'large'}
-												readOnly={true}
-												placeholder={localizer.f('releaseDate')}
-												value={this.state.date}
-												onChange={this.dateChangeHandler.bind(this)}
-											/>*/}
 											<DateTime
 												value={this.state.date}
 												dateFormat={'DD/MM/YYYY'}
 												timeFormat={false}
 												inputProps={{
 													placeholder: localizer.f('releaseDate'),
-													readOnly: true
+													readOnly: true,
+													style: { fontSize: 1.14285714.em() }
 												}}
 												onChange={this.dateChangeHandler.bind(this)}
 											/>
