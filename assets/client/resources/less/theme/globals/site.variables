@@ -14,7 +14,6 @@
 
 /* Form input */
 @inputBackground: #39342E;
-@inputColor: red;
 @inputPlaceholderColor: #999999;
 @inputPlaceholderFocusColor: #999999;
 

@@ -194,7 +194,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				className={css(styles.modal)}
 			>
 				<Modal.Header>{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
-				<Modal.Content>
+				<Modal.Content className={css(styles.modalBody)}>
 					<Grid>
 						<Grid.Column width={3}/>
 						<Grid.Column width={1}/>
@@ -226,24 +226,24 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									<Grid.Column width={5}>
 										<Form.Field>
 											<label>{localizer.f('releaseDate')}</label>
-											<Input
+											{/*<Input
 												name={'date'}
 												size={'large'}
 												readOnly={true}
 												placeholder={localizer.f('releaseDate')}
 												value={this.state.date}
 												onChange={this.dateChangeHandler.bind(this)}
+											/>*/}
+											<DateTime
+												value={this.state.date}
+												dateFormat={'DD/MM/YYYY'}
+												timeFormat={false}
+												inputProps={{
+													placeholder: localizer.f('releaseDate'),
+													readOnly: true
+												}}
+												onChange={this.dateChangeHandler.bind(this)}
 											/>
-											{/*<DateTime
-											value={this.state.date}
-											dateFormat={'DD/MM/YYYY'}
-											timeFormat={false}
-											inputProps={{
-												placeholder: localizer.f('releaseDate'),
-												readOnly: true
-											}}
-											onChange={this.dateChangeHandler.bind(this)}
-										/>*/}
 										</Form.Field>
 									</Grid.Column>
 								</Grid>
@@ -306,7 +306,6 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 											<label>{localizer.f('summary')}</label>
 											<TextArea
 												name={'summary'}
-												rows={7}
 												className={css(styles.formTextArea)}
 												placeholder={localizer.f('summary')}
 												value={this.state.summary}
@@ -340,6 +339,50 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 										</Form.Field>
 									</Grid.Column>
 								</Grid>
+								<Grid>
+									<Grid.Column width={16}>
+										<Form.Field>
+											<label>{localizer.f('lineArguments')}</label>
+											<Input
+												name={'arguments'}
+												size={'large'}
+												placeholder={localizer.f('lineArguments')}
+												value={this.state.arguments}
+												onChange={this.inputChangeHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+								</Grid>
+								<hr className={css(styles.formHr)}/>
+								<Grid>
+									<Grid.Column width={16}>
+										<Form.Field>
+											<label>{localizer.f('backgroundImage')}</label>
+											<ImagesCollection
+												images={this.state.potentialBackgrounds}
+												onChange={this.changeBackgroundHandler.bind(this)}
+											/>
+										</Form.Field>
+									</Grid.Column>
+								</Grid>
+								<input
+									name={'cover'}
+									value={this.state.cover}
+									onChange={this.inputChangeHandler.bind(this)}
+									hidden
+								/>
+								<input
+									name={'background'}
+									value={this.state.backgroundScreen}
+									onChange={this.inputChangeHandler.bind(this)}
+									hidden
+								/>
+								<input
+									name={'source'}
+									value={this.state.source}
+									onChange={this.inputChangeHandler.bind(this)}
+									hidden
+								/>
 							</Form>
 						</Grid.Column>
 					</Grid>
@@ -353,6 +396,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 					</Button>
 					<Button
 						primary={true}
+						disabled={!this.state.name || !this.state.executable}
 					>
 						{(this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
 					</Button>
@@ -570,6 +614,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
+		margin: margin(1..rem(), 'auto'),
 		cursor: 'default',
 		userSelect: 'none'
 	},

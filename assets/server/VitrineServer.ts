@@ -322,14 +322,6 @@ export class VitrineServer {
 				if (isStored) {
 					game.details.cover = coverPath;
 					return;
-					/*try {
-						let palette: Palette = await Vibrant.from(game.details.cover).getPalette();
-						game.ambientColor = palette.DarkVibrant.getHex();
-						return;
-					}
-					catch (error) {
-						return;
-					}*/
 				}
 			}
 			catch (error) {

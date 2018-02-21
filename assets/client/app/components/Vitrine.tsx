@@ -269,10 +269,8 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	vitrineApp: {
-		//padding: 0,
 		height: 100..percents(),
 		userSelect: 'none',
-		//overflow: 'hidden',
 		cursor: 'default'
 	},
 	mainContainer: {

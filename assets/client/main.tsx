@@ -16,7 +16,7 @@ import {
 	selectedGame
 } from './app/reducers/games';
 
-import 'semantic-ui-less/semantic.less';
+import './resources/less/main.less';
 
 const logger: Middleware = (store: any) => (next: any) => (action: any): any => {
 	console.log('Dispatching: ', action);

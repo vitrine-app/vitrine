@@ -62,7 +62,7 @@ export class WindowsHandler {
 			height: 900
 		});
 		this.clientWindow.setMenu(null);
-		//this.clientWindow.maximize();
+		this.clientWindow.maximize();
 		this.clientWindow.loadURL(this.mainEntryPoint);
 		this.clientWindow.hide();
 		if (this.devTools)

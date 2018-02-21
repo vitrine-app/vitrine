@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Button } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
@@ -76,21 +77,18 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 	public render(): JSX.Element {
 		return (
 			<div>
-				<button
-					className="btn btn-primary"
-					type="button"
+				<Button
+					primary={true}
 					onClick={this.addImageBtnClick.bind(this)}
 				>
 					<FontAwesomeIcon icon={faPlus}/> {localizer.f('addCustomBgImage')}
-				</button>
+				</Button>
 				<div className={css(styles.imagesContainer)}>
 					{this.state.images.map((image: string, index: number) =>
 						<img
 							key={index}
 							src={image}
-							className={
-								css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))
-							}
+							className={css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))}
 							onClick={this.imageClickHandler.bind(this, image)}
 						/>
 					)}
@@ -111,8 +109,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		width: 400,
 		height: 270,
 		margin: 5,
-		borderRadius: 1,
-		boxShadow: `${0} ${0} ${6..px()} ${rgba(0, 0, 0, 0.46)}`,
+		borderRadius: 4,
 		filter: `brightness(${65}%)`
 	},
 	selectedImage: {
