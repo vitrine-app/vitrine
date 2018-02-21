@@ -64,6 +64,7 @@
     "jquery": "^3.3.1",
     "moment": "^2.20.1",
     "node-vibrant": "^3.0.0",
+    "rc-datepicker": "^5.0.10",
     "react": "^16.2.0",
     "react-contextmenu": "^2.9.2",
     "react-datetime": "^2.11.1",
@@ -87,7 +88,6 @@
     "@types/glob": "^5.0.34",
     "@types/jquery": "^3.3.0",
     "@types/mocha": "^2.2.46",
-    "@types/moment": "^2.13.0",
     "@types/node": "^8.5.9",
     "@types/react": "^16.0.34",
     "@types/react-dom": "^16.0.3",
@@ -122,7 +122,7 @@
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "pack": "webpack --progress && build --dir",
-    "dist": "npm test && webpack --progress && build",
-    "release": "npm test && webpack --progress && build --publish always"
+    "dist": "yarn test && webpack --progress && build",
+    "release": "yarn test && webpack --progress && build --publish always"
   }
 }
