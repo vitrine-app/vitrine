@@ -1,3 +1,0 @@
-.ui.form input[type="text"], .ui.form input[type="text"]:focus {
-	color: #B9B0A2 !important;
-}

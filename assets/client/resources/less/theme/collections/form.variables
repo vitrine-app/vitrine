@@ -1,0 +1,6 @@
+/* Input Focus */
+@inputColor: @selectedTextColor;
+@inputFocusColor: @selectedTextColor;
+
+/* Text area */
+@textAreaFontSize: 16px;

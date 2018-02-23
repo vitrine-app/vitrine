@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
-import * as DateTime from 'react-datetime';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
 import { border, margin, rgba } from 'css-verbose';
@@ -11,9 +10,9 @@ import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { BlurPicture } from './BlurPicture';
 import { NumberPicker } from './NumberPicker';
+import DatePicker from './DatePicker';
 import { IgdbResearchModal } from './IgdbResearchModal';
 import { ImagesCollection } from './ImagesCollection';
-import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 import { openExecutableDialog, openImageDialog } from '../helpers';
 
@@ -108,9 +107,9 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private dateChangeHandler(date: moment.Moment) {
+	private dateChangeHandler(date: moment.Moment | string) {
 		this.setState({
-			date: date.format('DD/MM/YYYY')
+			date: (typeof date === 'string') ? (date) : (date.format('DD/MM/YYYY'))
 		});
 	}
 
@@ -196,12 +195,22 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				<Modal.Header>{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
 				<Modal.Content className={css(styles.modalBody)}>
 					<Grid>
-						<Grid.Column width={3}/>
+						<Grid.Column width={3}>
+							<label className={css(styles.formLabel)}>{localizer.f('coverLabel')}</label>
+							<div className={css(styles.coverWrapper)}>
+								<BlurPicture
+									faIcon={faFolderOpen}
+									fontSize={55}
+									background={this.state.cover}
+									clickHandler={this.gameCoverClickHandler.bind(this)}
+								/>
+							</div>
+						</Grid.Column>
 						<Grid.Column width={1}/>
 						<Grid.Column width={12}>
 							<Form>
 								<Form.Field>
-									<label>{localizer.f('gameName')}</label>
+									<label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
 									<Input
 										name={'name'}
 										size={'large'}
@@ -213,7 +222,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 								<Grid>
 									<Grid.Column width={11}>
 										<Form.Field>
-											<label>{localizer.f('gamesSeries')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('gamesSeries')}</label>
 											<Input
 												name={'series'}
 												size={'large'}
@@ -225,17 +234,30 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									</Grid.Column>
 									<Grid.Column width={5}>
 										<Form.Field>
-											<label>{localizer.f('releaseDate')}</label>
-											<DateTime
+											<label className={css(styles.formLabel)}>{localizer.f('releaseDate')}</label>
+											{/*<DateTime
 												value={this.state.date}
 												dateFormat={'DD/MM/YYYY'}
 												timeFormat={false}
 												inputProps={{
 													placeholder: localizer.f('releaseDate'),
 													readOnly: true,
-													style: { fontSize: 1.14285714.em() }
+													style: {
+														fontSize: 1.14285714.em(),
+														cursor: 'text'
+													}
 												}}
 												onChange={this.dateChangeHandler.bind(this)}
+											/>*/}
+											<DatePicker
+												value={this.state.date}
+												dateFormat={'DD/MM/YYYY'}
+												onChange={this.dateChangeHandler.bind(this)}
+												inputProps={{
+													size: 'large',
+													placeholder: localizer.f('releaseDate'),
+													readOnly: true
+												}}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -243,7 +265,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 								<Grid>
 									<Grid.Column width={8}>
 										<Form.Field>
-											<label>{localizer.f('developer')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('developer')}</label>
 											<Input
 												name={'developer'}
 												size={'large'}
@@ -255,7 +277,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									</Grid.Column>
 									<Grid.Column width={8}>
 										<Form.Field>
-											<label>{localizer.f('publisher')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('publisher')}</label>
 											<Input
 												name={'publisher'}
 												size={'large'}
@@ -269,7 +291,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 								<Grid>
 									<Grid.Column style={{ width: 84.5.percents() }}>
 										<Form.Field>
-											<label>{localizer.f('genres')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('genres')}</label>
 											<Input
 												name={'genres'}
 												size={'large'}
@@ -281,7 +303,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									</Grid.Column>
 									<Grid.Column width={2}>
 										<Form.Field>
-											<label>{localizer.f('rating')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('rating')}</label>
 											<NumberPicker
 												min={1}
 												max={100}
@@ -296,7 +318,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 								<Grid>
 									<Grid.Column width={16}>
 										<Form.Field>
-											<label>{localizer.f('summary')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('summary')}</label>
 											<TextArea
 												name={'summary'}
 												className={css(styles.formTextArea)}
@@ -311,7 +333,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 								<Grid>
 									<Grid.Column width={16}>
 										<Form.Field>
-											<label>{localizer.f('executable')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('executable')}</label>
 											<Input
 												label={
 													<Button
@@ -335,7 +357,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 								<Grid>
 									<Grid.Column width={16}>
 										<Form.Field>
-											<label>{localizer.f('lineArguments')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
 											<Input
 												name={'arguments'}
 												size={'large'}
@@ -350,7 +372,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 								<Grid>
 									<Grid.Column width={16}>
 										<Form.Field>
-											<label>{localizer.f('backgroundImage')}</label>
+											<label className={css(styles.formLabel)}>{localizer.f('backgroundImage')}</label>
 											<ImagesCollection
 												images={this.state.potentialBackgrounds}
 												onChange={this.changeBackgroundHandler.bind(this)}
@@ -382,7 +404,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				</Modal.Content>
 				<Modal.Actions>
 					<Button
-						primary={true}
+						secondary={true}
 						disabled={!this.state.name}
 					>
 						{localizer.f('fillWithIgdb')}
@@ -410,6 +432,10 @@ const styles: React.CSSProperties = StyleSheet.create({
 		maxHeight: 82..vh(),
 		overflowY: 'auto'
 	},
+	coverWrapper: {
+		height: 270,
+		paddingTop: 3
+	},
 	formHr: {
 		border: 'none',
 		borderTop: border(1, 'solid', rgba(238, 238, 238, 0.15)),
@@ -419,7 +445,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		resize: 'none',
 		height: 7..em()
 	},
-	coverDiv: {
-		paddingLeft: 40
+	formLabel: {
+		fontWeight: 'normal',
+		fontSize: 1..em()
 	}
 });

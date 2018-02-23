@@ -91,14 +91,14 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 		let controlButtons: JSX.Element = (
 			<div className={css(styles.verticalBtnDiv)}>
 				<Button
-					primary={true}
+					secondary={true}
 					className={css(styles.verticalBtn, styles.firstVerticalBtn)}
 					onClick={this.increaseCounterHandler.bind(this)}
 				>
 					<FontAwesomeIcon icon={faCaretUp}/>
 				</Button>
 				<Button
-					primary={true}
+					secondary={true}
 					className={css(styles.verticalBtn, styles.lastVerticalBtn)}
 					onClick={this.decreaseCounterHandler.bind(this)}
 				>

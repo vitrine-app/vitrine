@@ -34,6 +34,15 @@
   dependencies:
     humps "^2.0.1"
 
+"@paul-roman/react-date-time-input@^2.14.1":
+  version "2.14.1"
+  resolved "https://registry.yarnpkg.com/@paul-roman/react-date-time-input/-/react-date-time-input-2.14.1.tgz#068abef98849971239bdd6a95fe30abe7250b612"
+  dependencies:
+    create-react-class "^15.5.2"
+    object-assign "^3.0.0"
+    prop-types "^15.5.7"
+    react-onclickoutside "^6.5.0"
+
 "@types/aphrodite@^0.5.6":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@types/aphrodite/-/aphrodite-0.5.7.tgz#778f5fd2a6a06e442cde480514591511473fc385"
