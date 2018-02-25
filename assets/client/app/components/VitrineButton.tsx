@@ -49,12 +49,12 @@ export class VitrineButton extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		let icon: JSX.Element = <FontAwesomeIcon
+		const icon: JSX.Element = <FontAwesomeIcon
 			icon={this.props.icon}
 			className={`${css(styles.icon)} ${this.state.iconClassName}`}
 			spin={this.props.spin}
 		/>;
-		let button: JSX.Element = (
+		const button: JSX.Element = (
 			<div
 				className={`${css(styles.button)} ${this.state.buttonClassName}`}
 				data-tip

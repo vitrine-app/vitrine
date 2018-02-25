@@ -37,7 +37,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 	}
 
 	public render(): JSX.Element {
-		let taskBarElements: JSX.Element = (!this.props.isGameLaunched) ? (
+		const taskBarElements: JSX.Element = (!this.props.isGameLaunched) ? (
 			<div className={css(styles.commandsGroup)}>
 				<VitrineButton
 					icon={faPlus}
@@ -71,25 +71,27 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				{taskBarElements}
 				<div className={css(styles.sideBarContent)}>
 					<ul className={css(styles.gamesListUl)}>
-						{this.props.playableGames.map((game: PlayableGame, index: number) =>
-							<ContextMenuTrigger
-								id="sidebar-games-context-menu"
-								key={index}
-							>
-								<li
-									id={`game-${game.uuid}`}
-									className={
-										css(styles.gamesListLi) +
-										((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
-									}
-									onClick={this.clickGameHandler.bind(this)}
-									onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
-								>
-									{game.name}
-								</li>
-							</ContextMenuTrigger>
+						{this.props.playableGames.map((game: PlayableGame, index: number) => (
+									<li
+										id={`game-${game.uuid}`}
+										className={
+											css(styles.gamesListLi) +
+											((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
+										}
+										onClick={this.clickGameHandler.bind(this)}
+										onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
+									>
+										{game.name}
+									</li>
+							)
 						)}
 					</ul>
+
+					<ContextMenuTrigger
+						id="sidebar-games-context-menu"
+					>
+						<div>cc c mwa regardé</div>
+					</ContextMenuTrigger>
 				</div>
 				{this.checkErrors()}
 			</div>

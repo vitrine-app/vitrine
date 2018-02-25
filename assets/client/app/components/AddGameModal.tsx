@@ -21,7 +21,7 @@ import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 interface Props {
 	potentialGameToAdd: PotentialGame
 	open: boolean,
-	close: Function,
+	close: () => void,
 	isEditing: boolean
 }
 
@@ -40,7 +40,8 @@ interface State {
 	backgroundScreen: string,
 	potentialBackgrounds: string[],
 	source: GameSource,
-	isEditing: boolean
+	isEditing: boolean,
+	igdbResearchModalOpen?: boolean
 }
 
 export class AddGameModal extends VitrineComponent<Props, State> {
@@ -66,11 +67,13 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			source: GameSource.LOCAL,
 			isEditing: props.isEditing
 		};
-		this.state = this.emptyState;
+		this.state = {
+			...this.emptyState,
+			igdbResearchModalOpen: false
+		};
 	}
 
 	private fillIgdbGame(gameInfos: any) {
-		$('#igdb-research-modal').modal('hide');
 		this.setState({
 			name: gameInfos.name,
 			series: gameInfos.series,
@@ -82,12 +85,17 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			summary: gameInfos.summary,
 			cover: gameInfos.cover,
 			potentialBackgrounds: gameInfos.screenshots,
-			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
+			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : (''),
+			igdbResearchModalOpen: false
 		});
 	}
 
-	private hideModalHandler() {
-		this.setState(this.emptyState);
+	private closeModal() {
+		this.props.close();
+		this.setState({
+			...this.emptyState,
+			potentialBackgrounds: []
+		});
 	}
 
 	private gameCoverClickHandler() {
@@ -128,15 +136,18 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private changeBackgroundHandler(imageUrl: string) {
+	private changeBackgroundHandler(backgroundScreen: string) {
 		this.setState({
-			backgroundScreen: imageUrl
+			backgroundScreen
 		});
 	}
 
 	private searchIgdbBtnClickHandler() {
-		$('#igdb-research-modal').modal('show');
 		serverListener.send('search-igdb-games', this.state.name);
+		this.setState({
+			igdbResearchModalOpen: true
+		});
+		// $('#igdb-research-modal').modal('show');
 	}
 
 	private addGameBtnClickHandler() {
@@ -155,7 +166,6 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 	}
 
 	public componentDidMount() {
-		$('#add-game-modal').on('hidden.bs.modal', this.hideModalHandler.bind(this));
 		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this));
 	}
 
@@ -188,7 +198,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		return (
 			<Modal
 				open={this.props.open}
-				onClose={() => this.props.close()}
+				onClose={this.closeModal.bind(this)}
 				size={'large'}
 				className={css(styles.modal)}
 			>
@@ -235,20 +245,6 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									<Grid.Column width={5}>
 										<Form.Field>
 											<label className={css(styles.formLabel)}>{localizer.f('releaseDate')}</label>
-											{/*<DateTime
-												value={this.state.date}
-												dateFormat={'DD/MM/YYYY'}
-												timeFormat={false}
-												inputProps={{
-													placeholder: localizer.f('releaseDate'),
-													readOnly: true,
-													style: {
-														fontSize: 1.14285714.em(),
-														cursor: 'text'
-													}
-												}}
-												onChange={this.dateChangeHandler.bind(this)}
-											/>*/}
 											<DatePicker
 												value={this.state.date}
 												dateFormat={'DD/MM/YYYY'}
@@ -396,7 +392,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									name={'source'}
 									value={this.state.source}
 									onChange={this.inputChangeHandler.bind(this)}
-									hidden
+									hidden={true}
 								/>
 							</Form>
 						</Grid.Column>
@@ -406,16 +402,22 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 					<Button
 						secondary={true}
 						disabled={!this.state.name}
+						onClick={this.searchIgdbBtnClickHandler.bind(this)}
 					>
 						{localizer.f('fillWithIgdb')}
 					</Button>
 					<Button
 						primary={true}
 						disabled={!this.state.name || !this.state.executable}
+						onClick={this.addGameBtnClickHandler.bind(this)}
 					>
 						{(this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
 					</Button>
 				</Modal.Actions>
+				<IgdbResearchModal
+					open={this.state.igdbResearchModalOpen}
+					close={() => this.setState({ igdbResearchModalOpen: false })}
+				/>
 				{this.checkErrors()}
 			</Modal>
 		);

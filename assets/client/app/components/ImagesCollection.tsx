@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Button } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
@@ -12,7 +11,7 @@ import { faPlus } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	images?: string[]
-	onChange: Function
+	onChange?: (backgroundScreen: string) => void
 }
 
 interface State {
@@ -64,7 +63,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 	public componentWillReceiveProps(props: Props) {
 		let images: string[] = [];
 		let selectedImage: string = '';
-		if (props.images) {
+		if (props.images.length) {
 			images = props.images;
 			selectedImage = this.state.selectedImage || props.images[0];
 		}

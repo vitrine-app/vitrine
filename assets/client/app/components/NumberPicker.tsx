@@ -88,7 +88,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		let controlButtons: JSX.Element = (
+		const controlButtons: JSX.Element = (
 			<div className={css(styles.verticalBtnDiv)}>
 				<Button
 					secondary={true}

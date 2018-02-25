@@ -17,7 +17,7 @@ interface Props {
 
 export default class DatePicker extends VitrineComponent<Props, {}> {
 	private renderInput(props: any): JSX.Element {
-		let removeDateButton: JSX.Element = (
+		const removeDateButton: JSX.Element = (
 			<Button
 				secondary={true}
 				onClick={() => props.onChange({ target: { value: '' } })}
