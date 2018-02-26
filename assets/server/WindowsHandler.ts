@@ -4,7 +4,7 @@ import * as path from 'path';
 export class WindowsHandler {
 	private loaderWindow: BrowserWindow;
 	private clientWindow: BrowserWindow;
-	private mainEntryPoint: string;
+	private clientEntryPoint: string;
 	private loaderEntryPoint: string;
 	private tray: Tray;
 	private devTools: boolean;
@@ -12,7 +12,7 @@ export class WindowsHandler {
 	private appQuit: boolean;
 
 	public constructor() {
-		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
+		this.clientEntryPoint = path.resolve('file://', __dirname, 'client.html');
 		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.appQuit = false;
@@ -31,7 +31,7 @@ export class WindowsHandler {
 		});
 		app.on('activate', () => {
 			if (!this.clientWindow)
-				this.createMainWindow();
+				this.createClientWindow();
 		});
 	}
 
@@ -51,7 +51,7 @@ export class WindowsHandler {
 		this.loaderWindow.loadURL(this.loaderEntryPoint);
 	}
 
-	public createMainWindow() {
+	public createClientWindow() {
 		this.clientWindow = new BrowserWindow({
 			minWidth: 1450,
 			minHeight: 700,
@@ -63,7 +63,7 @@ export class WindowsHandler {
 		});
 		this.clientWindow.setMenu(null);
 		this.clientWindow.maximize();
-		this.clientWindow.loadURL(this.mainEntryPoint);
+		this.clientWindow.loadURL(this.clientEntryPoint);
 		this.clientWindow.hide();
 		if (this.devTools)
 			this.clientWindow.webContents.openDevTools();

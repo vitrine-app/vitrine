@@ -39,7 +39,7 @@ export class VitrineServer {
 
 	public registerEvents() {
 		this.windowsHandler.listenToLoader('ready', this.loaderReady.bind(this))
-			.listenToLoader('launch-client', () => this.windowsHandler.createMainWindow())
+			.listenToLoader('launch-client', () => this.windowsHandler.createClientWindow())
 			.listenToLoader('update-and-restart', this.updateApp.bind(this));
 
 		this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))

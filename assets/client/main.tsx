@@ -35,9 +35,13 @@ let store: Store<VitrineState> = createStore(combineReducers({
 	potentialGameToAdd
 }), initialState, applyMiddleware(logger));
 
+const appRoot: HTMLElement = document.createElement('div');
+appRoot.style.setProperty('height', 100..percents());
+document.body.appendChild(appRoot);
+
 render(
 	<Provider store={store}>
 		<App/>
 	</Provider>,
-	document.getElementById('app-root')
+	appRoot
 );

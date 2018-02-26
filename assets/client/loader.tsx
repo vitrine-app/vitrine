@@ -5,4 +5,7 @@ import { VitrineLoader } from './app/components/VitrineLoader';
 
 import 'semantic-ui-less/semantic.less';
 
-render(<VitrineLoader/>, document.getElementById('app'));
+const appRoot: HTMLElement = document.createElement('div');
+document.body.appendChild(appRoot);
+
+render(<VitrineLoader/>, appRoot);

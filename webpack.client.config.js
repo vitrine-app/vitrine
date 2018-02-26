@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlPlugin = require('html-webpack-plugin');
 
 let clientConfig = {
 	node: {
@@ -44,15 +45,28 @@ module.exports = [
 	{
 		entry: './assets/client/main.tsx',
 		output: {
-			filename: 'public/client.js'
+			path: __dirname + '/public',
+			filename: 'client.js'
 		},
-		...clientConfig
-	}/*,
+		...clientConfig,
+		plugins: [
+			new HtmlPlugin({
+				title: 'Vitrine',
+				filename: 'client.html'
+			})
+		]
+	},
 	{
 		entry: './assets/client/loader.tsx',
 		output: {
-			filename: 'public/loader.js'
+			path: __dirname + '/public',
+			filename: 'loader.js'
 		},
-		...clientConfig
-	}*/
+		...clientConfig,
+		plugins: [
+			new HtmlPlugin({
+				filename: 'loader.html'
+			})
+		]
+	}
 ];
