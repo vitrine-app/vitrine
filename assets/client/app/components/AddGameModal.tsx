@@ -363,13 +363,15 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 									<Grid.Column width={16}>
 										<Form.Field>
 											<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
-											<Input
-												name={'arguments'}
-												size={'large'}
-												placeholder={localizer.f('lineArguments')}
-												value={this.state.arguments}
-												onChange={this.inputChangeHandler.bind(this)}
-											/>
+											<div className="ui large input">
+												<input
+													name={'arguments'}
+													className={css(styles.lineArgumentsInput)}
+													placeholder={localizer.f('lineArguments')}
+													value={this.state.arguments}
+													onChange={this.inputChangeHandler.bind(this)}
+												/>
+											</div>
 										</Form.Field>
 									</Grid.Column>
 								</Grid>
@@ -459,5 +461,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 	formLabel: {
 		fontWeight: 'normal',
 		fontSize: 1..em()
+	},
+	lineArgumentsInput: {
+		fontFamily: 'Inconsolata'
 	}
 });

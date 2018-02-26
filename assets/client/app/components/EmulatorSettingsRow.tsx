@@ -135,6 +135,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 		backgroundColor: '#2d2b28'
 	},
 	commandInput: {
-		fontFamily: 'Courier New'
+		fontFamily: 'Inconsolata'
 	}
 });
