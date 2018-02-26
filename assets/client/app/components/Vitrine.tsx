@@ -52,21 +52,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		};
 	}
 
-	private addPlayableGame(game: PlayableGame) {
-		this.props.addPlayableGames([game]);
-		/*this.setState({
-			addGameModalOpen: false
-		});*/
-		$('#add-potential-games-modal').modal('hide');
-	}
-
 	private editPlayableGame(game: PlayableGame) {
 		this.props.editPlayableGame(game);
 		if (game.uuid === this.props.selectedGame.uuid)
 			this.props.selectGame(game);
-		/*this.setState({
-			addGameModalOpen: false
-		});*/
 		$('#edit-time-played-modal').modal('hide');
 	}
 
@@ -107,8 +96,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		gameWillBeEdited = gameWillBeEdited || false;
 		this.props.setPotentialGameToAdd(potentialGameToAdd);
 		this.setState({
-			gameWillBeEdited,
-			//addGameModalOpen: true
+			gameWillBeEdited
 		});
 	}
 
@@ -180,7 +168,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		}
 
 		serverListener.listen('add-playable-games', this.props.addPlayableGames.bind(this))
-			.listen('add-playable-game', this.addPlayableGame.bind(this))
 			.listen('edit-playable-game', this.editPlayableGame.bind(this))
 			.listen('remove-playable-game', this.removePlayableGame.bind(this))
 			.listen('add-potential-games', this.props.addPotentialGames.bind(this))

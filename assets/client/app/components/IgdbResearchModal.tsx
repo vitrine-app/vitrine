@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button, Form, Grid, Input, Modal } from 'semantic-ui-react';
 import { shell } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
-import { border, margin, padding, rgba } from 'css-verbose';
+import { margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { serverListener } from '../ServerListener';
@@ -102,10 +102,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 				research: research,
 				selectedResearchId: '',
 				researches
-			}/*, () => {
-				if (!$('#igdb-research-modal').is(':visible'))
-					$('#igdb-research-modal').modal('show');
-			}*/);
+			});
 		});
 	}
 
@@ -219,7 +216,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		margin: margin(1..rem(), 'auto'),
+		margin: margin(9..rem(), 'auto'),
 		cursor: 'default',
 		userSelect: 'none'
 	},

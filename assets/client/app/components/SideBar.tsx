@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Button } from 'semantic-ui-react';
+import { ContextMenuTrigger } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
-import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu';
 import { margin, padding, rgba } from 'css-verbose';
 
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { VitrineComponent } from './VitrineComponent';
+import { ContextMenu } from '../containers/ContextMenu';
 import { VitrineButton } from './VitrineButton';
 import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
 import { localizer } from '../Localizer';
@@ -37,25 +38,6 @@ export class SideBar extends VitrineComponent<Props, {}> {
 	private taskBarRefreshBtnClickHandler() {
 		serverListener.send('refresh-potential-games');
 		this.props.refreshGames();
-	}
-
-	private contextAction(target: HTMLElement, action: string) {
-		let gameUuid: string = target.children[0].id.replace('sidebar-game:', '');
-
-		switch (action) {
-			case 'launch': {
-				this.props.launchGame(gameUuid);
-				break;
-			}
-			case 'edit': {
-				this.props.editGame(gameUuid);
-				break;
-			}
-			case 'delete': {
-				this.props.deleteGame(gameUuid);
-				break;
-			}
-		}
 	}
 
 	public render(): JSX.Element {
@@ -114,21 +96,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 						)}
 					</ul>
 				</div>
-				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'launch')}>
-						{localizer.f('play')}
-					</MenuItem>
-					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'edit')}>
-						{localizer.f('edit')}
-					</MenuItem>
-					<MenuItem onClick={() => {}}>
-						{localizer.f('editTimePlayed')}
-					</MenuItem>
-					<MenuItem divider={true}/>
-					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'delete')}>
-						{localizer.f('delete')}
-					</MenuItem>
-				</ContextMenu>
+				<ContextMenu/>
 				{this.checkErrors()}
 			</div>
 		);

@@ -17,10 +17,12 @@ import { localizer } from '../Localizer';
 import { openExecutableDialog, openImageDialog } from '../helpers';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
+import { PlayableGame } from '../../../models/PlayableGame';
 
 interface Props {
 	potentialGameToAdd: PotentialGame,
 	visible: boolean,
+	addPlayableGames: (playableGames: PlayableGame[]) => void,
 	openAddGameModal: () => void,
 	closeAddGameModal: () => void,
 	openIgdbModal: () => void,
@@ -43,8 +45,7 @@ interface State {
 	backgroundScreen: string,
 	potentialBackgrounds: string[],
 	source: GameSource,
-	isEditing: boolean,
-	dimmed?: boolean
+	isEditing: boolean
 }
 
 export class AddGameModal extends VitrineComponent<Props, State> {
@@ -70,10 +71,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			source: GameSource.LOCAL,
 			isEditing: props.isEditing
 		};
-		this.state = {
-			...this.emptyState,
-			dimmed: false
-		};
+		this.state = { ...this.emptyState };
 	}
 
 	private fillIgdbGame(gameInfos: any) {
@@ -88,10 +86,14 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			summary: gameInfos.summary,
 			cover: gameInfos.cover,
 			potentialBackgrounds: gameInfos.screenshots,
-			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : (''),
-			//igdbResearchModalOpen: false
+			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
 		});
 		this.props.closeIgdbModal();
+	}
+
+	private addPlayableGame(game: PlayableGame) {
+		this.props.addPlayableGames([game]);
+		this.closeModal();
 	}
 
 	private closeModal() {
@@ -148,22 +150,14 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 
 	private searchIgdbBtnClickHandler() {
 		serverListener.send('search-igdb-games', this.state.name);
-		/*this.setState({
-			igdbResearchModalOpen: true
-		});*/
 		this.props.openIgdbModal();
-		// $('#igdb-research-modal').modal('show');
 	}
 
 	private addGameBtnClickHandler() {
-		this.setState({
-			dimmed: true
-		});
 		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.isEditing;
 		delete gameInfos.igdbResearchModalOpen;
-		delete gameInfos.dimmed;
 
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
@@ -177,7 +171,8 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 	}
 
 	public componentDidMount() {
-		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this));
+		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this))
+			.listen('add-playable-game', this.addPlayableGame.bind(this));
 	}
 
 	public componentWillReceiveProps(props: Props) {

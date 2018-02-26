@@ -5,8 +5,7 @@ import { Action } from '../actions/actionsTypes';
 import { updateSettings } from '../actions/settings';
 import {
 	addPlayableGames, addPotentialGames, editPlayableGame, launchGame, removePlayableGame, selectGame,
-	setPotentialGameToAdd,
-	stopGame
+	setPotentialGameToAdd, stopGame
 } from '../actions/games';
 import { Vitrine as VisualVitrine } from '../components/Vitrine';
 import { PlayableGame } from '../../../models/PlayableGame';
