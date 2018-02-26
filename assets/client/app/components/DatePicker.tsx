@@ -15,7 +15,7 @@ interface Props {
 	inputProps?: any
 }
 
-export default class DatePicker extends VitrineComponent<Props, {}> {
+export class DatePicker extends VitrineComponent<Props, {}> {
 	private renderInput(props: any): JSX.Element {
 		const removeDateButton: JSX.Element = (
 			<Button

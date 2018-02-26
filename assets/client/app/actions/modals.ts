@@ -17,3 +17,21 @@ export function closeAddGameModal(): Action {
 		}
 	};
 }
+
+export function openIgdbModal(): Action {
+	return {
+		type: ActionType.OPEN_IGDB_RESEARCH_MODAL,
+		payload: {
+			igdbResearchModalVisible: true
+		}
+	}
+}
+
+export function closeIgdbModal(): Action {
+	return {
+		type: ActionType.CLOSE_IGDB_RESEARCH_MODAL,
+		payload: {
+			igdbResearchModalVisible: false
+		}
+	}
+}

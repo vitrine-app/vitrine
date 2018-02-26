@@ -43,15 +43,18 @@ export class SideBar extends VitrineComponent<Props, {}> {
 		let gameUuid: string = target.children[0].id.replace('sidebar-game:', '');
 
 		switch (action) {
-			case 'launch':
+			case 'launch': {
 				this.props.launchGame(gameUuid);
 				break;
-			case 'edit':
+			}
+			case 'edit': {
 				this.props.editGame(gameUuid);
 				break;
-			case 'delete':
+			}
+			case 'delete': {
 				this.props.deleteGame(gameUuid);
 				break;
+			}
 		}
 	}
 

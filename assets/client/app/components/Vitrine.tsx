@@ -3,6 +3,7 @@ import { Grid } from 'semantic-ui-react';
 import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
+import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
@@ -14,7 +15,6 @@ import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
 import { EditTimePlayedModal } from '../containers/EditTimePlayedModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
-import { VitrineComponent } from './VitrineComponent';
 import { TaskBar } from './TaskBar';
 import { localizer } from '../Localizer';
 
@@ -38,8 +38,7 @@ interface Props {
 interface State {
 	firstLaunch: boolean,
 	launchedGamePictureActivated: boolean,
-	gameWillBeEdited: boolean,
-	//addGameModalOpen: boolean
+	gameWillBeEdited: boolean
 }
 
 export class Vitrine extends VitrineComponent<Props, State> {
@@ -49,8 +48,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.state = {
 			firstLaunch: false,
 			launchedGamePictureActivated: true,
-			gameWillBeEdited: false,
-			//addGameModalOpen: false
+			gameWillBeEdited: false
 		};
 	}
 
@@ -190,15 +188,15 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			.listen('settings-updated', this.settingsUpdated.bind(this))
 			.listen('error', this.serverError.bind(this));
 
-		window.addEventListener('keydown', this.keyDownHandler.bind(this));
+		/*window.addEventListener('keydown', this.keyDownHandler.bind(this));
 		window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
 			console.log(e.gamepad);
-		});
+		});*/
 	}
 
-	public componentWillUnmount() {
+	/*public componentWillUnmount() {
 		window.removeEventListener('keydown', this.keyDownHandler.bind(this));
-	}
+	}*/
 
 	public render(): JSX.Element {
 		/*let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
@@ -241,7 +239,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					editGame={this.launchGame.bind(this)}
 					editGamePlayTime={this.launchGame.bind(this)}
 					deleteGame={this.launchGame.bind(this)}
-					/*openAddGameModal={() => this.setState({ addGameModalOpen: true })}*/
 				/>
 				<Grid className={css(styles.mainContainer)}>
 					<Grid.Column className={css(styles.case1)}/>
@@ -251,8 +248,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				</Grid>
 				<AddGameModal
 					isEditing={this.state.gameWillBeEdited}
-					/*open={this.state.addGameModalOpen}
-					close={() => this.setState({ addGameModalOpen: false })}*/
 				/>
 				{/*<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>

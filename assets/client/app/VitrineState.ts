@@ -10,7 +10,8 @@ export interface VitrineState {
 	launchedGame: PlayableGame,
 	refreshingGames: boolean,
 	potentialGameToAdd: PotentialGame,
-	addGameModalVisible: boolean
+	addGameModalVisible: boolean,
+	igdbResearchModalVisible: boolean
 }
 
 export const initialState: VitrineState = {
@@ -21,5 +22,6 @@ export const initialState: VitrineState = {
 	launchedGame: null,
 	refreshingGames: false,
 	potentialGameToAdd: null,
-	addGameModalVisible: false
+	addGameModalVisible: false,
+	igdbResearchModalVisible: false
 };

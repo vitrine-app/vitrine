@@ -13,8 +13,9 @@ import { localizer } from '../Localizer';
 import { faSearch, faCircleNotch } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	open: boolean
-	close: () => void
+	visible: boolean,
+	openIgdbModal: () => void,
+	closeIgdbModal: () => void
 }
 
 interface State {
@@ -82,7 +83,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 
 	private closeModal() {
 		if (!this.state.loading) {
-			this.props.close();
+			this.props.closeIgdbModal();
 			this.setState({
 				loading: true
 			});
@@ -195,7 +196,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 
 		return (
 			<Modal
-				open={this.props.open}
+				open={this.props.visible}
 				onClose={this.closeModal.bind(this)}
 				size={'tiny'}
 				className={css(styles.modal)}

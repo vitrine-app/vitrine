@@ -5,13 +5,13 @@ import * as moment from 'moment';
 import { border, margin, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
+import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame, GameSource } from '../../../models/PotentialGame';
 import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
+import { IgdbResearchModal } from '../containers/IgdbResearchModal';
 import { BlurPicture } from './BlurPicture';
 import { NumberPicker } from './NumberPicker';
-import DatePicker from './DatePicker';
-import { IgdbResearchModal } from './IgdbResearchModal';
+import { DatePicker } from './DatePicker';
 import { ImagesCollection } from './ImagesCollection';
 import { localizer } from '../Localizer';
 import { openExecutableDialog, openImageDialog } from '../helpers';
@@ -23,6 +23,8 @@ interface Props {
 	visible: boolean,
 	openAddGameModal: () => void,
 	closeAddGameModal: () => void,
+	openIgdbModal: () => void,
+	closeIgdbModal: () => void,
 	isEditing: boolean
 }
 
@@ -42,7 +44,6 @@ interface State {
 	potentialBackgrounds: string[],
 	source: GameSource,
 	isEditing: boolean,
-	igdbResearchModalOpen?: boolean,
 	dimmed?: boolean
 }
 
@@ -71,7 +72,6 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		};
 		this.state = {
 			...this.emptyState,
-			igdbResearchModalOpen: false,
 			dimmed: false
 		};
 	}
@@ -89,8 +89,9 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			cover: gameInfos.cover,
 			potentialBackgrounds: gameInfos.screenshots,
 			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : (''),
-			igdbResearchModalOpen: false
+			//igdbResearchModalOpen: false
 		});
+		this.props.closeIgdbModal();
 	}
 
 	private closeModal() {
@@ -147,9 +148,10 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 
 	private searchIgdbBtnClickHandler() {
 		serverListener.send('search-igdb-games', this.state.name);
-		this.setState({
+		/*this.setState({
 			igdbResearchModalOpen: true
-		});
+		});*/
+		this.props.openIgdbModal();
 		// $('#igdb-research-modal').modal('show');
 	}
 
@@ -425,10 +427,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 						{(this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
 					</Button>
 				</Modal.Actions>
-				<IgdbResearchModal
-					open={this.state.igdbResearchModalOpen}
-					close={() => this.setState({ igdbResearchModalOpen: false })}
-				/>
+				<IgdbResearchModal/>
 				{this.checkErrors()}
 			</Modal>
 		);
