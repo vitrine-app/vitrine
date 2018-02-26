@@ -6,5 +6,5 @@ export function updateSettings(settings: any): Action {
 		payload: {
 			settings
 		}
-	}
+	};
 }

@@ -198,7 +198,6 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 				open={this.props.open}
 				onClose={this.closeModal.bind(this)}
 				size={'tiny'}
-				dimmer={'blurring'}
 				className={css(styles.modal)}
 			>
 				<Modal.Header>{localizer.f('fillWithIgdb')}</Modal.Header>

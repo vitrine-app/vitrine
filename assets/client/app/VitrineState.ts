@@ -9,15 +9,17 @@ export interface VitrineState {
 	selectedGame: PlayableGame,
 	launchedGame: PlayableGame,
 	refreshingGames: boolean,
-	potentialGameToAdd: PotentialGame
+	potentialGameToAdd: PotentialGame,
+	addGameModalVisible: boolean
 }
 
-export const initialState = {
+export const initialState: VitrineState = {
 	settings: null,
 	potentialGames: new GamesCollection<PotentialGame>(),
 	playableGames: new GamesCollection<PlayableGame>(),
 	selectedGame: null,
 	launchedGame: null,
 	refreshingGames: false,
-	potentialGameToAdd: null
+	potentialGameToAdd: null,
+	addGameModalVisible: false
 };

@@ -1,11 +1,22 @@
-import { connect } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 
 import { VitrineState } from '../VitrineState';
 import { AddGameModal as VisualAddGameModal } from '../components/AddGameModal';
+import { Action } from '../actions/actionsTypes';
+import { closeAddGameModal, openAddGameModal } from '../actions/modals';
+
 const mapStateToProps = (state: VitrineState) => ({
-	potentialGameToAdd: state.potentialGameToAdd
+	potentialGameToAdd: state.potentialGameToAdd,
+	visible: state.addGameModalVisible
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+	openAddGameModal: () => {
+		dispatch(openAddGameModal())
+	},
+	closeAddGameModal: () => {
+		dispatch(closeAddGameModal())
+	}
+});
 
 export const AddGameModal = connect(mapStateToProps, mapDispatchToProps)(VisualAddGameModal);

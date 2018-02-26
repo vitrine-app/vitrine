@@ -39,7 +39,7 @@ interface State {
 	firstLaunch: boolean,
 	launchedGamePictureActivated: boolean,
 	gameWillBeEdited: boolean,
-	addGameModalOpen: boolean
+	//addGameModalOpen: boolean
 }
 
 export class Vitrine extends VitrineComponent<Props, State> {
@@ -50,15 +50,15 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			firstLaunch: false,
 			launchedGamePictureActivated: true,
 			gameWillBeEdited: false,
-			addGameModalOpen: false
+			//addGameModalOpen: false
 		};
 	}
 
 	private addPlayableGame(game: PlayableGame) {
 		this.props.addPlayableGames([game]);
-		this.setState({
+		/*this.setState({
 			addGameModalOpen: false
-		});
+		});*/
 		$('#add-potential-games-modal').modal('hide');
 	}
 
@@ -66,9 +66,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.props.editPlayableGame(game);
 		if (game.uuid === this.props.selectedGame.uuid)
 			this.props.selectGame(game);
-		this.setState({
+		/*this.setState({
 			addGameModalOpen: false
-		});
+		});*/
 		$('#edit-time-played-modal').modal('hide');
 	}
 
@@ -110,7 +110,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.props.setPotentialGameToAdd(potentialGameToAdd);
 		this.setState({
 			gameWillBeEdited,
-			addGameModalOpen: true
+			//addGameModalOpen: true
 		});
 	}
 
@@ -217,20 +217,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					firstLaunch={this.state.firstLaunch}
 				/>
 				<EditTimePlayedModal/>
-				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
-						{localizer.f('play')}
-					</MenuItem>
-					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>
-						{localizer.f('edit')}
-					</MenuItem>
-					<MenuItem onClick={this.editGamePlayTimeContextClickHandler.bind(this)}>
-						{localizer.f('editTimePlayed')}
-					</MenuItem>
-					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
-						{localizer.f('delete')}
-					</MenuItem>
-				</ContextMenu>
 			</div>
 		) : (
 			<LaunchedGameContainer
@@ -252,7 +238,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<SideBar
 					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
 					launchGame={this.launchGame.bind(this)}
-					openAddGameModal={() => this.setState({ addGameModalOpen: true })}
+					editGame={this.launchGame.bind(this)}
+					editGamePlayTime={this.launchGame.bind(this)}
+					deleteGame={this.launchGame.bind(this)}
+					/*openAddGameModal={() => this.setState({ addGameModalOpen: true })}*/
 				/>
 				<Grid className={css(styles.mainContainer)}>
 					<Grid.Column className={css(styles.case1)}/>
@@ -262,9 +251,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				</Grid>
 				<AddGameModal
 					isEditing={this.state.gameWillBeEdited}
-					open={this.state.addGameModalOpen}
-					close={() => this.setState({ addGameModalOpen: false })}
-				/>{/*<ContextMenu id="sidebar-games-context-menu">
+					/*open={this.state.addGameModalOpen}
+					close={() => this.setState({ addGameModalOpen: false })}*/
+				/>
+				{/*<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
 						{localizer.f('play')}
 					</MenuItem>

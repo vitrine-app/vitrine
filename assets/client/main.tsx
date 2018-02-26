@@ -11,10 +11,8 @@ import { Provider } from 'react-redux';
 import { App } from './app/containers/App';
 import { initialState, VitrineState } from './app/VitrineState';
 import { settings } from './app/reducers/settings';
-import {
-	launchedGame, playableGames, potentialGames, potentialGameToAdd, refreshingGames,
-	selectedGame
-} from './app/reducers/games';
+import { launchedGame, playableGames, potentialGames, potentialGameToAdd, refreshingGames, selectedGame } from './app/reducers/games';
+import { addGameModalVisible } from './app/reducers/modals';
 
 import './resources/less/main.less';
 
@@ -32,7 +30,8 @@ let store: Store<VitrineState> = createStore(combineReducers({
 	selectedGame,
 	launchedGame,
 	refreshingGames,
-	potentialGameToAdd
+	potentialGameToAdd,
+	addGameModalVisible
 }), initialState, applyMiddleware(logger));
 
 const appRoot: HTMLElement = document.createElement('div');

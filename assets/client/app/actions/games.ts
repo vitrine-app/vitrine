@@ -8,7 +8,7 @@ export function refreshGames(): Action {
 		payload: {
 			refreshingGames: true
 		}
-	}
+	};
 }
 
 export function addPotentialGames(potentialGames: PotentialGame[]): Action {
@@ -29,7 +29,7 @@ export function addPlayableGames(playableGames: PlayableGame[]): Action {
 			selectedGame: (playableGames.length) ? (playableGames[0]) : (null),
 			potentialGameToAdd: null
 		}
-	}
+	};
 }
 
 export function editPlayableGame(playableGame: PlayableGame): Action {
@@ -49,7 +49,7 @@ export function removePlayableGame(gameUuid: string, selectedGame: PlayableGame)
 			gameUuid,
 			selectedGame
 		}
-	}
+	};
 }
 
 export function launchGame(launchedGame: PlayableGame): Action {
@@ -58,7 +58,7 @@ export function launchGame(launchedGame: PlayableGame): Action {
 		payload: {
 			launchedGame
 		}
-	}
+	};
 }
 
 export function stopGame(playedGame: PlayableGame): Action {
@@ -68,7 +68,7 @@ export function stopGame(playedGame: PlayableGame): Action {
 			playedGame,
 			launchedGame: null
 		}
-	}
+	};
 }
 
 export function selectGame(selectedGame: PlayableGame): Action {
@@ -77,7 +77,7 @@ export function selectGame(selectedGame: PlayableGame): Action {
 		payload: {
 			selectedGame
 		}
-	}
+	};
 }
 
 export function setPotentialGameToAdd(potentialGameToAdd: PotentialGame): Action {
@@ -86,5 +86,5 @@ export function setPotentialGameToAdd(potentialGameToAdd: PotentialGame): Action
 		payload: {
 			potentialGameToAdd
 		}
-	}
+	};
 }

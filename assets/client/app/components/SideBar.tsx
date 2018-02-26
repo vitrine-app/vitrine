@@ -14,26 +14,45 @@ import { PotentialGame } from '../../../models/PotentialGame';
 import { serverListener } from '../ServerListener';
 
 interface Props {
-	isGameLaunched: boolean,
-	launchGame: (gameUuid: string) => void,
-	openAddGameModal: () => void,
 	potentialGames: GamesCollection<PotentialGame>,
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
 	refreshingGames: boolean,
 	selectGame: (selectedGame: PlayableGame) => void,
 	refreshGames: () => void,
+	openAddGameModal: () => void,
+	isGameLaunched: boolean,
+	launchGame: (gameUuid: string) => void,
+	editGame: (gameUuid: string) => void,
+	editGamePlayTime: (gameUuid: string) => void,
+	deleteGame: (gameUuid: string) => void,
 }
 
 export class SideBar extends VitrineComponent<Props, {}> {
 	private clickGameHandler(event: any) {
-		let selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('sidebar-game-', ''));
+		let selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('sidebar-game:', ''));
 		this.props.selectGame(selectedGame);
 	}
 
 	private taskBarRefreshBtnClickHandler() {
 		serverListener.send('refresh-potential-games');
 		this.props.refreshGames();
+	}
+
+	private contextAction(target: HTMLElement, action: string) {
+		let gameUuid: string = target.children[0].id.replace('sidebar-game:', '');
+
+		switch (action) {
+			case 'launch':
+				this.props.launchGame(gameUuid);
+				break;
+			case 'edit':
+				this.props.editGame(gameUuid);
+				break;
+			case 'delete':
+				this.props.deleteGame(gameUuid);
+				break;
+		}
 	}
 
 	public render(): JSX.Element {
@@ -77,7 +96,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 									key={index}
 								>
 									<li
-										id={`sidebar-game-${game.uuid}`}
+										id={`sidebar-game:${game.uuid}`}
 										className={
 											css(styles.gamesListLi) +
 											((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
@@ -93,17 +112,17 @@ export class SideBar extends VitrineComponent<Props, {}> {
 					</ul>
 				</div>
 				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={() => {}}>
+					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'launch')}>
 						{localizer.f('play')}
 					</MenuItem>
-					<MenuItem onClick={() => {}}>
+					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'edit')}>
 						{localizer.f('edit')}
 					</MenuItem>
 					<MenuItem onClick={() => {}}>
 						{localizer.f('editTimePlayed')}
 					</MenuItem>
 					<MenuItem divider={true}/>
-					<MenuItem onClick={() => {}}>
+					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'delete')}>
 						{localizer.f('delete')}
 					</MenuItem>
 				</ContextMenu>

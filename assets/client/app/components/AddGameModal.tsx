@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Dimmer, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
 import { border, margin, rgba } from 'css-verbose';
@@ -19,9 +19,10 @@ import { openExecutableDialog, openImageDialog } from '../helpers';
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	potentialGameToAdd: PotentialGame
-	open: boolean,
-	close: () => void,
+	potentialGameToAdd: PotentialGame,
+	visible: boolean,
+	openAddGameModal: () => void,
+	closeAddGameModal: () => void,
 	isEditing: boolean
 }
 
@@ -93,7 +94,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 	}
 
 	private closeModal() {
-		this.props.close();
+		this.props.closeAddGameModal();
 		this.setState({
 			...this.emptyState,
 			potentialBackgrounds: []
@@ -205,10 +206,9 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 	public render(): JSX.Element {
 		return (
 			<Modal
-				open={this.props.open}
+				open={this.props.visible}
 				onClose={this.closeModal.bind(this)}
 				size={'large'}
-				dimmer={'blurring'}
 				className={css(styles.modal)}
 			>
 				<Modal.Header>{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>

@@ -55,7 +55,7 @@ module.exports = [
 				filename: 'client.html'
 			})
 		]
-	},
+	}/*,
 	{
 		entry: './assets/client/loader.tsx',
 		output: {
@@ -68,5 +68,5 @@ module.exports = [
 				filename: 'loader.html'
 			})
 		]
-	}
+	}*/
 ];
