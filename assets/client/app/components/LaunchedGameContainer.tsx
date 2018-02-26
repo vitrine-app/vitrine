@@ -11,7 +11,7 @@ import { faTv } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	launchedGame: PlayableGame
-	clickHandler: Function
+	clickHandler: () => void
 }
 
 export class LaunchedGameContainer extends VitrineComponent<Props, {}> {

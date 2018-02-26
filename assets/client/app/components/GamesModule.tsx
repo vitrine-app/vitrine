@@ -9,11 +9,7 @@ interface Props {
 	clicked: boolean,
 	iconFile: any,
 	iconAlt: string,
-	clickHandler: Function
-}
-
-interface State {
-
+	clickHandler: (checked: boolean) => void
 }
 
 export class GamesModule extends VitrineComponent<Props, any> {

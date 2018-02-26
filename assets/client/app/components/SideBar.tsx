@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
-import { ContextMenuTrigger } from 'react-contextmenu';
+import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu';
 import { margin, padding, rgba } from 'css-verbose';
 
 import { PlayableGame } from '../../../models/PlayableGame';
@@ -14,20 +14,20 @@ import { PotentialGame } from '../../../models/PotentialGame';
 import { serverListener } from '../ServerListener';
 
 interface Props {
+	isGameLaunched: boolean,
+	launchGame: (gameUuid: string) => void,
+	openAddGameModal: () => void,
 	potentialGames: GamesCollection<PotentialGame>,
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
-	selectGame: Function | any,
-	launchGame: Function,
-	openAddGameModal: Function,
 	refreshingGames: boolean,
-	refreshGames: Function | any,
-	isGameLaunched: boolean
+	selectGame: (selectedGame: PlayableGame) => void,
+	refreshGames: () => void,
 }
 
 export class SideBar extends VitrineComponent<Props, {}> {
 	private clickGameHandler(event: any) {
-		let selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('game-', ''));
+		let selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('sidebar-game-', ''));
 		this.props.selectGame(selectedGame);
 	}
 
@@ -72,8 +72,12 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				<div className={css(styles.sideBarContent)}>
 					<ul className={css(styles.gamesListUl)}>
 						{this.props.playableGames.map((game: PlayableGame, index: number) => (
+								<ContextMenuTrigger
+									id="sidebar-games-context-menu"
+									key={index}
+								>
 									<li
-										id={`game-${game.uuid}`}
+										id={`sidebar-game-${game.uuid}`}
 										className={
 											css(styles.gamesListLi) +
 											((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
@@ -83,16 +87,26 @@ export class SideBar extends VitrineComponent<Props, {}> {
 									>
 										{game.name}
 									</li>
+								</ContextMenuTrigger>
 							)
 						)}
 					</ul>
-
-					<ContextMenuTrigger
-						id="sidebar-games-context-menu"
-					>
-						<div>cc c mwa regardé</div>
-					</ContextMenuTrigger>
 				</div>
+				<ContextMenu id="sidebar-games-context-menu">
+					<MenuItem onClick={() => {}}>
+						{localizer.f('play')}
+					</MenuItem>
+					<MenuItem onClick={() => {}}>
+						{localizer.f('edit')}
+					</MenuItem>
+					<MenuItem onClick={() => {}}>
+						{localizer.f('editTimePlayed')}
+					</MenuItem>
+					<MenuItem divider={true}/>
+					<MenuItem onClick={() => {}}>
+						{localizer.f('delete')}
+					</MenuItem>
+				</ContextMenu>
 				{this.checkErrors()}
 			</div>
 		);

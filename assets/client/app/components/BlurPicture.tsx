@@ -14,7 +14,7 @@ interface Props {
 	fontSize: number,
 	background: string,
 	faIcon: IconDefinition,
-	clickHandler: Function
+	clickHandler: () => void
 }
 
 interface State {

@@ -22,15 +22,33 @@ const mapStateToProps = (state: VitrineState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	updateSettings: (settings: any) => dispatch(updateSettings(settings)),
-	addPotentialGames: (potentialGames: PotentialGame[]) => dispatch(addPotentialGames(potentialGames)),
-	addPlayableGames: (playableGames: PlayableGame[]) => dispatch(addPlayableGames(playableGames)),
-	editPlayableGame: (playableGame: PlayableGame) => dispatch(editPlayableGame(playableGame)),
-	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => dispatch(removePlayableGame(gameUuid, selectedGame)),
-	launchGame: (launchedGame: PlayableGame) => dispatch(launchGame(launchedGame)),
-	stopGame: (playedGame: PlayableGame) => dispatch(stopGame(playedGame)),
-	selectGame: (selectedGame: PlayableGame) => dispatch(selectGame(selectedGame)),
-	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => dispatch(setPotentialGameToAdd(potentialGameToAdd))
+	updateSettings: (settings: any) => {
+		dispatch(updateSettings(settings))
+	},
+	addPotentialGames: (potentialGames: PotentialGame[]) => {
+		dispatch(addPotentialGames(potentialGames))
+	},
+	addPlayableGames: (playableGames: PlayableGame[]) => {
+		dispatch(addPlayableGames(playableGames))
+	},
+	editPlayableGame: (playableGame: PlayableGame) => {
+		dispatch(editPlayableGame(playableGame))
+	},
+	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => {
+		dispatch(removePlayableGame(gameUuid, selectedGame))
+	},
+	launchGame: (launchedGame: PlayableGame) => {
+		dispatch(launchGame(launchedGame))
+	},
+	stopGame: (playedGame: PlayableGame) => {
+		dispatch(stopGame(playedGame))
+	},
+	selectGame: (selectedGame: PlayableGame) => {
+		dispatch(selectGame(selectedGame))
+	},
+	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => {
+		dispatch(setPotentialGameToAdd(potentialGameToAdd))
+	}
 });
 
 export const Vitrine = connect(mapStateToProps, mapDispatchToProps)(VisualVitrine);

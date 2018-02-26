@@ -12,7 +12,7 @@ import { ErrorsWrapper } from './ErrorsWrapper';
 
 interface Props {
 	settings: any,
-	updateSettings: Function | any
+	updateSettings: (settings: any) => void
 }
 
 interface State {

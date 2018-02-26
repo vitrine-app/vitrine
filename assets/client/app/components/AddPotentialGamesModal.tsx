@@ -13,7 +13,7 @@ import { faPlusCircle } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	potentialGames: GamesCollection<PotentialGame>,
-	potentialGameUpdateCallback: Function
+	potentialGameUpdateCallback: (potentialGameToAdd: PotentialGame, gameWillBeEdited?: boolean) => void
 }
 
 export class AddPotentialGamesModal extends VitrineComponent<Props, {}> {

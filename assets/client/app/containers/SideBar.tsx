@@ -14,8 +14,12 @@ const mapStateToProps = (state: VitrineState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	selectGame: (selectedGame: PlayableGame) => dispatch(selectGame(selectedGame)),
-	refreshGames: () => dispatch(refreshGames())
+	selectGame: (selectedGame: PlayableGame) => {
+		dispatch(selectGame(selectedGame))
+	},
+	refreshGames: () => {
+		dispatch(refreshGames())
+	}
 });
 
 export const SideBar = connect(mapStateToProps, mapDispatchToProps)(VisualSideBar);

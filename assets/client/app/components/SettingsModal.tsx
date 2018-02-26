@@ -18,7 +18,7 @@ import * as emulatedIcon from '../../resources/images/emulatedIcon.png';
 interface Props {
 	firstLaunch: boolean,
 	settings: any,
-	updateSettings: Function | any
+	updateSettings: (settings: any) => void
 }
 
 interface State {

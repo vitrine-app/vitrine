@@ -12,7 +12,7 @@ interface Props {
 	id: string,
 	emulator: any,
 	platforms: any[],
-	onChange: Function
+	onChange: (emulatorId: number, emulatorConfig: any) => void
 }
 
 interface State {
@@ -42,7 +42,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		this.setState({
 			active: event.target.checked
 		}, () => {
-			this.props.onChange(this.props.id, this.getEmulatorFromState());
+			this.props.onChange(parseInt(this.props.id), this.getEmulatorFromState());
 		});
 	}
 
@@ -53,7 +53,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		this.setState({
 			path: dialogRet
 		}, () => {
-			this.props.onChange(this.props.id, this.getEmulatorFromState());
+			this.props.onChange(parseInt(this.props.id), this.getEmulatorFromState());
 		});
 	}
 
@@ -61,7 +61,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		this.setState({
 			command: event.target.value
 		}, () => {
-			this.props.onChange(this.props.id, this.getEmulatorFromState());
+			this.props.onChange(parseInt(this.props.id), this.getEmulatorFromState());
 		});
 	}
 

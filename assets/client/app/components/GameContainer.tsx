@@ -17,7 +17,7 @@ import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../res
 
 interface Props {
 	selectedGame: PlayableGame
-	launchGame: Function
+	launchGame: (gameUuid: string) => void
 }
 
 interface State {
@@ -70,7 +70,6 @@ export class GameContainer extends VitrineComponent<Props, State> {
 							<Button
 								onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
 								primary={true}
-								/*style={{ backgroundColor: this.state.mainColor, borderColor: editColor(this.state.mainColor, -20) }}*/
 							>
 								<FontAwesomeIcon icon={faPlay} size={'sm'}/> {localizer.f('play')}
 							</Button>
@@ -102,7 +101,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 											<strong>{localizer.f('releaseDateLabel')}</strong>
 										</Grid.Column>
 										<Grid.Column width={11} className={css(styles.developerGridColumn)}>
-											{moment.unix(this.props.selectedGame.details.releaseDate/* / 1000 */).format('DD/MM/YYYY')}
+											{moment/*.unix*/(this.props.selectedGame.details.releaseDate/* / 1000 */).format('DD/MM/YYYY')}
 										</Grid.Column>
 									</Grid>
 									<Grid>

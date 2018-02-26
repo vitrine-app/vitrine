@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import * as moment from 'moment';
 import { border, margin, rgba } from 'css-verbose';
@@ -41,7 +41,8 @@ interface State {
 	potentialBackgrounds: string[],
 	source: GameSource,
 	isEditing: boolean,
-	igdbResearchModalOpen?: boolean
+	igdbResearchModalOpen?: boolean,
+	dimmed?: boolean
 }
 
 export class AddGameModal extends VitrineComponent<Props, State> {
@@ -69,7 +70,8 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		};
 		this.state = {
 			...this.emptyState,
-			igdbResearchModalOpen: false
+			igdbResearchModalOpen: false,
+			dimmed: false
 		};
 	}
 
@@ -77,7 +79,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		this.setState({
 			name: gameInfos.name,
 			series: gameInfos.series,
-			date: moment.unix(gameInfos.releaseDate/* / 1000*/).format('DD/MM/YYYY'),
+			date: moment/*.unix*/(gameInfos.releaseDate/* / 1000*/).format('DD/MM/YYYY'),
 			developer: gameInfos.developer,
 			publisher: gameInfos.publisher,
 			genres: gameInfos.genres.join(', '),
@@ -151,9 +153,15 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 	}
 
 	private addGameBtnClickHandler() {
+		this.setState({
+			dimmed: true
+		});
 		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.isEditing;
+		delete gameInfos.igdbResearchModalOpen;
+		delete gameInfos.dimmed;
+
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
 		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
@@ -182,7 +190,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				executable,
 				arguments: args,
 				series: gameToAdd.details.series || '',
-				date: (gameToAdd.details.releaseDate) ? (moment.unix(gameToAdd.details.releaseDate/* / 1000*/).format('DD/MM/YYYY')) : (''),
+				date: (gameToAdd.details.releaseDate) ? (moment/*.unix*/(gameToAdd.details.releaseDate/* / 1000*/).format('DD/MM/YYYY')) : (''),
 				developer: gameToAdd.details.developer || '',
 				publisher: gameToAdd.details.publisher || '',
 				genres: (gameToAdd.details.genres) ? (gameToAdd.details.genres.join(', ')) : (''),
@@ -200,6 +208,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				open={this.props.open}
 				onClose={this.closeModal.bind(this)}
 				size={'large'}
+				dimmer={'blurring'}
 				className={css(styles.modal)}
 			>
 				<Modal.Header>{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>

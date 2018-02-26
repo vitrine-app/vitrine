@@ -24,15 +24,15 @@ interface Props {
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
 	launchedGame: PlayableGame,
-	updateSettings: Function | any,
-	addPotentialGames: Function | any,
-	addPlayableGames: Function | any,
-	editPlayableGame: Function | any,
-	removePlayableGame: Function | any,
-	launchGame: Function | any,
-	stopGame: Function | any,
-	selectGame: Function | any,
-	setPotentialGameToAdd: Function | any
+	updateSettings: (settings: any) => void,
+	addPotentialGames: (potentialGames: PotentialGame[]) => void,
+	addPlayableGames: (playableGames: PlayableGame[]) => void,
+	editPlayableGame: (playableGame: PlayableGame) => void,
+	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void,
+	launchGame: (launchedGame: PlayableGame) => void,
+	stopGame: (playedGame: PlayableGame) => void,
+	selectGame: (selectedGame: PlayableGame) => void,
+	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => void
 }
 
 interface State {
@@ -264,8 +264,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					isEditing={this.state.gameWillBeEdited}
 					open={this.state.addGameModalOpen}
 					close={() => this.setState({ addGameModalOpen: false })}
-				/>
-				<ContextMenu id="sidebar-games-context-menu">
+				/>{/*<ContextMenu id="sidebar-games-context-menu">
 					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
 						{localizer.f('play')}
 					</MenuItem>
@@ -278,7 +277,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
 						{localizer.f('delete')}
 					</MenuItem>
-				</ContextMenu>
+				</ContextMenu>*/}
 			</div>
 		);
 	}

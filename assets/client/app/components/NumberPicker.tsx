@@ -14,7 +14,7 @@ interface Props {
 	name: string,
 	placeholder: string
 	value: number,
-	onChange?: Function
+	onChange?: (value: number) => void
 }
 
 interface State {
@@ -77,7 +77,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 			value
 		}, () => {
 			if (this.props.onChange)
-				this.props.onChange(this.state.value);
+				this.props.onChange(this.state.value as number);
 		});
 	}
 
