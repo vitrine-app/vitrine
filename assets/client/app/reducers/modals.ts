@@ -32,3 +32,14 @@ export function timePlayedEditionModalVisible(state: boolean = false, action: Ac
 			return state;
 	}
 }
+
+export function potentialGamesAddModalVisible(state: boolean = false, action: Action): boolean {
+	switch (action.type) {
+		case ActionType.OPEN_POTENTIAL_GAMES_ADD_MODAL:
+			return action.payload.potentialGamesAddModalVisible;
+		case ActionType.CLOSE_POTENTIAL_GAMES_ADD_MODAL:
+			return action.payload.potentialGamesAddModalVisible;
+		default:
+			return state;
+	}
+}

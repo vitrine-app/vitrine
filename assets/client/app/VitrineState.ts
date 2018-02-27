@@ -13,7 +13,8 @@ export interface VitrineState {
 	gameToEdit: PlayableGame,
 	gameAddModalVisible: boolean,
 	igdbResearchModalVisible: boolean,
-	timePlayedEditionModalVisible: boolean
+	timePlayedEditionModalVisible: boolean,
+	potentialGamesAddModalVisible: boolean
 }
 
 export const initialState: VitrineState = {
@@ -27,5 +28,6 @@ export const initialState: VitrineState = {
 	gameToEdit: null,
 	gameAddModalVisible: false,
 	igdbResearchModalVisible: false,
-	timePlayedEditionModalVisible: false
+	timePlayedEditionModalVisible: false,
+	potentialGamesAddModalVisible: false
 };

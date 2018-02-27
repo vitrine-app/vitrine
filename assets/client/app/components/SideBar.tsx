@@ -23,6 +23,7 @@ interface Props {
 	selectGame: (selectedGame: PlayableGame) => void,
 	refreshGames: () => void,
 	openGameAddModal: () => void,
+	openPotentialGamesAddModal: () => void,
 	isGameLaunched: boolean,
 	launchGame: (gameUuid: string) => void
 }
@@ -36,6 +37,10 @@ export class SideBar extends VitrineComponent<Props, {}> {
 	private taskBarRefreshBtnClickHandler() {
 		serverListener.send('refresh-potential-games');
 		this.props.refreshGames();
+	}
+
+	private potentialGamesButton() {
+		this.props.openPotentialGamesAddModal();
 	}
 
 	public render(): JSX.Element {
@@ -62,6 +67,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				<Button
 					primary={true}
 					style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
+					onClick={this.potentialGamesButton.bind(this)}
 				>
 					{this.props.potentialGames.size()}
 					{/*{localizer.f('potentialGamesAdd', this.props.potentialGames.size())}*/}

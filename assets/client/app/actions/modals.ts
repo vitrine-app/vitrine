@@ -24,7 +24,7 @@ export function openIgdbResearchModal(): Action {
 		payload: {
 			igdbResearchModalVisible: true
 		}
-	}
+	};
 }
 
 export function closeIgdbResearchModal(): Action {
@@ -33,7 +33,7 @@ export function closeIgdbResearchModal(): Action {
 		payload: {
 			igdbResearchModalVisible: false
 		}
-	}
+	};
 }
 
 export function openTimePlayedEditionModal(): Action {
@@ -50,6 +50,24 @@ export function closeTimePlayedEditionModal(): Action {
 		type: ActionType.CLOSE_TIME_PLAYED_EDITION_MODAL,
 		payload: {
 			timePlayedEditionModalVisible: false
+		}
+	};
+}
+
+export function openPotentialGamesAddModal(): Action {
+	return {
+		type: ActionType.OPEN_POTENTIAL_GAMES_ADD_MODAL,
+		payload: {
+			potentialGamesAddModalVisible: true
+		}
+	};
+}
+
+export function closePotentialGamesAddModal(): Action {
+	return {
+		type: ActionType.CLOSE_POTENTIAL_GAMES_ADD_MODAL,
+		payload: {
+			potentialGamesAddModalVisible: false
 		}
 	};
 }

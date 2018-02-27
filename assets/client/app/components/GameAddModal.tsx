@@ -27,6 +27,7 @@ interface Props {
 	igdbResearchModalVisible: boolean,
 	addPlayableGames: (playableGames: PlayableGame[]) => void,
 	editPlayableGame: (playableGame: PlayableGame) => void,
+	setPotentialGameToAdd: (potentialGame: PotentialGame) => void,
 	setGameToEdit: (playableGame: PlayableGame) => void,
 	selectGame: (selectedGame: PlayableGame) => void,
 	closeGameAddModal: () => void,
@@ -50,7 +51,8 @@ interface State {
 	backgroundScreen: string,
 	potentialBackgrounds: string[],
 	source: GameSource,
-	editing: boolean
+	editing: boolean,
+	igdbFilled: boolean
 }
 
 export class GameAddModal extends VitrineComponent<Props, State> {
@@ -74,7 +76,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			backgroundScreen: '',
 			potentialBackgrounds: [],
 			source: GameSource.LOCAL,
-			editing: false
+			editing: false,
+			igdbFilled: false
 		};
 		this.state = { ...this.emptyState };
 	}
@@ -91,7 +94,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			summary: gameInfos.summary || '',
 			cover: gameInfos.cover,
 			potentialBackgrounds: gameInfos.screenshots || [],
-			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
+			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : (''),
+			igdbFilled: true
 		});
 		this.props.closeIgdbResearchModal();
 	}
@@ -113,6 +117,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 
 	private closeModal() {
 		this.props.closeGameAddModal();
+		this.props.setPotentialGameToAdd(null);
 		this.props.setGameToEdit(null);
 		this.setState({
 			...this.emptyState,
@@ -173,7 +178,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.editing;
-		delete gameInfos.igdbResearchModalOpen;
+		delete gameInfos.igdbFilled;
 
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
@@ -208,24 +213,28 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			return;
 
 		let [executable, args]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
-		this.setState({
-			name: gameToHandle.name,
-			cover: gameToHandle.details.cover,
-			source: gameToHandle.source,
-			executable,
-			arguments: args,
-			series: gameToHandle.details.series || '',
-			date: (gameToHandle.details.releaseDate) ? (moment(gameToHandle.details.releaseDate).format('DD/MM/YYYY')) : (''),
-			developer: gameToHandle.details.developer || '',
-			publisher: gameToHandle.details.publisher || '',
-			genres: (gameToHandle.details.genres) ? (gameToHandle.details.genres.join(', ')) : (''),
-			rating: gameToHandle.details.rating || '',
-			summary: gameToHandle.details.summary || '',
-			potentialBackgrounds: (gameToHandle.details.backgroundScreen) ? ([gameToHandle.details.backgroundScreen]) : ([]),
-			backgroundScreen: gameToHandle.details.backgroundScreen || '',
-			editing
-		});
-
+		if (!this.state.igdbFilled)
+			this.setState({
+				name: gameToHandle.name,
+				cover: gameToHandle.details.cover,
+				source: gameToHandle.source,
+				executable,
+				arguments: args,
+				series: gameToHandle.details.series || '',
+				date: (gameToHandle.details.releaseDate) ? (moment(gameToHandle.details.releaseDate).format('DD/MM/YYYY')) : (''),
+				developer: gameToHandle.details.developer || '',
+				publisher: gameToHandle.details.publisher || '',
+				genres: (gameToHandle.details.genres) ? (gameToHandle.details.genres.join(', ')) : (''),
+				rating: gameToHandle.details.rating || '',
+				summary: gameToHandle.details.summary || '',
+				potentialBackgrounds: (gameToHandle.details.backgroundScreen) ? ([gameToHandle.details.backgroundScreen]) : ([]),
+				backgroundScreen: gameToHandle.details.backgroundScreen || '',
+				editing
+			});
+		else
+			this.setState({
+				igdbFilled: false
+			});
 	}
 
 	public render(): JSX.Element {

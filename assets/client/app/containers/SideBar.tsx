@@ -4,7 +4,7 @@ import { VitrineState } from '../VitrineState';
 import { SideBar as VisualSideBar } from '../components/SideBar';
 import { Action } from '../actions/actionsTypes';
 import { refreshGames, selectGame } from '../actions/games';
-import { openGameAddModal } from '../actions/modals';
+import { openGameAddModal, openPotentialGamesAddModal } from '../actions/modals';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 const mapStateToProps = (state: VitrineState) => ({
@@ -23,6 +23,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	openGameAddModal: () => {
 		dispatch(openGameAddModal())
+	},
+	openPotentialGamesAddModal: () => {
+		dispatch(openPotentialGamesAddModal())
 	}
 });
 

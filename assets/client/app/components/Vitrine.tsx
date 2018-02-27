@@ -10,7 +10,7 @@ import { serverListener } from '../ServerListener';
 import { SideBar } from '../containers/SideBar';
 import { GameContainer } from '../containers/GameContainer';
 import { GameAddModal } from '../containers/GameAddModal';
-import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
+import { PotentialGamesAddModal } from '../containers/PotentialGamesAddModal';
 import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
@@ -191,6 +191,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				</Grid>
 				<GameAddModal/>
 				<TimePlayedEditionModal/>
+				<PotentialGamesAddModal/>
 			</div>
 		);
 	}
