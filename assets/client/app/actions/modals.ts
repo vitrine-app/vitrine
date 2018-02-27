@@ -18,7 +18,7 @@ export function closeAddGameModal(): Action {
 	};
 }
 
-export function openIgdbModal(): Action {
+export function openIgdbResearchModal(): Action {
 	return {
 		type: ActionType.OPEN_IGDB_RESEARCH_MODAL,
 		payload: {
@@ -27,11 +27,29 @@ export function openIgdbModal(): Action {
 	}
 }
 
-export function closeIgdbModal(): Action {
+export function closeIgdbResearchModal(): Action {
 	return {
 		type: ActionType.CLOSE_IGDB_RESEARCH_MODAL,
 		payload: {
 			igdbResearchModalVisible: false
 		}
 	}
+}
+
+export function openTimePlayedEditionModal(): Action {
+	return {
+		type: ActionType.OPEN_TIME_PLAYED_EDITION_MODAL,
+		payload: {
+			timePlayedEditionModalVisible: true
+		}
+	};
+}
+
+export function closeTimePlayedEditionModal(): Action {
+	return {
+		type: ActionType.CLOSE_TIME_PLAYED_EDITION_MODAL,
+		payload: {
+			timePlayedEditionModalVisible: false
+		}
+	};
 }

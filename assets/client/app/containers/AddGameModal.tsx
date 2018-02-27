@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { VitrineState } from '../VitrineState';
 import { Action } from '../actions/actionsTypes';
 import { addPlayableGames } from '../actions/games';
-import { closeAddGameModal, closeIgdbModal, openAddGameModal, openIgdbModal } from '../actions/modals';
+import { closeAddGameModal, closeIgdbResearchModal, openAddGameModal, openIgdbResearchModal } from '../actions/modals';
 import { AddGameModal as VisualAddGameModal } from '../components/AddGameModal';
 import { PlayableGame } from '../../../models/PlayableGame';
 
@@ -22,11 +22,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeAddGameModal: () => {
 		dispatch(closeAddGameModal())
 	},
-	openIgdbModal: () => {
-		dispatch(openIgdbModal())
+	openIgdbResearchModal: () => {
+		dispatch(openIgdbResearchModal())
 	},
-	closeIgdbModal: () => {
-		dispatch(closeIgdbModal())
+	closeIgdbResearchModal: () => {
+		dispatch(closeIgdbResearchModal())
 	},
 
 });

@@ -13,6 +13,7 @@ import { localizer } from '../Localizer';
 interface Props {
 	playableGames: GamesCollection<PlayableGame>
 	launchGame: (launchedGame: PlayableGame) => void,
+	openTimePlayedEditionModal: () => void,
 	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void
 }
 
@@ -42,6 +43,10 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 			}
 			case 'edit': {
 				//this.props.editGame(gameUuid);
+				break;
+			}
+			case 'editTime': {
+				this.props.openTimePlayedEditionModal();
 				break;
 			}
 			case 'delete': {
@@ -76,7 +81,7 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'edit')}>
 						{localizer.f('edit')}
 					</MenuItem>
-					<MenuItem onClick={() => {}}>
+					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'editTime')}>
 						{localizer.f('editTimePlayed')}
 					</MenuItem>
 					<MenuItem divider={true}/>

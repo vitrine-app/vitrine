@@ -146,7 +146,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 				<div className={css(styles.noSelectedGame)}>
 					<h1>{localizer.f('welcomeMessage')}</h1>
 					<hr className={css(styles.noSelectedGameH1)}/>
-					<p>{localizer.f('desc')}</p>
+					<p dangerouslySetInnerHTML={{ __html: localizer.f('desc') }}/>
 				</div>
 			);
 

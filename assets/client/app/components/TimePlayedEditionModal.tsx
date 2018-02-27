@@ -1,16 +1,20 @@
 import * as React from 'react';
+import { Button, Form, Grid, Modal } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
+import { margin } from 'css-verbose';
 
 import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
-import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
 interface Props {
-	editedGame: PotentialGame
+	editedGame: PotentialGame,
+	visible: boolean,
+	openTimePlayedEditionModal: () => void,
+	closeTimePlayedEditionModal: () => void
 }
 
 interface State {
@@ -19,7 +23,7 @@ interface State {
 	seconds: number
 }
 
-export class EditTimePlayedModal extends VitrineComponent<Props, State> {
+export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);
 
@@ -28,6 +32,21 @@ export class EditTimePlayedModal extends VitrineComponent<Props, State> {
 			minutes: 0,
 			seconds: 0
 		};
+	}
+
+	private closeModal() {
+		this.props.closeTimePlayedEditionModal();
+		this.setState({
+			hours: 0,
+			minutes: 0,
+			seconds: 0
+		});
+	}
+
+	private changeTimeHandler(field: any, value: number) {
+		this.setState({
+			[field]: value
+		});
 	}
 
 	public componentWillReceiveProps(props: Props) {
@@ -44,19 +63,13 @@ export class EditTimePlayedModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private changeTimeHandler(field: any, value: number) {
-		this.setState({
-			[field]: value
-		});
-	}
-
 	private submitBtnClickHandler() {
 		let timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
 		serverListener.send('edit-game-time-played', this.props.editedGame.uuid, timePlayed);
 	}
 
 	public render(): JSX.Element {
-		return (
+		/*return (
 			<div id="edit-time-played-modal" className={`modal fade ${css(styles.modal)}`} role="dialog">
 				<div className="modal-dialog modal-sm">
 					<div className="modal-content">
@@ -113,13 +126,76 @@ export class EditTimePlayedModal extends VitrineComponent<Props, State> {
 				</div>
 				{this.checkErrors()}
 			</div>
+		);*/
+
+		return (
+			<Modal
+				open={this.props.visible}
+				onClose={this.closeModal.bind(this)}
+				className={css(styles.modal)}
+			>
+				<Modal.Header>Title</Modal.Header>
+				<Modal.Content>
+					<Form>
+						<Grid>
+							<Grid.Column width={5}>
+								<Form.Field>
+									<label>{localizer.f('hours')}</label>
+									<NumberPicker
+										min={0}
+										max={Infinity}
+										value={this.state.hours}
+										name={'hours'}
+										placeholder={localizer.f('hours')}
+										onChange={(value: number) => this.changeTimeHandler('hours', value)}
+									/>
+								</Form.Field>
+							</Grid.Column>
+							<Grid.Column width={5}>
+								<Form.Field>
+									<label>{localizer.f('minutes')}</label>
+									<NumberPicker
+										min={0}
+										max={60}
+										value={this.state.minutes}
+										name={'minutes'}
+										placeholder={localizer.f('minutes')}
+										onChange={(value: number) => this.changeTimeHandler('minutes', value)}
+									/>
+								</Form.Field>
+							</Grid.Column>
+							<Grid.Column width={5}>
+								<Form.Field>
+									<label>{localizer.f('seconds')}</label>
+									<NumberPicker
+										min={0}
+										max={60}
+										value={this.state.seconds}
+										name={'seconds'}
+										placeholder={localizer.f('seconds')}
+										onChange={(value: number) => this.changeTimeHandler('seconds', value)}
+									/>
+								</Form.Field>
+							</Grid.Column>
+						</Grid>
+					</Form>
+				</Modal.Content>
+				<Modal.Actions>
+					<Button
+						primary={true}
+					>
+						Yes
+					</Button>
+				</Modal.Actions>
+			</Modal>
 		);
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		top: 26..vh()
+		width: 300,
+		margin: margin(20..rem(), 'auto')
 	},
 
 });

@@ -25,8 +25,8 @@ interface Props {
 	addPlayableGames: (playableGames: PlayableGame[]) => void,
 	openAddGameModal: () => void,
 	closeAddGameModal: () => void,
-	openIgdbModal: () => void,
-	closeIgdbModal: () => void,
+	openIgdbResearchModal: () => void,
+	closeIgdbResearchModal: () => void,
 	isEditing: boolean
 }
 
@@ -88,7 +88,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			potentialBackgrounds: gameInfos.screenshots,
 			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
 		});
-		this.props.closeIgdbModal();
+		this.props.closeIgdbResearchModal();
 	}
 
 	private addPlayableGame(game: PlayableGame) {
@@ -150,7 +150,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 
 	private searchIgdbBtnClickHandler() {
 		serverListener.send('search-igdb-games', this.state.name);
-		this.props.openIgdbModal();
+		this.props.openIgdbResearchModal();
 	}
 
 	private addGameBtnClickHandler() {

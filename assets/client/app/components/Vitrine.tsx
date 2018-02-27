@@ -12,7 +12,7 @@ import { SideBar } from '../containers/SideBar';
 import { GameContainer } from '../containers/GameContainer';
 import { AddGameModal } from '../containers/AddGameModal';
 import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
-import { EditTimePlayedModal } from '../containers/EditTimePlayedModal';
+import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
 import { TaskBar } from './TaskBar';
@@ -236,20 +236,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<AddGameModal
 					isEditing={this.state.gameWillBeEdited}
 				/>
-				{/*<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
-						{localizer.f('play')}
-					</MenuItem>
-					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>
-						{localizer.f('edit')}
-					</MenuItem>
-					<MenuItem onClick={this.editGamePlayTimeContextClickHandler.bind(this)}>
-						{localizer.f('editTimePlayed')}
-					</MenuItem>
-					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
-						{localizer.f('delete')}
-					</MenuItem>
-				</ContextMenu>*/}
+				<TimePlayedEditionModal/>
 			</div>
 		);
 	}
