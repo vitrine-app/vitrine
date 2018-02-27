@@ -1,19 +1,19 @@
 import { Action, ActionType } from './actionsTypes';
 
-export function openAddGameModal(): Action {
+export function openGameAddModal(): Action {
 	return {
-		type: ActionType.OPEN_ADD_GAME_MODAL,
+		type: ActionType.OPEN_GAME_ADD_MODAL,
 		payload: {
-			addGameModalVisible: true
+			GameAddModalVisible: true
 		}
 	};
 }
 
-export function closeAddGameModal(): Action {
+export function closeGameAddModal(): Action {
 	return {
-		type: ActionType.CLOSE_ADD_GAME_MODAL,
+		type: ActionType.CLOSE_GAME_ADD_MODAL,
 		payload: {
-			addGameModalVisible: false
+			GameAddModalVisible: false
 		}
 	};
 }

@@ -1,11 +1,11 @@
 import { Action, ActionType } from '../actions/actionsTypes';
 
-export function addGameModalVisible(state: boolean = false, action: Action): boolean {
+export function gameAddModalVisible(state: boolean = false, action: Action): boolean {
 	switch (action.type) {
-		case ActionType.OPEN_ADD_GAME_MODAL:
-			return action.payload.addGameModalVisible;
-		case ActionType.CLOSE_ADD_GAME_MODAL:
-			return action.payload.addGameModalVisible;
+		case ActionType.OPEN_GAME_ADD_MODAL:
+			return action.payload.GameAddModalVisible;
+		case ActionType.CLOSE_GAME_ADD_MODAL:
+			return action.payload.GameAddModalVisible;
 		default:
 			return state;
 	}

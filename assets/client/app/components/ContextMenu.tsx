@@ -9,12 +9,13 @@ import { VitrineComponent } from './VitrineComponent';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { localizer } from '../Localizer';
+import { openGameAddModal } from '../actions/modals';
 
 interface Props {
 	playableGames: GamesCollection<PlayableGame>
 	launchGame: (launchedGame: PlayableGame) => void,
 	setGameToEdit: (gameToEdit: PlayableGame) => void,
-	openAddGameModal: () => void,
+	openGameAddModal: () => void,
 	openTimePlayedEditionModal: () => void
 }
 
@@ -44,7 +45,7 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 			}
 			case 'edit': {
 				this.props.setGameToEdit(game);
-				this.props.openAddGameModal();
+				this.props.openGameAddModal();
 				break;
 			}
 			case 'editTime': {

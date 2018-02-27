@@ -27,8 +27,9 @@ interface Props {
 	igdbResearchModalVisible: boolean,
 	addPlayableGames: (playableGames: PlayableGame[]) => void,
 	editPlayableGame: (playableGame: PlayableGame) => void,
+	setGameToEdit: (playableGame: PlayableGame) => void,
 	selectGame: (selectedGame: PlayableGame) => void,
-	closeAddGameModal: () => void,
+	closeGameAddModal: () => void,
 	openIgdbResearchModal: () => void,
 	closeIgdbResearchModal: () => void,
 	closeTimePlayedEditionModal: () => void
@@ -52,7 +53,7 @@ interface State {
 	editing: boolean
 }
 
-export class AddGameModal extends VitrineComponent<Props, State> {
+export class GameAddModal extends VitrineComponent<Props, State> {
 	private emptyState: State;
 
 	public constructor(props: Props) {
@@ -111,8 +112,8 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 	}
 
 	private closeModal() {
-		console.warn(this.emptyState);
-		this.props.closeAddGameModal();
+		this.props.closeGameAddModal();
+		this.props.setGameToEdit(null);
 		this.setState({
 			...this.emptyState,
 			potentialBackgrounds: []

@@ -9,7 +9,7 @@ import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { SideBar } from '../containers/SideBar';
 import { GameContainer } from '../containers/GameContainer';
-import { AddGameModal } from '../containers/AddGameModal';
+import { GameAddModal } from '../containers/GameAddModal';
 import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
 import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
 import { SettingsModal } from '../containers/SettingsModal';
@@ -189,7 +189,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 						launchGame={this.launchGame.bind(this)}
 					/>
 				</Grid>
-				<AddGameModal/>
+				<GameAddModal/>
 				<TimePlayedEditionModal/>
 			</div>
 		);

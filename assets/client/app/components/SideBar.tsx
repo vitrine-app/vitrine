@@ -13,6 +13,7 @@ import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
 import { localizer } from '../Localizer';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { serverListener } from '../ServerListener';
+import { openGameAddModal } from '../actions/modals';
 
 interface Props {
 	potentialGames: GamesCollection<PotentialGame>,
@@ -21,7 +22,7 @@ interface Props {
 	refreshingGames: boolean,
 	selectGame: (selectedGame: PlayableGame) => void,
 	refreshGames: () => void,
-	openAddGameModal: () => void,
+	openGameAddModal: () => void,
 	isGameLaunched: boolean,
 	launchGame: (gameUuid: string) => void
 }
@@ -43,7 +44,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				<VitrineButton
 					icon={faPlus}
 					tooltip={localizer.f('addGameLabel')}
-					onClick={() => this.props.openAddGameModal()}
+					onClick={() => this.props.openGameAddModal()}
 					className={css(styles.commandBtn)}
 				/>
 				<VitrineButton

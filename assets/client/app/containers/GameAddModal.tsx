@@ -2,16 +2,16 @@ import { connect, Dispatch } from 'react-redux';
 
 import { VitrineState } from '../VitrineState';
 import { Action } from '../actions/actionsTypes';
-import { addPlayableGames, editPlayableGame, selectGame } from '../actions/games';
-import { closeAddGameModal, closeIgdbResearchModal, closeTimePlayedEditionModal, openAddGameModal, openIgdbResearchModal } from '../actions/modals';
-import { AddGameModal as VisualAddGameModal } from '../components/AddGameModal';
+import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit } from '../actions/games';
+import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal, openIgdbResearchModal } from '../actions/modals';
+import { GameAddModal as VisualGameAddModal } from '../components/GameAddModal';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 const mapStateToProps = (state: VitrineState) => ({
 	selectedGame: state.selectedGame,
 	potentialGameToAdd: state.potentialGameToAdd,
 	gameToEdit: state.gameToEdit,
-	visible: state.addGameModalVisible,
+	visible: state.gameAddModalVisible,
 	igdbResearchModalVisible: state.igdbResearchModalVisible
 });
 
@@ -22,11 +22,14 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	editPlayableGame: (playableGame: PlayableGame) => {
 		dispatch(editPlayableGame(playableGame))
 	},
+	setGameToEdit: (playableGame: PlayableGame) => {
+		dispatch(setGameToEdit(playableGame))
+	},
 	selectGame: (selectedGame: PlayableGame) => {
 		dispatch(selectGame(selectedGame))
 	},
-	closeAddGameModal: () => {
-		dispatch(closeAddGameModal())
+	closeGameAddModal: () => {
+		dispatch(closeGameAddModal())
 	},
 	openIgdbResearchModal: () => {
 		dispatch(openIgdbResearchModal())
@@ -39,4 +42,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export const AddGameModal = connect(mapStateToProps, mapDispatchToProps)(VisualAddGameModal);
+export const GameAddModal = connect(mapStateToProps, mapDispatchToProps)(VisualGameAddModal);

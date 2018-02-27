@@ -4,7 +4,7 @@ import { VitrineState } from '../VitrineState';
 import { ContextMenu as VisualContextMenu } from '../components/ContextMenu';
 import { Action } from '../actions/actionsTypes';
 import { launchGame, setGameToEdit } from '../actions/games';
-import { openAddGameModal, openTimePlayedEditionModal } from '../actions/modals';
+import { openGameAddModal, openTimePlayedEditionModal } from '../actions/modals';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 const mapStateToProps = (state: VitrineState) => ({
@@ -18,8 +18,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	setGameToEdit: (gameToEdit: PlayableGame) => {
 		dispatch(setGameToEdit(gameToEdit))
 	},
-	openAddGameModal: () => {
-		dispatch(openAddGameModal())
+	openGameAddModal: () => {
+		dispatch(openGameAddModal())
 	},
 	openTimePlayedEditionModal: () => {
 		dispatch(openTimePlayedEditionModal())
