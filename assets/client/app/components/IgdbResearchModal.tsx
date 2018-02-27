@@ -14,7 +14,6 @@ import { faSearch, faCircleNotch } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	visible: boolean,
-	openIgdbResearchModal: () => void,
 	closeIgdbResearchModal: () => void
 }
 

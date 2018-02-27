@@ -12,7 +12,6 @@ import { localizer } from '../Localizer';
 interface Props {
 	gameToEdit: PlayableGame,
 	visible: boolean,
-	openTimePlayedEditionModal: () => void,
 	closeTimePlayedEditionModal: () => void
 }
 

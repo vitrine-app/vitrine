@@ -23,10 +23,7 @@ interface Props {
 	refreshGames: () => void,
 	openAddGameModal: () => void,
 	isGameLaunched: boolean,
-	launchGame: (gameUuid: string) => void,
-	editGame: (gameUuid: string) => void,
-	editGamePlayTime: (gameUuid: string) => void,
-	deleteGame: (gameUuid: string) => void,
+	launchGame: (gameUuid: string) => void
 }
 
 export class SideBar extends VitrineComponent<Props, {}> {

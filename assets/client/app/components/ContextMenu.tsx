@@ -15,8 +15,7 @@ interface Props {
 	launchGame: (launchedGame: PlayableGame) => void,
 	setGameToEdit: (gameToEdit: PlayableGame) => void,
 	openAddGameModal: () => void,
-	openTimePlayedEditionModal: () => void,
-	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void
+	openTimePlayedEditionModal: () => void
 }
 
 interface State {

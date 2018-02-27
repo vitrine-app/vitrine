@@ -25,9 +25,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	selectGame: (selectedGame: PlayableGame) => {
 		dispatch(selectGame(selectedGame))
 	},
-	openAddGameModal: () => {
-		dispatch(openAddGameModal())
-	},
 	closeAddGameModal: () => {
 		dispatch(closeAddGameModal())
 	},

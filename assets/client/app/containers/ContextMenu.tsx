@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { VitrineState } from '../VitrineState';
 import { ContextMenu as VisualContextMenu } from '../components/ContextMenu';
 import { Action } from '../actions/actionsTypes';
-import { launchGame, removePlayableGame, setGameToEdit } from '../actions/games';
+import { launchGame, setGameToEdit } from '../actions/games';
 import { openAddGameModal, openTimePlayedEditionModal } from '../actions/modals';
 import { PlayableGame } from '../../../models/PlayableGame';
 
@@ -23,9 +23,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	openTimePlayedEditionModal: () => {
 		dispatch(openTimePlayedEditionModal())
-	},
-	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => {
-		dispatch(removePlayableGame(gameUuid, selectedGame))
 	}
 });
 

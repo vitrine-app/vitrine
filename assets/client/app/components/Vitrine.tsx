@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Grid } from 'semantic-ui-react';
-import { ContextMenu, MenuItem } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 
 import { VitrineComponent } from './VitrineComponent';
@@ -20,20 +19,16 @@ import { localizer } from '../Localizer';
 
 interface Props {
 	settings: any,
-	potentialGames: GamesCollection<PotentialGame>,
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
 	launchedGame: PlayableGame,
 	updateSettings: (settings: any) => void,
 	addPotentialGames: (potentialGames: PotentialGame[]) => void,
 	addPlayableGames: (playableGames: PlayableGame[]) => void,
-	editPlayableGame: (playableGame: PlayableGame) => void,
 	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void,
 	launchGame: (launchedGame: PlayableGame) => void,
 	stopGame: (playedGame: PlayableGame) => void,
-	selectGame: (selectedGame: PlayableGame) => void,
-	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => void,
-	closeTimePlayedEditionModal: () => void
+	selectGame: (selectedGame: PlayableGame) => void
 }
 
 interface State {
@@ -84,19 +79,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		error.stack = errorStack;
 		error.name = errorName;
 		this.throwError(error);
-	}
-
-	private potentialGameToAddUpdateHandler(potentialGameToAdd: PotentialGame, gameWillBeEdited?: boolean) {
-		gameWillBeEdited = gameWillBeEdited || false;
-		this.props.setPotentialGameToAdd(potentialGameToAdd);
-		this.setState({
-			gameWillBeEdited
-		});
-	}
-
-	private editGameContextClickHandler(event: any, data: any, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.potentialGameToAddUpdateHandler(this.props.playableGames.getGame(gameUuid), true);
 	}
 
 	private launchedGamePictureToggleHandler() {
@@ -200,9 +182,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<SideBar
 					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
 					launchGame={this.launchGame.bind(this)}
-					editGame={this.launchGame.bind(this)}
-					editGamePlayTime={this.launchGame.bind(this)}
-					deleteGame={this.launchGame.bind(this)}
 				/>
 				<Grid className={css(styles.mainContainer)}>
 					<Grid.Column className={css(styles.case1)}/>
@@ -210,9 +189,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 						launchGame={this.launchGame.bind(this)}
 					/>
 				</Grid>
-				<AddGameModal
-					/*isEditing={this.state.gameWillBeEdited}*/
-				/>
+				<AddGameModal/>
 				<TimePlayedEditionModal/>
 			</div>
 		);

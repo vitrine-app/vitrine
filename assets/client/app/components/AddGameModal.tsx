@@ -28,7 +28,6 @@ interface Props {
 	addPlayableGames: (playableGames: PlayableGame[]) => void,
 	editPlayableGame: (playableGame: PlayableGame) => void,
 	selectGame: (selectedGame: PlayableGame) => void,
-	openAddGameModal: () => void,
 	closeAddGameModal: () => void,
 	openIgdbResearchModal: () => void,
 	closeIgdbResearchModal: () => void,

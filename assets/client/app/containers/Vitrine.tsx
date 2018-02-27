@@ -11,11 +11,9 @@ import { PotentialGame } from '../../../models/PotentialGame';
 
 const mapStateToProps = (state: VitrineState) => ({
 	settings: state.settings,
-	potentialGames: state.potentialGames,
 	playableGames: state.playableGames,
 	selectedGame: state.selectedGame,
-	launchedGame: state.launchedGame,
-	refreshingGames: state.refreshingGames,
+	launchedGame: state.launchedGame
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -28,9 +26,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	addPlayableGames: (playableGames: PlayableGame[]) => {
 		dispatch(addPlayableGames(playableGames))
 	},
-	editPlayableGame: (playableGame: PlayableGame) => {
-		dispatch(editPlayableGame(playableGame))
-	},
 	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => {
 		dispatch(removePlayableGame(gameUuid, selectedGame))
 	},
@@ -42,12 +37,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	selectGame: (selectedGame: PlayableGame) => {
 		dispatch(selectGame(selectedGame))
-	},
-	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => {
-		dispatch(setPotentialGameToAdd(potentialGameToAdd))
-	},
-	closeTimePlayedEditionModal: () => {
-		dispatch(closeTimePlayedEditionModal())
 	}
 });
 
