@@ -65,6 +65,7 @@ module.exports = [
 		...clientConfig,
 		plugins: [
 			new HtmlPlugin({
+				title: 'Vitrine',
 				filename: 'loader.html'
 			})
 		]

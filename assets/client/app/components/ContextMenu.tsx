@@ -14,6 +14,7 @@ interface Props {
 	playableGames: GamesCollection<PlayableGame>
 	launchGame: (launchedGame: PlayableGame) => void,
 	setGameToEdit: (gameToEdit: PlayableGame) => void,
+	openAddGameModal: () => void,
 	openTimePlayedEditionModal: () => void,
 	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void
 }
@@ -43,7 +44,8 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 				break;
 			}
 			case 'edit': {
-				//this.props.editGame(gameUuid);
+				this.props.setGameToEdit(game);
+				this.props.openAddGameModal();
 				break;
 			}
 			case 'editTime': {

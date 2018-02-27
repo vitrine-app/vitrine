@@ -53,13 +53,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		};
 	}
 
-	private editPlayableGame(game: PlayableGame) {
-		this.props.editPlayableGame(game);
-		if (game.uuid === this.props.selectedGame.uuid)
-			this.props.selectGame(game);
-		this.props.closeTimePlayedEditionModal();
-	}
-
 	private removePlayableGame(gameUuid: string) {
 		this.props.removePlayableGame(gameUuid, (this.props.playableGames.size() - 1) ? (this.props.playableGames.getGame(0)) : (null));
 	}
@@ -153,7 +146,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		}
 
 		serverListener.listen('add-playable-games', this.props.addPlayableGames.bind(this))
-			.listen('edit-playable-game', this.editPlayableGame.bind(this))
 			.listen('remove-playable-game', this.removePlayableGame.bind(this))
 			.listen('add-potential-games', this.props.addPotentialGames.bind(this))
 			.listen('stop-game', this.stopGame.bind(this))
@@ -219,7 +211,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					/>
 				</Grid>
 				<AddGameModal
-					isEditing={this.state.gameWillBeEdited}
+					/*isEditing={this.state.gameWillBeEdited}*/
 				/>
 				<TimePlayedEditionModal/>
 			</div>

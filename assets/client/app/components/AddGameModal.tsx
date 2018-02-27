@@ -20,14 +20,19 @@ import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 interface Props {
+	selectedGame: PlayableGame,
 	potentialGameToAdd: PotentialGame,
+	gameToEdit: PlayableGame,
 	visible: boolean,
+	igdbResearchModalVisible: boolean,
 	addPlayableGames: (playableGames: PlayableGame[]) => void,
+	editPlayableGame: (playableGame: PlayableGame) => void,
+	selectGame: (selectedGame: PlayableGame) => void,
 	openAddGameModal: () => void,
 	closeAddGameModal: () => void,
 	openIgdbResearchModal: () => void,
 	closeIgdbResearchModal: () => void,
-	isEditing: boolean
+	closeTimePlayedEditionModal: () => void
 }
 
 interface State {
@@ -45,7 +50,7 @@ interface State {
 	backgroundScreen: string,
 	potentialBackgrounds: string[],
 	source: GameSource,
-	isEditing: boolean
+	editing: boolean
 }
 
 export class AddGameModal extends VitrineComponent<Props, State> {
@@ -69,7 +74,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 			backgroundScreen: '',
 			potentialBackgrounds: [],
 			source: GameSource.LOCAL,
-			isEditing: props.isEditing
+			editing: false
 		};
 		this.state = { ...this.emptyState };
 	}
@@ -77,15 +82,15 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 	private fillIgdbGame(gameInfos: any) {
 		this.setState({
 			name: gameInfos.name,
-			series: gameInfos.series,
-			date: moment/*.unix*/(gameInfos.releaseDate/* / 1000*/).format('DD/MM/YYYY'),
-			developer: gameInfos.developer,
-			publisher: gameInfos.publisher,
-			genres: gameInfos.genres.join(', '),
-			rating: gameInfos.rating,
-			summary: gameInfos.summary,
+			series: gameInfos.series || '',
+			date: (gameInfos.releaseDate) ? (moment(gameInfos.releaseDate).format('DD/MM/YYYY')) : (''),
+			developer: gameInfos.developer || '',
+			publisher: gameInfos.publisher || '',
+			genres: (gameInfos.genres.length) ? (gameInfos.genres.join(', ')) : (''),
+			rating: gameInfos.rating || '',
+			summary: gameInfos.summary || '',
 			cover: gameInfos.cover,
-			potentialBackgrounds: gameInfos.screenshots,
+			potentialBackgrounds: gameInfos.screenshots || [],
 			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
 		});
 		this.props.closeIgdbResearchModal();
@@ -96,7 +101,18 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		this.closeModal();
 	}
 
+	private editPlayableGame(game: PlayableGame) {
+		this.props.editPlayableGame(game);
+		if (game.uuid === this.props.selectedGame.uuid)
+			this.props.selectGame(game);
+		if (this.props.igdbResearchModalVisible)
+			this.props.closeTimePlayedEditionModal();
+		if (this.props.visible)
+			this.closeModal();
+	}
+
 	private closeModal() {
+		console.warn(this.emptyState);
 		this.props.closeAddGameModal();
 		this.setState({
 			...this.emptyState,
@@ -148,15 +164,15 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private searchIgdbBtnClickHandler() {
+	private searchIgdbButton() {
 		serverListener.send('search-igdb-games', this.state.name);
 		this.props.openIgdbResearchModal();
 	}
 
-	private addGameBtnClickHandler() {
+	private submitButton() {
 		let gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
-		delete gameInfos.isEditing;
+		delete gameInfos.editing;
 		delete gameInfos.igdbResearchModalOpen;
 
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
@@ -164,40 +180,52 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
 			gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
 
-		if (this.state.isEditing)
-			serverListener.send('edit-game', this.props.potentialGameToAdd.uuid, gameInfos);
+		if (this.state.editing)
+			serverListener.send('edit-game', this.props.gameToEdit.uuid, gameInfos);
 		else
 			serverListener.send('add-game', gameInfos);
 	}
 
 	public componentDidMount() {
 		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this))
-			.listen('add-playable-game', this.addPlayableGame.bind(this));
+			.listen('add-playable-game', this.addPlayableGame.bind(this))
+			.listen('edit-playable-game', this.editPlayableGame.bind(this));
 	}
 
 	public componentWillReceiveProps(props: Props) {
-		if (props.potentialGameToAdd) {
-			let gameToAdd: PotentialGame = props.potentialGameToAdd;
-			let [executable, args]: string[] = (gameToAdd.commandLine.length > 1) ? (gameToAdd.commandLine) : ([gameToAdd.commandLine[0], '']);
+		let gameToHandle: PotentialGame;
+		let editing: boolean;
 
-			this.setState({
-				isEditing: props.isEditing,
-				name: gameToAdd.name,
-				cover: gameToAdd.details.cover,
-				source: gameToAdd.source,
-				executable,
-				arguments: args,
-				series: gameToAdd.details.series || '',
-				date: (gameToAdd.details.releaseDate) ? (moment(gameToAdd.details.releaseDate).format('DD/MM/YYYY')) : (''),
-				developer: gameToAdd.details.developer || '',
-				publisher: gameToAdd.details.publisher || '',
-				genres: (gameToAdd.details.genres) ? (gameToAdd.details.genres.join(', ')) : (''),
-				rating: gameToAdd.details.rating || '',
-				summary: gameToAdd.details.summary || '',
-				potentialBackgrounds: (gameToAdd.details.backgroundScreen) ? ([gameToAdd.details.backgroundScreen]) : ([]),
-				backgroundScreen: gameToAdd.details.backgroundScreen || ''
-			});
+		if (props.gameToEdit) {
+			gameToHandle = props.gameToEdit;
+			editing = true;
 		}
+		else if (props.potentialGameToAdd) {
+			gameToHandle = props.potentialGameToAdd;
+			editing = false;
+		}
+		else
+			return;
+
+		let [executable, args]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
+		this.setState({
+			name: gameToHandle.name,
+			cover: gameToHandle.details.cover,
+			source: gameToHandle.source,
+			executable,
+			arguments: args,
+			series: gameToHandle.details.series || '',
+			date: (gameToHandle.details.releaseDate) ? (moment(gameToHandle.details.releaseDate).format('DD/MM/YYYY')) : (''),
+			developer: gameToHandle.details.developer || '',
+			publisher: gameToHandle.details.publisher || '',
+			genres: (gameToHandle.details.genres) ? (gameToHandle.details.genres.join(', ')) : (''),
+			rating: gameToHandle.details.rating || '',
+			summary: gameToHandle.details.summary || '',
+			potentialBackgrounds: (gameToHandle.details.backgroundScreen) ? ([gameToHandle.details.backgroundScreen]) : ([]),
+			backgroundScreen: gameToHandle.details.backgroundScreen || '',
+			editing
+		});
+
 	}
 
 	public render(): JSX.Element {
@@ -208,7 +236,7 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 				size={'large'}
 				className={css(styles.modal)}
 			>
-				<Modal.Header>{(this.state.isEditing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
+				<Modal.Header>{(this.state.editing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
 				<Modal.Content className={css(styles.modalBody)}>
 					<Grid>
 						<Grid.Column width={3}>
@@ -410,16 +438,16 @@ export class AddGameModal extends VitrineComponent<Props, State> {
 					<Button
 						secondary={true}
 						disabled={!this.state.name}
-						onClick={this.searchIgdbBtnClickHandler.bind(this)}
+						onClick={this.searchIgdbButton.bind(this)}
 					>
 						{localizer.f('fillWithIgdb')}
 					</Button>
 					<Button
 						primary={true}
 						disabled={!this.state.name || !this.state.executable}
-						onClick={this.addGameBtnClickHandler.bind(this)}
+						onClick={this.submitButton.bind(this)}
 					>
-						{(this.state.isEditing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
+						{(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
 					</Button>
 				</Modal.Actions>
 				<IgdbResearchModal/>
