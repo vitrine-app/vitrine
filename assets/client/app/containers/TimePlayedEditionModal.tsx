@@ -6,7 +6,7 @@ import { Action } from '../actions/actionsTypes';
 import { openTimePlayedEditionModal, closeTimePlayedEditionModal } from '../actions/modals';
 
 const mapStateToProps = (state: VitrineState) => ({
-	editedGame: state.potentialGameToAdd,
+	gameToEdit: state.gameToEdit,
 	visible: state.timePlayedEditionModalVisible
 });
 

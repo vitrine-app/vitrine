@@ -3,10 +3,8 @@ import { connect, Dispatch } from 'react-redux';
 import { VitrineState } from '../VitrineState';
 import { Action } from '../actions/actionsTypes';
 import { updateSettings } from '../actions/settings';
-import {
-	addPlayableGames, addPotentialGames, editPlayableGame, launchGame, removePlayableGame, selectGame,
-	setPotentialGameToAdd, stopGame
-} from '../actions/games';
+import { addPlayableGames, addPotentialGames, editPlayableGame, launchGame, removePlayableGame, selectGame, setPotentialGameToAdd, stopGame } from '../actions/games';
+import { closeTimePlayedEditionModal } from '../actions/modals';
 import { Vitrine as VisualVitrine } from '../components/Vitrine';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
@@ -47,6 +45,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => {
 		dispatch(setPotentialGameToAdd(potentialGameToAdd))
+	},
+	closeTimePlayedEditionModal: () => {
+		dispatch(closeTimePlayedEditionModal())
 	}
 });
 

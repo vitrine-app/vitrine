@@ -37,7 +37,8 @@ export function editPlayableGame(playableGame: PlayableGame): Action {
 		type: ActionType.EDIT_PLAYABLE_GAME,
 		payload: {
 			playableGame,
-			potentialGameToAdd: null
+			potentialGameToAdd: null,
+			gameToEdit: null
 		}
 	};
 }
@@ -87,4 +88,13 @@ export function setPotentialGameToAdd(potentialGameToAdd: PotentialGame): Action
 			potentialGameToAdd
 		}
 	};
+}
+
+export function setGameToEdit(gameToEdit: PlayableGame): Action {
+	return {
+		type: ActionType.SET_GAME_TO_EDIT,
+		payload: {
+			gameToEdit
+		}
+	}
 }

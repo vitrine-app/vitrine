@@ -13,6 +13,7 @@ import { localizer } from '../Localizer';
 interface Props {
 	playableGames: GamesCollection<PlayableGame>
 	launchGame: (launchedGame: PlayableGame) => void,
+	setGameToEdit: (gameToEdit: PlayableGame) => void,
 	openTimePlayedEditionModal: () => void,
 	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void
 }
@@ -46,6 +47,7 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 				break;
 			}
 			case 'editTime': {
+				this.props.setGameToEdit(game);
 				this.props.openTimePlayedEditionModal();
 				break;
 			}

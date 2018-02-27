@@ -32,7 +32,8 @@ interface Props {
 	launchGame: (launchedGame: PlayableGame) => void,
 	stopGame: (playedGame: PlayableGame) => void,
 	selectGame: (selectedGame: PlayableGame) => void,
-	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => void
+	setPotentialGameToAdd: (potentialGameToAdd: PotentialGame) => void,
+	closeTimePlayedEditionModal: () => void
 }
 
 interface State {
@@ -56,7 +57,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.props.editPlayableGame(game);
 		if (game.uuid === this.props.selectedGame.uuid)
 			this.props.selectGame(game);
-		$('#edit-time-played-modal').modal('hide');
+		this.props.closeTimePlayedEditionModal();
 	}
 
 	private removePlayableGame(gameUuid: string) {
@@ -100,25 +101,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private launchGameContextClickHandler(event: any, data: any, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.launchGame(gameUuid);
-	}
-
 	private editGameContextClickHandler(event: any, data: any, target: HTMLElement) {
 		let gameUuid: string = target.children[0].id.replace('game-', '');
 		this.potentialGameToAddUpdateHandler(this.props.playableGames.getGame(gameUuid), true);
-	}
-
-	private editGamePlayTimeContextClickHandler(event: any, data: Object, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.props.setPotentialGameToAdd(this.props.playableGames.getGame(gameUuid));
-		$('#edit-time-played-modal').modal('show');
-	}
-
-	private deleteGameContextClickHandler(event: any, data: any, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		serverListener.send('remove-game', gameUuid);
 	}
 
 	private launchedGamePictureToggleHandler() {
