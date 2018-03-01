@@ -4,3 +4,6 @@
 
 /* Text area */
 @textAreaFontSize: 16px;
+
+/* Errored input */
+@formErrorBorder: #A94442

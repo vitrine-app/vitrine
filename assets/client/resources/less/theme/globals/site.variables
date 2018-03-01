@@ -1,6 +1,6 @@
 /* Page */
 @pageBackground: #2F2C28;
-@textColor: #D5D5D5;
+@textColor: #B9B0A2;
 @selectedTextColor: #B9B0A2;
 
 /* Brand Colors */
@@ -12,6 +12,7 @@
 
 /* Borders */
 @borderColor: rgba(255, 255, 255, 0.1);
+@solidBorderColor: rgba(255, 255, 255, 0.1);
 
 /* Form input */
 @inputBackground: #39342E;

@@ -487,7 +487,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	formTextArea: {
 		resize: 'none',
-		height: 7..em()
+		height: 7..em(),
+		fontSize: 1.14285714.em()
 	},
 	formLabel: {
 		fontWeight: 'normal',

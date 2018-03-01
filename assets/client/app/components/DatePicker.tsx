@@ -6,7 +6,7 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
 
-import { faTrash } from '@fortawesome/fontawesome-free-solid';
+import { faTrash, faCalendarAlt } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	value: Date | string | moment.Moment,
@@ -16,13 +16,13 @@ interface Props {
 }
 
 export class DatePicker extends VitrineComponent<Props, {}> {
-	private renderInput(props: any): JSX.Element {
+	private renderInput(props: any, openCalendar: () => void): JSX.Element {
 		const removeDateButton: JSX.Element = (
 			<Button
 				secondary={true}
-				onClick={() => props.onChange({ target: { value: '' } })}
+				onClick={() => (props.value) ? (props.onChange({ target: { value: '' } })) : (openCalendar())}
 			>
-				<FontAwesomeIcon icon={faTrash}/>
+				<FontAwesomeIcon icon={(props.value) ? (faTrash) : (faCalendarAlt)}/>
 			</Button>
 		);
 
@@ -31,10 +31,10 @@ export class DatePicker extends VitrineComponent<Props, {}> {
 				<Input
 					{...props}
 					{...this.props.inputProps}
-					label={(this.props.value) ? (removeDateButton) : (null)}
-					labelPosition={(this.props.value) ? ('right') : (null)}
+					label={removeDateButton}
+					labelPosition={'right'}
 					style={{
-						width: (this.props.value) ? (83..percents()) : (100..percents()),
+						width: 83..percents(),
 						cursor: 'text'
 					}}
 				/>

@@ -198,7 +198,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		fontWeight: 400,
 		fontSize: 33,
 		marginBottom: 40,
-		color: lessVars.textColor
+		color: rgba(255, 255, 255, 0.66)
 	},
 	gameCoreHr: {
 		border: 'none',
