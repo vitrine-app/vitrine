@@ -24,6 +24,7 @@ interface Props {
 	refreshGames: () => void,
 	openGameAddModal: () => void,
 	openPotentialGamesAddModal: () => void,
+	openSettingsModal: () => void,
 	isGameLaunched: boolean,
 	launchGame: (gameUuid: string) => void
 }
@@ -49,7 +50,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				<VitrineButton
 					icon={faPlus}
 					tooltip={localizer.f('addGameLabel')}
-					onClick={() => this.props.openGameAddModal()}
+					onClick={this.props.openGameAddModal.bind(this)}
 					className={css(styles.commandBtn)}
 				/>
 				<VitrineButton
@@ -62,6 +63,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				<VitrineButton
 					icon={faCogs}
 					tooltip={localizer.f('settings')}
+					onClick={this.props.openSettingsModal.bind(this)}
 					className={css(styles.commandBtn)}
 				/>
 				<Button

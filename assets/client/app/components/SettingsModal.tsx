@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { Button, Form, Grid, Input, Modal, Tab } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
-import { padding } from 'css-verbose';
+import { border, margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { serverListener } from '../ServerListener';
@@ -16,9 +17,11 @@ import * as originIcon from '../../resources/images/originIcon.png';
 import * as emulatedIcon from '../../resources/images/emulatedIcon.png';
 
 interface Props {
-	firstLaunch: boolean,
 	settings: any,
-	updateSettings: (settings: any) => void
+	visible: boolean,
+	firstLaunch: boolean,
+	updateSettings: (settings: any) => void,
+	closeSettingsModal: () => void
 }
 
 interface State {
@@ -58,6 +61,11 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		};
 	}
 
+	private closeModal() {
+		if (!this.props.firstLaunch)
+			this.props.closeSettingsModal();
+	}
+
 	private steamIconClickHandler(checked: boolean) {
 		if ((checked && !this.state.steamEnabled) || (!checked && this.state.steamEnabled)) {
 			this.setState({
@@ -84,8 +92,6 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			});
 		}
 	}
-
-
 
 	private steamPathBtnClickHandler() {
 		let steamPath: string = openDirectory();
@@ -114,10 +120,9 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private langSelectChangeHandler(event: any) {
-		let value: string = event.target.value;
+	private langSelectChangeHandler(event: any, data: any) {
 		this.setState({
-			lang: value
+			lang: data.value
 		});
 	}
 
@@ -201,7 +206,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		return (
+		/*return (
 			<div
 				id="settings-modal"
 				className={`modal fade ${css(styles.modal)}`}
@@ -432,24 +437,223 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 				</div>
 				{this.checkErrors()}
 			</div>
+		);*/
+		const modulesSettings: JSX.Element = (
+			<Tab.Pane className={css(styles.settingsPane)}>
+				<Grid>
+					<Grid.Column width={1}/>
+					<Grid.Column width={4}>
+						<GamesModule
+							clicked={this.state.steamEnabled}
+							iconFile={steamIcon}
+							iconAlt={'Steam'}
+							clickHandler={this.steamIconClickHandler.bind(this)}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4}>
+						<GamesModule
+							clicked={this.state.originEnabled}
+							iconFile={originIcon}
+							iconAlt={'Origin'}
+							clickHandler={this.originIconClickHandler.bind(this)}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4}>
+						<GamesModule
+							clicked={this.state.emulatedEnabled}
+							iconFile={emulatedIcon}
+							iconAlt={'Origin'}
+							clickHandler={this.emulatedIconClickHandler.bind(this)}
+						/>
+					</Grid.Column>
+				</Grid>
+				<Form>
+					<div style={{ display: (this.state.steamEnabled) ? ('block') : ('none') }}>
+						<hr className={css(styles.formHr)}/>
+						<h3>{localizer.f('steamConfig')}</h3>
+						<Form.Field error={this.state.steamError}>
+							<label>{localizer.f('steamPath')}</label>
+							<Input
+								label={
+									<Button
+										secondary={true}
+										onClick={this.steamPathBtnClickHandler.bind(this)}
+									>
+										<FontAwesomeIcon icon={faFolderOpen}/>
+									</Button>
+								}
+								labelPosition={'right'}
+								name={'steam'}
+								size={'large'}
+								placeholder={localizer.f('steamPath')}
+								value={this.state.steamPath}
+								onClick={this.steamPathBtnClickHandler.bind(this)}
+								readOnly={true}
+							/>
+							<span
+								className={css(styles.modulesError)}
+								style={{ display: (this.state.steamError) ? ('inline') : ('none') }}
+							>
+								{localizer.f('pathError')}
+							</span>
+						</Form.Field>
+					</div>
+					<div style={{ display: (this.state.originEnabled) ? ('block') : ('none') }}>
+						<hr className={css(styles.formHr)}/>
+						<h3>{localizer.f('originConfig')}</h3>
+						<Form.Field error={this.state.originError}>
+							<label>{localizer.f('originGamesPath')}</label>
+							<Input
+								label={
+									<Button
+										secondary={true}
+										onClick={this.originPathBtnClickHandler.bind(this)}
+									>
+										<FontAwesomeIcon icon={faFolderOpen}/>
+									</Button>
+								}
+								labelPosition={'right'}
+								name={'origin'}
+								size={'large'}
+								placeholder={localizer.f('originGamesPath')}
+								value={this.state.originPath}
+								onClick={this.originPathBtnClickHandler.bind(this)}
+								readOnly={true}
+							/>
+							<span
+								className={css(styles.modulesError)}
+								style={{ display: (this.state.originError) ? ('inline-block') : ('none') }}
+							>
+								{localizer.f('pathError')}
+							</span>
+						</Form.Field>
+					</div>
+					<div style={{ display: (this.state.emulatedEnabled) ? ('block') : ('none') }}>
+						<hr className={css(styles.formHr)}/>
+						<h3>{localizer.f('emulatedConfig')}</h3>
+						<Form.Field error={this.state.emulatedError}>
+							<label>{localizer.f('emulatedGamesPath')}</label>
+							<Input
+								label={
+									<Button
+										secondary={true}
+										onClick={this.emulatedPathBtnClickHandler.bind(this)}
+									>
+										<FontAwesomeIcon icon={faFolderOpen}/>
+									</Button>
+								}
+								labelPosition={'right'}
+								name={'emulated'}
+								size={'large'}
+								placeholder={localizer.f('emulatedGamesPath')}
+								value={this.state.emulatedPath}
+								onClick={this.emulatedPathBtnClickHandler.bind(this)}
+								readOnly={true}
+							/>
+							<span
+								className={css(styles.modulesError)}
+								style={{ display: (this.state.emulatedError) ? ('inline-block') : ('none') }}
+							>
+								{localizer.f('pathError')}
+							</span>
+						</Form.Field>
+					</div>
+				</Form>
+			</Tab.Pane>
+		);
+
+		const langsSettings: JSX.Element = (
+			<Tab.Pane className={css(styles.settingsPane)}>
+				<Form.Select
+					name={'lang'}
+					fluid={true}
+					value={this.state.lang}
+					onChange={this.langSelectChangeHandler.bind(this)}
+					className={css(styles.langSelect)}
+					options={Object.keys(this.state.langs).map((langName: string, index: number) => ({
+						key: index,
+						value: langName,
+						text: this.state.langs[langName].language
+					}))}
+				/>
+			</Tab.Pane>
+		);
+
+		return (
+			<Modal
+				open={this.props.visible}
+				onClose={this.closeModal.bind(this)}
+				className={css(styles.modal)}
+			>
+				<Modal.Header
+					style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
+				>
+					{localizer.f('settings')}
+				</Modal.Header>
+				<Modal.Content>
+					<div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
+						<h1>{localizer.f('welcomeMessage')}</h1>
+						<p>{localizer.f('wizardText')}</p>
+					</div>
+					<Tab
+						panes={[
+							{
+								menuItem: localizer.f('modules'),
+								render: () => modulesSettings
+							},
+							{
+								menuItem: localizer.f('emulators'),
+								render: () =>
+									<Tab.Pane>Tab 2 Content</Tab.Pane>
+							},
+							{
+								menuItem: localizer.f('lang'),
+								render: () => langsSettings
+							}
+						]}
+					/>
+				</Modal.Content>
+				<Modal.Actions>
+					<Button
+						secondary={true}
+						style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
+					>
+						{localizer.f('cancel')}
+					</Button>
+					<Button
+						primary={true}
+						onClick={this.submitBtnClickHandler.bind(this)}
+					>
+						{localizer.f('confirm')}
+					</Button>
+				</Modal.Actions>
+				{this.checkErrors()}
+			</Modal>
 		);
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		top: 10..vh()
+		margin: margin(5..rem(), 'auto'),
+		cursor: 'default',
+		userSelect: 'none'
 	},
 	modalDialog: {
 		width: 900..px()
 	},
-	modalBody: {
-		padding: padding(15, 40, 10),
-		maxHeight: 63..vh(),
+	settingsPane: {
+		maxHeight: 64..vh(),
 		overflowY: 'auto'
 	},
+	formHr: {
+		border: 'none',
+		borderTop: border(1, 'solid', rgba(238, 238, 238, 0.15)),
+		margin: margin(20, -14)
+	},
 	langSelect: {
-		padding: padding(20, 0, 0)
+		padding: padding(20, 0, 100),
+		width: 100..percents()
 	},
 	navTabsLink: {
 		':hover': {
@@ -460,6 +664,11 @@ const styles: React.CSSProperties = StyleSheet.create({
 	tableDiv: {
 		maxHeight: 50..vh(),
 		overflowY: 'auto'
+	},
+	modulesError: {
+		color: '#A94442',
+		fontWeight: 600,
+		marginTop: 5
 	},
 	emulatorsError: {
 		color: '#A94442',

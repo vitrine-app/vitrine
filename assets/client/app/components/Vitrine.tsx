@@ -192,6 +192,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<GameAddModal/>
 				<TimePlayedEditionModal/>
 				<PotentialGamesAddModal/>
+				<SettingsModal
+					firstLaunch={this.state.firstLaunch}
+				/>
 			</div>
 		);
 	}

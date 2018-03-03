@@ -71,3 +71,21 @@ export function closePotentialGamesAddModal(): Action {
 		}
 	};
 }
+
+export function openSettingsModal(): Action {
+	return {
+		type: ActionType.OPEN_SETTINGS_MODAL,
+		payload: {
+			settingsModalVisible: true
+		}
+	}
+}
+
+export function closeSettingsModal(): Action {
+	return {
+		type: ActionType.CLOSE_SETTINGS_MODAL,
+		payload: {
+			settingsModalVisible: false
+		}
+	}
+}

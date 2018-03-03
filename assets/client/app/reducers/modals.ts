@@ -43,3 +43,14 @@ export function potentialGamesAddModalVisible(state: boolean = false, action: Ac
 			return state;
 	}
 }
+
+export function settingsModalVisible(state: boolean = false, action: Action): boolean {
+	switch (action.type) {
+		case ActionType.OPEN_SETTINGS_MODAL:
+			return action.payload.settingsModalVisible;
+		case ActionType.CLOSE_SETTINGS_MODAL:
+			return action.payload.settingsModalVisible;
+		default:
+			return state;
+	}
+}

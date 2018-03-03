@@ -12,7 +12,7 @@ import { App } from './app/containers/App';
 import { initialState, VitrineState } from './app/VitrineState';
 import { settings } from './app/reducers/settings';
 import { gameToEdit, launchedGame, playableGames, potentialGames, potentialGameToAdd, refreshingGames, selectedGame } from './app/reducers/games';
-import { gameAddModalVisible, igdbResearchModalVisible, potentialGamesAddModalVisible, timePlayedEditionModalVisible } from './app/reducers/modals';
+import { gameAddModalVisible, igdbResearchModalVisible, potentialGamesAddModalVisible, settingsModalVisible, timePlayedEditionModalVisible } from './app/reducers/modals';
 
 import './resources/less/main.less';
 
@@ -35,7 +35,8 @@ let store: Store<VitrineState> = createStore(combineReducers({
 	gameAddModalVisible,
 	igdbResearchModalVisible,
 	timePlayedEditionModalVisible,
-	potentialGamesAddModalVisible
+	potentialGamesAddModalVisible,
+	settingsModalVisible
 }), initialState, applyMiddleware(logger));
 
 const appRoot: HTMLElement = document.createElement('div');

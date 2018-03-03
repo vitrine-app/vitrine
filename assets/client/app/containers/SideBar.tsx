@@ -4,7 +4,7 @@ import { VitrineState } from '../VitrineState';
 import { SideBar as VisualSideBar } from '../components/SideBar';
 import { Action } from '../actions/actionsTypes';
 import { refreshGames, selectGame } from '../actions/games';
-import { openGameAddModal, openPotentialGamesAddModal } from '../actions/modals';
+import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../actions/modals';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 const mapStateToProps = (state: VitrineState) => ({
@@ -16,16 +16,19 @@ const mapStateToProps = (state: VitrineState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	selectGame: (selectedGame: PlayableGame) => {
-		dispatch(selectGame(selectedGame))
+		dispatch(selectGame(selectedGame));
 	},
 	refreshGames: () => {
-		dispatch(refreshGames())
+		dispatch(refreshGames());
 	},
 	openGameAddModal: () => {
-		dispatch(openGameAddModal())
+		dispatch(openGameAddModal());
 	},
 	openPotentialGamesAddModal: () => {
-		dispatch(openPotentialGamesAddModal())
+		dispatch(openPotentialGamesAddModal());
+	},
+	openSettingsModal: () => {
+		dispatch(openSettingsModal());
 	}
 });
 

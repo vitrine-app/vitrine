@@ -6,4 +6,9 @@
 @textAreaFontSize: 16px;
 
 /* Errored input */
-@formErrorBorder: #A94442
+@formErrorBorder: #8C3A3A;
+@formErrorBackground: #3A3232;
+
+@inputErrorFocusColor: @formErrorColor;
+@inputErrorFocusBorder: @formErrorBorder;
+@inputErrorFocusBackground: @formErrorBackground;

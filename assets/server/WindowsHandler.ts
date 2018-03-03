@@ -10,12 +10,14 @@ export class WindowsHandler {
 	private devTools: boolean;
 	private iconPath: string;
 	private appQuit: boolean;
+	private reactDevToolsPath: string;
 
 	public constructor() {
 		this.clientEntryPoint = path.resolve('file://', __dirname, 'client.html');
 		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.appQuit = false;
+		this.reactDevToolsPath = path.resolve(process.env.APPDATA, '../Local', 'Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.1.0_0')
 	}
 
 	public run(devTools?: boolean) {
@@ -42,6 +44,8 @@ export class WindowsHandler {
 	}
 
 	public createLoaderWindow() {
+		if (this.devTools)
+			BrowserWindow.addDevToolsExtension(this.reactDevToolsPath);
 		this.loaderWindow = new BrowserWindow({
 			height: 300,
 			width: 500,
