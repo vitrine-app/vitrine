@@ -49,18 +49,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/bootstrap-datepicker@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@types/bootstrap-datepicker/-/bootstrap-datepicker-0.0.9.tgz#603bb1365a93fcb2676ecb421ecd5d7926b65cb9"
-  dependencies:
-    "@types/jquery" "*"
-
-"@types/bootstrap-select@^1.11.1":
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/@types/bootstrap-select/-/bootstrap-select-1.11.1.tgz#05dcbc0018f50428cf7943e6a1cda4d3a122051f"
-  dependencies:
-    "@types/jquery" "*"
-
 "@types/chai@^4.1.1":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.2.tgz#f1af664769cfb50af805431c407425ed619daa21"
@@ -82,10 +70,6 @@
     "@types/events" "*"
     "@types/minimatch" "*"
     "@types/node" "*"
-
-"@types/jquery@*", "@types/jquery@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.0.tgz#6316ac20a1a13c5d521a2dc661befc7184f73f5b"
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -464,22 +448,6 @@ boom@5.x.x:
   resolved "https://registry.yarnpkg.com/boom/-/boom-5.2.0.tgz#5dd9da6ee3a5f302077436290cb717d3f4a54e02"
   dependencies:
     hoek "4.x.x"
-
-bootstrap-datepicker@^1.7.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/bootstrap-datepicker/-/bootstrap-datepicker-1.7.1.tgz#4ee7faf34888dbec7834fbf9dbe7c4277e01ddaf"
-  dependencies:
-    jquery ">=1.7.1 <4.0.0"
-
-bootstrap-sass@^3.3.7:
-  version "3.3.7"
-  resolved "https://registry.yarnpkg.com/bootstrap-sass/-/bootstrap-sass-3.3.7.tgz#6596c7ab40f6637393323ab0bc80d064fc630498"
-
-bootstrap-select@^1.12.4:
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.12.4.tgz#7f15d3c0ce978868d9c09c70f96624f55fa02ee1"
-  dependencies:
-    jquery ">=1.8"
 
 bowser@^1.7.3:
   version "1.9.2"
@@ -2566,7 +2534,7 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-"jquery@>=1.7.1 <4.0.0", jquery@>=1.8, jquery@^3.3.1, jquery@x.*:
+jquery@x.*:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 

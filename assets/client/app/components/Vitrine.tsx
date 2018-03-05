@@ -170,7 +170,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<SettingsModal
 					firstLaunch={this.state.firstLaunch}
 				/>
-				{this.checkErrors()}
 			</div>
 		);
 	}
