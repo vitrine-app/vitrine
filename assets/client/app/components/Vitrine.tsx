@@ -28,7 +28,9 @@ interface Props {
 	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void,
 	launchGame: (launchedGame: PlayableGame) => void,
 	stopGame: (playedGame: PlayableGame) => void,
-	selectGame: (selectedGame: PlayableGame) => void
+	selectGame: (selectedGame: PlayableGame) => void,
+	openSettingsModal: () => void,
+	closeSettingsModal: () => void
 }
 
 interface State {
@@ -66,7 +68,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	private settingsUpdated(settings: any) {
 		this.props.updateSettings(settings);
-		$('#settings-modal').modal('hide');
+		this.props.closeSettingsModal();
 		if (this.state.firstLaunch) {
 			this.setState({
 				firstLaunch: false
@@ -122,9 +124,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		if (this.props.settings.firstLaunch) {
 			this.setState({
 				firstLaunch: true
-			}, () => {
-				$('#settings-modal').modal('show');
-			});
+			}, this.props.openSettingsModal.bind(this));
 		}
 
 		serverListener.listen('add-playable-games', this.props.addPlayableGames.bind(this))

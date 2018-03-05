@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Form, Grid, Input, Modal, Tab } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, Modal, Tab, Table } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
@@ -37,14 +37,16 @@ interface State {
 	originError: boolean,
 	emulatedError: boolean,
 	emulatorsCurrentConfig: any,
-	emulatorsError: string
+	emulatorsError: string,
 }
 
 export class SettingsModal extends VitrineComponent<Props, State> {
+	private emptyState: State;
+
 	public constructor(props: Props) {
 		super(props);
 
-		this.state = {
+		this.emptyState = {
 			langs: localizer.getLanguages(),
 			lang: localizer.getSelectedLanguage(),
 			steamEnabled: (this.props.settings && this.props.settings.steam) ? (true) : (false),
@@ -59,11 +61,14 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			emulatorsCurrentConfig: this.props.settings.emulated.emulators,
 			emulatorsError: ''
 		};
+		this.state = this.emptyState;
 	}
 
 	private closeModal() {
-		if (!this.props.firstLaunch)
-			this.props.closeSettingsModal();
+		if (this.props.firstLaunch)
+			return;
+		this.props.closeSettingsModal();
+		this.setState(this.emptyState);
 	}
 
 	private steamIconClickHandler(checked: boolean) {
@@ -134,7 +139,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private submitBtnClickHandler() {
+	private submitButton() {
 		let canBeSent: boolean = true;
 
 		let form: any = {
@@ -206,238 +211,6 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		/*return (
-			<div
-				id="settings-modal"
-				className={`modal fade ${css(styles.modal)}`}
-				role="dialog"
-				data-keyboard={(this.props.firstLaunch) ? (false) : (true)}
-				data-backdrop={(this.props.firstLaunch) ? ('static') : (true)}
-			>
-				<div className={`modal-dialog ${css(styles.modalDialog)}`}>
-					<div className="modal-content">
-						<div
-							className="modal-header"
-							style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
-						>
-							{localizer.f('settings')}
-						</div>
-						<div className={`modal-body ${css(styles.modalBody)}`}>
-							<form>
-								<div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
-									<h1>{localizer.f('welcomeMessage')}</h1>
-									<p>{localizer.f('wizardText')}</p>
-								</div>
-								<ul className="nav nav-tabs">
-									<li className="active">
-										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-modules">
-											{localizer.f('modules')}
-										</a>
-									</li>
-									<li>
-										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-emulators">
-											{localizer.f('emulators')}
-										</a>
-									</li>
-									<li>
-										<a className={css(styles.navTabsLink)} data-toggle="tab" href="#options-pane-lang">
-											{localizer.f('lang')}
-										</a>
-									</li>
-								</ul>
-								<div className="tab-content">
-									<div id="options-pane-modules" className="tab-pane fade in active">
-										<div className="row">
-											<div className="col-md-offset-1 col-md-3">
-												<GamesModule
-													clicked={this.state.steamEnabled}
-													iconFile={steamIcon}
-													iconAlt={'Steam'}
-													clickHandler={this.steamIconClickHandler.bind(this)}
-												/>
-											</div>
-											<div className="col-md-3">
-												<GamesModule
-													clicked={this.state.originEnabled}
-													iconFile={originIcon}
-													iconAlt={'Origin'}
-													clickHandler={this.originIconClickHandler.bind(this)}
-												/>
-											</div>
-											<div className="col-md-3">
-												<GamesModule
-													clicked={this.state.emulatedEnabled}
-													iconFile={emulatedIcon}
-													iconAlt={'Origin'}
-													clickHandler={this.emulatedIconClickHandler.bind(this)}
-												/>
-											</div>
-										</div>
-										<div style={{ display: (this.state.steamEnabled) ? ('block') : ('none') }}>
-											<hr/>
-											<h3>{localizer.f('steamConfig')}</h3>
-											<div className={`form-group ${((this.state.steamError) ? (' has-error') : (''))}`}>
-												<label>{localizer.f('steamPath')}</label>
-												<div className="input-group">
-													<input
-														className="form-control"
-														name="steam"
-														placeholder={localizer.f('steamPath')}
-														value={this.state.steamPath}
-														onClick={this.steamPathBtnClickHandler.bind(this)}
-														readOnly={true}
-													/>
-													<span className="input-group-btn">
-														<button
-															className="btn btn-default"
-															type="button"
-															onClick={this.steamPathBtnClickHandler.bind(this)}
-														>
-															<FontAwesomeIcon icon={faFolderOpen}/>
-														</button>
-													</span>
-												</div>
-												<span
-													className="help-block"
-													style={{ display: (this.state.steamError) ? ('inline') : ('none') }}
-												>
-													{localizer.f('pathError')}
-												</span>
-											</div>
-										</div>
-										<div style={{ display: (this.state.originEnabled) ? ('block') : ('none') }}>
-											<hr/>
-											<h3>{localizer.f('originConfig')}</h3>
-											<div className={`form-group ${((this.state.originError) ? (' has-error') : (''))}`}>
-												<label>{localizer.f('originGamesPath')}</label>
-												<div className="input-group">
-													<input
-														className="form-control"
-														name="origin"
-														placeholder={localizer.f('originGamesPath')}
-														value={this.state.originPath}
-														onClick={this.originPathBtnClickHandler.bind(this)}
-														readOnly={true}
-													/>
-													<span className="input-group-btn">
-														<button
-															className="btn btn-default"
-															type="button"
-															onClick={this.originPathBtnClickHandler.bind(this)}
-														>
-															<FontAwesomeIcon icon={faFolderOpen}/>
-														</button>
-													</span>
-												</div>
-												<span
-													className="help-block"
-													style={{ display: (this.state.originError) ? ('inline') : ('none') }}
-												>
-													{localizer.f('pathError')}
-												</span>
-											</div>
-										</div>
-										<div style={{ display: (this.state.emulatedEnabled) ? ('block') : ('none') }}>
-											<hr/>
-											<h3>{localizer.f('emulatedConfig')}</h3>
-											<div className={`form-group ${((this.state.emulatedError) ? (' has-error') : (''))}`}>
-												<label>{localizer.f('emulatedGamesPath')}</label>
-												<div className="input-group">
-													<input
-														className="form-control"
-														name="origin"
-														placeholder={localizer.f('emulatedGamesPath')}
-														value={this.state.emulatedPath}
-														onClick={this.emulatedPathBtnClickHandler.bind(this)}
-														readOnly={true}
-													/>
-													<span className="input-group-btn">
-														<button
-															className="btn btn-default"
-															type="button"
-															onClick={this.emulatedPathBtnClickHandler.bind(this)}
-														>
-															<FontAwesomeIcon icon={faFolderOpen}/>
-														</button>
-													</span>
-												</div>
-												<span
-													className="help-block"
-													style={{ display: (this.state.emulatedError) ? ('inline') : ('none') }}
-												>
-													{localizer.f('pathError')}
-												</span>
-											</div>
-										</div>
-									</div>
-									<div id="options-pane-lang" className={`tab-pane fade ${css(styles.langSelect)}`}>
-										<select
-											name="lang"
-											className="selectpicker"
-											value={this.state.lang}
-											onChange={this.langSelectChangeHandler.bind(this)}
-										>
-											{Object.keys(this.state.langs).map((langName: string, index: number) =>
-												<option
-													value={langName}
-													key={index}
-												>
-													{this.state.langs[langName].language}
-												</option>
-											)}
-										</select>
-									</div>
-									<div id="options-pane-emulators" className={`tab-pane fade in ${css(styles.tableDiv)}`}>
-										<p className={css(styles.emulatorsError)}>{this.state.emulatorsError}</p>
-										<table className={`table table-bordered ${css(styles.emulatorsTable)}`}>
-											<thead>
-											<tr>
-												<th className={css(styles.emulatorNameTh)}>{localizer.f('emulatorName')}</th>
-												<th className={css(styles.emulatorPlatformsTh)}>{localizer.f('emulatorPlatforms')}</th>
-												<th className={css(styles.emulatorActiveTh)}>{localizer.f('emulatorActive')}</th>
-												<th className={css(styles.emulatorPathTh)}>{localizer.f('emulatorPath')}</th>
-												<th className={css(styles.emulatorCommandTh)}>{localizer.f('emulatorCommand')}</th>
-											</tr>
-											</thead>
-											<tbody>
-											{Object.keys(this.props.settings.emulated.emulators).map((emulatorId: string, index: number) =>
-												<EmulatorSettingsRow
-													key={index}
-													id={emulatorId}
-													emulator={this.props.settings.emulated.emulators[emulatorId]}
-													platforms={this.props.settings.emulated.emulators[emulatorId].platforms.map(
-														(platformsId) => this.props.settings.emulated.platforms[platformsId]
-													)}
-													onChange={this.emulatorConfigChangeHandler.bind(this)}
-												/>
-											)}
-											</tbody>
-										</table>
-										<p className={css(styles.emulatorsCommandLineInstruction)}>{localizer.f('emulatorCommandLineInstruction')}</p>
-									</div>
-								</div>
-							</form>
-						</div>
-						<div className="modal-footer">
-							<button
-								className="btn btn-default"
-								style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
-								data-dismiss="modal"
-							>
-								{localizer.f('cancel')}
-							</button>
-							<button
-								className="btn btn-success"
-								onClick={this.submitBtnClickHandler.bind(this)}
-							>
-								{localizer.f('confirm')}
-							</button>
-						</div>
-					</div>
-				</div>
-				{this.checkErrors()}
-			</div>
-		);*/
 		const modulesSettings: JSX.Element = (
 			<Tab.Pane className={css(styles.settingsPane)}>
 				<Grid>
@@ -562,6 +335,47 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			</Tab.Pane>
 		);
 
+		const emulatorsSettings: JSX.Element = (
+			<Tab.Pane className={css(styles.settingsPane)}>
+				<p className={css(styles.emulatorsError)}>{this.state.emulatorsError}</p>
+				<Table celled={true}>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell width={3}>
+								{localizer.f('emulatorName')}
+							</Table.HeaderCell>
+							<Table.HeaderCell width={3}>
+								{localizer.f('emulatorPlatforms')}
+							</Table.HeaderCell>
+							<Table.HeaderCell width={2}>
+								{localizer.f('emulatorActive')}
+							</Table.HeaderCell>
+							<Table.HeaderCell width={4}>
+								{localizer.f('emulatorPath')}
+							</Table.HeaderCell>
+							<Table.HeaderCell width={4}>
+								{localizer.f('emulatorCommand')}
+							</Table.HeaderCell>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{Object.keys(this.props.settings.emulated.emulators).map((emulatorId: string, index: number) =>
+							<EmulatorSettingsRow
+								key={index}
+								id={emulatorId}
+								emulator={this.props.settings.emulated.emulators[emulatorId]}
+								platforms={this.props.settings.emulated.emulators[emulatorId].platforms.map(
+									(platformsId) => this.props.settings.emulated.platforms[platformsId]
+								)}
+								onChange={this.emulatorConfigChangeHandler.bind(this)}
+							/>
+						)}
+					</Table.Body>
+				</Table>
+				<p className={css(styles.emulatorsCommandLineInstruction)}>{localizer.f('emulatorCommandLineInstruction')}</p>
+			</Tab.Pane>
+		);
+
 		const langsSettings: JSX.Element = (
 			<Tab.Pane className={css(styles.settingsPane)}>
 				<Form.Select
@@ -603,8 +417,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							},
 							{
 								menuItem: localizer.f('emulators'),
-								render: () =>
-									<Tab.Pane>Tab 2 Content</Tab.Pane>
+								render: () => emulatorsSettings
 							},
 							{
 								menuItem: localizer.f('lang'),
@@ -617,12 +430,13 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 					<Button
 						secondary={true}
 						style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
+						onClick={this.closeModal.bind(this)}
 					>
 						{localizer.f('cancel')}
 					</Button>
 					<Button
 						primary={true}
-						onClick={this.submitBtnClickHandler.bind(this)}
+						onClick={this.submitButton.bind(this)}
 					>
 						{localizer.f('confirm')}
 					</Button>
@@ -639,9 +453,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 		cursor: 'default',
 		userSelect: 'none'
 	},
-	modalDialog: {
-		width: 900..px()
-	},
 	settingsPane: {
 		maxHeight: 64..vh(),
 		overflowY: 'auto'
@@ -655,16 +466,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 		padding: padding(20, 0, 100),
 		width: 100..percents()
 	},
-	navTabsLink: {
-		':hover': {
-			color: '#988F88',
-			border: 'none'
-		}
-	},
-	tableDiv: {
-		maxHeight: 50..vh(),
-		overflowY: 'auto'
-	},
 	modulesError: {
 		color: '#A94442',
 		fontWeight: 600,
@@ -673,26 +474,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 	emulatorsError: {
 		color: '#A94442',
 		marginTop: 15
-	},
-	emulatorsTable: {
-		marginTop: 5,
-		marginBottom: 5,
-		fontSize: 14
-	},
-	emulatorNameTh: {
-		width: 14..percents()
-	},
-	emulatorPlatformsTh: {
-		width: 9..percents()
-	},
-	emulatorActiveTh: {
-		width: 17..percents()
-	},
-	emulatorPathTh: {
-		width: 30..percents()
-	},
-	emulatorCommandTh: {
-		width: 30..percents()
 	},
 	emulatorsCommandLineInstruction: {
 		fontSize: 14,

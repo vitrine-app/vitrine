@@ -53,7 +53,14 @@ module.exports = [
 			new HtmlPlugin({
 				title: 'Vitrine',
 				filename: 'client.html'
-			})
+			}),
+			function() {
+				this.plugin('watch-run', function (watching, callback) {
+					let date = new Date();
+					console.log(`Begin compile at \x1b[1m${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}\x1b[0m.`);
+					callback();
+				});
+			}
 		]
 	}/*,
 	{

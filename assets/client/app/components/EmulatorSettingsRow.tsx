@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Button, Checkbox, Input, Table } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
@@ -38,9 +39,9 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		};
 	}
 
-	private activeCheckBoxHandler(event: any) {
+	private activeCheckBoxHandler(event: any, data: any) {
 		this.setState({
-			active: event.target.checked
+			active: data.checked
 		}, () => {
 			this.props.onChange(parseInt(this.props.id), this.getEmulatorFromState());
 		});
@@ -74,50 +75,51 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 
 	public render(): JSX.Element {
 		return (
-			<tr
+			<Table.Row
 				className={`${css(styles.emulatorTr)} ${(!this.state.active) ? (css(styles.inactiveTr)) : ('')}`}
 			>
-				<th>
+				<Table.Cell>
 					<strong>{this.state.name}</strong>
-				</th>
-				<th>
+				</Table.Cell>
+				<Table.Cell>
 					{this.state.platforms.map((platforms: any) => platforms.name).join(', ')}
-				</th>
-				<th>
-					<input
-						type="checkbox"
+				</Table.Cell>
+				<Table.Cell>
+					<Checkbox
 						checked={this.state.active}
 						onChange={this.activeCheckBoxHandler.bind(this)}
 					/>
-				</th>
-				<th>
-					<div className="input-group">
-						<input
-							className={`form-control input-sm ${(!this.state.active) ? (css(styles.inactiveInput)) : ('')}`}
-							disabled={true}
-							value={this.state.path}
-						/>
-						<span className="input-group-btn">
-							<button
-								className="btn btn-default btn-sm"
-								type="button"
+				</Table.Cell>
+				<Table.Cell>
+					<Input
+						label={
+							<Button
+								secondary={true}
 								onClick={this.programBtnClickHandler.bind(this)}
 								disabled={!this.state.active}
 							>
 								<FontAwesomeIcon icon={faFolderOpen}/>
-							</button>
-						</span>
-					</div>
-				</th>
-				<th>
-					<input
-						className={`form-control input-sm ${css(styles.commandInput)} ${(!this.state.active) ? (css(styles.inactiveInput)) : ('')}`}
-						value={this.state.command}
-						onChange={this.commandLineChangeHandler.bind(this)}
-						disabled={!this.state.active}
+							</Button>
+						}
+						labelPosition={'right'}
+						size={'small'}
+						className={(!this.state.active) ? (css(styles.inactiveInput)) : ('')}
+						readOnly={true}
+						value={this.state.path}
+						onClick={(this.state.active) ? (this.programBtnClickHandler.bind(this)) : (null)}
 					/>
-				</th>
-			</tr>
+				</Table.Cell>
+				<Table.Cell>
+					<div className="ui small input">
+						<input
+							value={this.state.command}
+							className={`${css(styles.commandInput)} ${(!this.state.active) ? (css(styles.inactiveInput)) : ('')}`}
+							disabled={!this.state.active}
+							onChange={this.commandLineChangeHandler.bind(this)}
+						/>
+					</div>
+				</Table.Cell>
+			</Table.Row>
 		);
 	}
 }

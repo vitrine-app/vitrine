@@ -120,6 +120,8 @@
     "build": "webpack --progress && electron .",
     "run-server": "webpack --progress --config webpack.server.config.js && electron .",
     "run-client": "webpack --progress --config webpack.client.config.js && electron .",
+    "watch-server": "webpack --progress --config webpack.server.config.js --watch",
+    "watch-client": "webpack --progress --config webpack.client.config.js --watch",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "pack": "webpack --progress && build --dir",
