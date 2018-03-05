@@ -107,7 +107,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		textAlign: 'center',
 		padding: 7,
 		userSelect: 'none',
-		cursor: 'default'
+		cursor: 'default',
+		'-webkitAppRegion': 'no-drag'
 	},
 	loaderDiv: {
 		margin: 4

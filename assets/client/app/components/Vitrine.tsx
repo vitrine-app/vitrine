@@ -145,55 +145,32 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		/*let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
-			<div>
-				<SideBar/>
+		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
+			<Grid className={css(styles.mainContainer)}>
+				<SideBar
+					launchGame={this.launchGame.bind(this)}
+				/>
 				<GameContainer
 					launchGame={this.launchGame.bind(this)}
 				/>
-				<AddGameModal
-					isEditing={this.state.gameWillBeEdited}
-				/>
-				<AddPotentialGamesModal
-					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
-				/>
-				<SettingsModal
-					firstLaunch={this.state.firstLaunch}
-				/>
-				<EditTimePlayedModal/>
-			</div>
+			</Grid>
 		) : (
 			<LaunchedGameContainer
 				clickHandler={this.launchedGamePictureToggleHandler.bind(this)}
 			/>
 		);
-		return (
-			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
-				<TaskBar
-					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
-				/>
-				{vitrineContent}
-				{this.checkErrors()}
-			</div>
-		);*/
+
 		return (
 			<div className={css(styles.vitrineApp)}>
 				<TaskBar/>
-				<Grid className={css(styles.mainContainer)}>
-					<SideBar
-						isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
-						launchGame={this.launchGame.bind(this)}
-					/>
-					<GameContainer
-						launchGame={this.launchGame.bind(this)}
-					/>
-				</Grid>
+				{vitrineContent}
 				<GameAddModal/>
 				<TimePlayedEditionModal/>
 				<PotentialGamesAddModal/>
 				<SettingsModal
 					firstLaunch={this.state.firstLaunch}
 				/>
+				{this.checkErrors()}
 			</div>
 		);
 	}

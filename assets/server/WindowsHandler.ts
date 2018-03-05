@@ -50,7 +50,8 @@ export class WindowsHandler {
 			height: 300,
 			width: 500,
 			icon: this.iconPath,
-			frame: false
+			frame: false,
+			resizable: false
 		});
 		this.loaderWindow.loadURL(this.loaderEntryPoint);
 	}

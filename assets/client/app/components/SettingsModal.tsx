@@ -206,10 +206,6 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	public componentDidMount() {
-		$('#options-pane-lang').find('select').selectpicker();
-	}
-
 	public render(): JSX.Element {
 		const modulesSettings: JSX.Element = (
 			<Tab.Pane className={css(styles.settingsPane)}>

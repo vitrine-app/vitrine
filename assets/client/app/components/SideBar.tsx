@@ -24,7 +24,6 @@ interface Props {
 	openGameAddModal: () => void,
 	openPotentialGamesAddModal: () => void,
 	openSettingsModal: () => void,
-	isGameLaunched: boolean,
 	launchGame: (gameUuid: string) => void
 }
 
@@ -44,7 +43,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 	}
 
 	public render(): JSX.Element {
-		const taskBarElements: JSX.Element = (!this.props.isGameLaunched) ? (
+		const taskBarElements: JSX.Element = (
 			<div className={css(styles.commandsGroup)}>
 				<VitrineButton
 					icon={faPlus}
@@ -74,7 +73,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
 					{/*{localizer.f('potentialGamesAdd', this.props.potentialGames.size())}*/}
 				</Button>
 			</div>
-		) : (null);
+		);
 
 		return (
 			<Grid.Column className={css(styles.sideBarWrapper)}>

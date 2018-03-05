@@ -17,7 +17,7 @@ interface Props {
 export class LaunchedGameContainer extends VitrineComponent<Props, {}> {
 	public render(): JSX.Element {
 		return (
-			<div>
+			<div className={css(styles.wrapper)}>
 				<FontAwesomeIcon
 					icon={faTv}
 					className={css(styles.toggleDisplayIcon)}
@@ -50,6 +50,10 @@ const backgroundKeyframes: React.CSSProperties = {
 };
 
 const styles: React.CSSProperties = StyleSheet.create({
+	wrapper: {
+		height: `calc(${100..percents()} - ${22..px()})`,
+		margin: 0
+	},
 	launchedGameDiv: {
 		textAlign: 'center',
 		marginTop: 28..vh()

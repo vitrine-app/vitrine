@@ -28,13 +28,6 @@ export class App extends React.Component<Props, State> {
 		};
 
 		this.initLanguages();
-		$(document).on('show.bs.modal', '.modal', function() {
-			let zIndex: number = 1040 + (10 * $('.modal:visible').length);
-			$(this).css('z-index', zIndex);
-			setTimeout(() => {
-				$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-			}, 0);
-		});
 	}
 
 	private initLanguages() {
