@@ -107,7 +107,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					this.props.selectGame(this.props.playableGames.getGame(index - 1));
 				break;
 			}
-			case 'Enter': {
+			/*case 'Enter': {
 				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
 					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible') ||
 					$('#settings-modal').is(':visible') || $('#edit-time-played-modal').is(':visible'))
@@ -116,7 +116,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 				this.launchGame(this.props.selectedGame.uuid);
 				break;
-			}
+			}*/
 		}
 	}
 
@@ -134,15 +134,15 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			.listen('settings-updated', this.settingsUpdated.bind(this))
 			.listen('error', this.serverError.bind(this));
 
-		/*window.addEventListener('keydown', this.keyDownHandler.bind(this));
-		window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
+		window.addEventListener('keydown', this.keyDownHandler.bind(this));
+		/*window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
 			console.log(e.gamepad);
 		});*/
 	}
 
-	/*public componentWillUnmount() {
+	public componentWillUnmount() {
 		window.removeEventListener('keydown', this.keyDownHandler.bind(this));
-	}*/
+	}
 
 	public render(): JSX.Element {
 		/*let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
@@ -179,12 +179,11 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		return (
 			<div className={css(styles.vitrineApp)}>
 				<TaskBar/>
-				<SideBar
-					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
-					launchGame={this.launchGame.bind(this)}
-				/>
 				<Grid className={css(styles.mainContainer)}>
-					<Grid.Column className={css(styles.case1)}/>
+					<SideBar
+						isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
+						launchGame={this.launchGame.bind(this)}
+					/>
 					<GameContainer
 						launchGame={this.launchGame.bind(this)}
 					/>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Grid } from 'semantic-ui-react';
 import { ContextMenuTrigger } from 'react-contextmenu';
 import { StyleSheet, css } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
@@ -13,7 +13,6 @@ import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
 import { localizer } from '../Localizer';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { serverListener } from '../ServerListener';
-import { openGameAddModal } from '../actions/modals';
 
 interface Props {
 	potentialGames: GamesCollection<PotentialGame>,
@@ -76,8 +75,9 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				</Button>
 			</div>
 		) : (null);
+
 		return (
-			<div className={css(styles.sideBarContainer)}>
+			<Grid.Column className={css(styles.sideBarWrapper)}>
 				{taskBarElements}
 				<div className={css(styles.sideBarContent)}>
 					<ul className={css(styles.gamesListUl)}>
@@ -104,17 +104,16 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				</div>
 				<ContextMenu/>
 				{this.checkErrors()}
-			</div>
+			</Grid.Column>
 		);
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
-	sideBarContainer: {
-		position: 'absolute',
+	sideBarWrapper: {
+		padding: 0,
 		width: 15.5.percents(),
-		zIndex: 1,
-		height: `calc(${100..percents()} - ${22..px()})`
+		height: 100..percents()
 	},
 	commandsGroup: {
 		height: 45,
