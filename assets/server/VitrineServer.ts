@@ -11,10 +11,11 @@ import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
 import { getEnvFolder, randomHashedString } from '../models/env';
 import { launchGame } from './GameLauncher';
-import { searchSteamGames } from './games/SteamGamesCrawler';
 import { getPlayableGames } from './games/PlayableGamesCrawler';
-import { searchEmulatedGames } from './games/EmulatedGamesCrawler';
+import { searchSteamGames } from './games/SteamGamesCrawler';
 import { searchOriginGames } from './games/OriginGamesCrawler';
+import { searchBattleNetGames } from './games/BattleNetGamesCrawler';
+import { searchEmulatedGames } from './games/EmulatedGamesCrawler';
 import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
@@ -170,6 +171,7 @@ export class VitrineServer {
 		this.potentialGames.clean();
 		this.searchSteamGames()
 			.then(this.searchOriginGames.bind(this))
+			.then(this.searchBattleNetGames.bind(this))
 			.then(this.searchEmulatedGames.bind(this))
 			.then(() => {
 				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
@@ -217,9 +219,9 @@ export class VitrineServer {
 	}
 
 	private async searchSteamGames(): Promise<any> {
-		if (!this.vitrineConfig.steam) {
+		if (!this.vitrineConfig.steam)
 			return;
-		}
+
 		try {
 			let games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
 			this.potentialGames.addGames(games.getGames());
@@ -232,9 +234,9 @@ export class VitrineServer {
 	}
 
 	private async searchOriginGames(): Promise<any> {
-		if (!this.vitrineConfig.origin) {
+		if (!this.vitrineConfig.origin)
 			return;
-		}
+
 		try {
 			let games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
 			this.potentialGames.addGames(games.getGames());
@@ -246,10 +248,22 @@ export class VitrineServer {
 		}
 	}
 
-	private async searchEmulatedGames(): Promise<any> {
-		if (!this.vitrineConfig.emulated.romsFolder) {
+	private async searchBattleNetGames(): Promise<any> {
+		try {
+			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(null, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
 			return;
 		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
+	}
+
+	private async searchEmulatedGames(): Promise<any> {
+		if (!this.vitrineConfig.emulated.romsFolder)
+			return;
+
 		try {
 			let games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
 			this.potentialGames.addGames(games.getGames());

@@ -3,8 +3,8 @@ import * as path from 'path';
 
 import { PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
-import { getEnvFolder, uuidV5 } from '../../models/env';
 import { GamesCollection } from '../../models/GamesCollection';
+import { getEnvFolder, uuidV5 } from '../../models/env';
 
 export abstract class PotentialGamesCrawler {
 	protected potentialGames: PotentialGame[];
