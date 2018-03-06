@@ -76,3 +76,14 @@ export function potentialGameToAdd(state: PotentialGame = null, action: Action):
 			return state;
 	}
 }
+
+export function gameToEdit(state: PlayableGame = null, action: Action): PlayableGame {
+	switch (action.type) {
+		case ActionType.SET_GAME_TO_EDIT:
+			return action.payload.gameToEdit;
+		case ActionType.EDIT_PLAYABLE_GAME:
+			return action.payload.gameToEdit;
+		default:
+			return state;
+	}
+}

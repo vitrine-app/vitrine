@@ -1,0 +1,17 @@
+/* Checkbox */
+@checkboxColor: @textColor;
+@checkboxBackground: #403C38;
+@checkboxBorder: 1px solid @checkboxPressedBorderColor;
+
+/* Hover */
+@checkboxHoverBorderColor: @checkboxPressedBorderColor;
+
+/* Active */
+@checkboxActiveBackground: #58524A;
+
+/* Focus */
+@checkboxFocusBackground: #635D54;
+@checkboxFocusBorderColor: @checkboxPressedBorderColor;
+
+/* Active focus */
+@checkboxActiveFocusBackground: #58524A;

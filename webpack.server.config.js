@@ -18,6 +18,5 @@ module.exports = {
 				loader: 'ts-loader'
 			}
 		]
-	},
-	devtool: 'source-map'
+	}
 };

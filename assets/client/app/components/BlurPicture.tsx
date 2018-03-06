@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Transition } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
@@ -13,15 +14,14 @@ interface Props {
 	fontSize: number,
 	background: string,
 	faIcon: IconDefinition,
-	clickHandler: Function
+	clickHandler: () => void
 }
 
 interface State {
-	divClassName: string,
-	iconClassName: string,
+	iconVisible: boolean,
+	pulseVisible: boolean,
 	divStyle: React.CSSProperties,
-	imageStyle: React.CSSProperties,
-	iconStyle: React.CSSProperties
+	imageStyle: React.CSSProperties
 }
 
 export class BlurPicture extends VitrineComponent<Props, State> {
@@ -35,7 +35,8 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 		this.pulseDuration = 165;
 
 		this.state = {
-			divClassName: '',
+			iconVisible: false,
+			pulseVisible: true,
 			divStyle: {
 				width: divWidth.em(),
 				height: divHeight.em(),
@@ -44,56 +45,39 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 			},
 			imageStyle: {
 				backgroundImage: urlify(this.props.background)
-			},
-			iconClassName: '',
-			iconStyle: {
-				display: 'none',
-				animationDuration: '75ms'
 			}
 		};
 	}
 
 	private mouseEnterHandler() {
 		let imageStyle: any = this.state.imageStyle;
-		let iconStyle: any = this.state.iconStyle;
 		imageStyle.filter = `blur(${4..px()})`;
-		iconStyle.display = 'inline';
 
 		this.setState({
+			iconVisible: true,
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
 				filter: `blur(${4..px()})`
-			},
-			iconClassName: 'animated zoomIn',
-			iconStyle
+			}
 		});
 	}
 
 	private mouseLeaveHandler() {
 		let imageStyle: any = this.state.imageStyle;
-		let iconStyle: any = this.state.iconStyle;
 		imageStyle.filter = '';
-		iconStyle.display = 'none';
 
 		this.setState({
+			iconVisible: false,
 			imageStyle: {
 				backgroundImage: urlify(this.props.background),
 				filter: ''
-			},
-			iconClassName: 'animated zoomOut',
-			iconStyle
+			}
 		});
 	}
 
 	private clickHandler() {
 		this.setState({
-			divClassName: 'animated pulse'
-		}, () => {
-			setTimeout(10, () => {
-				this.setState({
-					divClassName: ''
-				});
-			}, this.pulseDuration);
+			pulseVisible: !this.state.pulseVisible
 		});
 
 		this.props.clickHandler();
@@ -110,32 +94,44 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
 	public render(): JSX.Element {
 		return (
-			<div
-				className={`${css(styles.container)} ${this.state.divClassName}`}
-				onMouseEnter={this.mouseEnterHandler.bind(this)}
-				onMouseLeave={this.mouseLeaveHandler.bind(this)}
-				onClick={this.clickHandler.bind(this)}
-				style={this.state.divStyle}
+			<Transition
+				visible={this.state.pulseVisible}
+				animation={'pulse'}
+				duration={this.pulseDuration}
 			>
-				<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
-				<FontAwesomeIcon
-					icon={this.props.faIcon}
-					className={`${css(styles.icon)} ${this.state.iconClassName}`}
-					style={{ ...this.state.iconStyle }}
-				/>
-				{this.checkErrors()}
-			</div>
+				<div
+					className={css(styles.container)}
+					onMouseEnter={this.mouseEnterHandler.bind(this)}
+					onMouseLeave={this.mouseLeaveHandler.bind(this)}
+					onClick={this.clickHandler.bind(this)}
+					style={this.state.divStyle}
+				>
+					<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
+					<Transition
+						visible={this.state.iconVisible}
+						animation={'scale'}
+						duration={75}
+					>
+						<FontAwesomeIcon
+							icon={this.props.faIcon}
+							className={css(styles.icon)}
+						/>
+					</Transition>
+					{this.checkErrors()}
+				</div>
+			</Transition>
 		);
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
 	container: {
+		width: 100..percents(),
+		height: 100..percents(),
 		overflow: 'hidden',
 		position: 'relative',
 		color: '#F1F1F1',
-		textShadow: `${0} ${0} ${10..px()} ${rgba(8, 8, 8, 0.17)}`,
-		boxShadow: `${0} ${0} ${10..px()} ${rgba(0, 0, 0, 0.55)}`
+		borderRadius: 4
 	},
 	picture: {
 		width: 100..percents(),
@@ -143,13 +139,14 @@ const styles: React.CSSProperties = StyleSheet.create({
 		cursor: 'pointer',
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: `${100..percents()} ${100..percents()}`,
-		transition: `${75}ms filter linear`
+		transition: `${75}ms filter linear`,
+		boxShadow: `${0} ${0} ${0} ${2..px()} ${rgba(255, 255, 255, 0.12)} inset`
 	},
 	icon: {
 		position: 'absolute',
-		opacity: 0.6,
-		left: 1.268.em(),
-		top: 1.74.em(),
+		color: rgba(255, 255, 255, 0.6),
+		left: 40..percents(),
+		top: 40..percents(),
 		cursor: 'pointer'
 	}
 });

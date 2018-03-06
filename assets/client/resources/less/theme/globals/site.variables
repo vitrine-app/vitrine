@@ -1,0 +1,23 @@
+/* Page */
+@pageBackground: #2F2C28;
+@textColor: #B9B0A2;
+@selectedTextColor: #B9B0A2;
+
+/* Brand Colors */
+@primaryColor: #C7783F;
+@secondaryColor: #6C5A46;
+
+@lightPrimaryColor: lighten(@primaryColor, 10%);
+@lightSecondaryColor: lighten(@secondaryColor, 10%);
+
+/* Borders */
+@borderColor: rgba(255, 255, 255, 0.1);
+@solidBorderColor: rgba(255, 255, 255, 0.1);
+
+/* Form input */
+@inputBackground: #39342E;
+@inputPlaceholderColor: #999999;
+@inputPlaceholderFocusColor: #999999;
+
+/* Focused input */
+@focusedFormBorderColor: rgba(132, 79, 48, 0.66);

@@ -4,7 +4,7 @@ import { margin, rgba } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 
-import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
+import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../resources/less/theme/globals/site.variables';
 
 interface Props {
 	percentage: number,
@@ -79,7 +79,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		animation: '500ms ease-out forwards'
 	},
 	text: {
-		fill: bootstrapVariables.textColor,
+		fill: lessVars.textColor,
 		fontSize: 13
 	},
 	backgroundText: {

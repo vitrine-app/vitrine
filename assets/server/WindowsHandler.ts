@@ -1,21 +1,23 @@
-import { app, BrowserWindow, ipcMain, Menu, screen, Tray } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import * as path from 'path';
 
 export class WindowsHandler {
 	private loaderWindow: BrowserWindow;
 	private clientWindow: BrowserWindow;
-	private mainEntryPoint: string;
+	private clientEntryPoint: string;
 	private loaderEntryPoint: string;
 	private tray: Tray;
 	private devTools: boolean;
 	private iconPath: string;
 	private appQuit: boolean;
+	private reactDevToolsPath: string;
 
 	public constructor() {
-		this.mainEntryPoint = path.resolve('file://', __dirname, 'main.html');
+		this.clientEntryPoint = path.resolve('file://', __dirname, 'client.html');
 		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.appQuit = false;
+		this.reactDevToolsPath = path.resolve(process.env.APPDATA, '../Local', 'Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.1.0_0')
 	}
 
 	public run(devTools?: boolean) {
@@ -31,7 +33,7 @@ export class WindowsHandler {
 		});
 		app.on('activate', () => {
 			if (!this.clientWindow)
-				this.createMainWindow();
+				this.createClientWindow();
 		});
 	}
 
@@ -42,31 +44,31 @@ export class WindowsHandler {
 	}
 
 	public createLoaderWindow() {
+		if (this.devTools)
+			BrowserWindow.addDevToolsExtension(this.reactDevToolsPath);
 		this.loaderWindow = new BrowserWindow({
 			height: 300,
 			width: 500,
 			icon: this.iconPath,
-			frame: false
+			frame: false,
+			resizable: false
 		});
 		this.loaderWindow.loadURL(this.loaderEntryPoint);
 	}
 
-	public createMainWindow() {
-		if (!screen)
-			return;
-		const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+	public createClientWindow() {
 		this.clientWindow = new BrowserWindow({
-			minWidth: width,
-			minHeight: height,
+			minWidth: 1450,
+			minHeight: 700,
 			icon: this.iconPath,
 			show: false,
 			frame: false,
-			width,
-			height
+			width: 1650,
+			height: 900
 		});
 		this.clientWindow.setMenu(null);
 		this.clientWindow.maximize();
-		this.clientWindow.loadURL(this.mainEntryPoint);
+		this.clientWindow.loadURL(this.clientEntryPoint);
 		this.clientWindow.hide();
 		if (this.devTools)
 			this.clientWindow.webContents.openDevTools();

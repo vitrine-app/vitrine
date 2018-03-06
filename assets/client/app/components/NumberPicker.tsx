@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { Button, Input } from 'semantic-ui-react';
 import { css, StyleSheet } from 'aphrodite';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { padding } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 
@@ -12,7 +14,7 @@ interface Props {
 	name: string,
 	placeholder: string
 	value: number,
-	onChange?: Function
+	onChange?: (value: number) => void
 }
 
 interface State {
@@ -75,7 +77,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 			value
 		}, () => {
 			if (this.props.onChange)
-				this.props.onChange(this.state.value);
+				this.props.onChange(this.state.value as number);
 		});
 	}
 
@@ -86,38 +88,38 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
+		const controlButtons: JSX.Element = (
+			<div className={css(styles.verticalBtnDiv)}>
+				<Button
+					secondary={true}
+					className={css(styles.verticalBtn, styles.firstVerticalBtn)}
+					onClick={this.increaseCounterHandler.bind(this)}
+				>
+					<FontAwesomeIcon icon={faCaretUp}/>
+				</Button>
+				<Button
+					secondary={true}
+					className={css(styles.verticalBtn, styles.lastVerticalBtn)}
+					onClick={this.decreaseCounterHandler.bind(this)}
+				>
+					<FontAwesomeIcon icon={faCaretDown}/>
+				</Button>
+			</div>
+		);
+
 		return (
-			<div className="input-group spinner">
-				<input
-					type="text"
-					className={`form-control ${css(styles.spinnerInput)}`}
+			<div>
+				<Input
+					label={controlButtons}
+					labelPosition={'right'}
+					type={'text'}
+					size={'large'}
+					className={css(styles.spinnerInput)}
 					name={this.props.name}
 					placeholder={this.props.placeholder}
 					value={this.state.value}
 					onChange={this.inputChangeHandler.bind(this)}
 				/>
-				<div className={css(styles.verticalBtnDiv)}>
-					<button
-						className={`btn btn-default ${css(styles.verticalBtn)} ${css(styles.firstVerticalBtn)}`}
-						type="button"
-						onClick={this.increaseCounterHandler.bind(this)}
-					>
-						<FontAwesomeIcon
-							icon={faCaretUp}
-							className={css(styles.verticalBtnIcon)}
-						/>
-					</button>
-					<button
-						className={`btn btn-default ${css(styles.verticalBtn)} ${css(styles.lastVerticalBtn)}`}
-						type="button"
-						onClick={this.decreaseCounterHandler.bind(this)}
-					>
-						<FontAwesomeIcon
-							icon={faCaretDown}
-							className={css(styles.verticalBtnIcon)}
-						/>
-					</button>
-				</div>
 				{this.checkErrors()}
 			</div>
 		);
@@ -129,32 +131,20 @@ const styles: React.CSSProperties = StyleSheet.create({
 		textAlign: 'right'
 	},
 	verticalBtnDiv: {
-		position: 'relative',
-		whiteSpace: 'nowrap',
-		width: 1..percents(),
-		verticalAlign: 'middle',
-		display: 'table-cell'
+		padding: 0
 	},
 	verticalBtn: {
 		display: 'block',
-		float: 'none',
-		width: 100..percents(),
-		maxWidth: 100..percents(),
-		padding: 8,
+		width: 25,
+		height: 22,
+		padding: padding(3, 8, 8, 8),
 		marginLeft: -1,
-		position: 'relative',
 		borderRadius: 0
 	},
 	firstVerticalBtn: {
 		borderTopRightRadius: 4
 	},
 	lastVerticalBtn: {
-		marginTop: 2,
 		borderBottomRightRadius: 4
-	},
-	verticalBtnIcon: {
-		position: 'absolute',
-		top: 0,
-		left: 4
 	}
 });

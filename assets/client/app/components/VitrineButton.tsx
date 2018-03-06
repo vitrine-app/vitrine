@@ -12,7 +12,8 @@ interface Props {
 	icon: IconDefinition,
 	spin?: boolean,
 	tooltip?: string,
-	onClick?: React.MouseEventHandler<any> | string
+	onClick?: React.MouseEventHandler<any>,
+	className?: string
 }
 
 interface State {
@@ -20,7 +21,7 @@ interface State {
 	iconClassName: string
 }
 
-export class Button extends VitrineComponent<Props, State> {
+export class VitrineButton extends VitrineComponent<Props, State> {
 	private id: string;
 
 	public constructor() {
@@ -48,12 +49,12 @@ export class Button extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		let icon: JSX.Element = <FontAwesomeIcon
+		const icon: JSX.Element = <FontAwesomeIcon
 			icon={this.props.icon}
 			className={`${css(styles.icon)} ${this.state.iconClassName}`}
 			spin={this.props.spin}
 		/>;
-		let button: JSX.Element = (this.props.onClick instanceof Function) ? (
+		const button: JSX.Element = (
 			<div
 				className={`${css(styles.button)} ${this.state.buttonClassName}`}
 				data-tip
@@ -62,20 +63,10 @@ export class Button extends VitrineComponent<Props, State> {
 				onMouseLeave={this.mouseLeaveHandler.bind(this)}
 				onClick={this.props.onClick}
 			>{icon}</div>
-		) : (
-			<div
-				className={`${css(styles.button)} ${this.state.buttonClassName}`}
-				data-tip
-				data-for={this.id}
-				data-toggle={'modal'}
-				data-target={this.props.onClick}
-				onMouseEnter={this.mouseEnterHandler.bind(this)}
-				onMouseLeave={this.mouseLeaveHandler.bind(this)}
-			>{icon}</div>
 		);
 
 		return (
-			<div>
+			<div className={`${css(styles.buttonWrapper)} ${this.props.className || ''}`}>
 				{button}
 				{(this.props.tooltip) ? (
 					<ReactTooltip
@@ -94,6 +85,9 @@ export class Button extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
+	buttonWrapper: {
+		display: 'inline-block'
+	},
 	button: {
 		display: 'inline-block',
 		padding: padding(5, 8, 4, 8),

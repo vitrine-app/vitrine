@@ -1,6 +1,4 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
-import { parseString as parseXmlString } from 'xml2js';
 import * as Registry from 'winreg';
 import * as glob from 'glob';
 

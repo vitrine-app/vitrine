@@ -1,16 +1,21 @@
 import * as React from 'react';
+import { Button, Form, Grid, Input, Modal } from 'semantic-ui-react';
 import { shell } from 'electron';
 import { StyleSheet, css } from 'aphrodite';
-import { border, margin, padding, rgba } from 'css-verbose';
+import { margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
-import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
 import { faSearch, faCircleNotch } from '@fortawesome/fontawesome-free-solid';
+
+interface Props {
+	visible: boolean,
+	closeIgdbResearchModal: () => void
+}
 
 interface State {
 	loading: boolean,
@@ -20,9 +25,9 @@ interface State {
 	selectedResearchId: number | string
 }
 
-export class IgdbResearchModal extends VitrineComponent<{}, State> {
-	public constructor() {
-		super();
+export class IgdbResearchModal extends VitrineComponent<Props, State> {
+	public constructor(props: Props) {
+		super(props);
 
 		this.state = {
 			loading: true,
@@ -75,6 +80,15 @@ export class IgdbResearchModal extends VitrineComponent<{}, State> {
 		});
 	}
 
+	private closeModal() {
+		if (!this.state.loading) {
+			this.props.closeIgdbResearchModal();
+			this.setState({
+				loading: true
+			});
+		}
+	}
+
 	private igdbLinkClickHandler() {
 		let igdbUrl: string = 'https://www.igdb.com';
 		shell.openExternal(igdbUrl);
@@ -87,64 +101,73 @@ export class IgdbResearchModal extends VitrineComponent<{}, State> {
 				research: research,
 				selectedResearchId: '',
 				researches
-			}, () => {
-				if (!$('#igdb-research-modal').is(':visible'))
-					$('#igdb-research-modal').modal('show');
 			});
 		});
 	}
 
 	public render(): JSX.Element {
 		const modalContent: JSX.Element = (!this.state.loading) ? (
-			<form>
-				<div className="row">
-					<div className="form-group col-md-8">
-						<label>{localizer.f('gameName')}</label>
-						<input
-							className="form-control"
-							name="name"
-							placeholder={localizer.f('gameName')}
-							value={this.state.research}
-							onChange={this.changeResearchHandler.bind(this)}
-						/>
-					</div>
-					<div className="form-group col-md-3">
-						<label>{localizer.f('resultsNumber')}</label>
-						<NumberPicker
-							min={1}
-							max={20}
-							value={this.state.resultsNb}
-							name="rating"
-							placeholder={localizer.f('resultsNumber')}
-							onChange={this.changeResultsNbHandler.bind(this)}
-						/>
-					</div>
-					<div className={`col-md-1 ${css(styles.igdbResearchBtnDiv)}`}>
-						<button
-							className="btn btn-primary"
-							type="button"
-							onClick={this.igdbSearchBtnClickHandler.bind(this)}
+			<Modal.Content className={css(styles.modalBody)}>
+				<Form>
+					<Grid>
+						<Grid.Column width={10}>
+							<Form.Field>
+								<label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
+								<Input
+									name={'name'}
+									size={'large'}
+									placeholder={localizer.f('gameName')}
+									value={this.state.research}
+									onChange={this.changeResearchHandler.bind(this)}
+								/>
+							</Form.Field>
+						</Grid.Column>
+						<Grid.Column width={3}>
+							<Form.Field>
+								<label>{localizer.f('resultsNumber')}</label>
+								<NumberPicker
+									min={1}
+									max={20}
+									name={'rating'}
+									value={this.state.resultsNb}
+									placeholder={localizer.f('resultsNumber')}
+									onChange={this.changeResultsNbHandler.bind(this)}
+								/>
+							</Form.Field>
+						</Grid.Column>
+						<Grid.Column width={2}>
+							<Button
+								primary={true}
+								onClick={this.igdbSearchBtnClickHandler.bind(this)}
+								className={css(styles.searchBtn)}
+							>
+								<FontAwesomeIcon icon={faSearch}/>
+							</Button>
+						</Grid.Column>
+					</Grid>
+				</Form>
+				<div className={css(styles.igdbResearchList)}>
+					{this.state.researches.map((research: any, index: number) =>
+						<div
+							key={index}
+							className={css(styles.igdbResearch) + ' ' + ((this.state.selectedResearchId === research.id) ? (css(styles.selectedIgdbResearch)) : (''))}
+							onClick={this.clickResearchHandler.bind(this, research.id)}
+							onDoubleClick={this.gameDoubleClickHandler.bind(this, research.id)}
 						>
-							<FontAwesomeIcon icon={faSearch}/>
-						</button>
-					</div>
-				</div>
-				{this.state.researches.map((research: any, index: number) =>
-					<div
-						key={index}
-						className={
-							'row ' + css(styles.igdbResearchList) + ' ' +
-							((this.state.selectedResearchId === research.id) ? (css(styles.selectedIgdbResearch)) : (''))
-						}
-						onClick={this.clickResearchHandler.bind(this, research.id)}
-						onDoubleClick={this.gameDoubleClickHandler.bind(this, research.id)}
-					>
-						<div className="col-md-3">
-							<img src={research.cover} className={css(styles.igdbResearchImg)}/>
+							<Grid>
+								<Grid.Column
+									style={{ width: 20..percents() }}
+									className={css(styles.igdbResearchImgColumn)}
+								>
+									<img src={research.cover} className={css(styles.igdbResearchImg)}/>
+								</Grid.Column>
+								<Grid.Column width={12}>
+									{research.name}
+								</Grid.Column>
+							</Grid>
 						</div>
-						<span className={css(styles.igdbResearchName)}>{research.name}</span>
-					</div>
-				)}
+					)}
+				</div>
 				<span className={css(styles.igdbDisclaimer)}>
 					{localizer.f('igdbDisclaimer')}
 					<a
@@ -154,74 +177,77 @@ export class IgdbResearchModal extends VitrineComponent<{}, State> {
 						IGDB
 					</a>.
 				</span>
-			</form>
+			</Modal.Content>
 		) : (
-			<div className={css(styles.loadingContainer)}>
-				<FontAwesomeIcon
-					icon={faCircleNotch}
-					spin={true}
-					className={css(styles.loadingIcon)}
-				/>
-			</div>
+			<Modal.Content>
+				<div className={css(styles.loadingContainer)}>
+					<FontAwesomeIcon
+						icon={faCircleNotch}
+						spin={true}
+						className={css(styles.loadingIcon)}
+					/>
+				</div>
+			</Modal.Content>
 		);
 
 		return (
-			<div id="igdb-research-modal" className="modal fade" role="dialog">
-				<div className="modal-dialog">
-					<div className="modal-content">
-						<div className="modal-header">
-							<CloseIcon onClick={'#igdb-research-modal'}/>
-							<h4 className="modal-title">{localizer.f('fillWithIgdb')}</h4>
-						</div>
-						<div className={`modal-body ${css(styles.modalBody)}`}>
-							{modalContent}
-						</div>
-						<div className="modal-footer">
-							<button
-								className="btn btn-primary"
-								disabled={!this.state.selectedResearchId}
-								onClick={this.igdbFillBtnClickHandler.bind(this)}
-							>
-								{localizer.f('submitNewGame')}
-							</button>
-						</div>
-					</div>
-				</div>
-				{this.checkErrors()}
-			</div>
+			<Modal
+				open={this.props.visible}
+				onClose={this.closeModal.bind(this)}
+				size={'tiny'}
+				className={css(styles.modal)}
+			>
+				<Modal.Header>{localizer.f('fillWithIgdb')}</Modal.Header>
+				{modalContent}
+				<Modal.Actions style={{ opacity: (!this.state.loading) ? (1) : (0) }}>
+					<Button
+						primary={true}
+						disabled={!this.state.selectedResearchId}
+						onClick={this.igdbFillBtnClickHandler.bind(this)}
+					>
+						{localizer.f('submitNewGame')}
+					</Button>
+				</Modal.Actions>
+			</Modal>
 		);
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
+	modal: {
+		margin: margin(9..rem(), 'auto'),
+		cursor: 'default',
+		userSelect: 'none'
+	},
 	modalBody: {
 		height: 500,
+		overflowX: 'hidden',
 		overflowY: 'auto'
 	},
-	igdbResearchBtnDiv: {
-		paddingTop: 4..percents(),
-		paddingLeft: 0
-	},
 	igdbResearchList: {
-		margin: margin(5, 0),
+		paddingTop: 10..px()
+	},
+	igdbResearch: {
+		margin: margin(7, 0),
 		padding: padding(10, 0),
-		borderRadius: 2,
+		borderRadius: 4,
 		backgroundColor: '#39342E',
+		transition: `${50}ms ease`,
 		':hover': {
 			backgroundColor: rgba(247, 210, 174, 0.1)
 		}
 	},
 	selectedIgdbResearch: {
-		border: border(2, 'solid', '#81705E'),
+		boxShadow: `inset ${0} ${0} ${0} ${2..px()} #81705E`,
 		fontWeight: 600
+	},
+	igdbResearchImgColumn: {
+		paddingLeft: 5..percents()
 	},
 	igdbResearchImg: {
 		width: 90,
 		height: 120,
-		boxShadow: `${0} ${0} ${5..px()} ${rgba(12, 12, 12, 0.33)}`
-	},
-	igdbResearchName: {
-		top: 48
+		borderRadius: 4
 	},
 	igdbDisclaimer: {
 		fontSize: 11,
@@ -233,11 +259,22 @@ const styles: React.CSSProperties = StyleSheet.create({
 	},
 	loadingContainer: {
 		height: 100..percents(),
-		paddingTop: 30..percents(),
-		paddingLeft: 39..percents()
+		paddingTop: 13..percents(),
+		paddingBottom: 13..percents(),
+		paddingLeft: 41..percents()
 	},
 	loadingIcon: {
 		fontSize: 120,
 		opacity: 0.2
+	},
+	formLabel: {
+		fontWeight: 'normal',
+		fontSize: 1..em()
+	},
+	searchBtn: {
+		marginTop: 22,
+		marginLeft: 25,
+		padding: padding(13, 14),
+		fontSize: 1.3.em()
 	}
 });

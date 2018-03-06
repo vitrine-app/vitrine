@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ProgressInfo } from 'builder-util-runtime';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import { Header } from 'semantic-ui-react';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { loaderServerListener } from '../ServerListener';
@@ -67,7 +68,7 @@ export class VitrineLoader extends React.Component<null, State> {
 	public render(): JSX.Element {
 		return (
 			<div className={css(styles.loader)}>
-				<span className={css(styles.titleSpan)}>Vitrine</span>
+				<Header as={'h1'} className={css(styles.titleSpan)}>Vitrine</Header>
 				<div className={css(styles.loaderDiv)}>
 					<img
 						src={vitrineIcon}
@@ -106,7 +107,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		textAlign: 'center',
 		padding: 7,
 		userSelect: 'none',
-		cursor: 'default'
+		cursor: 'default',
+		'-webkitAppRegion': 'no-drag'
 	},
 	loaderDiv: {
 		margin: 4
@@ -122,7 +124,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		animationTimingFunction: `cubic-bezier(${0.66}, ${0}, ${0}, ${1})`
 	},
 	titleSpan: {
-		fontWeight: 600,
+		marginTop: 15,
 		fontSize: 40,
 		opacity: 0.4,
 		textTransform: 'capitalize',

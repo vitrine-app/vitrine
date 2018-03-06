@@ -1,16 +1,18 @@
 import * as React from 'react';
+import { Button, Form, Grid, Modal } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
+import { margin } from 'css-verbose';
 
-import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { NumberPicker } from './NumberPicker';
-import { CloseIcon } from './icons/CloseIcon';
 import { localizer } from '../Localizer';
 
 interface Props {
-	editedGame: PotentialGame
+	gameToEdit: PlayableGame,
+	visible: boolean,
+	closeTimePlayedEditionModal: () => void
 }
 
 interface State {
@@ -19,7 +21,7 @@ interface State {
 	seconds: number
 }
 
-export class EditTimePlayedModal extends VitrineComponent<Props, State> {
+export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);
 
@@ -30,9 +32,24 @@ export class EditTimePlayedModal extends VitrineComponent<Props, State> {
 		};
 	}
 
+	private closeModal() {
+		this.props.closeTimePlayedEditionModal();
+		this.setState({
+			hours: 0,
+			minutes: 0,
+			seconds: 0
+		});
+	}
+
+	private changeTimeHandler(field: any, value: number) {
+		this.setState({
+			[field]: value
+		});
+	}
+
 	public componentWillReceiveProps(props: Props) {
-		if (props.editedGame) {
-			let timePlayed: number = (props.editedGame as PlayableGame).timePlayed;
+		if (props.gameToEdit) {
+			let timePlayed: number = props.gameToEdit.timePlayed;
 			let hours: number = Math.floor(timePlayed / 3600);
 			let minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
 			let seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
@@ -44,82 +61,84 @@ export class EditTimePlayedModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private changeTimeHandler(field: any, value: number) {
-		this.setState({
-			[field]: value
-		});
-	}
-
-	private submitBtnClickHandler() {
+	private submitButton() {
 		let timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
-		serverListener.send('edit-game-time-played', this.props.editedGame.uuid, timePlayed);
+		serverListener.send('edit-game-time-played', this.props.gameToEdit.uuid, timePlayed);
 	}
 
 	public render(): JSX.Element {
 		return (
-			<div id="edit-time-played-modal" className={`modal fade ${css(styles.modal)}`} role="dialog">
-				<div className="modal-dialog modal-sm">
-					<div className="modal-content">
-						<div className="modal-header">
-							<CloseIcon onClick={'#edit-time-played-modal'}/>
-							<h4 className="modal-title">{(this.props.editedGame) ? (this.props.editedGame.name) : ('')}</h4>
-						</div>
-						<div className={`modal-body`}>
-							<div className="row">
-								<div className="form-group col-md-4">
+			<Modal
+				open={this.props.visible}
+				onClose={this.closeModal.bind(this)}
+				className={css(styles.modal)}
+			>
+				<Modal.Header>
+					{(this.props.gameToEdit) ? (this.props.gameToEdit.name) : ('')}
+				</Modal.Header>
+				<Modal.Content>
+					<Form>
+						<Grid>
+							<Grid.Column width={5}>
+								<Form.Field>
 									<label>{localizer.f('hours')}</label>
 									<NumberPicker
 										min={0}
 										max={Infinity}
 										value={this.state.hours}
-										name="hours"
+										name={'hours'}
 										placeholder={localizer.f('hours')}
 										onChange={(value: number) => this.changeTimeHandler('hours', value)}
 									/>
-								</div>
-								<div className="form-group col-md-4">
+								</Form.Field>
+							</Grid.Column>
+							<Grid.Column width={5}>
+								<Form.Field>
 									<label>{localizer.f('minutes')}</label>
 									<NumberPicker
 										min={0}
 										max={60}
 										value={this.state.minutes}
-										name="minutes"
+										name={'minutes'}
 										placeholder={localizer.f('minutes')}
 										onChange={(value: number) => this.changeTimeHandler('minutes', value)}
 									/>
-								</div>
-								<div className="form-group col-md-4">
+								</Form.Field>
+							</Grid.Column>
+							<Grid.Column width={5}>
+								<Form.Field>
 									<label>{localizer.f('seconds')}</label>
 									<NumberPicker
 										min={0}
 										max={60}
 										value={this.state.seconds}
-										name="seconds"
+										name={'seconds'}
 										placeholder={localizer.f('seconds')}
 										onChange={(value: number) => this.changeTimeHandler('seconds', value)}
 									/>
-								</div>
-							</div>
-						</div>
-						<div className="modal-footer">
-							<button
-								className="btn btn-primary"
-								onClick={this.submitBtnClickHandler.bind(this)}
-							>
-								{localizer.f('confirm')}
-							</button>
-						</div>
-					</div>
-				</div>
+								</Form.Field>
+							</Grid.Column>
+						</Grid>
+					</Form>
+				</Modal.Content>
+				<Modal.Actions>
+					<Button
+						primary={true}
+						onClick={this.submitButton.bind(this)}
+					>
+						{localizer.f('confirm')}
+					</Button>
+				</Modal.Actions>
 				{this.checkErrors()}
-			</div>
+			</Modal>
 		);
 	}
 }
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		top: 26..vh()
+		width: 300,
+		margin: margin(20..rem(), 'auto')
 	},
 
 });

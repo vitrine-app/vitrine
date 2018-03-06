@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { Button } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
@@ -8,11 +8,10 @@ import { localizer } from '../Localizer';
 import { openImageDialog } from '../helpers';
 
 import { faPlus } from '@fortawesome/fontawesome-free-solid';
-import * as bootstrapVariables from '!!sass-variable-loader!../../resources/sass/bootstrap.variables.scss';
 
 interface Props {
 	images?: string[]
-	onChange: Function
+	onChange?: (backgroundScreen: string) => void
 }
 
 interface State {
@@ -64,7 +63,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 	public componentWillReceiveProps(props: Props) {
 		let images: string[] = [];
 		let selectedImage: string = '';
-		if (props.images) {
+		if (props.images.length) {
 			images = props.images;
 			selectedImage = this.state.selectedImage || props.images[0];
 		}
@@ -77,21 +76,18 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 	public render(): JSX.Element {
 		return (
 			<div>
-				<button
-					className="btn btn-primary"
-					type="button"
+				<Button
+					primary={true}
 					onClick={this.addImageBtnClick.bind(this)}
 				>
 					<FontAwesomeIcon icon={faPlus}/> {localizer.f('addCustomBgImage')}
-				</button>
+				</Button>
 				<div className={css(styles.imagesContainer)}>
 					{this.state.images.map((image: string, index: number) =>
 						<img
 							key={index}
 							src={image}
-							className={
-								css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))
-							}
+							className={css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))}
 							onClick={this.imageClickHandler.bind(this, image)}
 						/>
 					)}
@@ -112,8 +108,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		width: 400,
 		height: 270,
 		margin: 5,
-		borderRadius: bootstrapVariables.borderRadiusBase,
-		boxShadow: `${0} ${0} ${6..px()} ${rgba(0, 0, 0, 0.46)}`,
+		borderRadius: 4,
 		filter: `brightness(${65}%)`
 	},
 	selectedImage: {

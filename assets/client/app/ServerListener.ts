@@ -11,7 +11,7 @@ class ServerListener {
 		ipcRenderer.send.apply(ipcRenderer, sentArgs);
 	}
 
-	public listen(channelName: string, callbackFunction: Function): this {
+	public listen(channelName: string, callbackFunction: (...args: any[]) => any): this {
 		ipcRenderer.on(`${this.receiverName}.${channelName}`, (...args) => {
 			args.shift();
 			callbackFunction.apply(null, args);

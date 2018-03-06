@@ -1,37 +1,36 @@
 import * as React from 'react';
-import { ContextMenu, MenuItem } from 'react-contextmenu';
+import { Grid } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 
+import { VitrineComponent } from './VitrineComponent';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { serverListener } from '../ServerListener';
 import { SideBar } from '../containers/SideBar';
-import { TaskBar } from '../containers/TaskBar';
 import { GameContainer } from '../containers/GameContainer';
-import { AddGameModal } from '../containers/AddGameModal';
-import { AddPotentialGamesModal } from '../containers/AddPotentialGamesModal';
-import { EditTimePlayedModal } from '../containers/EditTimePlayedModal';
+import { GameAddModal } from '../containers/GameAddModal';
+import { PotentialGamesAddModal } from '../containers/PotentialGamesAddModal';
+import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
-import { VitrineComponent } from './VitrineComponent';
+import { TaskBar } from './TaskBar';
 import { localizer } from '../Localizer';
 
 interface Props {
 	settings: any,
-	potentialGames: GamesCollection<PotentialGame>,
 	playableGames: GamesCollection<PlayableGame>,
 	selectedGame: PlayableGame,
 	launchedGame: PlayableGame,
-	updateSettings: Function | any,
-	addPotentialGames: Function | any,
-	addPlayableGames: Function | any,
-	editPlayableGame: Function | any,
-	removePlayableGame: Function | any,
-	launchGame: Function | any,
-	stopGame: Function | any,
-	selectGame: Function | any,
-	setPotentialGameToAdd: Function | any
+	updateSettings: (settings: any) => void,
+	addPotentialGames: (potentialGames: PotentialGame[]) => void,
+	addPlayableGames: (playableGames: PlayableGame[]) => void,
+	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void,
+	launchGame: (launchedGame: PlayableGame) => void,
+	stopGame: (playedGame: PlayableGame) => void,
+	selectGame: (selectedGame: PlayableGame) => void,
+	openSettingsModal: () => void,
+	closeSettingsModal: () => void
 }
 
 interface State {
@@ -49,20 +48,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			launchedGamePictureActivated: true,
 			gameWillBeEdited: false
 		};
-	}
-
-	private addPlayableGame(game: PlayableGame) {
-		this.props.addPlayableGames([game]);
-		$('#add-game-modal').modal('hide');
-		$('#add-potential-games-modal').modal('hide');
-	}
-
-	private editPlayableGame(game: PlayableGame) {
-		this.props.editPlayableGame(game);
-		if (game.uuid === this.props.selectedGame.uuid)
-			this.props.selectGame(game);
-		$('#add-game-modal').modal('hide');
-		$('#edit-time-played-modal').modal('hide');
 	}
 
 	private removePlayableGame(gameUuid: string) {
@@ -83,7 +68,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	private settingsUpdated(settings: any) {
 		this.props.updateSettings(settings);
-		$('#settings-modal').modal('hide');
+		this.props.closeSettingsModal();
 		if (this.state.firstLaunch) {
 			this.setState({
 				firstLaunch: false
@@ -96,37 +81,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		error.stack = errorStack;
 		error.name = errorName;
 		this.throwError(error);
-	}
-
-	private potentialGameToAddUpdateHandler(potentialGameToAdd: PotentialGame, gameWillBeEdited?: boolean) {
-		gameWillBeEdited = gameWillBeEdited || false;
-		this.props.setPotentialGameToAdd(potentialGameToAdd);
-		this.setState({
-			gameWillBeEdited
-		}, () => {
-			$('#add-game-modal').modal('show');
-		});
-	}
-
-	private launchGameContextClickHandler(event: any, data: any, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.launchGame(gameUuid);
-	}
-
-	private editGameContextClickHandler(event: any, data: any, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.potentialGameToAddUpdateHandler(this.props.playableGames.getGame(gameUuid), true);
-	}
-
-	private editGamePlayTimeContextClickHandler(event: any, data: Object, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		this.props.setPotentialGameToAdd(this.props.playableGames.getGame(gameUuid));
-		$('#edit-time-played-modal').modal('show');
-	}
-
-	private deleteGameContextClickHandler(event: any, data: any, target: HTMLElement) {
-		let gameUuid: string = target.children[0].id.replace('game-', '');
-		serverListener.send('remove-game', gameUuid);
 	}
 
 	private launchedGamePictureToggleHandler() {
@@ -153,7 +107,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 					this.props.selectGame(this.props.playableGames.getGame(index - 1));
 				break;
 			}
-			case 'Enter': {
+			/*case 'Enter': {
 				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
 					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible') ||
 					$('#settings-modal').is(':visible') || $('#edit-time-played-modal').is(':visible'))
@@ -162,7 +116,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 				this.launchGame(this.props.selectedGame.uuid);
 				break;
-			}
+			}*/
 		}
 	}
 
@@ -170,14 +124,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		if (this.props.settings.firstLaunch) {
 			this.setState({
 				firstLaunch: true
-			}, () => {
-				$('#settings-modal').modal('show');
-			});
+			}, this.props.openSettingsModal.bind(this));
 		}
 
 		serverListener.listen('add-playable-games', this.props.addPlayableGames.bind(this))
-			.listen('add-playable-game', this.addPlayableGame.bind(this))
-			.listen('edit-playable-game', this.editPlayableGame.bind(this))
 			.listen('remove-playable-game', this.removePlayableGame.bind(this))
 			.listen('add-potential-games', this.props.addPotentialGames.bind(this))
 			.listen('stop-game', this.stopGame.bind(this))
@@ -185,9 +135,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			.listen('error', this.serverError.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
-		window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
+		/*window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
 			console.log(e.gamepad);
-		});
+		});*/
 	}
 
 	public componentWillUnmount() {
@@ -196,50 +146,30 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	public render(): JSX.Element {
 		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
-			<div className={'full-height'}>
+			<Grid className={css(styles.mainContainer)}>
 				<SideBar
 					launchGame={this.launchGame.bind(this)}
 				/>
 				<GameContainer
 					launchGame={this.launchGame.bind(this)}
 				/>
-				<AddGameModal
-					isEditing={this.state.gameWillBeEdited}
-				/>
-				<AddPotentialGamesModal
-					potentialGameUpdateCallback={this.potentialGameToAddUpdateHandler.bind(this)}
-				/>
-				<SettingsModal
-					firstLaunch={this.state.firstLaunch}
-				/>
-				<EditTimePlayedModal/>
-				<ContextMenu id="sidebar-games-context-menu">
-					<MenuItem onClick={this.launchGameContextClickHandler.bind(this)}>
-						{localizer.f('play')}
-					</MenuItem>
-					<MenuItem onClick={this.editGameContextClickHandler.bind(this)}>
-						{localizer.f('edit')}
-					</MenuItem>
-					<MenuItem onClick={this.editGamePlayTimeContextClickHandler.bind(this)}>
-						{localizer.f('editTimePlayed')}
-					</MenuItem>
-					<MenuItem onClick={this.deleteGameContextClickHandler.bind(this)}>
-						{localizer.f('delete')}
-					</MenuItem>
-				</ContextMenu>
-			</div>
+			</Grid>
 		) : (
 			<LaunchedGameContainer
 				clickHandler={this.launchedGamePictureToggleHandler.bind(this)}
 			/>
 		);
+
 		return (
-			<div className={`container-fluid full-height ${css(styles.vitrineApp)}`}>
-				<TaskBar
-					isGameLaunched={this.props.launchedGame && this.state.launchedGamePictureActivated}
-				/>
+			<div className={css(styles.vitrineApp)}>
+				<TaskBar/>
 				{vitrineContent}
-				{this.checkErrors()}
+				<GameAddModal/>
+				<TimePlayedEditionModal/>
+				<PotentialGamesAddModal/>
+				<SettingsModal
+					firstLaunch={this.state.firstLaunch}
+				/>
 			</div>
 		);
 	}
@@ -247,10 +177,15 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	vitrineApp: {
-		padding: 0,
-		height:100..percents(),
+		height: 100..percents(),
 		userSelect: 'none',
-		overflow: 'hidden',
 		cursor: 'default'
+	},
+	mainContainer: {
+		height: `calc(${100..percents()} - ${22..px()})`,
+		margin: 0
+	},
+	case1: {
+		width: 15.5.percents()
 	}
 });
