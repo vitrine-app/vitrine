@@ -10,14 +10,14 @@ export abstract class PotentialGamesCrawler {
 	protected potentialGames: PotentialGame[];
 	protected playableGames: PlayableGame[];
 	protected moduleConfig: any;
-	protected callback: Function;
+	protected callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void;
 
 	public setPlayableGames(playableGames?: PlayableGame[]) {
 		this.potentialGames = [];
 		this.playableGames = playableGames || [];
 	}
 
-	public search(moduleConfig: any, callback: Function) {
+	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		this.moduleConfig = moduleConfig;
 		this.callback = callback;
 	}

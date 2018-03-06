@@ -18,7 +18,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 		return this;
 	}
 
-	public search(moduleConfig: any, callback: Function) {
+	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
 		this.moduleConfig.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';

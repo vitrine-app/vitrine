@@ -108,7 +108,7 @@ export class WindowsHandler {
 		this.clientWindow.webContents.send.apply(this.clientWindow.webContents, sentArgs);
 	}
 
-	public listenToLoader(channelName: string, callbackFunction: Function): this {
+	public listenToLoader(channelName: string, callbackFunction: (...args: any[]) => void): this {
 		ipcMain.on(`loader.${channelName}`, (...args) => {
 			args.shift();
 			callbackFunction.apply(null, args);
@@ -116,7 +116,7 @@ export class WindowsHandler {
 		return this;
 	}
 
-	public listenToClient(channelName: string, callbackFunction: Function): this {
+	public listenToClient(channelName: string, callbackFunction: (...args: any[]) => void): this {
 		ipcMain.on(`client.${channelName}`, (...args) => {
 			args.shift();
 			callbackFunction.apply(null, args);

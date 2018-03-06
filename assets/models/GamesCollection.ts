@@ -15,6 +15,7 @@ export class GamesCollection<T extends Object> {
 
 	public setGames(games: T[]) {
 		this.games = games;
+		this.sort();
 	}
 
 	public size(): number {
@@ -62,16 +63,6 @@ export class GamesCollection<T extends Object> {
 
 	public map(loopCallBack: (value: T, index: number, array: T[]) => any): T[] {
 		return this.games.map(loopCallBack);
-	}
-
-	public forEach(loopCallBack: Function, endCallBack?: Function) {
-		let counter: number = 0;
-		this.games.forEach((game: any) => {
-			loopCallBack(game);
-			counter++;
-			if (counter === this.games.length && endCallBack)
-				endCallBack();
-		})
 	}
 
 	private sort() {

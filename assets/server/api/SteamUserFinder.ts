@@ -14,7 +14,7 @@ class SteamUserFinder {
 		return this;
 	}
 
-	public getActiveUser(callback: Function) {
+	public getActiveUser(callback: (error: Error, user: any) => void) {
 		let usersArray: any[] = Object.keys(this.loginUsersFile);
 		let counter: number = 0;
 		let found: boolean = false;

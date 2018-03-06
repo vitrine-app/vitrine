@@ -19,7 +19,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		return this;
 	}
 
-	public search(moduleConfig: any, callback: Function) {
+	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
 
 		this.gamesFolder = path.resolve(this.moduleConfig.installFolder);
@@ -99,7 +99,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		});
 	}
 
-	private getRegExe(gamePath: string, callback: Function) {
+	private getRegExe(gamePath: string, callback: (error: Error, gamePath: string) => void) {
 		let counter: number = 0;
 		let found: boolean = false;
 		this.regDetails.forEach((regDetail: any) => {

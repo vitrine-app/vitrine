@@ -13,7 +13,7 @@ class GameLauncher {
 		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
 	}
 
-	public launch(game: PlayableGame, callback: Function) {
+	public launch(game: PlayableGame, callback: (error: Error, minutesPlayed: number) => void) {
 		this.game = game;
 		switch (+this.game.source) {
 			case GameSource.LOCAL: {
@@ -35,7 +35,7 @@ class GameLauncher {
 		}
 	}
 
-	private launchStandardGame(callback: Function) {
+	private launchStandardGame(callback: (error: Error, minutesPlayed: number) => void) {
 		let [executable, args]: string[] = this.game.commandLine;
 		let commandLine: string = (args) ? (`"${executable}" ${args}`) : (`"${executable}"`);
 
@@ -49,7 +49,7 @@ class GameLauncher {
 		});
 	}
 
-	private launchSteamGame(callback: Function) {
+	private launchSteamGame(callback: (error: Error, minutesPlayed: number) => void) {
 		childProcess.exec(`"${this.watcherPath}" ${this.game.details.steamId}`, (error: Error) => {
 			if (error) {
 				callback(error, null);
