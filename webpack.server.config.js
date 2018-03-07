@@ -8,7 +8,7 @@ module.exports = {
 		__filename: false
 	},
 	resolve: {
-		extensions: ['.ts', '.js', '.json']
+		extensions: ['.ts', '.js', '.json', '.node']
 	},
 	target: 'electron-main',
 	module: {
@@ -16,6 +16,10 @@ module.exports = {
 			{
 				test: /\.ts?$/,
 				loader: 'ts-loader'
+			},
+			{
+				test: /\.node?$/,
+				use: 'node-loader'
 			}
 		]
 	}
