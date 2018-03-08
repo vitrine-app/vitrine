@@ -114,7 +114,7 @@
   "scripts": {
     "compile-cpp": "cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
     "build": "webpack --progress && electron .",
-    "build-cpp": "cd scripts/test && node-gyp rebuild --target=1.8.2 --arch=x64 --dist-url=https://atom.io/download/electron && move build\\Release\\GameLauncher.node ..\\GameLauncher.node",
+    "build-scripts": "call scripts/buildModules.bat",
     "run-server": "webpack --progress --config webpack.server.config.js && electron .",
     "run-client": "webpack --progress --config webpack.client.config.js && electron .",
     "watch-server": "webpack --progress --config webpack.server.config.js --watch",

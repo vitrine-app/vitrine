@@ -8,7 +8,7 @@ module.exports = {
 		__filename: false
 	},
 	resolve: {
-		extensions: ['.ts', '.js', '.json', '.node']
+		extensions: [ '.ts', '.js', '.json' ]
 	},
 	target: 'electron-main',
 	module: {
