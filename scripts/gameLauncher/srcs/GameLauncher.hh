@@ -15,4 +15,5 @@ private:
 	v8::Isolate* context;
 	const v8::FunctionCallbackInfo<v8::Value>& args;
 	std::string commandLine;
+	std::string workingDirectory;
 };

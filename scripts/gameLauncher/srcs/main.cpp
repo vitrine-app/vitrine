@@ -1,4 +1,3 @@
-#include <iostream>
 #include "GameLauncher.hh"
 
 using namespace v8;
