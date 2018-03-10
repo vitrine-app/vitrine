@@ -9,16 +9,17 @@ import { WindowsHandler } from './WindowsHandler';
 import { GamesCollection } from '../models/GamesCollection';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { PlayableGame} from '../models/PlayableGame';
-import { getEnvFolder } from '../models/env';
+import { getEnvFolder, randomHashedString } from '../models/env';
 import { launchGame } from './GameLauncher';
-import { searchSteamGames } from './games/SteamGamesCrawler';
 import { getPlayableGames } from './games/PlayableGamesCrawler';
-import { searchEmulatedGames } from './games/EmulatedGamesCrawler';
+import { searchSteamGames } from './games/SteamGamesCrawler';
 import { searchOriginGames } from './games/OriginGamesCrawler';
+import { searchBattleNetGames } from './games/BattleNetGamesCrawler';
+import { searchEmulatedGames } from './games/EmulatedGamesCrawler';
 import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
-import { downloadImage, isAlreadyStored, randomHashedString } from './helpers';
+import { downloadImage, isAlreadyStored } from './helpers';
 
 export class VitrineServer {
 	private windowsHandler: WindowsHandler;
@@ -39,7 +40,7 @@ export class VitrineServer {
 
 	public registerEvents() {
 		this.windowsHandler.listenToLoader('ready', this.loaderReady.bind(this))
-			.listenToLoader('launch-client', () => this.windowsHandler.createMainWindow())
+			.listenToLoader('launch-client', () => this.windowsHandler.createClientWindow())
 			.listenToLoader('update-and-restart', this.updateApp.bind(this));
 
 		this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
@@ -89,7 +90,7 @@ export class VitrineServer {
 			}
 			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
-				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.games);
+				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
 				this.findPotentialGames();
 			}).catch((error: Error) => this.throwServerError(error));
 		}
@@ -122,64 +123,58 @@ export class VitrineServer {
 	}
 
 	private editGame(gameUuid: string, gameForm: any) {
-		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
-			editedGame.name = gameForm.name;
-			editedGame.commandLine = [];
-			let { backgroundScreen, cover } = editedGame.details;
-			editedGame.details = {
-				...gameForm,
-				backgroundScreen,
-				cover
-			};
-			this.registerGame(editedGame, gameForm, true);
-		}).catch((error: Error) => this.throwServerError(error));
+		let editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		editedGame.name = gameForm.name;
+		editedGame.commandLine = [];
+		let { backgroundScreen, cover } = editedGame.details;
+		editedGame.details = {
+			...gameForm,
+			backgroundScreen,
+			cover
+		};
+		this.registerGame(editedGame, gameForm, true);
 	}
 
 	private editGameTimePlayed(gameUuid: string, timePlayed: number) {
-		this.playableGames.getGame(gameUuid).then((editedGame: PlayableGame) => {
-			let gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
-			let configFilePath: string = path.resolve(gameDirectory, 'config.json');
+		let editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
+		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
-			editedGame.timePlayed = timePlayed;
-			this.sendRegisteredGame(editedGame, configFilePath, true);
-		}).catch((error: Error) => this.throwServerError(error));
+		editedGame.timePlayed = timePlayed;
+		this.sendRegisteredGame(editedGame, configFilePath, true);
 	}
 
 	private launchGame(gameUuid: string) {
-		this.playableGames.getGame(gameUuid).then((launchingGame: PlayableGame) => {
-			if (this.gameLaunched)
-				return;
-			this.gameLaunched = true;
-			launchGame(launchingGame).then((secondsPlayed: number) => {
-				this.gameLaunched = false;
-				launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
-				this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
-			}).catch((error: Error) => {
-				this.gameLaunched = false;
-				this.throwServerError(error);
-			});
-		}).catch((error: Error) => this.throwServerError(error));
+		if (this.gameLaunched)
+			return;
+		let launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);this.gameLaunched = true;
+		launchGame(launchingGame).then((secondsPlayed: number) => {
+			this.gameLaunched = false;
+			launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
+			this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
+		}).catch((error: Error) => {
+			this.gameLaunched = false;
+			this.throwServerError(error);
+		});
 	}
 
 	private removeGame(gameUuid: string) {
-		this.playableGames.removeGame(gameUuid, (error) => {
-			if (error)
-				this.windowsHandler.sendToClient('server-error', error);
-			let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
-			rimraf(gameDirectory, () => {
-				this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
-			});
+		this.potentialGames.removeGame(gameUuid);
+		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
+		rimraf(gameDirectory, () => {
+			this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
 		});
 	}
 
 	// TODO: Improve potential games pipeline
 	private findPotentialGames() {
-		this.potentialGames.games = [];
+		this.potentialGames.clean();
 		this.searchSteamGames()
 			.then(this.searchOriginGames.bind(this))
+			.then(this.searchBattleNetGames.bind(this))
 			.then(this.searchEmulatedGames.bind(this))
 			.then(() => {
-				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.games);
+				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 			});
 	}
 
@@ -199,7 +194,6 @@ export class VitrineServer {
 		if (settingsForm.originPath) {
 			config.origin = {
 				installFolder: settingsForm.originPath,
-				configFile: '%appdata%/Origin/local.xml',
 				regHive: 'HKLM',
 				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
 			};
@@ -209,9 +203,7 @@ export class VitrineServer {
 				romsFolder: settingsForm.emulatedPath
 			};
 		}
-		fs.outputJson(this.vitrineConfigFilePath, config, {
-			spaces: 2
-		}).then(() => {
+		fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 }).then(() => {
 			let emulatorsConfig: any = {
 				...this.vitrineConfig.emulated,
 				...config.emulated,
@@ -219,64 +211,68 @@ export class VitrineServer {
 			};
 			if (!settingsForm.emulatedPath)
 				delete emulatorsConfig.romsFolder;
-			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, {
-				spaces: 2
-			}).then(() => {
+			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 }).then(() => {
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
 				this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
 			}).catch((error: Error) => this.throwServerError(error));
 		}).catch((error: Error) => this.throwServerError(error));
 	}
 
-	private searchSteamGames(): Promise<any> {
-		return new Promise((resolve) => {
-			if (!this.vitrineConfig.steam) {
-				resolve();
-				return;
-			}
-			searchSteamGames(this.vitrineConfig.steam, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games, () => {
-					resolve();
-				});
-			}).catch((error: Error) => {
-				resolve();
-				this.throwServerError(error);
-			});
-		});
+	private async searchSteamGames(): Promise<any> {
+		if (!this.vitrineConfig.steam)
+			return;
+
+		try {
+			let games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
+			return;
+		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
 	}
 
-	private searchOriginGames(): Promise<any> {
-		return new Promise((resolve) => {
-			if (!this.vitrineConfig.origin) {
-				resolve();
-				return;
-			}
-			searchOriginGames(this.vitrineConfig.origin, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games, () => {
-					resolve();
-				});
-			}).catch((error: Error) => {
-				resolve();
-				this.throwServerError(error);
-			});
-		});
+	private async searchOriginGames(): Promise<any> {
+		if (!this.vitrineConfig.origin)
+			return;
+
+		try {
+			let games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
+			return;
+		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
 	}
 
-	private searchEmulatedGames(): Promise<any> {
-		return new Promise((resolve) => {
-			if (!this.vitrineConfig.emulated.romsFolder) {
-				resolve();
-				return;
-			}
-			searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.games).then((games: GamesCollection<PotentialGame>) => {
-				this.potentialGames.addGames(games, () => {
-					resolve();
-				});
-			}).catch((error: Error) => {
-				resolve();
-				this.throwServerError(error);
-			});
-		});
+	private async searchBattleNetGames(): Promise<any> {
+		try {
+			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(null, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
+			return;
+		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
+	}
+
+	private async searchEmulatedGames(): Promise<any> {
+		if (!this.vitrineConfig.emulated.romsFolder)
+			return;
+
+		try {
+			let games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
+			this.potentialGames.addGames(games.getGames());
+			return;
+		}
+		catch (error) {
+			this.throwServerError(error);
+			return;
+		}
 	}
 
 	private registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
@@ -315,7 +311,8 @@ export class VitrineServer {
 			let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
 			let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
 
-			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen) : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
+			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
+				: (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
 			let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
 			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}).then(() => {
 				this.sendRegisteredGame(game, configFilePath, editing);
@@ -325,41 +322,42 @@ export class VitrineServer {
 			this.sendRegisteredGame(game, configFilePath, editing);
 	}
 
-	private downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
-		return new Promise((resolve, reject) => {
-			downloadImage(coverUrl, coverPath).then((isStored: boolean) => {
+	private async downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
+		try {
+			let isStored: boolean = await downloadImage(backgroundUrl, backgroundPath);
+			game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
+			if (game.details.steamId)
+				delete game.details.screenshots;
+			else
+				delete game.details.background;
+			try {
+				let isStored: boolean = await downloadImage(coverUrl, coverPath);
 				game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
-				downloadImage(backgroundUrl, backgroundPath).then((isStored: boolean) => {
-					game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
-					if (game.details.steamId)
-						delete game.details.screenshots;
-					else
-						delete game.details.background;
-
-					resolve();
-				}).catch((error: Error) => {
-					reject(error);
-				});
-			}).catch((error: Error) => {
-				reject(error);
-			});
-		});
+				if (isStored) {
+					game.details.cover = coverPath;
+					return;
+				}
+			}
+			catch (error) {
+				return error;
+			}
+		}
+		catch (error) {
+			return error;
+		}
 	}
 
 	private sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
-		fs.outputJSON(configFilePath, game , {
-			spaces: 2
-		}).then(() => {
+		fs.outputJSON(configFilePath, game , { spaces: 2 }).then(() => {
 			if (!editing && game.source !== GameSource.LOCAL)
 				this.findPotentialGames();
 			if (!editing) {
-				this.windowsHandler.sendToClient('add-playable-game', game);
 				this.playableGames.addGame(game);
+				this.windowsHandler.sendToClient('add-playable-game', game);
 			}
 			else {
-				this.playableGames.editGame(game, () => {
-					this.windowsHandler.sendToClient('edit-playable-game', game);
-				});
+				this.playableGames.editGame(game);
+				this.windowsHandler.sendToClient('edit-playable-game', game);
 			}
 		}).catch((error: Error) => this.throwServerError(error));
 	}

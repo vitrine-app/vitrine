@@ -5,7 +5,7 @@ class IgdbWrapper {
 	private apiKey: string;
 	private client: any;
 	private levenshteinRefiner: number;
-	private callback: any;
+	private callback: (error: Error, game: any) => void;
 	private game: any;
 
 	public constructor(private lang?: string) {
@@ -22,7 +22,7 @@ class IgdbWrapper {
 		return this;
 	}
 
-	public findGameById(id: number, callback: Function) {
+	public findGameById(id: number, callback: (error: Error, game: any) => void) {
 		this.client.games({
 			ids: [id]
 		}, [
@@ -46,7 +46,7 @@ class IgdbWrapper {
 		});
 	}
 
-	public searchGames(name: string, callback: Function, resultsNb?: number) {
+	public searchGames(name: string, callback: (error: Error, games: any) => void, resultsNb?: number) {
 		this.client.games({
 			limit: resultsNb || this.levenshteinRefiner,
 			search: name.replace('²', '2')
@@ -97,7 +97,7 @@ class IgdbWrapper {
 			this.game.screenshots = [];
 	}
 
-	private findCompanyById(array: number[], callback: Function) {
+	private findCompanyById(array: number[], callback: (publisher: any) => void) {
 		if (!array || !array.length) {
 			callback({name: ''});
 			return;
@@ -113,7 +113,7 @@ class IgdbWrapper {
 		});
 	}
 
-	private findSeriesById(id: number, callback: Function) {
+	private findSeriesById(id: number, callback: (series: any) => void) {
 		if (!id) {
 			callback('');
 			return;
@@ -127,7 +127,7 @@ class IgdbWrapper {
 		});
 	}
 
-	private findGenreById(id: number, callback: Function) {
+	private findGenreById(id: number, callback: (genres: any) => void) {
 		let ids: number |number[] = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.genres({

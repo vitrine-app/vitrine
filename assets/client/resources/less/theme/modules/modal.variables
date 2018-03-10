@@ -1,0 +1,12 @@
+/* Modal */
+@background: @pageBackground;
+
+/* Header */
+@headerBackground: @pageBackground;
+@headerColor: @textColor;
+
+/* Content */
+@contentBackground: @pageBackground;
+
+/* Modal Actions */
+@actionBackground: @pageBackground;

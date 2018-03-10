@@ -1,10 +1,16 @@
+const path = require('path');
+const HtmlPlugin = require('html-webpack-plugin');
+
 let clientConfig = {
 	node: {
 		__dirname: false,
 		__filename: false
 	},
 	resolve: {
-		extensions: ['.ts', '.tsx', '.js']
+		extensions: ['.ts', '.tsx', '.js'],
+		alias: {
+			'../../theme.config$': path.join(__dirname, 'assets/client/resources/less/theme.config.less')
+		}
 	},
 	target: 'electron-renderer',
 	module: {
@@ -14,7 +20,7 @@ let clientConfig = {
 				loader: 'ts-loader'
 			},
 			{
-				test: /\.(css|scss)?$/,
+				test: /\.less$/,
 				use: [
 					{
 						loader: 'style-loader'
@@ -23,7 +29,7 @@ let clientConfig = {
 						loader: 'css-loader'
 					},
 					{
-						loader: 'sass-loader'
+						loader: 'less-loader'
 					}
 				]
 			},
@@ -32,23 +38,43 @@ let clientConfig = {
 				loader: 'base64-inline-loader?name=[name].[ext]'
 			}
 		]
-	},
-	devtool: 'source-map'
+	}
 };
 
 module.exports = [
 	{
 		entry: './assets/client/main.tsx',
 		output: {
-			filename: 'public/client.js'
+			path: __dirname + '/public',
+			filename: 'client.js'
 		},
-		...clientConfig
-	},
+		...clientConfig,
+		plugins: [
+			new HtmlPlugin({
+				title: 'Vitrine',
+				filename: 'client.html'
+			}),
+			function() {
+				this.plugin('watch-run', function (watching, callback) {
+					let date = new Date();
+					console.log(`Begin compile at \x1b[1m${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}\x1b[0m.`);
+					callback();
+				});
+			}
+		]
+	}/*,
 	{
 		entry: './assets/client/loader.tsx',
 		output: {
-			filename: 'public/loader.js'
+			path: __dirname + '/public',
+			filename: 'loader.js'
 		},
-		...clientConfig
-	}
+		...clientConfig,
+		plugins: [
+			new HtmlPlugin({
+				title: 'Vitrine',
+				filename: 'loader.html'
+			})
+		]
+	}*/
 ];

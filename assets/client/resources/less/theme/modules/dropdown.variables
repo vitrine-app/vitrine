@@ -1,0 +1,14 @@
+/* Visible */
+@selectionVisibleTextColor: @textColor;
+
+/* Focus */
+@selectionFocusBorderColor: #44423E;
+@focusedFormMutedBorderColor: @selectionFocusBorderColor;
+
+/* Menu */
+@menuBackground: #423C36;
+@selectionVisibleMenuBoxShadow: 0 0 2px 0 rgba(255, 255, 255, 0.05);
+
+
+/* Border */
+@selectionItemDivider: 1px solid rgba(250, 250, 250, 0.06);

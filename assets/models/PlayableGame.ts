@@ -6,17 +6,19 @@ import { getEnvFolder } from './env';
 
 export class PlayableGame extends PotentialGame {
 	public timePlayed: number;
+	public ambientColor: string;
 
 	public constructor(name: string, details?: any) {
 		super(name, details);
 		this.timePlayed = 0;
+		this.ambientColor = null;
 	}
 
-	public addPlayTime(timePlayed: number, errorCallback?: Function) {
+	public addPlayTime(timePlayed: number, errorCallback?: (error: Error) => void) {
 		this.timePlayed += timePlayed;
 
 		let configFilePath: string = path.resolve(getEnvFolder('games'), this.uuid, 'config.json');
-		fs.writeFile(configFilePath, JSON.stringify(this, null, 2), (error) => {
+		fs.writeFile(configFilePath, JSON.stringify(this, null, 2), (error: Error) => {
 			if (error && errorCallback)
 				errorCallback(error);
 		});

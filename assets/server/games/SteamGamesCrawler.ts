@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
 import { PotentialGamesCrawler } from './PotentialGamesCrawler';
@@ -18,7 +17,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 		return this;
 	}
 
-	public search(moduleConfig: any, callback: Function) {
+	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
 		this.moduleConfig.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
@@ -38,8 +37,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 			return;
 		}
 		if (!files.length) {
-			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-			this.callback(null, potentialGames);
+			this.callback(null, new GamesCollection());
 			return;
 		}
 		let counter: number = 0;

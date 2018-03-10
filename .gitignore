@@ -1,7 +1,8 @@
 /node_modules
 /dist
 /.idea/workspace.xml
-/public/*.js*
+/public/*
+!/public/img
 /games/*
 /config/vitrine_config.json
 /assets/server/api/apiKeys.json

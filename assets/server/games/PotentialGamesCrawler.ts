@@ -3,21 +3,21 @@ import * as path from 'path';
 
 import { PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
-import { getEnvFolder, uuidV5 } from '../../models/env';
 import { GamesCollection } from '../../models/GamesCollection';
+import { getEnvFolder, uuidV5 } from '../../models/env';
 
 export abstract class PotentialGamesCrawler {
 	protected potentialGames: PotentialGame[];
 	protected playableGames: PlayableGame[];
 	protected moduleConfig: any;
-	protected callback: Function;
+	protected callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void;
 
 	public setPlayableGames(playableGames?: PlayableGame[]) {
 		this.potentialGames = [];
 		this.playableGames = playableGames || [];
 	}
 
-	public search(moduleConfig: any, callback: Function) {
+	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		this.moduleConfig = moduleConfig;
 		this.callback = callback;
 	}

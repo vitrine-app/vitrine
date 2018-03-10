@@ -8,14 +8,14 @@ import { getEnvFolder } from '../../models/env';
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];
 	private gamesDirectory: string;
-	private callback: Function;
+	private callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void;
 
 	public constructor() {
 		this.playableGames = [];
 		this.gamesDirectory = getEnvFolder('games');
 	}
 
-	public search(callback: Function) {
+	public search(callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void) {
 		this.callback = callback;
 		fs.readdir(this.gamesDirectory, (error, files) => {
 			if (error) {
@@ -23,8 +23,7 @@ class PlayableGamesCrawler {
 				return;
 			}
 			if (!files.length) {
-				let playableGames: GamesCollection<PlayableGame> = new GamesCollection();
-				this.callback(null, playableGames);
+				this.callback(null, new GamesCollection());
 				return;
 			}
 			let counter: number = 0;
@@ -37,13 +36,14 @@ class PlayableGamesCrawler {
 					playableGame.commandLine = rawGame.commandLine;
 					playableGame.timePlayed = parseInt(rawGame.timePlayed);
 					playableGame.source = rawGame.source;
+					playableGame.ambientColor = rawGame.ambientColor;
 
 					this.playableGames.push(playableGame);
 				}
 				counter++;
 				if (counter === files.length) {
 					let playableGames: GamesCollection<PlayableGame> = new GamesCollection();
-					playableGames.games = this.playableGames;
+					playableGames.setGames(this.playableGames);
 					this.callback(null, playableGames);
 					delete this.callback;
 				}
@@ -54,7 +54,7 @@ class PlayableGamesCrawler {
 
 export function getPlayableGames(): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new PlayableGamesCrawler().search((error, playableGames: PlayableGame[]) => {
+		new PlayableGamesCrawler().search((error: Error, playableGames: GamesCollection<PlayableGame>) => {
 			if (error)
 				reject(error);
 			else

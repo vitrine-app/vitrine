@@ -1,0 +1,184 @@
+/* DateTime Picker */
+@import 'theme/globals/site.variables';
+
+.rdt {
+	position: relative;
+}
+
+.rdtPicker {
+	width: 236px;
+	padding: 4px 5px;
+	margin-top: 1px;
+	background-color: @inputBackground;
+	border: 1px #4D4943 solid;
+	border-radius: 4px;
+	display: none;
+	position: absolute;
+	z-index: 99999 !important;
+
+	.rdtTimeToggle {
+		text-align: center;
+	}
+	table tr td {
+		border-radius: 4px;
+	}
+	table {
+		width: 100%;
+		margin: 0;
+	}
+	td, th {
+		text-align: center;
+		height: 28px;
+	}
+	td {
+		cursor: pointer;
+	}
+	td.rdtDay:hover, td.rdtHour:hover, td.rdtMinute:hover, td.rdtSecond:hover, .rdtTimeToggle:hover {
+		background-color: #3E372E;
+		color: #AFACA7;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	td.rdtOld, td.rdtNew {
+		color: #999999;
+	}
+	td.rdtToday {
+		position: relative;
+	}
+	tActive, td.rdtActive:hover {
+		background-color: @primaryColor;
+		color: #FFFFFF;
+	}
+	td.rdtDisabled, td.rdtDisabled:hover {
+		background: none;
+		color: #999999;
+		cursor: not-allowed;
+	}
+	td span.rdtOld {
+		color: #999999;
+	}
+	td span.rdtDisabled, td span.rdtDisabled:hover {
+		background: none;
+		color: #999999;
+		cursor: not-allowed;
+	}
+	th {
+		border-bottom: 1px solid rgba(238, 238, 238, 0.15)
+	}
+	.dow {
+		width: 14.2857%;
+		border-bottom: none;
+		cursor: default;
+	}
+	th.rdtSwitch {
+		width: 100px;
+	}
+	th.rdtNext, th.rdtPrev {
+		font-size: 21px;
+		vertical-align: top;
+	}
+
+	th.rdtDisabled, th.rdtDisabled:hover {
+		background: none;
+		color: #999999;
+		cursor: not-allowed;
+	}
+	thead tr:first-child th {
+		cursor: pointer;
+	}
+	thead tr:first-child th:hover {
+		background: #3E372E;
+	}
+
+	tfoot {
+		border-top: 1px solid #f9f9f9;
+	}
+
+	button {
+		border: none;
+		background: none;
+		cursor: pointer;
+	}
+	button:hover {
+		background-color: #3E372E;
+	}
+
+	.rdtPicker thead button {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.rdtOpen .rdtPicker {
+	display: block;
+}
+
+.rdtStatic .rdtPicker {
+	box-shadow: none;
+	position: static;
+}
+
+.rdtPrev span, .rdtNext span {
+	display: block;
+	user-select: none;
+}
+
+td.rdtMonth, td.rdtYear {
+	height: 50px;
+	width: 25%;
+	cursor: pointer;
+}
+td.rdtMonth:hover, td.rdtYear:hover {
+	background: #3E372E;
+}
+
+.rdtCounters {
+	display: inline-block;
+
+	& > div {
+		float: left;
+	}
+}
+
+.rdtCounter {
+	width: 40px;
+	height: 100px;
+}
+
+.rdtCounterSeparator {
+	line-height: 100px;
+}
+
+.rdtCounter {
+	.rdtBtn {
+		height: 40%;
+		line-height: 40px;
+		cursor: pointer;
+		display: block;
+		user-select: none;
+
+		&:hover {
+			background: #3E372E;
+		}
+	}
+	.rdtCount {
+		height: 20%;
+		font-size: 1.2em;
+	}
+}
+
+.rdtMilli {
+	vertical-align: middle;
+	padding-left: 8px;
+	width: 48px;
+
+	input {
+		width: 100%;
+		font-size: 1.2em;
+		margin-top: 37px;
+	}
+}
+
+.rdtTime td {
+	cursor: default;
+}

@@ -1,7 +1,25 @@
 import * as fs from 'fs-extra';
-import * as crypto from 'crypto';
 import * as glob from 'glob';
-import * as downloadFile from 'download-file';
+import * as downloadFileCb from 'download-file';
+
+function downloadFile(file: string, options: any): Promise<any> {
+	return new Promise((resolve, reject) => {
+		downloadFileCb(file, options, (error: Error) => {
+			if (error)
+				reject(error);
+			else
+				resolve(true);
+		});
+	});
+}
+
+function setTimeOut(ms: number): Promise<any> {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve();
+		}, ms);
+	});
+}
 
 function deleteFiles(path: string, except?: string): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -26,56 +44,49 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 	});
 }
 
-export function downloadImage(src: string, dest: string): Promise<any> {
-	return new Promise((resolve, reject) => {
-		if (!src || (src.startsWith('file://') && !fs.existsSync(src.substring(7)))) {
-			resolve(false);
-			return;
-		}
-		if (src.startsWith('file://')) {
-			src = src.substring(7);
-			if (src === dest) {
-				resolve(true);
-				return;
+export async function downloadImage(src: string, dest: string): Promise<any> {
+	if (!src || (src.startsWith('file://') && !fs.existsSync(src.substring(7))))
+		return false;
+	if (src.startsWith('file://')) {
+		src = src.substring(7);
+		if (src === dest)
+			return true;
+		try {
+			await fs.copy(src, dest);
+			let fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
+			try {
+				await deleteFiles(fileGlob, dest);
+				return true;
 			}
-			fs.copy(src, dest).then(() => {
-				let fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
-				deleteFiles(fileGlob, dest).then(() => {
-					resolve(true);
-				}).catch((error: Error) => reject(error));
-			}).catch((error: Error) => reject(error));
+			catch (error) {
+				return error;
+			}
 		}
-		else {
-			let filename: string = dest.split('\\').pop();
-			dest = dest.substring(0, dest.indexOf(filename));
-			let fileDownloaded: boolean = false;
-			downloadFile(src, {
-				directory: dest,
-				filename: filename
-			}, (error: Error) => {
-				fileDownloaded = true;
-				if (error)
-					reject(error);
-				else
-					resolve(true);
-			});
-			setTimeout(() => {
-				if (!fileDownloaded) {
-					console.log('timeout.');
-					resolve(false);
-				}
-			}, 10000);
+		catch (error) {
+			return error;
 		}
-	});
+	}
+	else {
+		let filename: string = dest.split('\\').pop();
+		dest = dest.substring(0, dest.indexOf(filename));
+		try {
+			let succeeded: boolean = await Promise.race([
+				downloadFile(src, {
+					directory: dest,
+					filename: filename
+				}),
+				setTimeOut(10000)
+			]);
+			return succeeded || false;
+		}
+		catch (error) {
+			return error;
+		}
+	}
 }
 
 export function isAlreadyStored(imageSrcPath: string, imageDestPath: string): boolean {
 	return imageSrcPath === imageDestPath && imageSrcPath.startsWith('file://');
-}
-
-export function randomHashedString(length?: number): string {
-	const finalLength: number = length || 8;
-	return crypto.randomBytes(Math.ceil(finalLength / 2)).toString('hex').slice(0, finalLength);
 }
 
 export function spatStr(str: string) {

@@ -1,0 +1,5 @@
+/* Element */
+@background: @pageBackground;
+
+/* Header */
+@headerBackground: #3A3630;

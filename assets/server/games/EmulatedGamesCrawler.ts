@@ -17,7 +17,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 		return this;
 	}
 
-	public search(moduleConfig: any, callback: Function) {
+	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
 		glob(`${this.moduleConfig.romsFolder}/*`, (error: Error, folders: string[]) => {
 			if (error)
@@ -88,20 +88,6 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					});
 				});
 			});
-		});
-	}
-
-	private getEmulator(romPlatform: any, callback: Function) {
-		let counter: number = 0;
-		let found: boolean = false;
-		this.moduleConfig.emulators.forEach((emulator: any) => {
-			if (emulator.platforms.indexOf(romPlatform.id) !== -1) {
-				callback(null, emulator);
-				found = true;
-			}
-			counter++;
-			if (counter === emulator.platforms.length && !found)
-				callback(new Error('Emulator not found.'), null);
 		});
 	}
 }

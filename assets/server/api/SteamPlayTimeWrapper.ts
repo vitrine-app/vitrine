@@ -14,7 +14,7 @@ class SteamPlayTimeWrapper {
 		});
 	}
 
-	public getOwnedGames(steamConfig: any, steamId: number, callback: Function) {
+	public getOwnedGames(steamConfig: any, steamId: number, callback: (error: Error, timePlayed: number) => void) {
 		this.client.getOwnedGames({
 			steamid: steamConfig.userId,
 			callback: (error: Error, data: any) => {
@@ -26,7 +26,7 @@ class SteamPlayTimeWrapper {
 		});
 	}
 
-	private handleGames(steamId: number, timedGames: any[], callback: Function) {
+	private handleGames(steamId: number, timedGames: any[], callback: (error: Error, timePlayed: number) => void) {
 		let found: boolean = false;
 		let counter: number = 0;
 
