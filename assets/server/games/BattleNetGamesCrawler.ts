@@ -10,34 +10,46 @@ import { searchIgdbGame } from '../api/IgdbWrapper';
 interface BattleNetGame {
 	tag: string,
 	name: string,
+	execTag?: string,
 	path?: string
 }
 
 const gamesData: BattleNetGame[] = [
 	{
 		name: 'World of Warcraft',
-		tag: 'wow'
+		tag: 'wow',
+		execTag: 'WoW'
 	},
 	{
 		name: 'Diablo III',
-		tag: 'd3cn'
+		tag: 'd3cn',
+		execTag: 'D3'
 	},
 	{
 		name: 'StarCraft II',
-		tag: 's2'
+		tag: 's2',
+		execTag: 'S2'
 	},
 	{
 		name: 'Hearthstone',
 		tag: 'hs_beta',
-		path: 'Hearthstone Beta Launcher.exe'
+		path: 'Hearthstone.exe',
+		execTag: 'WTCG'
 	},
 	{
 		name: 'StarCraft',
-		tag: 's1'
+		tag: 's1',
+		execTag: 'SCR'
+	},
+	{
+		name: 'Heroes of the Storm',
+		tag: 'heroes',
+		execTag: 'Hero'
 	},
 	{
 		name: 'Destiny 2',
-		tag: 'destiny2'
+		tag: 'destiny2',
+		execTag: 'DST2'
 	}
 ];
 

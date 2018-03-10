@@ -163,7 +163,14 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		return (
 			<div className={css(styles.vitrineApp)}>
 				<TaskBar/>
-				{vitrineContent}
+				<Grid className={css(styles.mainContainer)}>
+					<SideBar
+						launchGame={this.launchGame.bind(this)}
+					/>
+					<GameContainer
+						launchGame={this.launchGame.bind(this)}
+					/>
+				</Grid>
 				<GameAddModal/>
 				<TimePlayedEditionModal/>
 				<PotentialGamesAddModal/>

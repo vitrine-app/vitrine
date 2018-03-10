@@ -212,7 +212,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		else
 			return;
 
-		let [executable, args]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
+		let [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
 		if (!this.state.igdbFilled)
 			this.setState({
 				name: gameToHandle.name,
