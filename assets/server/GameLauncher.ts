@@ -3,6 +3,7 @@ import * as path from 'path';
 
 import { GameSource } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
+import { launchGame as nativeLaunchGame, GameLauncherOptions } from '../../scripts/gameLauncher.node';
 import { getEnvFolder } from '../models/env';
 
 class GameLauncher {
@@ -28,6 +29,10 @@ class GameLauncher {
 				this.launchStandardGame(callback);
 				break;
 			}
+			case GameSource.BATTLE_NET: {
+				this.launchStandardGame(callback);
+				break;
+			}
 			case GameSource.STEAM: {
 				this.launchSteamGame(callback);
 				break;
@@ -36,16 +41,19 @@ class GameLauncher {
 	}
 
 	private launchStandardGame(callback: (error: Error, minutesPlayed: number) => void) {
-		let [executable, args]: string[] = this.game.commandLine;
-		let commandLine: string = (args) ? (`"${executable}" ${args}`) : (`"${executable}"`);
-
-		let beginTime: Date = new Date();
-		childProcess.exec(commandLine, {
+		let [ executable, args ]: string[] = this.game.commandLine;
+		let launcherOptions: GameLauncherOptions = {
+			program: executable,
 			cwd: path.parse(executable).dir
-		}, () => {
-			let endTime: Date = new Date();
-			let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
-			callback(null, secondsPlayed);
+		};
+		if (args)
+			launcherOptions.args = args;
+
+		nativeLaunchGame(launcherOptions, (error: string, secondsPlayed: number) => {
+			if (error)
+				callback(new Error(error), null);
+			else
+				callback(null, secondsPlayed);
 		});
 	}
 
@@ -67,7 +75,7 @@ class GameLauncher {
 			});
 		});
 
-		let [executable, args]: string[] = this.game.commandLine;
+		let [ executable, args ]: string[] = this.game.commandLine;
 		childProcess.exec(`"${executable}" ${args.replace(/\\/g, '/')}`, (error: Error) => {
 			if (error)
 				callback(error, null);
