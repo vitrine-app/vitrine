@@ -25,10 +25,10 @@ Vitrine is made possible thanks to a lot of different technologies, including:
 - [Electron](https://electronjs.org)
 - [React](https://reactjs.org)
 - [Redux](https://redux.js.org)
-- [Bootstrap](http://getbootstrap.com)
+- [Semantic UI](https://semantic-ui.com)
 - [IGDB](https://www.igdb.com)
 - [TypeScript](http://www.typescriptlang.org)
-- [Sass](http://sass-lang.com)
+- [Less](http://lesscss.org)
 - [Webpack](https://webpack.js.org)
 
 ## License
