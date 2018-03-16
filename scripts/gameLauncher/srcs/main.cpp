@@ -4,6 +4,7 @@ using namespace v8;
 
 static void workAsync(uv_work_t *request) {
 	Worker* worker = static_cast<Worker*>(request->data);
+
 	STARTUPINFO startUpInfo;
 	PROCESS_INFORMATION processInfo;
 
@@ -33,8 +34,10 @@ static void workAsyncComplete(uv_work_t *request, int status) {
 	DWORD timePlayed = (GetTickCount() - worker->startingTimeStamp) / 1000;
 	Local<Value> av[2] = { Null(isolate), Number::New(isolate, timePlayed) };
 
-	Local<Function>::New(isolate, worker->callback)->Call(isolate->GetCurrentContext()->Global(), 2, av);
-	worker->callback.Reset();
+	if (worker->callbackUsed) {
+		Local<Function>::New(isolate, worker->callback)->Call(isolate->GetCurrentContext()->Global(), 2, av);
+		worker->callback.Reset();
+	}
 	delete worker;
 }
 
@@ -69,15 +72,26 @@ void parseArgsObject(Isolate* isolate, Local<Object> arguments, Worker* worker) 
 void launchGame(const FunctionCallbackInfo<Value>& args) {
 	Isolate* isolate = args.GetIsolate();
 
-	if (args.Length() < 2 || !args[0]->IsObject() || !args[1]->IsFunction())
-		isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "You must provide the program and its arguments as an object and a callback.")));
+	if (!args.Length() || (args.Length() == 1 && !args[0]->IsObject())) {
+		isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "You must provide the program as an object.")));
+		return;
+	}
+	else if (args.Length() >= 2 && !args[1]->IsFunction()) {
+		isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "The second parameter must be a callback.")));
+		return;
+	}
 
 	Worker* worker = new Worker();
 	worker->request.data = worker;
 	parseArgsObject(isolate, Local<Object>::Cast(args[0]), worker);
 
-	Local<Function> callback = Local<Function>::Cast(args[1]);
-	worker->callback.Reset(isolate, callback);
+	if (args.Length() >= 2) {
+		Local<Function> callback = Local<Function>::Cast(args[1]);
+		worker->callback.Reset(isolate, callback);
+		worker->callbackUsed = true;
+	}
+	else
+		worker->callbackUsed = false;
 
 	uv_queue_work(uv_default_loop(), &worker->request, workAsync, workAsyncComplete);
 	args.GetReturnValue().Set(Undefined(isolate));

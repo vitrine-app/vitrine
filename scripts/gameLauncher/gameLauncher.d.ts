@@ -5,5 +5,5 @@ declare module '*gameLauncher.node' {
 		cwd?: string
 	}
 
-	export function launchGame(file: GameLauncherOptions, callback: (error: string, timePlayed: number) => void): undefined;
+	export function launchGame(file: GameLauncherOptions, callback?: (error: string, timePlayed: number) => void): undefined;
 }
