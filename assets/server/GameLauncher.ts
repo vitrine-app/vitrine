@@ -1,46 +1,24 @@
-import * as childProcess from 'child_process';
 import * as path from 'path';
 
 import { GameSource } from '../models/PotentialGame';
 import { PlayableGame } from '../models/PlayableGame';
 import { launchGame as nativeLaunchGame, GameLauncherOptions } from '../../scripts/gameLauncher.node';
-import { getEnvFolder } from '../models/env';
+import { watchRegKey } from '../../scripts/regWatcher.node'
 
 class GameLauncher {
-	private watcherPath: string;
 	private game: PlayableGame;
-
-	public constructor() {
-		this.watcherPath = path.resolve(getEnvFolder('scripts'), 'regWatcher.exe');
-	}
+	private callback: (error: Error, minutesPlayed: number) => void;
 
 	public launch(game: PlayableGame, callback: (error: Error, minutesPlayed: number) => void) {
+		this.callback = callback;
 		this.game = game;
-		switch (+this.game.source) {
-			case GameSource.LOCAL: {
-				this.launchStandardGame(callback);
-				break;
-			}
-			case GameSource.ROM: {
-				this.launchStandardGame(callback);
-				break;
-			}
-			case GameSource.ORIGIN: {
-				this.launchStandardGame(callback);
-				break;
-			}
-			case GameSource.BATTLE_NET: {
-				this.launchStandardGame(callback);
-				break;
-			}
-			case GameSource.STEAM: {
-				this.launchSteamGame(callback);
-				break;
-			}
-		}
+		if (this.game.source == GameSource.STEAM)
+			this.launchSteamGame();
+		else
+			this.launchStandardGame();
 	}
 
-	private launchStandardGame(callback: (error: Error, minutesPlayed: number) => void) {
+	private launchStandardGame() {
 		let [ executable, args ]: string[] = this.game.commandLine;
 		let launcherOptions: GameLauncherOptions = {
 			program: executable,
@@ -51,36 +29,37 @@ class GameLauncher {
 
 		nativeLaunchGame(launcherOptions, (error: string, secondsPlayed: number) => {
 			if (error)
-				callback(new Error(error), null);
+				this.callback(new Error(error), null);
 			else
-				callback(null, secondsPlayed);
+				this.callback(null, secondsPlayed);
 		});
 	}
 
-	private launchSteamGame(callback: (error: Error, minutesPlayed: number) => void) {
-		childProcess.exec(`"${this.watcherPath}" ${this.game.details.steamId}`, (error: Error) => {
+	private launchSteamGame() {
+		if (!this.game.details.steamId) {
+			this.callback(new Error('The game Steam id is not provided. Make sure your game is correctly installed.'), null);
+			return;
+		}
+
+		let regNest: string = 'HKEY_CURRENT_USER';
+		let regKey: string = `Software\\Valve\\Steam\\Apps\\${this.game.details.steamId}`;
+
+		watchRegKey(regNest, regKey, (error: string) => {
 			if (error) {
-				callback(error, null);
+				this.callback(new Error(error), null);
 				return;
 			}
-			let beginTime: Date = new Date();
-			childProcess.exec(`"${this.watcherPath}" ${this.game.details.steamId}`, (error: Error) => {
-				if (error) {
-					callback(error, null);
-					return;
-				}
-				let endTime: Date = new Date();
-				let secondsPlayed: number = Math.round((endTime.getTime() - beginTime.getTime()) / 1000);
-				callback(null, secondsPlayed);
+
+			watchRegKey(regNest, regKey, (error: string, secondsPlayed: number) => {
+				if (error)
+					this.callback(new Error(error), null);
+				else
+					this.callback(null, secondsPlayed);
 			});
 		});
 
-		let [ executable, args ]: string[] = this.game.commandLine;
-		childProcess.exec(`"${executable}" ${args.replace(/\\/g, '/')}`, (error: Error) => {
-			if (error)
-				callback(error, null);
-			return;
-		});
+		let [ program, args ]: string[] = this.game.commandLine;
+		nativeLaunchGame({ program, args });
 	}
 }
 

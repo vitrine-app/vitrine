@@ -112,7 +112,6 @@
     "webpack": "^3.11.0"
   },
   "scripts": {
-    "compile-cpp": "cl scripts/gameLauncher.cpp Advapi32.lib /EHsc",
     "build": "webpack --progress && electron .",
     "build-scripts": "call scripts/buildModules.bat",
     "run-server": "webpack --progress --config webpack.server.config.js && electron .",

@@ -147,7 +147,8 @@ export class VitrineServer {
 	private launchGame(gameUuid: string) {
 		if (this.gameLaunched)
 			return;
-		let launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);this.gameLaunched = true;
+		let launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		this.gameLaunched = true;
 		launchGame(launchingGame).then((secondsPlayed: number) => {
 			this.gameLaunched = false;
 			launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
