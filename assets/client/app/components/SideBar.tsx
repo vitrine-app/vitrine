@@ -6,13 +6,13 @@ import { margin, padding, rgba } from 'css-verbose';
 
 import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
+import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 import { ContextMenu } from '../containers/ContextMenu';
 import { VitrineButton } from './VitrineButton';
 import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
 import { localizer } from '../Localizer';
 import { PotentialGame } from '../../../models/PotentialGame';
-import { serverListener } from '../ServerListener';
 
 interface Props {
 	potentialGames: GamesCollection<PotentialGame>,
@@ -35,11 +35,16 @@ export class SideBar extends VitrineComponent<Props, {}> {
 
 	private taskBarRefreshBtnClickHandler() {
 		serverListener.send('refresh-potential-games');
-		this.props.refreshGames();
 	}
 
 	private potentialGamesButton() {
 		this.props.openPotentialGamesAddModal();
+	}
+
+	public componentDidMount() {
+		serverListener.listen('potential-games-search-begin', () => {
+			this.props.refreshGames();
+		});
 	}
 
 	public render(): JSX.Element {

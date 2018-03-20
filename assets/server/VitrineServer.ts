@@ -169,6 +169,7 @@ export class VitrineServer {
 
 	// TODO: Improve potential games pipeline
 	private findPotentialGames() {
+		this.windowsHandler.sendToClient('potential-games-search-begin');
 		this.potentialGames.clean();
 		this.searchSteamGames()
 			.then(this.searchOriginGames.bind(this))
@@ -250,6 +251,8 @@ export class VitrineServer {
 	}
 
 	private async searchBattleNetGames(): Promise<any> {
+/*		if (!this.vitrineConfig.battleNet)
+			return;*/
 		try {
 			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(null, this.playableGames.getGames());
 			this.potentialGames.addGames(games.getGames());
