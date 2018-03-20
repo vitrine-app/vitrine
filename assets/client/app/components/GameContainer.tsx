@@ -101,7 +101,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 											<strong>{localizer.f('releaseDateLabel')}</strong>
 										</Grid.Column>
 										<Grid.Column width={11} className={css(styles.developerGridColumn)}>
-											{moment/*.unix*/(this.props.selectedGame.details.releaseDate/* / 1000 */).format('DD/MM/YYYY')}
+											{moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')}
 										</Grid.Column>
 									</Grid>
 									<Grid>
@@ -146,7 +146,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 				<div className={css(styles.noSelectedGame)}>
 					<h1>{localizer.f('welcomeMessage')}</h1>
 					<hr className={css(styles.noSelectedGameH1)}/>
-					<p dangerouslySetInnerHTML={{ __html: localizer.f('desc') }}/>
+					{localizer.f('desc')}
 				</div>
 			);
 

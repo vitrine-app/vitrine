@@ -50,7 +50,9 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, {}> {
 										clickHandler={this.gameCoverClickHandler.bind(this, potentialGame)}
 									/>
 								</div>
-								<p>{potentialGame.name}</p>
+								<p className={css(styles.potentialGameName)}>
+									{potentialGame.name}
+								</p>
 							</Grid.Column>
 						)}
 					</Grid>
@@ -63,25 +65,15 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, {}> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		margin: margin(15..rem(), 'auto')
+		margin: margin(15..rem(), 'auto'),
+		cursor: 'default',
+		userSelect: 'none'
 	},
 	coverWrapper: {
 		height: 200
 	},
-	potentialGamesRow: {
-		padding: padding(15, 0, 15, 50),
-		maxHeight: 810,
-		overflowY: 'auto'
-	},
-	potentialGameCell: {
-		height: 300
-	},
 	potentialGameName: {
-		fontWeight: 300,
-		fontSize: 18,
-		marginLeft: 40
-	},
-	potentialGameCover: {
-		paddingBottom: 20
+		fontSize: 17,
+		marginTop: 6
 	}
 });
