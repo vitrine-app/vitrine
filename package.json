@@ -14,7 +14,7 @@
     "productName": "Vitrine",
     "win": {
       "target": "nsis",
-      "icon": "assets/client/images/vitrine.ico"
+      "icon": "assets/client/resources/images/vitrine.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -55,7 +55,6 @@
     "aphrodite": "^1.2.5",
     "css-verbose": "^0.3.0",
     "download-file": "^0.1.5",
-    "electron-rebuild": "^1.7.3",
     "electron-updater": "^2.20.1",
     "fs-extra": "^4.0.3",
     "glob": "^7.1.2",
