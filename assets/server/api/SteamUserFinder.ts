@@ -12,7 +12,7 @@ class SteamUserFinder {
 		this.steamConfig = steamConfig;
 		this.loginUsersFilePath = path.resolve(this.steamConfig.installFolder, 'config', 'loginusers.vdf');
 		this.loginUsersFile = new AcfParser(this.loginUsersFilePath).toObject().users;
-		logger.info('SteamUserFinder', 'Steam loginusers.vdf parsed.');
+		logger.info('SteamUserFinder', `Steam users file parsed (${this.loginUsersFilePath}).`);
 		return this;
 	}
 

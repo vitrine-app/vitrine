@@ -1,6 +1,8 @@
 import * as igdb from 'igdb-api-node';
 import * as googleTranslate from 'google-translate-api';
 
+import { logger } from '../Logger';
+
 // TODO: Rework IgdbWrapper class
 class IgdbWrapper {
 	private apiKey: string;
@@ -48,12 +50,15 @@ class IgdbWrapper {
 	}
 
 	public searchGames(name: string, callback: (error: Error, games: any) => void, resultsNb?: number) {
+		let limit = resultsNb || this.levenshteinRefiner;
+		logger.info('IgdbWrapper', `Looking for ${limit} result(s) of ${name} in IGDB.`);
 		this.client.games({
-			limit: resultsNb || this.levenshteinRefiner,
+			limit,
 			search: name.replace('²', '2')
 		}, ['name', 'cover']).then((response) => {
 			let counter: number = 0;
 			response.body.forEach((game: any) => {
+				logger.info('IgdbWrapper', `${game.name} found in IGDB.`);
 				if (game.cover) {
 					if (game.cover.url.substr(0, 6) === 'https:')
 						game.cover.url = game.cover.url.substr(6);
