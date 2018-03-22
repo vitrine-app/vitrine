@@ -54,9 +54,6 @@ const gamesData: BattleNetGame[] = [
 	}
 ];
 
-const config: any = {
-	configFilePath: '%appdata%/Battle.net/Battle.net.config'
-};
 
 class BattleNetGamesCrawler extends PotentialGamesCrawler {
 	private gamesData: BattleNetGame[];
@@ -72,7 +69,7 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
 
-		let configFilePath: string = path.resolve(config.configFilePath.replace('%appdata%', process.env.APPDATA));
+		let configFilePath: string = path.resolve(moduleConfig.configFilePath.replace('%appdata%', process.env.APPDATA));
 		logger.info('BattleNetGamesCrawler', `Reading Battle.net config file ${configFilePath}.`);
 		fs.readJson(configFilePath).then(this.parseConfigFile.bind(this)).catch((error: Error) => {
 			this.callback(error, null);

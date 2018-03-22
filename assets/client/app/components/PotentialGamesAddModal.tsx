@@ -65,7 +65,7 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, {}> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		margin: margin(15..rem(), 'auto'),
+		margin: margin(3..rem(), 'auto'),
 		cursor: 'default',
 		userSelect: 'none'
 	},

@@ -234,6 +234,7 @@ export class VitrineServer {
 			.then(this.searchBattleNetGames.bind(this))
 			.then(this.searchEmulatedGames.bind(this))
 			.then(() => {
+				logger.info('VitrineServer', `${this.potentialGames.size()} potential games sent to client.`);
 				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 			});
 	}
@@ -257,6 +258,12 @@ export class VitrineServer {
 				...this.modulesConfig.origin
 			};
 		}
+		if (settingsForm.battleNetEnabled) {
+			logger.info('VitrineServer', 'Updating Battle.net configuration.');
+			config.battleNet = {
+				...this.modulesConfig.battleNet
+			};
+		}
 		if (settingsForm.emulatedPath) {
 			logger.info('VitrineServer', 'Updating emulated games configuration.');
 			config.emulated = {
@@ -276,6 +283,7 @@ export class VitrineServer {
 				logger.info('VitrineServer', 'Emulators config outputted to emulators.json.');
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
 				this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
+				this.findPotentialGames();
 			}).catch((error: Error) => {
 				this.throwServerError(error);
 			});
@@ -317,10 +325,10 @@ export class VitrineServer {
 	}
 
 	private async searchBattleNetGames(): Promise<any> {
-/*		if (!this.vitrineConfig.battleNet)
-			return;*/
+		if (!this.vitrineConfig.battleNet)
+			return;
 		try {
-			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(null, this.playableGames.getGames());
+			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(this.vitrineConfig.battleNet, this.playableGames.getGames());
 			logger.info('VitrineServer', 'Adding potential Battle.net games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
