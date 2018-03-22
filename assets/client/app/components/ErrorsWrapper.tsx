@@ -74,7 +74,9 @@ export class ErrorsWrapper extends React.Component<{}, State> {
 
 const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
-		margin: margin(13..rem(), 'auto')
+		margin: margin(13..rem(), 'auto'),
+		cursor: 'default',
+		userSelect: 'none'
 	},
 	modalContent: {
 		backgroundColor: '#332929'
@@ -94,6 +96,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		color: '#BDB3B3',
 		backgroundColor: '#272020',
 		border: `solid ${1..px()} #463131`,
+		cursor: 'text',
+		userSelect: 'text',
 		'::selection': {
 			backgroundColor: rgba(101, 55, 55, 0.26)
 		}
