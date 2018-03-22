@@ -1,6 +1,7 @@
 import * as igdb from 'igdb-api-node';
 import * as googleTranslate from 'google-translate-api';
 
+// TODO: Rework IgdbWrapper class
 class IgdbWrapper {
 	private apiKey: string;
 	private client: any;
@@ -99,15 +100,17 @@ class IgdbWrapper {
 
 	private findCompanyById(array: number[], callback: (publisher: any) => void) {
 		if (!array || !array.length) {
-			callback({name: ''});
+			callback({ name: '' });
 			return;
 		}
 		let ids: number | number[] = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
-
 		this.client.companies({
-			ids: ids
+			ids
 		}, ['name']).then((response) => {
-			callback(response.body[0]);
+			if (!response.body.length)
+				callback({ name: '' });
+			else
+				callback(response.body[0]);
 		}).catch((error: Error) => {
 			this.callback(error, null);
 		});

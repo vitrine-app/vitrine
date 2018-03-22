@@ -21,17 +21,47 @@ import { findSteamUser } from './api/SteamUserFinder';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
 import { downloadImage, isAlreadyStored } from './helpers';
 
+interface ModulesConfig {
+	steam?: {
+		gamesFolders: string[],
+		launchCommand: string
+	},
+	origin?: {
+		regHive: string,
+		regKey: string
+	},
+	battleNet?: {
+		configFilePath: string
+	}
+}
+
 export class VitrineServer {
 	private windowsHandler: WindowsHandler;
 	private emulatorsConfigFilePath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
+	private modulesConfig: ModulesConfig;
 
 	public constructor(private vitrineConfig: any, private vitrineConfigFilePath: string, configFolderPath: string) {
 		this.windowsHandler = new WindowsHandler();
 		this.emulatorsConfigFilePath = path.resolve(configFolderPath, 'emulators.json');
 		this.gameLaunched = false;
+		this.modulesConfig = {
+			steam: {
+				gamesFolders: [
+					'~steamapps'
+				],
+				launchCommand: 'steam://run/%id'
+			},
+			origin: {
+				regHive: 'HKLM',
+				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
+			},
+			battleNet: {
+				configFilePath: '%appdata%/Battle.net/Battle.net.config'
+			}
+		}
 	}
 
 	public run(prod?: boolean) {
@@ -86,13 +116,17 @@ export class VitrineServer {
 			if (this.vitrineConfig.steam) {
 				findSteamUser(this.vitrineConfig.steam).then((steamUser: any) => {
 					Object.assign(this.vitrineConfig.steam, { ...steamUser });
-				}).catch((error: Error) => this.throwServerError(error));
+				}).catch((error: Error) => {
+					this.throwServerError(error);
+				});
 			}
 			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
 				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
 				this.findPotentialGames();
-			}).catch((error: Error) => this.throwServerError(error));
+			}).catch((error: Error) => {
+				this.throwServerError(error);
+			});
 		}
 	}
 
@@ -103,14 +137,16 @@ export class VitrineServer {
 	private fillIgdbGame(gameId: number) {
 		fillIgdbGame(gameId, this.vitrineConfig.lang).then((game) => {
 			this.windowsHandler.sendToClient('send-igdb-game', game);
-		}).catch((error: Error) => this.throwServerError(error));
+		}).catch((error: Error) => {
+			this.throwServerError(error);
+		});
 	}
 
 	private searchIgdbGames(gameName: string, resultsNb?: number) {
 		searchIgdbGame(gameName, resultsNb).then((games: any) => {
 			this.windowsHandler.sendToClient('send-igdb-searches', gameName, games);
 		}).catch((error: Error) => {
-			this.windowsHandler.sendToClient('server-error', error);
+			this.throwServerError(error);
 		});
 	}
 
@@ -151,7 +187,9 @@ export class VitrineServer {
 		this.gameLaunched = true;
 		launchGame(launchingGame).then((secondsPlayed: number) => {
 			this.gameLaunched = false;
-			launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
+			launchingGame.addPlayTime(secondsPlayed, (error: Error) => {
+				this.throwServerError(error);
+			});
 			this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
 		}).catch((error: Error) => {
 			this.gameLaunched = false;
@@ -187,17 +225,13 @@ export class VitrineServer {
 		if (settingsForm.steamPath) {
 			config.steam = {
 				installFolder: settingsForm.steamPath,
-				gamesFolders: [
-					'~steamapps'
-				],
-				launchCommand: 'steam://run/%id'
+				...this.modulesConfig.steam
 			};
 		}
 		if (settingsForm.originPath) {
 			config.origin = {
 				installFolder: settingsForm.originPath,
-				regHive: 'HKLM',
-				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
+				...this.modulesConfig.origin
 			};
 		}
 		if (settingsForm.emulatedPath) {
@@ -216,8 +250,12 @@ export class VitrineServer {
 			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 }).then(() => {
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
 				this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
-			}).catch((error: Error) => this.throwServerError(error));
-		}).catch((error: Error) => this.throwServerError(error));
+			}).catch((error: Error) => {
+				this.throwServerError(error);
+			});
+		}).catch((error: Error) => {
+			this.throwServerError(error);
+		});
 	}
 
 	private async searchSteamGames(): Promise<any> {
@@ -363,6 +401,8 @@ export class VitrineServer {
 				this.playableGames.editGame(game);
 				this.windowsHandler.sendToClient('edit-playable-game', game);
 			}
-		}).catch((error: Error) => this.throwServerError(error));
+		}).catch((error: Error) => {
+			this.throwServerError(error);
+		});
 	}
 }
