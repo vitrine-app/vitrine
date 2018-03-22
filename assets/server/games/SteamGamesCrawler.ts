@@ -7,6 +7,7 @@ import { searchIgdbGame } from '../api/IgdbWrapper';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
+import { logger } from '../Logger';
 
 class SteamGamesCrawler extends PotentialGamesCrawler {
 	private manifestRegEx: string;
@@ -19,6 +20,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 
 	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
+
 		this.moduleConfig.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
 
@@ -26,6 +28,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 				gameFolder = path.resolve(this.moduleConfig.installFolder, folder.substr(1), this.manifestRegEx);
 			else
 				gameFolder = path.resolve(folder, this.manifestRegEx);
+			logger.info('SteamGamesCrawler', `Looking for Steam games manifests in ${gameFolder}.`);
 			glob(gameFolder, this.processGames.bind(this));
 		});
 	}
@@ -36,14 +39,17 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 			return;
 		}
 		if (!files.length) {
+			logger.info('SteamGamesCrawler', `No Steam games found in this directory.`);
 			this.callback(null, new GamesCollection());
 			return;
 		}
 		let counter: number = 0;
 		files.forEach((appManifest, index, array) => {
 			let gameManifest: any = new AcfParser(appManifest).toObject().AppState;
+			logger.info('SteamGamesCrawler', `Steam game ${gameManifest.name} (Steam ID ${gameManifest.appid}) found.`);
 
 			if (this.isGameAlreadyAdded(gameManifest.name)) {
+				logger.info('SteamGamesCrawler', `Steam game ${gameManifest.name} is already a playable game.`);
 				counter++;
 				if (counter === array.length)
 					this.sendResults();
@@ -68,6 +74,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 				];
 				potentialGame.details.steamId = parseInt(gameManifest.appid);
 				this.potentialGames.push(potentialGame);
+				logger.info('SteamGamesCrawler', `Adding ${gameManifest.name} to potential Steam games.`);
 				counter++;
 				if (counter === array.length)
 					this.sendResults();

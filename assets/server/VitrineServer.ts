@@ -226,6 +226,7 @@ export class VitrineServer {
 
 	// TODO: Improve potential games pipeline
 	private findPotentialGames() {
+		logger.info('VitrineServer', 'Beginning to search potential games.');
 		this.windowsHandler.sendToClient('potential-games-search-begin');
 		this.potentialGames.clean();
 		this.searchSteamGames()
@@ -289,6 +290,7 @@ export class VitrineServer {
 
 		try {
 			let games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential Steam games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}
@@ -304,6 +306,7 @@ export class VitrineServer {
 
 		try {
 			let games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential Origin games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}
@@ -318,6 +321,7 @@ export class VitrineServer {
 			return;*/
 		try {
 			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(null, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential Battle.net games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}
@@ -333,6 +337,7 @@ export class VitrineServer {
 
 		try {
 			let games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential emulated games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}

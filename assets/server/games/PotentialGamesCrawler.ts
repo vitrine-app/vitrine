@@ -5,6 +5,7 @@ import { PotentialGame } from '../../models/PotentialGame';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getEnvFolder, uuidV5 } from '../../models/env';
+import { logger } from '../Logger';
 
 export abstract class PotentialGamesCrawler {
 	protected potentialGames: PotentialGame[];
@@ -24,6 +25,7 @@ export abstract class PotentialGamesCrawler {
 
 	protected sendResults() {
 		let potentialGames: GamesCollection<PotentialGame> = new GamesCollection(this.potentialGames);
+		logger.info('PotentialGamesCrawler', `Potential games search for this module completed.`);
 		this.callback(null, potentialGames);
 	}
 
