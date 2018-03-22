@@ -94,6 +94,10 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 	}
 
 	private parseFolders() {
+		if (!this.gamesData.length) {
+			this.sendResults();
+			return;
+		}
 		let foundGames: BattleNetGame[] = [];
 		let counter: number = 0;
 		this.gamesData.forEach((gameData: BattleNetGame) => {

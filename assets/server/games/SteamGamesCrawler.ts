@@ -22,9 +22,8 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 		this.moduleConfig.gamesFolders.forEach((folder) => {
 			let gameFolder: string = '';
 
-			if (folder.startsWith('~')) {
+			if (folder.startsWith('~'))
 				gameFolder = path.resolve(this.moduleConfig.installFolder, folder.substr(1), this.manifestRegEx);
-			}
 			else
 				gameFolder = path.resolve(folder, this.manifestRegEx);
 			glob(gameFolder, this.processGames.bind(this));

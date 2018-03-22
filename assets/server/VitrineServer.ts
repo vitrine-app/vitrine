@@ -20,6 +20,7 @@ import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
 import { downloadImage, isAlreadyStored } from './helpers';
+import { logger} from './Logger';
 
 interface ModulesConfig {
 	steam?: {
@@ -70,7 +71,7 @@ export class VitrineServer {
 
 	public registerEvents() {
 		this.windowsHandler.listenToLoader('ready', this.loaderReady.bind(this))
-			.listenToLoader('launch-client', () => this.windowsHandler.createClientWindow())
+			.listenToLoader('launch-client', this.windowsHandler.createClientWindow.bind(this.windowsHandler))
 			.listenToLoader('update-and-restart', this.updateApp.bind(this));
 
 		this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
@@ -88,10 +89,12 @@ export class VitrineServer {
 	}
 
 	private throwServerError(error: Error) {
-		return this.windowsHandler.sendToClient('error', error.name, error.stack);
+		logger.info('VitrineServer', 'An error happened.');
+		this.windowsHandler.sendToClient('error', error.name, error.stack);
 	}
 
 	private loaderReady() {
+		logger.info('VitrineServer', 'Checking for updates.');
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {
 			this.windowsHandler.sendToLoader('update-progress', progress);
@@ -100,10 +103,14 @@ export class VitrineServer {
 			autoUpdater.quitAndInstall(true, true);
 		});
 		autoUpdater.checkForUpdates().then((lastUpdate: UpdateCheckResult) => {
-			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion)
+			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion) {
+				logger.info('VitrineServer', `Update ${lastUpdate.updateInfo.version} found.`);
 				this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
-			else
+			}
+			else {
+				logger.info('VitrineServer', 'No updates found.');
 				this.windowsHandler.sendToLoader('no-update-found');
+			}
 		});
 	}
 
@@ -111,6 +118,7 @@ export class VitrineServer {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
+		logger.info('VitrineServer', 'Sending configuration to client.');
 		this.windowsHandler.sendToClient('init-settings', this.vitrineConfig);
 		if (!this.vitrineConfig.firstLaunch) {
 			if (this.vitrineConfig.steam) {
@@ -122,15 +130,19 @@ export class VitrineServer {
 			}
 			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
+				logger.info('VitrineServer', 'Sending playable games to client.');
 				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
 				this.findPotentialGames();
 			}).catch((error: Error) => {
 				this.throwServerError(error);
 			});
 		}
+		else
+			logger.info('VitrineServer', 'Vitrine first launch.');
 	}
 
 	private updateApp() {
+		logger.info('VitrineServer', 'Quitting Vitrine and installing new version.');
 		autoUpdater.quitAndInstall(true, true);
 	}
 

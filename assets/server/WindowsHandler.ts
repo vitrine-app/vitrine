@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import * as path from 'path';
 
+import { logger} from './Logger';
+
 export class WindowsHandler {
 	private loaderWindow: BrowserWindow;
 	private clientWindow: BrowserWindow;
@@ -44,6 +46,7 @@ export class WindowsHandler {
 	}
 
 	public createLoaderWindow() {
+		logger.info('WindowsHandler', 'Creating loader window.');
 		if (this.devTools)
 			BrowserWindow.addDevToolsExtension(this.reactDevToolsPath);
 		this.loaderWindow = new BrowserWindow({
@@ -54,9 +57,11 @@ export class WindowsHandler {
 			resizable: false
 		});
 		this.loaderWindow.loadURL(this.loaderEntryPoint);
+		logger.info('WindowsHandler', 'Loader window created.');
 	}
 
 	public createClientWindow() {
+		logger.info('WindowsHandler', 'Creating main client window.');
 		this.clientWindow = new BrowserWindow({
 			minWidth: 1450,
 			minHeight: 700,
@@ -81,11 +86,17 @@ export class WindowsHandler {
 			else
 				delete this.clientWindow;
 		});
+		logger.info('WindowsHandler', 'Main client window created.');
 	}
 
 	public quitApplication(mustRelaunch?: boolean) {
-		if (mustRelaunch)
+		if (mustRelaunch) {
+			logger.info('WindowsHandler', 'Relaunching Vitrine.');
 			app.relaunch();
+		}
+		else
+			logger.info('WindowsHandler', 'Quitting Vitrine.');
+
 		this.appQuit = true;
 		if (this.tray)
 			this.tray.destroy();

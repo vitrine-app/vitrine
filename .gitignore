@@ -6,4 +6,4 @@
 /games/*
 /config/vitrine_config.json
 /assets/server/api/apiKeys.json
-/github_token
+/vitrine.log.html
