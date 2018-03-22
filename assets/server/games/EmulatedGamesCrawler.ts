@@ -7,6 +7,7 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
+import { logger } from '../Logger';
 
 class EmulatedGamesCrawler extends PotentialGamesCrawler {
 	private romsFolders: any[];
@@ -19,6 +20,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 
 	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
+		logger.info('EmulatedGamesCrawler',`Searching roms folders in ${this.moduleConfig.romsFolder}.`);
 		glob(`${this.moduleConfig.romsFolder}/*`, (error: Error, folders: string[]) => {
 			if (error)
 				return this.callback(error, null);
@@ -29,11 +31,13 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					if (platform.folder.toUpperCase() === path.basename(romFolder).toUpperCase()) {
 						let romEmulator: any = this.moduleConfig.emulators.filter((emulator: any) => emulator.platforms
 							.filter((platformId: number) => platformId === platform.id).length)[0];
-						if (romEmulator.active)
+						if (romEmulator.active) {
+							logger.info('EmulatedGamesCrawler',`Roms folder ${romFolder} found and binded to ${romEmulator.name}.`);
 							this.romsFolders.push({
 								romFolder,
 								romEmulator
 							});
+						}
 					}
 					secondCounter++;
 					if (secondCounter === this.moduleConfig.platforms.length) {
@@ -49,13 +53,17 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 	private analyzeFolders() {
 		let counter: number = 0;
 		this.romsFolders.forEach(({romFolder, romEmulator}) => {
+			logger.info('EmulatedGamesCrawler',`Parsing roms in ${romFolder} with ${romEmulator.name} pattern (${romEmulator.glob}).`);
 			glob(`${romFolder}/${romEmulator.glob}`, (error: Error, roms: string[]) => {
-				if (error)
-					return this.callback(error, null);
+				if (error) {
+					this.callback(error, null);
+					return;
+				}
 				let secondCounter: number = 0;
 				roms.forEach((romPath: string) => {
 					let parsedPath: string[] = romPath.split('/');
 					let romName = parsedPath[parsedPath.length - romEmulator.glob.split('/').length].replace(/(\w+)\.(\w+)/g, '$1');
+					logger.info('EmulatedGamesCrawler',`Rom of ${romName} found.`);
 					for (let playableGame of this.playableGames) {
 						if (spatStr(romName) === spatStr(playableGame.name)) {
 							secondCounter++;
@@ -77,6 +85,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 							romEmulator.command.replace('%g', romPath)
 						];
 						this.potentialGames.push(potentialGame);
+						logger.info('EmulatedGamesCrawler', `Adding ${romName} to potential emulated games.`);
 						secondCounter++;
 						if (secondCounter === roms.length) {
 							counter++;

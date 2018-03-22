@@ -16,8 +16,8 @@ As it is in beta, Vitrine only currently supports Steam and Origin, but in the f
 If you want to make your own build of Vitrine, you need to : 
 1) Clone this repository and run `yarn install` to download dependencies.
 2) Download and install [node-gyp](https://github.com/nodejs/node-gyp) to compile the C++ Node native addons.
-3) Run `yarn build-scripts` to build the Node addons.
-4) Run `yarn build` to build Vitrine and start it. If you want to build a packed version, use `yarn pack` or `yarn dist` for a version with an installation binary ready for distribution.
+3) Run `yarn run build-scripts` to build the Node addons.
+4) Run `yarn run build` to build Vitrine and start it. If you want to build a packed version, use `yarn run pack` or `yarn run dist` for a version with an installation binary ready for distribution.
 
 ## Technologies
 Vitrine is made possible thanks to a lot of different technologies, including:
