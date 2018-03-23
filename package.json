@@ -125,6 +125,6 @@
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "pack": "yarn build-scripts && webpack --progress --config webpack.prod.config.js && build --dir",
-    "dist": "yarn build-scripts && yarn test && webpack --progress --config webpack.prod.config.js && build"
+    "dist": "yarn build-scripts && webpack --progress --config webpack.prod.config.js && build"
   }
 }

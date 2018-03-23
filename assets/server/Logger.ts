@@ -8,8 +8,10 @@ class Logger {
 	private filePath: string;
 
 	public constructor() {
-		if (getEnvData().env)
+		if (getEnvData().env) {
 			this.filePath = path.resolve(process.env.APPDATA, 'vitrine', 'data', 'vitrine.log.html');
+			fs.ensureFileSync(this.filePath);
+		}
 		else
 			this.filePath = path.resolve('vitrine.log.html');
 	}
