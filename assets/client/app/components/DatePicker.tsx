@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Datetime from '@paul-roman/react-date-time-input';
+import * as Datetime from 'react-datetime';
 import { Button, Input } from 'semantic-ui-react';
 import * as moment from 'moment';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';

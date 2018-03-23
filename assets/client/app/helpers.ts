@@ -13,13 +13,12 @@ export function formatTimePlayed(timePlayed: number): string {
 	let minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
 	let seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
 
-
-	if (hours && minutes && seconds) {
+	if (hours && minutes) {
 		let hoursStr: string = localizer.f((hours !== 1) ? ('hoursPlur') : ('hoursSing'));
-		let minutesStr: string = localizer.f((minutes) ? ((minutes === 1) ? ('minutesPlur') : ('minutesSing')) : (''));
+		let minutesStr: string = localizer.f((minutes) ? ((minutes !== 1) ? ('minutesPlur') : ('minutesSing')) : (''));
 		return hours + ' ' + hoursStr + ((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''));
 	}
-	else if (minutes && seconds) {
+	else if (minutes) {
 		let minutesStr: string = localizer.f((minutes !== 1) ? ('minutesPlur') : ('minutesSing'));
 		return minutes + ' ' + minutesStr;
 	}
@@ -33,21 +32,21 @@ export function formatTimePlayed(timePlayed: number): string {
 
 export function openDirectory(): string {
 	return openDialog({
-		properties: ['openDirectory']
+		properties: [ 'openDirectory' ]
 	});
 }
 
 export function openExecutableDialog(): string {
 	return openDialog({
-		properties: ['openFile'],
+		properties: [ 'openFile' ],
 		filters: [
 			{
 				name: localizer.f('executables'),
-				extensions: ['exe']
+				extensions: [ 'exe' ]
 			},
 			{
 				name:localizer.f('allFiles'),
-				extensions: ['*']
+				extensions: [ '*' ]
 			}
 		]
 	});
@@ -55,11 +54,11 @@ export function openExecutableDialog(): string {
 
 export function openImageDialog(): string {
 	return openDialog({
-		properties: ['openFile'],
+		properties: [ 'openFile' ],
 		filters: [
 			{
 				name: localizer.f('images'),
-				extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp']
+				extensions: [ 'jpg', 'jpeg', 'png', 'gif', 'bmp' ]
 			}
 		]
 	});

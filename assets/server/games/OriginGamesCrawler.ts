@@ -8,13 +8,14 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
+import { logger } from '../Logger';
 
 class OriginGamesCrawler extends PotentialGamesCrawler {
 	private regDetails: any[];
 	private gamesFolder: string;
 
 	public setPlayableGames(playableGames?: PlayableGame[]): this {
-		super.setPlayableGames([]);
+		super.setPlayableGames(playableGames);
 		this.regDetails = [];
 		return this;
 	}
@@ -27,6 +28,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			hive: Registry[this.moduleConfig.regHive],
 			key: this.moduleConfig.regKey
 		});
+		logger.info('OriginGamesCrawler', `Parsing registry key ${this.moduleConfig.regKey}.`);
 		regKey.keys(this.parseRegistry.bind(this));
 	}
 
@@ -40,13 +42,16 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 				if (error)
 					this.callback(error, null);
 
+				logger.info('OriginGamesCrawler', `Installed game found in registry (${values[5].value}).`);
 				this.regDetails.push({
 					path: values[1].value,
 					exe: values[5].value
 				});
 				counter++;
-				if (counter === items.length)
+				if (counter === items.length) {
+					logger.info('OriginGamesCrawler', `Looking for games folders in (${this.gamesFolder}).`);
 					glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
+				}
 			});
 		});
 	}
@@ -55,6 +60,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		if (error)
 			this.callback(error, null);
 		if (!files.length) {
+			logger.info('OriginGamesCrawler', 'Not Origin games found in this directory.');
 			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
 			return;
@@ -64,6 +70,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			let gameName: string = gameFolder.split('/').pop();
 
 			if (this.isGameAlreadyAdded(gameName)) {
+				logger.info('OriginGamesCrawler', `Origin game ${gameName} is already a playable game.`);
 				counter++;
 				if (counter === files.length)
 					this.sendResults();
@@ -81,7 +88,6 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			this.getRegExe(gameFolder, (error: Error, gamePath: string) => {
 				if (error)
 					this.callback(error, null);
-
 				searchIgdbGame(gameName, 1).then((game: any) => {
 					game = game[0];
 					delete game.name;
@@ -89,6 +95,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 					potentialGame.source = GameSource.ORIGIN;
 					potentialGame.commandLine = [ path.resolve(gamePath) ];
 					this.potentialGames.push(potentialGame);
+					logger.info('OriginGamesCrawler', `Adding ${gameName} to potential Origin games.`);
 					counter++;
 					if (counter === files.length)
 						this.sendResults();
@@ -104,6 +111,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		let found: boolean = false;
 		this.regDetails.forEach((regDetail: any) => {
 			if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
+				logger.info('OriginGamesCrawler', `Origin game found (${gamePath}).`);
 				callback(null, regDetail.exe);
 				found = true;
 			}

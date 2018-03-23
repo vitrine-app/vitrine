@@ -4,6 +4,7 @@ import * as path from 'path';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { getEnvFolder } from '../../models/env';
+import { logger } from '../Logger';
 
 class PlayableGamesCrawler {
 	private playableGames: PlayableGame[];
@@ -38,6 +39,7 @@ class PlayableGamesCrawler {
 					playableGame.source = rawGame.source;
 					playableGame.ambientColor = rawGame.ambientColor;
 
+					logger.info('PlayableGamesCrawler', `Playable game ${playableGame.name} (${playableGame.uuid}) found.`);
 					this.playableGames.push(playableGame);
 				}
 				counter++;

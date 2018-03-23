@@ -6,6 +6,7 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { GamesCollection } from '../../models/GamesCollection';
 import { searchIgdbGame } from '../api/IgdbWrapper';
+import { logger } from '../Logger';
 
 interface BattleNetGame {
 	tag: string,
@@ -53,9 +54,6 @@ const gamesData: BattleNetGame[] = [
 	}
 ];
 
-const config: any = {
-	configFilePath: '%appdata%/Battle.net/Battle.net.config'
-};
 
 class BattleNetGamesCrawler extends PotentialGamesCrawler {
 	private gamesData: BattleNetGame[];
@@ -71,7 +69,8 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
 
-		let configFilePath: string = path.resolve(config.configFilePath.replace('%appdata%', process.env.APPDATA));
+		let configFilePath: string = path.resolve(moduleConfig.configFilePath.replace('%appdata%', process.env.APPDATA));
+		logger.info('BattleNetGamesCrawler', `Reading Battle.net config file ${configFilePath}.`);
 		fs.readJson(configFilePath).then(this.parseConfigFile.bind(this)).catch((error: Error) => {
 			this.callback(error, null);
 		});
@@ -85,8 +84,11 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 		let counter: number = 0;
 		gameTags.forEach((gameTag: string) => {
 			let gameData: BattleNetGame = gamesData.filter((battleNetGame: BattleNetGame) => battleNetGame.tag === gameTag)[0];
+			logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} found.`);
 			if (!this.isGameAlreadyAdded(gameData.name))
 				this.gamesData.push(gameData);
+			else
+				logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} is already a playable game.`);
 			counter++;
 			if (counter === gameTags.length)
 				this.parseFolders();
@@ -94,13 +96,20 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 	}
 
 	private parseFolders() {
+		if (!this.gamesData.length) {
+			logger.info('BattleNetGamesCrawler', 'No Battle.net games found.');
+			this.sendResults();
+			return;
+		}
 		let foundGames: BattleNetGame[] = [];
 		let counter: number = 0;
 		this.gamesData.forEach((gameData: BattleNetGame) => {
 			gameData.path = path.resolve(this.rootInstallPath, gameData.name, gameData.path);
 			fs.pathExists(gameData.path).then((exists: boolean) => {
-				if (exists)
+				if (exists) {
+					logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} is present on disk.`);
 					foundGames.push(gameData);
+				}
 				counter++;
 				if (counter === this.gamesData.length)
 					this.getGamesData(foundGames);
@@ -121,6 +130,7 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 				potentialGame.source = GameSource.BATTLE_NET;
 				potentialGame.commandLine = [ foundGame.path ];
 				this.potentialGames.push(potentialGame);
+				logger.info('BattleNetGamesCrawler', `Adding ${foundGame.name} to potential Battle.net games.`);
 				counter++;
 				if (counter === foundGames.length)
 					this.sendResults();

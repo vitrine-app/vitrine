@@ -62,7 +62,7 @@ module.exports = [
 				});
 			}
 		]
-	}/*,
+	},
 	{
 		entry: './assets/client/loader.tsx',
 		output: {
@@ -76,5 +76,5 @@ module.exports = [
 				filename: 'loader.html'
 			})
 		]
-	}*/
+	}
 ];

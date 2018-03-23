@@ -14,6 +14,7 @@ import { openDirectory } from '../helpers';
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import * as steamIcon from '../../resources/images/steamIcon.png';
 import * as originIcon from '../../resources/images/originIcon.png';
+import * as battleNetIcon from '../../resources/images/battleNetIcon.png';
 import * as emulatedIcon from '../../resources/images/emulatedIcon.png';
 
 interface Props {
@@ -29,6 +30,7 @@ interface State {
 	lang: string,
 	steamEnabled: boolean,
 	originEnabled: boolean,
+	battleNetEnabled: boolean,
 	emulatedEnabled: boolean,
 	steamPath: string,
 	originPath: string,
@@ -51,6 +53,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			lang: localizer.getSelectedLanguage(),
 			steamEnabled: (this.props.settings && this.props.settings.steam) ? (true) : (false),
 			originEnabled: (this.props.settings && this.props.settings.origin) ? (true) : (false),
+			battleNetEnabled: (this.props.settings && this.props.settings.battleNet) ? (true) : (false),
 			emulatedEnabled: (this.props.settings && this.props.settings.emulated.romsFolder) ? (true) : (false),
 			steamPath: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
 			originPath: (this.props.settings && this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
@@ -85,6 +88,14 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			this.setState({
 				originEnabled: !this.state.originEnabled,
 				originError: false
+			});
+		}
+	}
+
+	private battleNetIconClickHandler(checked: boolean) {
+		if ((checked && !this.state.battleNetEnabled) || (!checked && this.state.battleNetEnabled)) {
+			this.setState({
+				battleNetEnabled: !this.state.battleNetEnabled
 			});
 		}
 	}
@@ -173,6 +184,9 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 				});
 			}
 		}
+		if (this.state.battleNetEnabled) {
+			form.battleNetEnabled = true;
+		}
 		if (this.state.emulatedEnabled) {
 			if (this.state.emulatedPath) {
 				form.emulatedPath = this.state.emulatedPath;
@@ -210,7 +224,6 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		const modulesSettings: JSX.Element = (
 			<Tab.Pane className={css(styles.settingsPane)}>
 				<Grid>
-					<Grid.Column width={1}/>
 					<Grid.Column width={4}>
 						<GamesModule
 							clicked={this.state.steamEnabled}
@@ -225,6 +238,14 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							iconFile={originIcon}
 							iconAlt={'Origin'}
 							clickHandler={this.originIconClickHandler.bind(this)}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4}>
+						<GamesModule
+							clicked={this.state.battleNetEnabled}
+							iconFile={battleNetIcon}
+							iconAlt={'Battle.net'}
+							clickHandler={this.battleNetIconClickHandler.bind(this)}
 						/>
 					</Grid.Column>
 					<Grid.Column width={4}>

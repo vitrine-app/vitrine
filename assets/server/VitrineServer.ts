@@ -20,6 +20,21 @@ import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
 import { downloadImage, isAlreadyStored } from './helpers';
+import { logger} from './Logger';
+
+interface ModulesConfig {
+	steam?: {
+		gamesFolders: string[],
+		launchCommand: string
+	},
+	origin?: {
+		regHive: string,
+		regKey: string
+	},
+	battleNet?: {
+		configFilePath: string
+	}
+}
 
 export class VitrineServer {
 	private windowsHandler: WindowsHandler;
@@ -27,11 +42,27 @@ export class VitrineServer {
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
+	private modulesConfig: ModulesConfig;
 
 	public constructor(private vitrineConfig: any, private vitrineConfigFilePath: string, configFolderPath: string) {
 		this.windowsHandler = new WindowsHandler();
 		this.emulatorsConfigFilePath = path.resolve(configFolderPath, 'emulators.json');
 		this.gameLaunched = false;
+		this.modulesConfig = {
+			steam: {
+				gamesFolders: [
+					'~steamapps'
+				],
+				launchCommand: 'steam://run/%id'
+			},
+			origin: {
+				regHive: 'HKLM',
+				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
+			},
+			battleNet: {
+				configFilePath: '%appdata%/Battle.net/Battle.net.config'
+			}
+		}
 	}
 
 	public run(prod?: boolean) {
@@ -40,11 +71,11 @@ export class VitrineServer {
 
 	public registerEvents() {
 		this.windowsHandler.listenToLoader('ready', this.loaderReady.bind(this))
-			.listenToLoader('launch-client', () => this.windowsHandler.createClientWindow())
+			.listenToLoader('launch-client', this.windowsHandler.createClientWindow.bind(this.windowsHandler))
 			.listenToLoader('update-and-restart', this.updateApp.bind(this));
 
 		this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
-			.listenToClient('ready', () => this.windowsHandler.clientReady())
+			.listenToClient('ready', this.windowsHandler.clientReady.bind(this.windowsHandler))
 			.listenToClient('quit-application', (mustRelaunch?: boolean) => this.windowsHandler.quitApplication(mustRelaunch))
 			.listenToClient('fill-igdb-game', this.fillIgdbGame.bind(this))
 			.listenToClient('search-igdb-games', this.searchIgdbGames.bind(this))
@@ -58,10 +89,12 @@ export class VitrineServer {
 	}
 
 	private throwServerError(error: Error) {
-		return this.windowsHandler.sendToClient('error', error.name, error.stack);
+		logger.info('VitrineServer', 'An error happened.');
+		this.windowsHandler.sendToClient('error', error.name, error.stack);
 	}
 
 	private loaderReady() {
+		logger.info('VitrineServer', 'Checking for updates.');
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {
 			this.windowsHandler.sendToLoader('update-progress', progress);
@@ -70,10 +103,14 @@ export class VitrineServer {
 			autoUpdater.quitAndInstall(true, true);
 		});
 		autoUpdater.checkForUpdates().then((lastUpdate: UpdateCheckResult) => {
-			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion)
+			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion) {
+				logger.info('VitrineServer', `Update ${lastUpdate.updateInfo.version} found.`);
 				this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
-			else
+			}
+			else {
+				logger.info('VitrineServer', 'No updates found.');
 				this.windowsHandler.sendToLoader('no-update-found');
+			}
 		});
 	}
 
@@ -81,40 +118,52 @@ export class VitrineServer {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
+		logger.info('VitrineServer', 'Sending configuration to client.');
 		this.windowsHandler.sendToClient('init-settings', this.vitrineConfig);
 		if (!this.vitrineConfig.firstLaunch) {
 			if (this.vitrineConfig.steam) {
 				findSteamUser(this.vitrineConfig.steam).then((steamUser: any) => {
 					Object.assign(this.vitrineConfig.steam, { ...steamUser });
-				}).catch((error: Error) => this.throwServerError(error));
+				}).catch((error: Error) => {
+					this.throwServerError(error);
+				});
 			}
 			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
 				this.playableGames = games;
+				logger.info('VitrineServer', 'Sending playable games to client.');
 				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
 				this.findPotentialGames();
-			}).catch((error: Error) => this.throwServerError(error));
+			}).catch((error: Error) => {
+				this.throwServerError(error);
+			});
 		}
+		else
+			logger.info('VitrineServer', 'Vitrine first launch.');
 	}
 
 	private updateApp() {
+		logger.info('VitrineServer', 'Quitting Vitrine and installing new version.');
 		autoUpdater.quitAndInstall(true, true);
 	}
 
 	private fillIgdbGame(gameId: number) {
 		fillIgdbGame(gameId, this.vitrineConfig.lang).then((game) => {
 			this.windowsHandler.sendToClient('send-igdb-game', game);
-		}).catch((error: Error) => this.throwServerError(error));
+		}).catch((error: Error) => {
+			this.throwServerError(error);
+		});
 	}
 
 	private searchIgdbGames(gameName: string, resultsNb?: number) {
 		searchIgdbGame(gameName, resultsNb).then((games: any) => {
 			this.windowsHandler.sendToClient('send-igdb-searches', gameName, games);
 		}).catch((error: Error) => {
-			this.windowsHandler.sendToClient('server-error', error);
+			this.throwServerError(error);
 		});
 	}
 
 	private addGame(gameForm: any) {
+		logger.info('VitrineServer', `Adding ${gameForm.name} to Vitrine.`);
 		let gameName: string = gameForm.name;
 		let addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
 		addedGame.source = gameForm.source;
@@ -123,6 +172,7 @@ export class VitrineServer {
 	}
 
 	private editGame(gameUuid: string, gameForm: any) {
+		logger.info('VitrineServer', `Editing ${gameForm.name}.`);
 		let editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
 		editedGame.name = gameForm.name;
 		editedGame.commandLine = [];
@@ -141,17 +191,23 @@ export class VitrineServer {
 		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		editedGame.timePlayed = timePlayed;
+		logger.info('VitrineServer', `Editing time played for ${editedGame.name} (${timePlayed})`);
 		this.sendRegisteredGame(editedGame, configFilePath, true);
 	}
 
 	private launchGame(gameUuid: string) {
-		if (this.gameLaunched)
+		if (this.gameLaunched) {
+			logger.info('VitrineServer', 'Trying to launch a game but another one is already running.');
 			return;
+		}
 		let launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);
 		this.gameLaunched = true;
 		launchGame(launchingGame).then((secondsPlayed: number) => {
 			this.gameLaunched = false;
-			launchingGame.addPlayTime(secondsPlayed, (error: Error) => this.throwServerError(error));
+			launchingGame.addPlayTime(secondsPlayed, (error: Error) => {
+				logger.info('VitrineServer', `Adding time played ${secondsPlayed} to ${launchingGame.name} (${launchingGame.uuid}).`);
+				this.throwServerError(error);
+			});
 			this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
 		}).catch((error: Error) => {
 			this.gameLaunched = false;
@@ -163,48 +219,59 @@ export class VitrineServer {
 		this.potentialGames.removeGame(gameUuid);
 		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 		rimraf(gameDirectory, () => {
+			logger.info('VitrineServer', `Removing game ${gameUuid} from Vitrine and deleting corresponding directory.`);
 			this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
 		});
 	}
 
 	// TODO: Improve potential games pipeline
 	private findPotentialGames() {
+		logger.info('VitrineServer', 'Beginning to search potential games.');
+		this.windowsHandler.sendToClient('potential-games-search-begin');
 		this.potentialGames.clean();
 		this.searchSteamGames()
 			.then(this.searchOriginGames.bind(this))
 			.then(this.searchBattleNetGames.bind(this))
 			.then(this.searchEmulatedGames.bind(this))
 			.then(() => {
+				logger.info('VitrineServer', `${this.potentialGames.size()} potential games sent to client.`);
 				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 			});
 	}
 
 	private updateSettings(settingsForm: any) {
+		logger.info('VitrineServer', 'Updating global settings.');
 		let config: any = {
 			lang: settingsForm.lang
 		};
 		if (settingsForm.steamPath) {
+			logger.info('VitrineServer', 'Updating Steam configuration.');
 			config.steam = {
 				installFolder: settingsForm.steamPath,
-				gamesFolders: [
-					'~steamapps'
-				],
-				launchCommand: 'steam://run/%id'
+				...this.modulesConfig.steam
 			};
 		}
 		if (settingsForm.originPath) {
+			logger.info('VitrineServer', 'Updating Origin configuration.');
 			config.origin = {
 				installFolder: settingsForm.originPath,
-				regHive: 'HKLM',
-				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
+				...this.modulesConfig.origin
+			};
+		}
+		if (settingsForm.battleNetEnabled) {
+			logger.info('VitrineServer', 'Updating Battle.net configuration.');
+			config.battleNet = {
+				...this.modulesConfig.battleNet
 			};
 		}
 		if (settingsForm.emulatedPath) {
+			logger.info('VitrineServer', 'Updating emulated games configuration.');
 			config.emulated = {
 				romsFolder: settingsForm.emulatedPath
 			};
 		}
 		fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 }).then(() => {
+			logger.info('VitrineServer', 'Settings outputted to vitrine_config.json.');
 			let emulatorsConfig: any = {
 				...this.vitrineConfig.emulated,
 				...config.emulated,
@@ -213,10 +280,16 @@ export class VitrineServer {
 			if (!settingsForm.emulatedPath)
 				delete emulatorsConfig.romsFolder;
 			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 }).then(() => {
+				logger.info('VitrineServer', 'Emulators config outputted to emulators.json.');
 				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
 				this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
-			}).catch((error: Error) => this.throwServerError(error));
-		}).catch((error: Error) => this.throwServerError(error));
+				this.findPotentialGames();
+			}).catch((error: Error) => {
+				this.throwServerError(error);
+			});
+		}).catch((error: Error) => {
+			this.throwServerError(error);
+		});
 	}
 
 	private async searchSteamGames(): Promise<any> {
@@ -225,6 +298,7 @@ export class VitrineServer {
 
 		try {
 			let games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential Steam games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}
@@ -240,6 +314,7 @@ export class VitrineServer {
 
 		try {
 			let games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential Origin games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}
@@ -250,8 +325,11 @@ export class VitrineServer {
 	}
 
 	private async searchBattleNetGames(): Promise<any> {
+		if (!this.vitrineConfig.battleNet)
+			return;
 		try {
-			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(null, this.playableGames.getGames());
+			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(this.vitrineConfig.battleNet, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential Battle.net games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}
@@ -267,6 +345,7 @@ export class VitrineServer {
 
 		try {
 			let games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
+			logger.info('VitrineServer', 'Adding potential emulated games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
 		}
@@ -289,9 +368,10 @@ export class VitrineServer {
 		delete game.details.date;
 		delete game.details.executable;
 		delete game.details.arguments;
+		logger.info('VitrineServer', `Game form data for ${game.name} being formatted.`);
 
 		if (!editing && game.source === GameSource.STEAM) {
-			getGamePlayTime(this.vitrineConfig.steam, game.details.steamId).then((timePlayed: number) => {
+			getGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId).then((timePlayed: number) => {
 				game.timePlayed = timePlayed;
 				this.ensureRegisteredGame(game, gameForm, editing);
 			}).catch((error: Error) => this.throwServerError(error));
@@ -311,6 +391,7 @@ export class VitrineServer {
 			let gameHash: string = randomHashedString(8);
 			let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
 			let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
+			logger.info('VitrineServer', `Creating hashed versions for background picture and cover for ${game.name}.`);
 
 			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
 				: (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
@@ -319,8 +400,10 @@ export class VitrineServer {
 				this.sendRegisteredGame(game, configFilePath, editing);
 			}).catch((error: Error) => this.throwServerError(error));
 		}
-		else
+		else {
+			logger.info('VitrineServer', `Background picture and cover for ${game.name} already stored.`);
 			this.sendRegisteredGame(game, configFilePath, editing);
+		}
 	}
 
 	private async downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
@@ -349,17 +432,22 @@ export class VitrineServer {
 	}
 
 	private sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
+		logger.info('VitrineServer', `Outputting game config file for ${game.name}.`);
 		fs.outputJSON(configFilePath, game , { spaces: 2 }).then(() => {
 			if (!editing && game.source !== GameSource.LOCAL)
 				this.findPotentialGames();
 			if (!editing) {
+				logger.info('VitrineServer', `Added game ${game.name} sent to client.`);
 				this.playableGames.addGame(game);
 				this.windowsHandler.sendToClient('add-playable-game', game);
 			}
 			else {
+				logger.info('VitrineServer', `Edited game ${game.name} sent to client.`);
 				this.playableGames.editGame(game);
 				this.windowsHandler.sendToClient('edit-playable-game', game);
 			}
-		}).catch((error: Error) => this.throwServerError(error));
+		}).catch((error: Error) => {
+			this.throwServerError(error);
+		});
 	}
 }

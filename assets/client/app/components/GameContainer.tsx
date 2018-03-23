@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button, Grid } from 'semantic-ui-react';
 import * as moment from 'moment';
 import { StyleSheet, css } from 'aphrodite';
-import { margin, padding, rgba } from 'css-verbose';
+import { border, margin, padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
 import { PlayableGame } from '../../../models/PlayableGame';
@@ -101,7 +101,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 											<strong>{localizer.f('releaseDateLabel')}</strong>
 										</Grid.Column>
 										<Grid.Column width={11} className={css(styles.developerGridColumn)}>
-											{moment/*.unix*/(this.props.selectedGame.details.releaseDate/* / 1000 */).format('DD/MM/YYYY')}
+											{moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')}
 										</Grid.Column>
 									</Grid>
 									<Grid>
@@ -144,9 +144,14 @@ export class GameContainer extends VitrineComponent<Props, State> {
 		else
 			gameContainer = (
 				<div className={css(styles.noSelectedGame)}>
-					<h1>{localizer.f('welcomeMessage')}</h1>
-					<hr className={css(styles.noSelectedGameH1)}/>
-					<p dangerouslySetInnerHTML={{ __html: localizer.f('desc') }}/>
+					<span className={css(styles.noSelectedGameTitle)}>
+						{localizer.f('welcomeMessage')}
+					</span>
+					<hr className={css(styles.noSelectedGameHr)}/>
+					<p
+						dangerouslySetInnerHTML={{ __html: localizer.f('desc') }}
+						className={css(styles.noSelectedGameText)}
+					/>
 				</div>
 			);
 
@@ -239,8 +244,18 @@ const styles: React.CSSProperties = StyleSheet.create({
 	noSelectedGame: {
 		padding: 50
 	},
-	noSelectedGameH1: {
-		fontWeight: 300,
-		fontSize: 50
+	noSelectedGameTitle: {
+		fontSize: 30,
+		marginTop: 45,
+		display: 'block'
+	},
+	noSelectedGameHr: {
+		border: 'none',
+		borderTop: border(1, 'solid', rgba(202, 202, 202, 0.4)),
+		margin: margin(30, 0, 20)
+	},
+	noSelectedGameText: {
+		fontSize: 16,
+		lineHeight: 1.6
 	}
 });

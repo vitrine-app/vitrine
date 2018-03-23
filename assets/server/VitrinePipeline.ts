@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 
 import { VitrineServer } from './VitrineServer';
 import { getEnvData, getEnvFolder } from '../models/env';
+import { logger } from './Logger';
 
 export class VitrinePipeline {
 	private serverInstance: VitrineServer;
@@ -29,6 +30,7 @@ export class VitrinePipeline {
 		if (!fs.pathExistsSync(this.vitrineConfigFilePath))
 			fs.copySync(configFolderOriginalPath, this.configFolderPath);
 		this.vitrineConfig = fs.readJsonSync(this.vitrineConfigFilePath, { throws: false });
+		logger.info('VitrinePipeline', 'vitrine_config.json read.');
 		this.includeEmulatorsConfig().then(() => {
 			this.launchMainClient();
 		});
@@ -45,18 +47,21 @@ export class VitrinePipeline {
 
 	private includeEmulatorsConfig(): Promise<any> {
 		return new Promise((resolve) => {
+			logger.info('VitrinePipeline', 'Including emulators and platforms data.');
 			let platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
 			let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
 			let emulated: any = this.vitrineConfig.emulated || {};
 			let newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
 			newVitrineConfig.emulated.platforms = fs.readJsonSync(platformsConfigFilePath, { throws: false });
 			newVitrineConfig.emulated.emulators = fs.readJsonSync(emulatorsConfigFilePath, { throws: false });
+			logger.info('VitrinePipeline', 'Emulators and platforms added to config.');
 			this.vitrineConfig = newVitrineConfig;
 			resolve();
 		});
 	}
 
 	private launchMainClient() {
+		logger.info('VitrinePipeline', 'Launching main client.');
 		if (!this.prod)
 			this.registerDebugPromiseHandler();
 		this.serverInstance = new VitrineServer(this.vitrineConfig, this.vitrineConfigFilePath, this.configFolderPath);

@@ -6,8 +6,17 @@ const clientConfig = require('./webpack.client.config');
 module.exports = [
 	{
 		...serverConfig,
-		output: {
-			filename: 'public/server.min.js'
+		module: {
+			loaders: [
+				{
+					test: /\.ts?$/,
+					loader: 'ts-loader'
+				},
+				{
+					test: /\.node?$/,
+					use: 'electron-node-loader?prod=true'
+				}
+			]
 		},
 		plugins: [
 			new UglifyJsPlugin({
@@ -17,9 +26,6 @@ module.exports = [
 	},
 	{
 		...clientConfig[0],
-		output: {
-			filename: 'public/client.min.js'
-		},
 		plugins: [
 			new UglifyJsPlugin({
 				sourceMap: true
@@ -28,9 +34,6 @@ module.exports = [
 	},
 	{
 		...clientConfig[1],
-		output: {
-			filename: 'public/loader.min.js'
-		},
 		plugins: [
 			new UglifyJsPlugin({
 				sourceMap: true

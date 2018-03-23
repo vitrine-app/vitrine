@@ -1,6 +1,7 @@
 import * as path from 'path';
 
 import { AcfParser } from './AcfParser';
+import { logger } from '../Logger';
 
 class SteamUserFinder {
 	private steamConfig: any;
@@ -11,6 +12,7 @@ class SteamUserFinder {
 		this.steamConfig = steamConfig;
 		this.loginUsersFilePath = path.resolve(this.steamConfig.installFolder, 'config', 'loginusers.vdf');
 		this.loginUsersFile = new AcfParser(this.loginUsersFilePath).toObject().users;
+		logger.info('SteamUserFinder', `Steam users file parsed (${this.loginUsersFilePath}).`);
 		return this;
 	}
 
@@ -23,6 +25,7 @@ class SteamUserFinder {
 			let currentUser: any = this.loginUsersFile[userKey];
 			if (currentUser.mostrecent == 1) {
 				found = true;
+				logger.info('SteamUserFinder', `Steam user ${currentUser.PersonaName} (${userKey}) found.`);
 				callback(null, {
 					userName: currentUser.PersonaName,
 					userId: userKey

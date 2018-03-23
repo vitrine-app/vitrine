@@ -19,7 +19,7 @@ module.exports = {
 			},
 			{
 				test: /\.node?$/,
-				use: 'node-loader'
+				use: 'electron-node-loader'
 			}
 		]
 	}

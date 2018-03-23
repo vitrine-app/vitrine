@@ -1,6 +1,6 @@
 import * as SteamWeb from 'steam-web';
 
-import { PlayableGame } from '../../models/PlayableGame';
+import { logger } from '../Logger';
 
 class SteamPlayTimeWrapper {
 	private apiKey: string;
@@ -14,9 +14,10 @@ class SteamPlayTimeWrapper {
 		});
 	}
 
-	public getOwnedGames(steamConfig: any, steamId: number, callback: (error: Error, timePlayed: number) => void) {
+	public getOwnedGames(steamUserId: number, steamId: number, callback: (error: Error, timePlayed: number) => void) {
+		logger.info('SteamPlayTimeWrapper', `Looking for played time for Steam game ${steamId}.`);
 		this.client.getOwnedGames({
-			steamid: steamConfig.userId,
+			steamid: steamUserId,
 			callback: (error: Error, data: any) => {
 				if (error)
 					callback(error, null);
@@ -32,6 +33,7 @@ class SteamPlayTimeWrapper {
 
 		timedGames.forEach((timedGame: any) => {
 			if (steamId == timedGame.appid) {
+				logger.info('SteamPlayTimeWrapper', `Played time for ${steamId} found (${timedGame.playtime_forever}).`);
 				found = true;
 				callback(null, timedGame.playtime_forever * 60);
 			}
@@ -44,9 +46,9 @@ class SteamPlayTimeWrapper {
 
 let steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
 
-export function getGamePlayTime(steamConfig: any, steamId: number): Promise<any> {
+export function getGamePlayTime(steamUserId: number, steamId: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		steamPlayTimeWrapper.getOwnedGames(steamConfig, steamId, (error: Error, timePlayed: number) => {
+		steamPlayTimeWrapper.getOwnedGames(steamUserId, steamId, (error: Error, timePlayed: number) => {
 			if (error)
 				reject(error);
 			else

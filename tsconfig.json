@@ -17,11 +17,9 @@
       "dom"
     ],
     "baseUrl": "./",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": [ "node_modules/@types" ],
     "paths": {
-      "assets/ts/": ["assets/ts/"]
+      "react-datetime": [ "assets/defs/react-datetime" ]
     }
   },
   "exclude": [
