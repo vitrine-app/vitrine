@@ -50,33 +50,39 @@ export class SideBar extends VitrineComponent<Props, {}> {
 	public render(): JSX.Element {
 		const taskBarElements: JSX.Element = (
 			<div className={css(styles.commandsGroup)}>
-				<VitrineButton
-					icon={faPlus}
-					tooltip={localizer.f('addGameLabel')}
-					onClick={this.props.openGameAddModal.bind(this)}
-					className={css(styles.commandBtn)}
-				/>
-				<VitrineButton
-					icon={faSyncAlt}
-					spin={this.props.refreshingGames}
-					tooltip={localizer.f('refreshLabel')}
-					onClick={this.taskBarRefreshBtnClickHandler.bind(this)}
-					className={css(styles.commandBtn)}
-				/>
-				<VitrineButton
-					icon={faCogs}
-					tooltip={localizer.f('settings')}
-					onClick={this.props.openSettingsModal.bind(this)}
-					className={css(styles.commandBtn)}
-				/>
-				<Button
-					primary={true}
-					style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
-					onClick={this.potentialGamesButton.bind(this)}
-				>
-					{this.props.potentialGames.size()}
-					{/*{localizer.f('potentialGamesAdd', this.props.potentialGames.size())}*/}
-				</Button>
+				<Grid className={css(styles.commandsGrid)}>
+					<Grid.Column width={4} className={css(styles.commandButton)}>
+						<VitrineButton
+							icon={faPlus}
+							tooltip={localizer.f('addGameLabel')}
+							onClick={this.props.openGameAddModal.bind(this)}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4} className={css(styles.commandButton)}>
+						<VitrineButton
+							icon={faSyncAlt}
+							spin={this.props.refreshingGames}
+							tooltip={localizer.f('refreshLabel')}
+							onClick={this.taskBarRefreshBtnClickHandler.bind(this)}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4} className={css(styles.commandButton)}>
+						<VitrineButton
+							icon={faCogs}
+							tooltip={localizer.f('settings')}
+							onClick={this.props.openSettingsModal.bind(this)}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4} className={css(styles.commandButton, styles.addGameButton)}>
+						<Button
+							primary={true}
+							style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
+							onClick={this.potentialGamesButton.bind(this)}
+						>
+							{this.props.potentialGames.size()}
+						</Button>
+					</Grid.Column>
+				</Grid>
 			</div>
 		);
 
@@ -122,10 +128,19 @@ const styles: React.CSSProperties = StyleSheet.create({
 	commandsGroup: {
 		height: 45,
 		backgroundColor: '#23211F',
-		paddingLeft: 10..percents()
+		paddingLeft: 5..percents(),
+		paddingRight: 5..percents()
 	},
-	commandBtn: {
-		margin: margin(0, 13)
+	commandsGrid: {
+		margin: 0,
+		height: 100..percents()
+	},
+	commandButton: {
+		paddingTop: 0,
+		paddingBottom: 0
+	},
+	addGameButton: {
+		marginTop: 2
 	},
 	sideBarContent: {
 		height: `calc(${100..percents()} - ${45..px()})`,

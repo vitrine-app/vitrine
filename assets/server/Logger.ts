@@ -9,7 +9,7 @@ class Logger {
 
 	public constructor() {
 		if (getEnvData().env)
-			this.filePath = path.resolve(process.env.APPDATA, 'vitrine', 'vitrine.log.html');
+			this.filePath = path.resolve(process.env.APPDATA, 'vitrine', 'data', 'vitrine.log.html');
 		else
 			this.filePath = path.resolve('vitrine.log.html');
 	}

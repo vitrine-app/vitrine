@@ -23,7 +23,7 @@ class GameLauncher {
 		logger.info('GameLauncher', 'Launching non-Steam game.');
 
 		let [ executable, args ]: string[] = this.game.commandLine;
-		let launcherOptions: GameLauncherOptions = {
+		let launcherOptions: any = {
 			program: executable,
 			cwd: path.parse(executable).dir
 		};

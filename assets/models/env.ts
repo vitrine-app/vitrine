@@ -9,7 +9,7 @@ export function getEnvData(): any {
 
 export function getEnvFolder(folder: string, nonProd?: boolean): string {
 	let appDataPath: string = path.resolve(process.env.APPDATA, 'vitrine', 'data', folder);
-	let computedPath: string = (getEnvData().env) ? (((folder === 'games' || folder === 'config') && !nonProd) ? (appDataPath) : ('../../' + folder)) : ('../' + folder);
+	let computedPath: string = (getEnvData().env) ? (((folder === 'games' || folder === 'config') && !nonProd) ? (appDataPath) : (`../../${folder}`)) : (`../${folder}`);
 	return path.resolve(__dirname, computedPath);
 }
 
