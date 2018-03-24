@@ -1,10 +1,13 @@
 import { expect } from 'chai';
 
 import { fillIgdbGame, searchIgdbGame } from '../../../assets/server/api/IgdbWrapper';
+import { logger } from '../../../assets/server/Logger';
+
+logger.createLogger(true);
 
 describe('IgdbWrapper searcher', () => {
 	let gamesArray: any;
-	before((done: Function) => {
+	before((done: () => void) => {
 		searchIgdbGame('Super Mario Galaxy', 2).then((games: any) => {
 			gamesArray = games;
 			done();
@@ -25,7 +28,7 @@ describe('IgdbWrapper searcher', () => {
 });
 
 describe('IgdbWrapper filler', () => {
-	it('Should return a game object', (done: Function) => {
+	it('Should return a game object', (done: () => void) => {
 		fillIgdbGame(340, 'en').then((game: any) => {
 			expect(game).to.be.a('object');
 
