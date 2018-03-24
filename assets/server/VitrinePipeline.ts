@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 
 import { VitrineServer } from './VitrineServer';
-import { getEnvData, getEnvFolder } from '../models/env';
+import { getEnvFolder, isProd } from '../models/env';
 import { logger } from './Logger';
 
 export class VitrinePipeline {
@@ -15,7 +15,7 @@ export class VitrinePipeline {
 	private vitrineConfig: any;
 
 	public constructor(prod?: boolean) {
-		this.prod = (prod !== undefined) ? (prod) : ((getEnvData().env) ? (true) : (false));
+		this.prod = (prod !== undefined) ? (prod) : ((isProd()) ? (true) : (false));
 		this.configFileName = 'vitrine_config.json';
 		this.gamesFolderPath = getEnvFolder('games');
 		this.configFolderPath = getEnvFolder('config');
