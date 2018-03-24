@@ -7,7 +7,7 @@ let clientConfig = {
 		__filename: false
 	},
 	resolve: {
-		extensions: ['.ts', '.tsx', '.js'],
+		extensions: [ '.ts', '.tsx', '.js' ],
 		alias: {
 			'../../theme.config$': path.join(__dirname, 'assets/client/resources/less/theme.config.less')
 		}
@@ -17,35 +17,30 @@ let clientConfig = {
 		rules: [
 			{
 				test: /\.(ts|tsx)?$/,
-				loader: 'ts-loader'
+				use: 'awesome-typescript-loader'
 			},
 			{
 				test: /\.less$/,
 				use: [
-					{
-						loader: 'style-loader'
-					},
-					{
-						loader: 'css-loader'
-					},
-					{
-						loader: 'less-loader'
-					}
+					{ loader: 'style-loader' },
+					{ loader: 'css-loader' },
+					{ loader: 'less-loader' }
 				]
 			},
 			{
 				test: /\.(jpe?g|png|gif|ico|woff|woff2|eot|ttf|otf|svg)(.*?)?$/,
-				loader: 'base64-inline-loader?name=[name].[ext]'
+				use: 'base64-inline-loader?name=[name].[ext]'
 			}
 		]
-	}
+	},
+	mode: 'development'
 };
 
 module.exports = [
 	{
 		entry: './assets/client/main.tsx',
 		output: {
-			path: __dirname + '/public',
+			path: path.resolve(__dirname, 'public'),
 			filename: 'client.js'
 		},
 		...clientConfig,
@@ -53,20 +48,13 @@ module.exports = [
 			new HtmlPlugin({
 				title: 'Vitrine',
 				filename: 'client.html'
-			}),
-			function() {
-				this.plugin('watch-run', function (watching, callback) {
-					let date = new Date();
-					console.log(`Begin compile at \x1b[1m${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}\x1b[0m.`);
-					callback();
-				});
-			}
+			})
 		]
 	},
 	{
 		entry: './assets/client/loader.tsx',
 		output: {
-			path: __dirname + '/public',
+			path: path.resolve(__dirname, 'public'),
 			filename: 'loader.js'
 		},
 		...clientConfig,
@@ -76,5 +64,5 @@ module.exports = [
 				filename: 'loader.html'
 			})
 		]
-	}
+	},
 ];

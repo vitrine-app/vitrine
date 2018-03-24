@@ -1,7 +1,10 @@
+const path = require('path');
+
 module.exports = {
 	entry: './assets/server/main.ts',
 	output: {
-		filename: 'public/server.js'
+		path: path.resolve(__dirname, 'public'),
+		filename: 'server.js'
 	},
 	node: {
 		__dirname: false,
@@ -12,15 +15,23 @@ module.exports = {
 	},
 	target: 'electron-main',
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /\.ts?$/,
-				loader: 'ts-loader'
+				use: 'awesome-typescript-loader'
 			},
 			{
 				test: /\.node?$/,
-				use: 'electron-node-loader'
+				use: [
+					{
+						loader: 'electron-node-loader',
+						options: {
+							folder: 'scripts'
+						}
+					}
+				]
 			}
 		]
-	}
+	},
+	mode: 'development'
 };

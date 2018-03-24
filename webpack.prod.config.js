@@ -1,5 +1,3 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
 const serverConfig = require('./webpack.server.config');
 const clientConfig = require('./webpack.client.config');
 
@@ -7,37 +5,33 @@ module.exports = [
 	{
 		...serverConfig,
 		module: {
-			loaders: [
+			rules: [
 				{
 					test: /\.ts?$/,
-					loader: 'ts-loader'
+					use: 'awesome-typescript-loader'
 				},
 				{
 					test: /\.node?$/,
-					use: 'electron-node-loader?prod=true'
+					use: [
+						{
+							loader: 'electron-node-loader',
+							options: {
+								folder: 'scripts',
+								prod: true
+							}
+						}
+					]
 				}
 			]
 		},
-		plugins: [
-			new UglifyJsPlugin({
-				sourceMap: true
-			})
-		]
+		mode: 'production'
 	},
 	{
 		...clientConfig[0],
-		plugins: [
-			new UglifyJsPlugin({
-				sourceMap: true
-			})
-		]
+		mode: 'production'
 	},
 	{
 		...clientConfig[1],
-		plugins: [
-			new UglifyJsPlugin({
-				sourceMap: true
-			})
-		]
+		mode: 'production'
 	}
 ];

@@ -2,13 +2,13 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as moment from 'moment';
 
-import { getEnvData } from '../models/env';
+import { isProd } from '../models/env';
 
 class Logger {
 	private filePath: string;
 
 	public constructor() {
-		if (getEnvData().env) {
+		if (isProd()) {
 			this.filePath = path.resolve(process.env.APPDATA, 'vitrine', 'data', 'vitrine.log.html');
 			fs.ensureFileSync(this.filePath);
 		}
