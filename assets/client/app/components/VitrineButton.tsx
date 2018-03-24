@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { padding, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import { IconDefinition } from '@fortawesome/fontawesome-common-types';
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { randomHashedString } from '../../../models/env';
 import { VitrineComponent } from './VitrineComponent';
 import * as ReactTooltip from 'react-tooltip';
 
 interface Props {
-	icon: IconDefinition,
+	icon: FontAwesomeIcon.IconDefinition,
 	spin?: boolean,
 	tooltip?: string,
 	onClick?: React.MouseEventHandler<any>,

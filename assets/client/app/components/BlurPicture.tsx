@@ -3,7 +3,6 @@ import { Transition } from 'semantic-ui-react';
 import { StyleSheet, css } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
@@ -13,7 +12,7 @@ interface Props {
 	height?: number,
 	fontSize: number,
 	background: string,
-	faIcon: IconDefinition,
+	faIcon: FontAwesomeIcon.IconDefinition,
 	clickHandler: () => void
 }
 
