@@ -2,6 +2,8 @@
 [![license](https://img.shields.io/github/license/paul-roman/vitrine.svg?style=flat-square)](https://github.com/paul-roman/vitrine/blob/master/LICENSE.md)
 [![GitHub (pre-)release](https://img.shields.io/github/release/paul-roman/vitrine/all.svg?style=flat-square)](https://github.com/paul-roman/vitrine/releases)
 [![CircleCI](https://img.shields.io/circleci/project/github/paul-roman/vitrine.svg?style=flat-square)](https://circleci.com/gh/paul-roman/vitrine)
+[![dependencies](https://david-dm.org/paul-roman/vitrine/status.svg?style=flat-square)](https://david-dm.org/paul-roman/vitrine)
+[![devDependencies](https://david-dm.org/paul-roman/vitrine/dev-status.svg?style=flat-square)](https://david-dm.org/paul-roman/vitrine?type=dev)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square)](https://stackshare.io/paul-roman/vitrine)
 
 _Centralize all of your games within a simple interface._

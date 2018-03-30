@@ -1,13 +1,13 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { VitrineState } from '../VitrineState';
+import { AppState } from '../AppState';
 import { PotentialGamesAddModal as VisualPotentialGamesAddModal } from '../components/PotentialGamesAddModal';
 import { Action } from '../actions/actionsTypes';
 import { setPotentialGameToAdd } from '../actions/games';
 import { openGameAddModal, closePotentialGamesAddModal } from '../actions/modals';
 import { PotentialGame } from '../../../models/PotentialGame';
 
-const mapStateToProps = (state: VitrineState) => ({
+const mapStateToProps = (state: AppState) => ({
 	potentialGames: state.potentialGames,
 	visible: state.potentialGamesAddModalVisible
 });

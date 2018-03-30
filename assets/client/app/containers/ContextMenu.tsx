@@ -1,13 +1,13 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { VitrineState } from '../VitrineState';
+import { AppState } from '../AppState';
 import { ContextMenu as VisualContextMenu } from '../components/ContextMenu';
 import { Action } from '../actions/actionsTypes';
 import { launchGame, setGameToEdit } from '../actions/games';
 import { openGameAddModal, openTimePlayedEditionModal } from '../actions/modals';
 import { PlayableGame } from '../../../models/PlayableGame';
 
-const mapStateToProps = (state: VitrineState) => ({
+const mapStateToProps = (state: AppState) => ({
 	playableGames: state.playableGames
 });
 

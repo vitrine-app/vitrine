@@ -1,13 +1,13 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { VitrineState } from '../VitrineState';
+import { AppState } from '../AppState';
 import { SideBar as VisualSideBar } from '../components/SideBar';
 import { Action } from '../actions/actionsTypes';
 import { refreshGames, selectGame } from '../actions/games';
 import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../actions/modals';
 import { PlayableGame } from '../../../models/PlayableGame';
 
-const mapStateToProps = (state: VitrineState) => ({
+const mapStateToProps = (state: AppState) => ({
 	potentialGames: state.potentialGames,
 	playableGames: state.playableGames,
 	selectedGame: state.selectedGame,

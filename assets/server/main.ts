@@ -1,6 +1,6 @@
-import { VitrinePipeline } from './VitrinePipeline';
+import { Bootstrapper } from './Bootstrapper';
 
 import { logger } from './Logger';
 
 logger.createLogger();
-new VitrinePipeline().launch();
+new Bootstrapper().launch();

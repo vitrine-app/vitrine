@@ -1,6 +1,6 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { VitrineState } from '../VitrineState';
+import { AppState } from '../AppState';
 import { Action } from '../actions/actionsTypes';
 import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit, setPotentialGameToAdd } from '../actions/games';
 import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal, openIgdbResearchModal } from '../actions/modals';
@@ -8,7 +8,7 @@ import { GameAddModal as VisualGameAddModal } from '../components/GameAddModal';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { PlayableGame } from '../../../models/PlayableGame';
 
-const mapStateToProps = (state: VitrineState) => ({
+const mapStateToProps = (state: AppState) => ({
 	selectedGame: state.selectedGame,
 	potentialGameToAdd: state.potentialGameToAdd,
 	gameToEdit: state.gameToEdit,

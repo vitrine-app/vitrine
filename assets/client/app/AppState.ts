@@ -2,7 +2,7 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { PotentialGame } from '../../models/PotentialGame';
 import { GamesCollection } from '../../models/GamesCollection';
 
-export interface VitrineState {
+export interface AppState {
 	settings: any,
 	potentialGames: GamesCollection<PotentialGame>,
 	playableGames: GamesCollection<PlayableGame>,
@@ -18,7 +18,7 @@ export interface VitrineState {
 	settingsModalVisible: boolean
 }
 
-export const initialState: VitrineState = {
+export const initialState: AppState = {
 	settings: null,
 	potentialGames: new GamesCollection<PotentialGame>(),
 	playableGames: new GamesCollection<PlayableGame>(),
