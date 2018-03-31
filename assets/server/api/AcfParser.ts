@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 
 export class AcfParser {
-	private acfFd: string;
+	private readonly acfFd: string;
 	private c: number;
 
 	public constructor(filename: string) {

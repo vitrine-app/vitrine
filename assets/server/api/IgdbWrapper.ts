@@ -5,9 +5,9 @@ import { logger } from '../Logger';
 
 // TODO: Rework IgdbWrapper class
 class IgdbWrapper {
-	private apiKey: string;
+	private readonly apiKey: string;
+	private readonly levenshteinRefiner: number;
 	private client: any;
-	private levenshteinRefiner: number;
 	private callback: (error: Error, game: any) => void;
 	private game: any;
 

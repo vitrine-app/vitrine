@@ -3,13 +3,13 @@ import * as fs from 'fs-extra';
 import * as uuid from 'uuid/v5';
 import * as crypto from 'crypto';
 
-export function isProd(): boolean {
+export function isProduction(): boolean {
 	return process.env.NODE_ENV === 'production';
 }
 
 export function getEnvFolder(folder: string, nonProd?: boolean): string {
 	let appDataPath: string = path.resolve(process.env.APPDATA, 'vitrine', 'data', folder);
-	let computedPath: string = (isProd()) ? (((folder === 'games' || folder === 'config') && !nonProd) ? (appDataPath) : (`../../${folder}`)) : (`../${folder}`);
+	let computedPath: string = (isProduction()) ? (((folder === 'games' || folder === 'config') && !nonProd) ? (appDataPath) : (`../../${folder}`)) : (`../${folder}`);
 	return path.resolve(__dirname, computedPath);
 }
 

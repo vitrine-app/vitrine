@@ -21,7 +21,7 @@ interface State {
 }
 
 export class VitrineButton extends VitrineComponent<Props, State> {
-	private id: string;
+	private readonly id: string;
 
 	public constructor() {
 		super();

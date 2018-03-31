@@ -38,12 +38,12 @@ let clientConfig = {
 
 module.exports = [
 	{
+		...clientConfig,
 		entry: './assets/client/main.tsx',
 		output: {
 			path: path.resolve(__dirname, 'public'),
 			filename: 'client.js'
 		},
-		...clientConfig,
 		plugins: [
 			new HtmlPlugin({
 				title: 'Vitrine',
@@ -52,12 +52,12 @@ module.exports = [
 		]
 	},
 	{
+		...clientConfig,
 		entry: './assets/client/loader.tsx',
 		output: {
 			path: path.resolve(__dirname, 'public'),
 			filename: 'loader.js'
 		},
-		...clientConfig,
 		plugins: [
 			new HtmlPlugin({
 				title: 'Vitrine',

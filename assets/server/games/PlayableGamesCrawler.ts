@@ -7,8 +7,8 @@ import { getEnvFolder } from '../../models/env';
 import { logger } from '../Logger';
 
 class PlayableGamesCrawler {
-	private playableGames: PlayableGame[];
-	private gamesDirectory: string;
+	private readonly playableGames: PlayableGame[];
+	private readonly gamesDirectory: string;
 	private callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void;
 
 	public constructor() {

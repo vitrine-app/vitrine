@@ -3,7 +3,7 @@ import * as SteamWeb from 'steam-web';
 import { logger } from '../Logger';
 
 class SteamPlayTimeWrapper {
-	private apiKey: string;
+	private readonly apiKey: string;
 	private client: SteamWeb;
 
 	public constructor() {
