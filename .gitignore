@@ -6,3 +6,4 @@
 /games/*
 /config/vitrine_config.json
 /vitrine.log.html
+/yarn-error.log

@@ -24,14 +24,17 @@ module.exports = [
 				}
 			]
 		},
-		mode: 'production'
+		mode: 'production',
+		devtool: 'source-map'
 	},
 	{
 		...clientConfig[0],
-		mode: 'production'
+		mode: 'production',
+		devtool: 'source-map'
 	},
 	{
 		...clientConfig[1],
-		mode: 'production'
+		mode: 'production',
+		devtool: 'source-map'
 	}
 ];
