@@ -1,18 +1,18 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import * as moment from 'moment';
 import * as React from 'react';
 import * as Datetime from 'react-datetime';
 import { Button, Input } from 'semantic-ui-react';
-import * as moment from 'moment';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import { VitrineComponent } from './VitrineComponent';
 
-import { faTrash, faCalendarAlt } from '@fortawesome/fontawesome-free-solid';
+import { faCalendarAlt, faTrash } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	value: Date | string | moment.Moment,
-	dateFormat: string,
-	onChange: (event: any) => void,
-	inputProps?: any
+	value: Date | string | moment.Moment;
+	dateFormat: string;
+	onChange: (event: any) => void;
+	inputProps?: any;
 }
 
 export class DatePicker extends VitrineComponent<Props, {}> {

@@ -78,7 +78,7 @@ export function openSettingsModal(): Action {
 		payload: {
 			settingsModalVisible: true
 		}
-	}
+	};
 }
 
 export function closeSettingsModal(): Action {
@@ -87,5 +87,5 @@ export function closeSettingsModal(): Action {
 		payload: {
 			settingsModalVisible: false
 		}
-	}
+	};
 }

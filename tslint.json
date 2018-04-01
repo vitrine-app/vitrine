@@ -18,6 +18,8 @@
     "no-console": false,
     "triple-equals": [ true, "allow-null-check", "allow-undefined-check" ],
     "radix": false,
-    "no-shadowed-variable": false
+    "no-shadowed-variable": false,
+    "member-ordering": false,
+    "object-literal-key-quotes": [ "as-needed" ]
   }
 }

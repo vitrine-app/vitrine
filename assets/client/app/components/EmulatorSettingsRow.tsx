@@ -1,28 +1,28 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { rgba } from 'css-verbose';
 import * as React from 'react';
 import { Button, Checkbox, Input, Table } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { VitrineComponent } from './VitrineComponent';
 import { openExecutableDialog } from '../helpers';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	id: string,
-	emulator: any,
-	platforms: any[],
-	onChange: (emulatorId: number, emulatorConfig: any) => void
+	id: string;
+	emulator: any;
+	platforms: any[];
+	onChange: (emulatorId: number, emulatorConfig: any) => void;
 }
 
 interface State {
-	name: string,
-	platforms: any[],
-	active: boolean,
-	path: string,
-	command: string,
-	glob: string
+	name: string;
+	platforms: any[];
+	active: boolean;
+	path: string;
+	command: string;
+	glob: string;
 }
 
 export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
@@ -48,7 +48,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 	}
 
 	private programBtnClickHandler() {
-		let dialogRet: string = openExecutableDialog();
+		const dialogRet: string = openExecutableDialog();
 		if (!dialogRet)
 			return;
 		this.setState({
@@ -110,7 +110,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 					/>
 				</Table.Cell>
 				<Table.Cell>
-					<div className="ui small input">
+					<div className={'ui small input'}>
 						<input
 							value={this.state.command}
 							className={`${css(styles.commandInput)} ${(!this.state.active) ? (css(styles.inactiveInput)) : ('')}`}

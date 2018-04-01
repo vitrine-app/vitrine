@@ -1,7 +1,7 @@
-import { Action, ActionType } from '../actions/actionsTypes';
+import { GamesCollection } from '../../../models/GamesCollection';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
-import { GamesCollection } from '../../../models/GamesCollection';
+import { Action, ActionType } from '../actions/actionsTypes';
 
 export function refreshingGames(state: boolean = false, action: Action): boolean {
 	switch (action.type) {

@@ -1,6 +1,6 @@
-import { Action, ActionType } from './actionsTypes';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
+import { Action, ActionType } from './actionsTypes';
 
 export function refreshGames(): Action {
 	return {
@@ -96,5 +96,5 @@ export function setGameToEdit(gameToEdit: PlayableGame): Action {
 		payload: {
 			gameToEdit
 		}
-	}
+	};
 }

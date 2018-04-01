@@ -1,24 +1,24 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { padding } from 'css-verbose';
 import * as React from 'react';
 import { Button, Input } from 'semantic-ui-react';
-import { css, StyleSheet } from 'aphrodite';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { padding } from 'css-verbose';
 
 import { VitrineComponent } from './VitrineComponent';
 
-import { faCaretUp, faCaretDown } from '@fortawesome/fontawesome-free-solid';
+import { faCaretDown, faCaretUp } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	min: number,
-	max: number,
-	name: string,
-	placeholder: string
-	value: number,
-	onChange?: (value: number) => void
+	min: number;
+	max: number;
+	name: string;
+	placeholder: string;
+	value: number;
+	onChange?: (value: number) => void;
 }
 
 interface State {
-	value: string | React.ReactText
+	value: string | React.ReactText;
 }
 
 export class NumberPicker extends VitrineComponent<Props, State> {
@@ -32,7 +32,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 
 	private increaseCounterHandler() {
 		let newVal: number;
-		let currentVal: number = parseInt(this.state.value as string);
+		const currentVal: number = parseInt(this.state.value as string);
 
 		if (isNaN(currentVal) || currentVal < this.props.min)
 			newVal = this.props.min;
@@ -51,7 +51,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 
 	private decreaseCounterHandler() {
 		let newVal: number;
-		let currentVal: number = parseInt(this.state.value as string);
+		const currentVal: number = parseInt(this.state.value as string);
 
 		if (isNaN(currentVal) || currentVal <= this.props.min)
 			newVal = this.props.min;

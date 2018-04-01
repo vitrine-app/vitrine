@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import { css, StyleSheet } from 'aphrodite';
 import { margin, rgba } from 'css-verbose';
+import * as React from 'react';
 
 import { VitrineComponent } from './VitrineComponent';
 
 import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../resources/less/theme/globals/site.variables';
 
 interface Props {
-	percentage: number,
-	color: string
+	percentage: number;
+	color: string;
 }
 
 export class CirclePercentage extends VitrineComponent<Props, {}> {
@@ -18,15 +18,15 @@ export class CirclePercentage extends VitrineComponent<Props, {}> {
 
 	public render(): JSX.Element {
 		return (
-			<svg viewBox="0 0 36 36" className={css(styles.svg)}>
+			<svg viewBox={'0 0 36 36'} className={css(styles.svg)}>
 				<path
 					className={css(styles.backgroundCircle)}
-					d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+					d={'M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831'}
 					strokeDasharray={`100, 100`}
 				/>
 				<path
 					className={css(styles.circle)}
-					d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+					d={'M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831'}
 					strokeDasharray={`${this.props.percentage}, 100`}
 					style={{ stroke: this.props.color }}
 				/>

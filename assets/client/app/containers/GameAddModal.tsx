@@ -1,12 +1,12 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { AppState } from '../AppState';
+import { PlayableGame } from '../../../models/PlayableGame';
+import { PotentialGame } from '../../../models/PotentialGame';
 import { Action } from '../actions/actionsTypes';
 import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit, setPotentialGameToAdd } from '../actions/games';
 import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal, openIgdbResearchModal } from '../actions/modals';
+import { AppState } from '../AppState';
 import { GameAddModal as VisualGameAddModal } from '../components/GameAddModal';
-import { PotentialGame } from '../../../models/PotentialGame';
-import { PlayableGame } from '../../../models/PlayableGame';
 
 const mapStateToProps = (state: AppState) => ({
 	selectedGame: state.selectedGame,
@@ -18,31 +18,31 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	addPlayableGames: (playableGames: PlayableGame[]) => {
-		dispatch(addPlayableGames(playableGames))
+		dispatch(addPlayableGames(playableGames));
 	},
 	editPlayableGame: (playableGame: PlayableGame) => {
-		dispatch(editPlayableGame(playableGame))
+		dispatch(editPlayableGame(playableGame));
 	},
 	setPotentialGameToAdd: (potentialGame: PotentialGame) => {
-		dispatch(setPotentialGameToAdd(potentialGame))
+		dispatch(setPotentialGameToAdd(potentialGame));
 	},
 	setGameToEdit: (playableGame: PlayableGame) => {
-		dispatch(setGameToEdit(playableGame))
+		dispatch(setGameToEdit(playableGame));
 	},
 	selectGame: (selectedGame: PlayableGame) => {
-		dispatch(selectGame(selectedGame))
+		dispatch(selectGame(selectedGame));
 	},
 	closeGameAddModal: () => {
-		dispatch(closeGameAddModal())
+		dispatch(closeGameAddModal());
 	},
 	openIgdbResearchModal: () => {
-		dispatch(openIgdbResearchModal())
+		dispatch(openIgdbResearchModal());
 	},
 	closeIgdbResearchModal: () => {
-		dispatch(closeIgdbResearchModal())
+		dispatch(closeIgdbResearchModal());
 	},
 	closeTimePlayedEditionModal: () => {
-		dispatch(closeTimePlayedEditionModal())
+		dispatch(closeTimePlayedEditionModal());
 	}
 });
 

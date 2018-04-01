@@ -1,24 +1,25 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { applyMiddleware, combineReducers, createStore, Middleware, Store } from 'redux';
 import { Provider } from 'react-redux';
+import { applyMiddleware, combineReducers, createStore, Middleware, Store } from 'redux';
 
+import { AppState, initialState } from './app/AppState';
 import { App } from './app/containers/App';
-import { initialState, AppState } from './app/AppState';
-import { settings } from './app/reducers/settings';
 import { gameToEdit, launchedGame, playableGames, potentialGames, potentialGameToAdd, refreshingGames, selectedGame } from './app/reducers/games';
-import { gameAddModalVisible, igdbResearchModalVisible, potentialGamesAddModalVisible, settingsModalVisible, timePlayedEditionModalVisible } from './app/reducers/modals';
+import { gameAddModalVisible, igdbResearchModalVisible, potentialGamesAddModalVisible, settingsModalVisible,
+	timePlayedEditionModalVisible } from './app/reducers/modals';
+import { settings } from './app/reducers/settings';
 
 import './resources/less/main.less';
 
 const logger: Middleware = (store: any) => (next: any) => (action: any): any => {
 	console.log('Dispatching: ', action);
-	let result = next(action);
+	const result = next(action);
 	console.log('New state: ', store.getState(), '\n===============');
 	return result;
 };
 
-let store: Store<AppState> = createStore(combineReducers({
+const store: Store<AppState> = createStore(combineReducers({
 	settings,
 	potentialGames,
 	playableGames,

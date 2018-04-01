@@ -1,24 +1,24 @@
+import { css, StyleSheet } from 'aphrodite';
+import { margin } from 'css-verbose';
 import * as React from 'react';
 import { Button, Form, Grid, Modal } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { margin } from 'css-verbose';
 
 import { PlayableGame } from '../../../models/PlayableGame';
-import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
-import { NumberPicker } from './NumberPicker';
 import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
+import { NumberPicker } from './NumberPicker';
+import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-	gameToEdit: PlayableGame,
-	visible: boolean,
-	closeTimePlayedEditionModal: () => void
+	gameToEdit: PlayableGame;
+	visible: boolean;
+	closeTimePlayedEditionModal: () => void;
 }
 
 interface State {
-	hours: number,
-	minutes: number,
-	seconds: number
+	hours: number;
+	minutes: number;
+	seconds: number;
 }
 
 export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
@@ -49,10 +49,10 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 
 	public componentWillReceiveProps(props: Props) {
 		if (props.gameToEdit) {
-			let timePlayed: number = props.gameToEdit.timePlayed;
-			let hours: number = Math.floor(timePlayed / 3600);
-			let minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
-			let seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
+			const timePlayed: number = props.gameToEdit.timePlayed;
+			const hours: number = Math.floor(timePlayed / 3600);
+			const minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
+			const seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
 			this.setState({
 				hours,
 				minutes,
@@ -62,7 +62,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 	}
 
 	private submitButton() {
-		let timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
+		const timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
 		serverListener.send('edit-game-time-played', this.props.gameToEdit.uuid, timePlayed);
 	}
 

@@ -1,62 +1,62 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { border, margin, rgba } from 'css-verbose';
+import * as moment from 'moment';
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import * as moment from 'moment';
-import { border, margin, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { VitrineComponent } from './VitrineComponent';
-import { PotentialGame, GameSource } from '../../../models/PotentialGame';
-import { serverListener } from '../ServerListener';
+import { GameSource, PotentialGame } from '../../../models/PotentialGame';
 import { IgdbResearchModal } from '../containers/IgdbResearchModal';
+import { openExecutableDialog, openImageDialog } from '../helpers';
+import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
 import { BlurPicture } from './BlurPicture';
-import { NumberPicker } from './NumberPicker';
 import { DatePicker } from './DatePicker';
 import { ImagesCollection } from './ImagesCollection';
-import { localizer } from '../Localizer';
-import { openExecutableDialog, openImageDialog } from '../helpers';
+import { NumberPicker } from './NumberPicker';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 interface Props {
-	selectedGame: PlayableGame,
-	potentialGameToAdd: PotentialGame,
-	gameToEdit: PlayableGame,
-	visible: boolean,
-	igdbResearchModalVisible: boolean,
-	addPlayableGames: (playableGames: PlayableGame[]) => void,
-	editPlayableGame: (playableGame: PlayableGame) => void,
-	setPotentialGameToAdd: (potentialGame: PotentialGame) => void,
-	setGameToEdit: (playableGame: PlayableGame) => void,
-	selectGame: (selectedGame: PlayableGame) => void,
-	closeGameAddModal: () => void,
-	openIgdbResearchModal: () => void,
-	closeIgdbResearchModal: () => void,
-	closeTimePlayedEditionModal: () => void
+	selectedGame: PlayableGame;
+	potentialGameToAdd: PotentialGame;
+	gameToEdit: PlayableGame;
+	visible: boolean;
+	igdbResearchModalVisible: boolean;
+	addPlayableGames: (playableGames: PlayableGame[]) => void;
+	editPlayableGame: (playableGame: PlayableGame) => void;
+	setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
+	setGameToEdit: (playableGame: PlayableGame) => void;
+	selectGame: (selectedGame: PlayableGame) => void;
+	closeGameAddModal: () => void;
+	openIgdbResearchModal: () => void;
+	closeIgdbResearchModal: () => void;
+	closeTimePlayedEditionModal: () => void;
 }
 
 interface State {
-	name: string,
-	series: string,
-	date: string,
-	developer: string,
-	publisher: string,
-	genres: string,
-	rating: number,
-	summary: string,
-	executable: string,
-	arguments: string,
-	cover: string,
-	backgroundScreen: string,
-	potentialBackgrounds: string[],
-	source: GameSource,
-	editing: boolean,
-	igdbFilled: boolean
+	name: string;
+	series: string;
+	date: string;
+	developer: string;
+	publisher: string;
+	genres: string;
+	rating: number;
+	summary: string;
+	executable: string;
+	arguments: string;
+	cover: string;
+	backgroundScreen: string;
+	potentialBackgrounds: string[];
+	source: GameSource;
+	editing: boolean;
+	igdbFilled: boolean;
 }
 
 export class GameAddModal extends VitrineComponent<Props, State> {
-	private emptyState: State;
+	private readonly emptyState: State;
 
 	public constructor(props: Props) {
 		super(props);
@@ -126,7 +126,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private gameCoverClickHandler() {
-		let cover: string = openImageDialog();
+		const cover: string = openImageDialog();
 		if (cover)
 			this.setState({
 				cover
@@ -134,8 +134,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private inputChangeHandler(event: any) {
-		let name: string | any = event.target.name;
-		let value: string = event.target.value;
+		const name: string | any = event.target.name;
+		const value: string = event.target.value;
 
 		this.setState({
 			[name]: value
@@ -155,7 +155,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private executableBtnClickHandler() {
-		let dialogRet: string = openExecutableDialog();
+		const dialogRet: string = openExecutableDialog();
 		if (!dialogRet)
 			return;
 		this.setState({
@@ -175,7 +175,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private submitButton() {
-		let gameInfos: any = { ...this.state };
+		const gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.editing;
 		delete gameInfos.igdbFilled;
@@ -212,7 +212,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		else
 			return;
 
-		let [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
+		const [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
 		if (!this.state.igdbFilled)
 			this.setState({
 				name: gameToHandle.name,
@@ -397,7 +397,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 									<Grid.Column width={16}>
 										<Form.Field>
 											<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
-											<div className="ui large input">
+											<div className={'ui large input'}>
 												<input
 													name={'arguments'}
 													className={css(styles.lineArgumentsInput)}

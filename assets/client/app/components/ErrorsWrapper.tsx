@@ -1,14 +1,14 @@
+import { css, StyleSheet } from 'aphrodite';
+import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { Button, Modal } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { margin, padding, rgba } from 'css-verbose';
 
-import { serverListener } from '../ServerListener';
 import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
 
 interface State {
-	visible: boolean,
-	error?: Error
+	visible: boolean;
+	error?: Error;
 }
 
 export class ErrorsWrapper extends React.Component<{}, State> {
@@ -91,7 +91,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 	errorStack: {
 		fontFamily: 'Inconsolata',
 		fontSize: 16,
-		padding: padding(10,),
+		padding: padding(10),
 		overflowX: 'auto',
 		color: '#BDB3B3',
 		backgroundColor: '#272020',

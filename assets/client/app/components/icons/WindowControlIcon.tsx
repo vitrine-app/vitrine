@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import * as React from 'react';
 
-import { MinimizeSvg } from './MinimizeSvg';
-import { MaximizeSvg } from './MaximizeSvg';
 import { CloseSvg } from './CloseSvg';
+import { MaximizeSvg } from './MaximizeSvg';
+import { MinimizeSvg } from './MinimizeSvg';
 
 export enum WindowControl {
 	MinimizeIcon,
@@ -13,13 +13,13 @@ export enum WindowControl {
 }
 
 interface Props {
-	icon: WindowControl,
-	onClick: React.MouseEventHandler<any>,
-	redBackground?: boolean
+	icon: WindowControl;
+	onClick: React.MouseEventHandler<any>;
+	redBackground?: boolean;
 }
 
 interface State {
-	hovered: boolean
+	hovered: boolean;
 }
 
 export class WindowControlIcon extends React.Component<Props, State> {

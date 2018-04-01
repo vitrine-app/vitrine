@@ -1,9 +1,9 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { AppState } from '../AppState';
-import { IgdbResearchModal as VisualIgdbResearchModal } from '../components/IgdbResearchModal';
 import { Action } from '../actions/actionsTypes';
 import { closeIgdbResearchModal } from '../actions/modals';
+import { AppState } from '../AppState';
+import { IgdbResearchModal as VisualIgdbResearchModal } from '../components/IgdbResearchModal';
 
 const mapStateToProps = (state: AppState) => ({
 	visible: state.igdbResearchModalVisible
@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeIgdbResearchModal: () => {
-		dispatch(closeIgdbResearchModal())
+		dispatch(closeIgdbResearchModal());
 	}
 });
 

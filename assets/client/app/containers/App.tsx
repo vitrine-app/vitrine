@@ -1,8 +1,8 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { AppState } from '../AppState';
 import { Action } from '../actions/actionsTypes';
 import { updateSettings } from '../actions/settings';
+import { AppState } from '../AppState';
 import { App as VisualApp } from '../components/App';
 
 const mapStateToProps = (state: AppState) => ({

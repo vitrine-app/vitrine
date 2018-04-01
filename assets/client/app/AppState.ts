@@ -1,21 +1,21 @@
+import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { PotentialGame } from '../../models/PotentialGame';
-import { GamesCollection } from '../../models/GamesCollection';
 
 export interface AppState {
-	settings: any,
-	potentialGames: GamesCollection<PotentialGame>,
-	playableGames: GamesCollection<PlayableGame>,
-	selectedGame: PlayableGame,
-	launchedGame: PlayableGame,
-	refreshingGames: boolean,
-	potentialGameToAdd: PotentialGame,
-	gameToEdit: PlayableGame,
-	gameAddModalVisible: boolean,
-	igdbResearchModalVisible: boolean,
-	timePlayedEditionModalVisible: boolean,
-	potentialGamesAddModalVisible: boolean,
-	settingsModalVisible: boolean
+	settings: any;
+	potentialGames: GamesCollection<PotentialGame>;
+	playableGames: GamesCollection<PlayableGame>;
+	selectedGame: PlayableGame;
+	launchedGame: PlayableGame;
+	refreshingGames: boolean;
+	potentialGameToAdd: PotentialGame;
+	gameToEdit: PlayableGame;
+	gameAddModalVisible: boolean;
+	igdbResearchModalVisible: boolean;
+	timePlayedEditionModalVisible: boolean;
+	potentialGamesAddModalVisible: boolean;
+	settingsModalVisible: boolean;
 }
 
 export const initialState: AppState = {

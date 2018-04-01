@@ -1,23 +1,23 @@
-import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
-import { padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { padding, rgba } from 'css-verbose';
+import * as React from 'react';
 
+import * as ReactTooltip from 'react-tooltip';
 import { randomHashedString } from '../../../models/env';
 import { VitrineComponent } from './VitrineComponent';
-import * as ReactTooltip from 'react-tooltip';
 
 interface Props {
-	icon: FontAwesomeIcon.IconDefinition,
-	spin?: boolean,
-	tooltip?: string,
-	onClick?: React.MouseEventHandler<any>,
-	className?: string
+	icon: FontAwesomeIcon.IconDefinition;
+	spin?: boolean;
+	tooltip?: string;
+	onClick?: React.MouseEventHandler<any>;
+	className?: string;
 }
 
 interface State {
-	buttonClassName: string,
-	iconClassName: string
+	buttonClassName: string;
+	iconClassName: string;
 }
 
 export class VitrineButton extends VitrineComponent<Props, State> {

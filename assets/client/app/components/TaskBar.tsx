@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { css, StyleSheet } from 'aphrodite';
 import { BrowserWindow, remote } from 'electron';
-import { StyleSheet, css } from 'aphrodite';
+import * as React from 'react';
 
+import { WindowControl, WindowControlIcon } from './icons/WindowControlIcon';
 import { VitrineComponent } from './VitrineComponent';
-import { WindowControlIcon, WindowControl } from './icons/WindowControlIcon';
 
 export class TaskBar extends VitrineComponent<{}, {}> {
 	private currentWindow: BrowserWindow;

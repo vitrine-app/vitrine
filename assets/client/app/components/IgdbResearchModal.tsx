@@ -1,28 +1,28 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { margin, padding, rgba } from 'css-verbose';
+import { shell } from 'electron';
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal } from 'semantic-ui-react';
-import { shell } from 'electron';
-import { StyleSheet, css } from 'aphrodite';
-import { margin, padding, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
-import { NumberPicker } from './NumberPicker';
 import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
+import { NumberPicker } from './NumberPicker';
+import { VitrineComponent } from './VitrineComponent';
 
-import { faSearch, faCircleNotch } from '@fortawesome/fontawesome-free-solid';
+import { faCircleNotch, faSearch } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	visible: boolean,
-	closeIgdbResearchModal: () => void
+	visible: boolean;
+	closeIgdbResearchModal: () => void;
 }
 
 interface State {
-	loading: boolean,
-	research: string,
-	resultsNb: number,
-	researches: any[],
-	selectedResearchId: number | string
+	loading: boolean;
+	research: string;
+	resultsNb: number;
+	researches: any[];
+	selectedResearchId: number | string;
 }
 
 export class IgdbResearchModal extends VitrineComponent<Props, State> {
@@ -49,7 +49,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 			selectedResearchId: id
 		}, () => {
 			this.igdbFillBtnClickHandler();
-		})
+		});
 	}
 
 	private changeResearchHandler(event: any) {
@@ -90,7 +90,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 	}
 
 	private igdbLinkClickHandler() {
-		let igdbUrl: string = 'https://www.igdb.com';
+		const igdbUrl: string = 'https://www.igdb.com';
 		shell.openExternal(igdbUrl);
 	}
 
@@ -98,8 +98,8 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		serverListener.listen('send-igdb-searches', (research: string, researches: any[]) => {
 			this.setState({
 				loading: false,
-				research: research,
 				selectedResearchId: '',
+				research,
 				researches
 			});
 		});

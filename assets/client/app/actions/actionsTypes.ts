@@ -1,6 +1,6 @@
 export interface Action {
-	type: ActionType,
-	payload: any
+	type: ActionType;
+	payload: any;
 }
 
 export enum ActionType {

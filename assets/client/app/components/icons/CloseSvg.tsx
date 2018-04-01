@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 interface Props {
-	hovered: boolean
+	hovered: boolean;
 }
 
 export const CloseSvg: React.StatelessComponent<Props> = ({ hovered }: Props) => (

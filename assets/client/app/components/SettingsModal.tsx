@@ -1,45 +1,45 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal, Tab, Table } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { border, margin, padding, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
-import { GamesModule } from './GamesModule';
-import { EmulatorSettingsRow } from './EmulatorSettingsRow';
-import { localizer } from '../Localizer';
 import { openDirectory } from '../helpers';
+import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
+import { EmulatorSettingsRow } from './EmulatorSettingsRow';
+import { GamesModule } from './GamesModule';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
-import * as steamIcon from '../../resources/images/steamIcon.png';
-import * as originIcon from '../../resources/images/originIcon.png';
 import * as battleNetIcon from '../../resources/images/battleNetIcon.png';
 import * as emulatedIcon from '../../resources/images/emulatedIcon.png';
+import * as originIcon from '../../resources/images/originIcon.png';
+import * as steamIcon from '../../resources/images/steamIcon.png';
 
 interface Props {
-	settings: any,
-	visible: boolean,
-	firstLaunch: boolean,
-	updateSettings: (settings: any) => void,
-	closeSettingsModal: () => void
+	settings: any;
+	visible: boolean;
+	firstLaunch: boolean;
+	updateSettings: (settings: any) => void;
+	closeSettingsModal: () => void;
 }
 
 interface State {
-	langs: any[],
-	lang: string,
-	steamEnabled: boolean,
-	originEnabled: boolean,
-	battleNetEnabled: boolean,
-	emulatedEnabled: boolean,
-	steamPath: string,
-	originPath: string,
-	emulatedPath: string,
-	steamError: boolean,
-	originError: boolean,
-	emulatedError: boolean,
-	emulatorsCurrentConfig: any,
-	emulatorsError: string,
+	langs: any[];
+	lang: string;
+	steamEnabled: boolean;
+	originEnabled: boolean;
+	battleNetEnabled: boolean;
+	emulatedEnabled: boolean;
+	steamPath: string;
+	originPath: string;
+	emulatedPath: string;
+	steamError: boolean;
+	originError: boolean;
+	emulatedError: boolean;
+	emulatorsCurrentConfig: any;
+	emulatorsError: string;
 }
 
 export class SettingsModal extends VitrineComponent<Props, State> {
@@ -110,7 +110,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	}
 
 	private steamPathBtnClickHandler() {
-		let steamPath: string = openDirectory();
+		const steamPath: string = openDirectory();
 		if (steamPath) {
 			this.setState({
 				steamPath
@@ -119,7 +119,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	}
 
 	private originPathBtnClickHandler() {
-		let originPath: string = openDirectory();
+		const originPath: string = openDirectory();
 		if (originPath) {
 			this.setState({
 				originPath
@@ -128,7 +128,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	}
 
 	private emulatedPathBtnClickHandler() {
-		let emulatedPath: string = openDirectory();
+		const emulatedPath: string = openDirectory();
 		if (emulatedPath) {
 			this.setState({
 				emulatedPath
@@ -143,7 +143,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	}
 
 	private emulatorConfigChangeHandler(emulatorId: number, emulatorConfig: any) {
-		let emulatorsCurrentConfig: any[] = this.state.emulatorsCurrentConfig;
+		const emulatorsCurrentConfig: any[] = this.state.emulatorsCurrentConfig;
 		emulatorsCurrentConfig[emulatorId] = emulatorConfig;
 		this.setState({
 			emulatorsCurrentConfig
@@ -153,7 +153,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	private submitButton() {
 		let canBeSent: boolean = true;
 
-		let form: any = {
+		const form: any = {
 			lang: this.state.lang
 		};
 		if (this.state.steamEnabled) {
