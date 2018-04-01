@@ -56,7 +56,6 @@ class IgdbWrapper {
 			limit,
 			search: name.replace('²', '2')
 		}, ['name', 'cover']).then((response) => {
-			let counter: number = 0;
 			response.body.forEach((game: any) => {
 				logger.info('IgdbWrapper', `${game.name} found in IGDB.`);
 				if (game.cover) {
@@ -66,9 +65,8 @@ class IgdbWrapper {
 				}
 				else // TODO: Change default image
 					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
-				counter++;
-				if (counter === response.body.length)
-					callback(null, response.body);
+			}, () => {
+				callback(null, response.body);
 			});
 		}).catch((error: Error) => {
 			callback(error, null);
@@ -170,25 +168,22 @@ class IgdbWrapper {
 
 	private addGenresCallback(genres: any) {
 		let genresArray: any[] = [];
-		let counter: number = 0;
 		genres.forEach((genre) => {
 			genresArray.push(genre.name);
-			counter++;
-			if (counter === genres.length) {
-				this.game.genres = genresArray;
-				if (this.game.summary && this.lang) {
-					googleTranslate(this.game.summary, {
-						to: this.lang
-					}).then(({text}: any) => {
-						this.game.summary = text;
-						this.callback(null, this.game);
-					}).catch((error: Error) => {
-						this.callback(error, null);
-					});
-				}
-				else
+		}, () => {
+			this.game.genres = genresArray;
+			if (this.game.summary && this.lang) {
+				googleTranslate(this.game.summary, {
+					to: this.lang
+				}).then(({text}: any) => {
+					this.game.summary = text;
 					this.callback(null, this.game);
+				}).catch((error: Error) => {
+					this.callback(error, null);
+				});
 			}
+			else
+				this.callback(null, this.game);
 		});
 	}
 }

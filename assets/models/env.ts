@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import * as uuid from 'uuid/v5';
 import * as crypto from 'crypto';
 

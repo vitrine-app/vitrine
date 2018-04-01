@@ -18,7 +18,6 @@ class SteamUserFinder {
 
 	public getActiveUser(callback: (error: Error, user: any) => void) {
 		let usersArray: any[] = Object.keys(this.loginUsersFile);
-		let counter: number = 0;
 		let found: boolean = false;
 
 		usersArray.forEach((userKey: string) => {
@@ -31,7 +30,8 @@ class SteamUserFinder {
 					userId: userKey
 				});
 			}
-			if (counter === usersArray.length && !found)
+		}, () => {
+			if (!found)
 				callback(new Error('Steam last user has not been found. Please connect to Steam.'), null);
 		});
 	}

@@ -81,17 +81,15 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 		const gameTags: string[] = Object.keys(battleNetConfig.Games)
 			.filter((gamesTag: string) => gamesTag !== 'battle_net' && battleNetConfig.Games[gamesTag].Resumable);
 
-		let counter: number = 0;
 		gameTags.forEach((gameTag: string) => {
 			let gameData: BattleNetGame = gamesData.filter((battleNetGame: BattleNetGame) => battleNetGame.tag === gameTag)[0];
 			logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} found.`);
-			if (!this.isGameAlreadyAdded(gameData.name))
+			if (!this.gameDirExists(gameData.name))
 				this.gamesData.push(gameData);
 			else
 				logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} is already a playable game.`);
-			counter++;
-			if (counter === gameTags.length)
-				this.parseFolders();
+		}, () => {
+			this.parseFolders()
 		});
 	}
 

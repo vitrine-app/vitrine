@@ -29,7 +29,6 @@ class SteamPlayTimeWrapper {
 
 	private handleGames(steamId: number, timedGames: any[], callback: (error: Error, timePlayed: number) => void) {
 		let found: boolean = false;
-		let counter: number = 0;
 
 		timedGames.forEach((timedGame: any) => {
 			if (steamId == timedGame.appid) {
@@ -37,8 +36,8 @@ class SteamPlayTimeWrapper {
 				found = true;
 				callback(null, timedGame.playtime_forever * 60);
 			}
-			counter++;
-			if (counter === timedGame.length && !found)
+		}, () => {
+			if (!found)
 				callback(new Error('Your Steam games files are corrupted. Please reinstall your game'), null);
 		});
 	}

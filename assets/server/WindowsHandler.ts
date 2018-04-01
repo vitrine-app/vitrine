@@ -53,8 +53,6 @@ export class WindowsHandler {
 			resizable: false
 		});
 		this.loaderWindow.loadURL(this.loaderEntryPoint);
-		if (this.devTools)
-			this.loaderWindow.webContents.openDevTools();
 		logger.info('WindowsHandler', 'Loader window created.');
 	}
 

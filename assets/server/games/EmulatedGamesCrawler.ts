@@ -26,7 +26,6 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 				return this.callback(error, null);
 			let counter: number = 0;
 			folders.forEach((romFolder: string) => {
-				let secondCounter: number = 0;
 				this.moduleConfig.platforms.forEach((platform: any) => {
 					if (platform.folder.toUpperCase() === path.basename(romFolder).toUpperCase()) {
 						let romEmulator: any = this.moduleConfig.emulators.filter((emulator: any) => emulator.platforms
@@ -39,12 +38,10 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 							});
 						}
 					}
-					secondCounter++;
-					if (secondCounter === this.moduleConfig.platforms.length) {
-						counter++;
-						if (counter === folders.length)
-							this.analyzeFolders();
-					}
+				}, () => {
+					counter++;
+					if (counter === folders.length)
+						this.analyzeFolders();
 				});
 			});
 		});
@@ -59,22 +56,23 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					this.callback(error, null);
 					return;
 				}
+				const romInfos: any[] = roms.map((romPath: string) => {
+					const parsedPath: string[] = romPath.split('/');
+					const romName: string = parsedPath[parsedPath.length - romEmulator.glob.split('/').length]
+						.replace(/(\w+)\.(\w+)/g, '$1');
+					return {
+						romName,
+						romPath
+					};
+				}).filter(({romName}: any) => {
+					const found: boolean = this.playableGames.filter((playableGame: any) =>
+						spatStr(romName) === spatStr(playableGame.name)
+					).length > 0;
+					return !found;
+				});
+
 				let secondCounter: number = 0;
-				roms.forEach((romPath: string) => {
-					let parsedPath: string[] = romPath.split('/');
-					let romName = parsedPath[parsedPath.length - romEmulator.glob.split('/').length].replace(/(\w+)\.(\w+)/g, '$1');
-					logger.info('EmulatedGamesCrawler',`Rom of ${romName} found.`);
-					for (let playableGame of this.playableGames) {
-						if (spatStr(romName) === spatStr(playableGame.name)) {
-							secondCounter++;
-							if (secondCounter === roms.length) {
-								counter++;
-								if (counter === this.romsFolders.length)
-									this.sendResults();
-							}
-							return;
-						}
-					}
+				romInfos.forEach(({romName, romPath}: any) => {
 					searchIgdbGame(romName, 1).then((game: any) => {
 						game = game[0];
 						delete game.name;
@@ -87,7 +85,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 						this.potentialGames.push(potentialGame);
 						logger.info('EmulatedGamesCrawler', `Adding ${romName} to potential emulated games.`);
 						secondCounter++;
-						if (secondCounter === roms.length) {
+						if (secondCounter === romInfos.length) {
 							counter++;
 							if (counter === this.romsFolders.length)
 								this.sendResults();

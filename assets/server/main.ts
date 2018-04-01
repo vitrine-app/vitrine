@@ -1,3 +1,4 @@
+import '../models/Array';
 import { Bootstrapper } from './Bootstrapper';
 import { logger } from './Logger';
 

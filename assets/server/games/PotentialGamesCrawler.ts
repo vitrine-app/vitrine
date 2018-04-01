@@ -29,7 +29,7 @@ export abstract class PotentialGamesCrawler {
 		this.callback(null, potentialGames);
 	}
 
-	protected isGameAlreadyAdded(name: string): boolean {
+	protected gameDirExists(name: string): boolean {
 		let gameUuid: string = uuidV5(name);
 
 		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);

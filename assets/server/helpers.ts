@@ -34,13 +34,11 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 				resolve();
 				return;
 			}
-			let counter: number = 0;
 			files.forEach((file: string) => {
 				if (file !== except.replace(/\\/g, '/'))
 					fs.removeSync(file);
-				counter++;
-				if (counter === files.length)
-					resolve();
+			}, () => {
+				resolve();
 			});
 		});
 	});
