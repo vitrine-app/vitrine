@@ -1,5 +1,5 @@
-import * as igdb from 'igdb-api-node';
 import * as googleTranslate from 'google-translate-api';
+import * as igdb from 'igdb-api-node';
 
 import { logger } from '../Logger';
 
@@ -50,7 +50,7 @@ class IgdbWrapper {
 	}
 
 	public searchGames(name: string, callback: (error: Error, games: any) => void, resultsNb?: number) {
-		let limit = resultsNb || this.levenshteinRefiner;
+		const limit = resultsNb || this.levenshteinRefiner;
 		logger.info('IgdbWrapper', `Looking for ${limit} result(s) of ${name} in IGDB.`);
 		this.client.games({
 			limit,
@@ -75,7 +75,7 @@ class IgdbWrapper {
 
 	private basicFormatting() {
 		if (this.game.total_rating) {
-			let rating: number = this.game.total_rating;
+			const rating: number = this.game.total_rating;
 			this.game.rating = Math.round(rating);
 			delete this.game.total_rating;
 		}
@@ -106,7 +106,7 @@ class IgdbWrapper {
 			callback({ name: '' });
 			return;
 		}
-		let ids: number | number[] = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
+		const ids: number | number[] = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
 		this.client.companies({
 			ids
 		}, ['name']).then((response) => {
@@ -134,10 +134,10 @@ class IgdbWrapper {
 	}
 
 	private findGenreById(id: number, callback: (genres: any) => void) {
-		let ids: number |number[] = (Array.isArray(id)) ? (id) : ([id]);
+		const ids: number |number[] = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.genres({
-			ids: ids
+			ids
 		}, ['name']).then((response) => {
 			callback(response.body);
 		}).catch((error: Error) => {
@@ -167,7 +167,7 @@ class IgdbWrapper {
 	}
 
 	private addGenresCallback(genres: any) {
-		let genresArray: any[] = [];
+		const genresArray: any[] = [];
 		genres.forEach((genre) => {
 			genresArray.push(genre.name);
 		}, () => {
@@ -188,7 +188,7 @@ class IgdbWrapper {
 	}
 }
 
-let igdbWrapper: IgdbWrapper = new IgdbWrapper();
+const igdbWrapper: IgdbWrapper = new IgdbWrapper();
 
 export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -203,7 +203,7 @@ export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
 
 export function searchIgdbGame(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		igdbWrapper.searchGames(gameName,(error: Error, games: any) => {
+		igdbWrapper.searchGames(gameName, (error: Error, games: any) => {
 			if (error)
 				reject(error);
 			else

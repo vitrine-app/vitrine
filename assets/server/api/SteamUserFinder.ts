@@ -1,7 +1,7 @@
 import * as path from 'path';
 
-import { AcfParser } from './AcfParser';
 import { logger } from '../Logger';
+import { AcfParser } from './AcfParser';
 
 class SteamUserFinder {
 	private steamConfig: any;
@@ -17,12 +17,11 @@ class SteamUserFinder {
 	}
 
 	public getActiveUser(callback: (error: Error, user: any) => void) {
-		let usersArray: any[] = Object.keys(this.loginUsersFile);
+		const usersArray: any[] = Object.keys(this.loginUsersFile);
 		let found: boolean = false;
-
 		usersArray.forEach((userKey: string) => {
-			let currentUser: any = this.loginUsersFile[userKey];
-			if (currentUser.mostrecent == 1) {
+			const currentUser: any = this.loginUsersFile[userKey];
+			if (parseInt(currentUser.mostrecent) === 1) {
 				found = true;
 				logger.info('SteamUserFinder', `Steam user ${currentUser.PersonaName} (${userKey}) found.`);
 				callback(null, {
@@ -37,7 +36,7 @@ class SteamUserFinder {
 	}
 }
 
-let steamUserFinder: SteamUserFinder = new SteamUserFinder();
+const steamUserFinder: SteamUserFinder = new SteamUserFinder();
 
 export function findSteamUser(steamConfig: any): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -46,6 +45,6 @@ export function findSteamUser(steamConfig: any): Promise<any> {
 				reject(error);
 			else
 				resolve(user);
-		})
+		});
 	});
 }

@@ -1,14 +1,14 @@
+import * as glob from 'glob';
 import * as path from 'path';
 import * as Registry from 'winreg';
-import * as glob from 'glob';
 
-import { PotentialGamesCrawler } from './PotentialGamesCrawler';
-import { GameSource, PotentialGame } from '../../models/PotentialGame';
-import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
+import { PlayableGame } from '../../models/PlayableGame';
+import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
+import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
 class OriginGamesCrawler extends PotentialGamesCrawler {
 	private regDetails: any[];
@@ -24,7 +24,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		super.search(moduleConfig, callback);
 
 		this.gamesFolder = path.resolve(this.moduleConfig.installFolder);
-		let regKey = new Registry({
+		const regKey = new Registry({
 			hive: Registry[this.moduleConfig.regHive],
 			key: this.moduleConfig.regKey
 		});
@@ -61,7 +61,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			this.callback(error, null);
 		if (!files.length) {
 			logger.info('OriginGamesCrawler', 'Not Origin games found in this directory.');
-			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+			const potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
 			return;
 		}
@@ -88,7 +88,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 				searchIgdbGame(gameName, 1).then((game: any) => {
 					game = game[0];
 					delete game.name;
-					let potentialGame: PotentialGame = new PotentialGame(gameName, game);
+					const potentialGame: PotentialGame = new PotentialGame(gameName, game);
 					potentialGame.source = GameSource.ORIGIN;
 					potentialGame.commandLine = [ path.resolve(gamePath) ];
 					this.potentialGames.push(potentialGame);
@@ -118,7 +118,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 	}
 }
 
-let originGamesCrawler: OriginGamesCrawler = new OriginGamesCrawler();
+const originGamesCrawler: OriginGamesCrawler = new OriginGamesCrawler();
 
 export function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {

@@ -10,13 +10,13 @@ export class AcfParser {
 	}
 
 	public toObject(): any {
-		let tree: any = {};
+		const tree: any = {};
 
 		while (this.c < this.acfFd.length) {
 			this.deleteSpaces();
 			if (this.acfFd[this.c] === '}')
 				return tree;
-			let name: string = this.readField();
+			const name: string = this.readField();
 			this.deleteSpaces();
 
 			if (this.acfFd[this.c] === '"')

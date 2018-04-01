@@ -1,9 +1,9 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { PlayableGame } from '../../models/PlayableGame';
-import { GamesCollection } from '../../models/GamesCollection';
 import { getEnvFolder } from '../../models/env';
+import { GamesCollection } from '../../models/GamesCollection';
+import { PlayableGame } from '../../models/PlayableGame';
 import { logger } from '../Logger';
 
 class PlayableGamesCrawler {
@@ -29,10 +29,10 @@ class PlayableGamesCrawler {
 			}
 			let counter: number = 0;
 			files.forEach((gameUuid) => {
-				let configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, 'config.json');
+				const configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, 'config.json');
 				if (fs.existsSync(configFilePath)) {
-					let rawGame = fs.readJsonSync(configFilePath);
-					let playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
+					const rawGame = fs.readJsonSync(configFilePath);
+					const playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
 					playableGame.uuid = rawGame.uuid;
 					playableGame.commandLine = rawGame.commandLine;
 					playableGame.timePlayed = parseInt(rawGame.timePlayed);
@@ -44,7 +44,7 @@ class PlayableGamesCrawler {
 				}
 				counter++;
 				if (counter === files.length) {
-					let playableGames: GamesCollection<PlayableGame> = new GamesCollection();
+					const playableGames: GamesCollection<PlayableGame> = new GamesCollection();
 					playableGames.setGames(this.playableGames);
 					this.callback(null, playableGames);
 					delete this.callback;

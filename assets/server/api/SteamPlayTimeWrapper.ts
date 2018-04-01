@@ -29,10 +29,9 @@ class SteamPlayTimeWrapper {
 
 	private handleGames(steamId: number, timedGames: any[], callback: (error: Error, timePlayed: number) => void) {
 		let found: boolean = false;
-
 		timedGames.forEach((timedGame: any) => {
-			if (steamId == timedGame.appid) {
-				logger.info('SteamPlayTimeWrapper', `Played time for ${steamId} found (${timedGame.playtime_forever}).`);
+			if (steamId === timedGame.appid) {
+				logger.info('SteamPlayTimeWrapper', `Played time for ${steamId} found (${timedGame.playtime_forever} mins).`);
 				found = true;
 				callback(null, timedGame.playtime_forever * 60);
 			}
@@ -43,7 +42,7 @@ class SteamPlayTimeWrapper {
 	}
 }
 
-let steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
+const steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
 
 export function getGamePlayTime(steamUserId: number, steamId: number): Promise<any> {
 	return new Promise((resolve, reject) => {

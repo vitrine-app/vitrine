@@ -1,39 +1,39 @@
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import { autoUpdater, UpdateCheckResult } from 'electron-updater';
 import { ProgressInfo } from 'builder-util-runtime';
-import * as rimraf from 'rimraf';
+import { autoUpdater, UpdateCheckResult } from 'electron-updater';
+import * as fs from 'fs-extra';
 import * as moment from 'moment';
+import * as path from 'path';
+import * as rimraf from 'rimraf';
 
-import { WindowsHandler } from './WindowsHandler';
-import { GamesCollection } from '../models/GamesCollection';
-import { GameSource, PotentialGame } from '../models/PotentialGame';
-import { PlayableGame} from '../models/PlayableGame';
 import { getEnvFolder, randomHashedString } from '../models/env';
+import { GamesCollection } from '../models/GamesCollection';
+import { PlayableGame} from '../models/PlayableGame';
+import { GameSource, PotentialGame } from '../models/PotentialGame';
+import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
+import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
+import { findSteamUser } from './api/SteamUserFinder';
 import { launchGame } from './GameLauncher';
-import { getPlayableGames } from './games/PlayableGamesCrawler';
-import { searchSteamGames } from './games/SteamGamesCrawler';
-import { searchOriginGames } from './games/OriginGamesCrawler';
 import { searchBattleNetGames } from './games/BattleNetGamesCrawler';
 import { searchEmulatedGames } from './games/EmulatedGamesCrawler';
-import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
-import { findSteamUser } from './api/SteamUserFinder';
-import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
+import { searchOriginGames } from './games/OriginGamesCrawler';
+import { getPlayableGames } from './games/PlayableGamesCrawler';
+import { searchSteamGames } from './games/SteamGamesCrawler';
 import { downloadImage, isAlreadyStored } from './helpers';
 import { logger} from './Logger';
+import { WindowsHandler } from './WindowsHandler';
 
 interface ModulesConfig {
 	steam?: {
 		gamesFolders: string[],
 		launchCommand: string
-	},
+	};
 	origin?: {
 		regHive: string,
 		regKey: string
-	},
+	};
 	battleNet?: {
 		configFilePath: string
-	}
+	};
 }
 
 export class Server {
@@ -62,11 +62,11 @@ export class Server {
 			battleNet: {
 				configFilePath: '%appdata%/Battle.net/Battle.net.config'
 			}
-		}
+		};
 	}
 
-	public run(prod?: boolean) {
-		this.windowsHandler.run(!prod);
+	public run() {
+		this.windowsHandler.run();
 	}
 
 	public registerEvents() {
@@ -164,8 +164,8 @@ export class Server {
 
 	private addGame(gameForm: any) {
 		logger.info('Server', `Adding ${gameForm.name} to Vitrine.`);
-		let gameName: string = gameForm.name;
-		let addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
+		const gameName: string = gameForm.name;
+		const addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
 		addedGame.source = gameForm.source;
 
 		this.registerGame(addedGame, gameForm, false);
@@ -173,10 +173,10 @@ export class Server {
 
 	private editGame(gameUuid: string, gameForm: any) {
 		logger.info('Server', `Editing ${gameForm.name}.`);
-		let editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		const editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
 		editedGame.name = gameForm.name;
 		editedGame.commandLine = [];
-		let { backgroundScreen, cover } = editedGame.details;
+		const { backgroundScreen, cover } = editedGame.details;
 		editedGame.details = {
 			...gameForm,
 			backgroundScreen,
@@ -186,9 +186,9 @@ export class Server {
 	}
 
 	private editGameTimePlayed(gameUuid: string, timePlayed: number) {
-		let editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
-		let gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
-		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
+		const editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		const gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
+		const configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
 		editedGame.timePlayed = timePlayed;
 		logger.info('Server', `Editing time played for ${editedGame.name} (${timePlayed})`);
@@ -200,7 +200,7 @@ export class Server {
 			logger.info('Server', 'Trying to launch a game but another one is already running.');
 			return;
 		}
-		let launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);
+		const launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);
 		this.gameLaunched = true;
 		launchGame(launchingGame).then((secondsPlayed: number) => {
 			this.gameLaunched = false;
@@ -217,7 +217,7 @@ export class Server {
 
 	private removeGame(gameUuid: string) {
 		this.potentialGames.removeGame(gameUuid);
-		let gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
+		const gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 		rimraf(gameDirectory, () => {
 			logger.info('Server', `Removing game ${gameUuid} from Vitrine and deleting corresponding directory.`);
 			this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
@@ -241,7 +241,7 @@ export class Server {
 
 	private updateSettings(settingsForm: any) {
 		logger.info('Server', 'Updating global settings.');
-		let config: any = {
+		const config: any = {
 			lang: settingsForm.lang
 		};
 		if (settingsForm.steamPath) {
@@ -272,7 +272,7 @@ export class Server {
 		}
 		fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 }).then(() => {
 			logger.info('Server', 'Settings outputted to vitrine_config.json.');
-			let emulatorsConfig: any = {
+			const emulatorsConfig: any = {
 				...this.vitrineConfig.emulated,
 				...config.emulated,
 				emulators: settingsForm.emulators
@@ -297,7 +297,7 @@ export class Server {
 			return;
 
 		try {
-			let games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
 			logger.info('Server', 'Adding potential Steam games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -313,7 +313,7 @@ export class Server {
 			return;
 
 		try {
-			let games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
 			logger.info('Server', 'Adding potential Origin games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -327,8 +327,9 @@ export class Server {
 	private async searchBattleNetGames(): Promise<any> {
 		if (!this.vitrineConfig.battleNet)
 			return;
+
 		try {
-			let games: GamesCollection<PotentialGame> = await searchBattleNetGames(this.vitrineConfig.battleNet, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchBattleNetGames(this.vitrineConfig.battleNet, this.playableGames.getGames());
 			logger.info('Server', 'Adding potential Battle.net games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -344,7 +345,7 @@ export class Server {
 			return;
 
 		try {
-			let games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
 			logger.info('Server', 'Adding potential emulated games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -362,7 +363,7 @@ export class Server {
 		game.details.rating = parseInt(game.details.rating);
 		game.details.genres = game.details.genres.split(', ');
 		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
-		if (!editing && game.source == GameSource.STEAM)
+		if (!editing && game.source === GameSource.STEAM)
 			game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
 		delete game.details.name;
 		delete game.details.date;
@@ -374,28 +375,30 @@ export class Server {
 			getGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId).then((timePlayed: number) => {
 				game.timePlayed = timePlayed;
 				this.ensureRegisteredGame(game, gameForm, editing);
-			}).catch((error: Error) => this.throwServerError(error));
+			}).catch((error: Error) => {
+				this.throwServerError(error);
+			});
 		}
 		else
 			this.ensureRegisteredGame(game, gameForm, editing);
 	}
 
 	private ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
-		let gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
-		let configFilePath: string = path.resolve(gameDirectory, 'config.json');
+		const gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
+		const configFilePath: string = path.resolve(gameDirectory, 'config.json');
 		if (!editing && fs.existsSync(configFilePath))
 			return;
 		fs.ensureDirSync(gameDirectory);
 
 		if (!isAlreadyStored(game.details.backgroundScreen, gameForm.backgroundScreen) || !isAlreadyStored(game.details.cover, gameForm.cover)) {
-			let gameHash: string = randomHashedString(8);
-			let backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
-			let coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
+			const gameHash: string = randomHashedString(8);
+			const backgroundPath: string = path.resolve(gameDirectory, `background.${gameHash}.jpg`);
+			const coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
 			logger.info('Server', `Creating hashed versions for background picture and cover for ${game.name}.`);
 
-			let backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
+			const backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
 				: (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
-			let coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
+			const coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
 			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}).then(() => {
 				this.sendRegisteredGame(game, configFilePath, editing);
 			}).catch((error: Error) => this.throwServerError(error));
@@ -408,16 +411,16 @@ export class Server {
 
 	private async downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
 		try {
-			let isStored: boolean = await downloadImage(backgroundUrl, backgroundPath);
-			game.details.backgroundScreen = (isStored) ? (backgroundPath) : (game.details.backgroundScreen);
+			const stored: boolean = await downloadImage(backgroundUrl, backgroundPath);
+			game.details.backgroundScreen = (stored) ? (backgroundPath) : (game.details.backgroundScreen);
 			if (game.details.steamId)
 				delete game.details.screenshots;
 			else
 				delete game.details.background;
 			try {
-				let isStored: boolean = await downloadImage(coverUrl, coverPath);
-				game.details.cover = (isStored) ? (coverPath) : (game.details.cover);
-				if (isStored) {
+				const stored: boolean = await downloadImage(coverUrl, coverPath);
+				game.details.cover = (stored) ? (coverPath) : (game.details.cover);
+				if (stored) {
 					game.details.cover = coverPath;
 					return;
 				}

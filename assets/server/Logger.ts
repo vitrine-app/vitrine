@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
-import * as path from 'path';
 import * as moment from 'moment';
+import * as path from 'path';
 
 import { isProduction } from '../models/env';
 
@@ -21,16 +21,16 @@ class Logger {
 		this.testEnv = testEnv || false;
 		if (this.testEnv)
 			return;
-		let dateTime: string = moment().format('DD/MM HH:mm:ss');
-		let initialLog: string = `<style>p { margin: 0 }</style><h3>Vitrine log</h3><p><strong>[ ${dateTime} ]</strong> Starting logging.</p>`;
+		const dateTime: string = moment().format('DD/MM HH:mm:ss');
+		const initialLog: string = `<style>p { margin: 0 }</style><h3>Vitrine log</h3><p><strong>[ ${dateTime} ]</strong> Starting logging.</p>`;
 		fs.writeFileSync(this.filePath, initialLog);
 	}
 
 	public info(channelName: string, message: any, displayed?: boolean) {
 		if (this.testEnv)
 			return;
-		let dateTime: string = moment().format('DD/MM HH:mm:ss');
-		let log: string = `<p><strong>[ ${dateTime} ][ ${channelName} ]</strong> ${message}</p>`;
+		const dateTime: string = moment().format('DD/MM HH:mm:ss');
+		const log: string = `<p><strong>[ ${dateTime} ][ ${channelName} ]</strong> ${message}</p>`;
 		if (displayed)
 			console.log(`[ ${dateTime} ][ ${channelName} ] ${message}`);
 		fs.appendFileSync(this.filePath, log);

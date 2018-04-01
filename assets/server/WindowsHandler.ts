@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import * as path from 'path';
 
-import { logger} from './Logger';
+import { isProduction } from '../models/env';
+import { logger } from './Logger';
 
 export class WindowsHandler {
 	private readonly clientEntryPoint: string;
@@ -10,7 +11,6 @@ export class WindowsHandler {
 	private loaderWindow: BrowserWindow;
 	private clientWindow: BrowserWindow;
 	private tray: Tray;
-	private devTools: boolean;
 	private appQuit: boolean;
 
 	public constructor() {
@@ -20,8 +20,7 @@ export class WindowsHandler {
 		this.appQuit = false;
 	}
 
-	public run(devTools?: boolean) {
-		this.devTools = devTools;
+	public run() {
 		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
 			this.quitApplication();
 			return;
@@ -71,7 +70,7 @@ export class WindowsHandler {
 		this.clientWindow.maximize();
 		this.clientWindow.loadURL(this.clientEntryPoint);
 		this.clientWindow.hide();
-		if (this.devTools)
+		if (!isProduction())
 			this.clientWindow.webContents.openDevTools();
 
 		this.clientWindow.on('close', (event: Event) => {
@@ -100,7 +99,7 @@ export class WindowsHandler {
 	}
 
 	public sendToLoader(channelName, ...args) {
-		let sentArgs: any[] = [
+		const sentArgs: any[] = [
 			`loaderServer.${channelName}`,
 			...args
 		];
@@ -108,7 +107,7 @@ export class WindowsHandler {
 	}
 
 	public sendToClient(channelName, ...args) {
-		let sentArgs: any[] = [
+		const sentArgs: any[] = [
 			`server.${channelName}`,
 			...args
 		];

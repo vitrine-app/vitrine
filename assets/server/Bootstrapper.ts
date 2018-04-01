@@ -1,21 +1,19 @@
-import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as path from 'path';
 
-import { Server } from './Server';
 import { getEnvFolder, isProduction } from '../models/env';
 import { logger } from './Logger';
+import { Server } from './Server';
 
 export class Bootstrapper {
+	private readonly configFileName: string;
+	private readonly gamesFolderPath: string;
+	private readonly configFolderPath: string;
 	private serverInstance: Server;
-	private prod: boolean;
-	private configFileName: string;
-	private gamesFolderPath: string;
-	private configFolderPath: string;
 	private vitrineConfigFilePath: string;
 	private vitrineConfig: any;
 
-	public constructor(prod?: boolean) {
-		this.prod = (prod !== undefined) ? (prod) : ((isProduction()) ? (true) : (false));
+	public constructor() {
 		this.configFileName = 'vitrine_config.json';
 		this.gamesFolderPath = getEnvFolder('games');
 		this.configFolderPath = getEnvFolder('config');
@@ -25,7 +23,7 @@ export class Bootstrapper {
 		fs.ensureDirSync(this.configFolderPath);
 		fs.ensureDirSync(this.gamesFolderPath);
 
-		let configFolderOriginalPath: string = getEnvFolder('config', true);
+		const configFolderOriginalPath: string = getEnvFolder('config', true);
 		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, this.configFileName);
 		if (!fs.pathExistsSync(this.vitrineConfigFilePath))
 			fs.copySync(configFolderOriginalPath, this.configFolderPath);
@@ -48,10 +46,10 @@ export class Bootstrapper {
 	private includeEmulatorsConfig(): Promise<any> {
 		return new Promise((resolve) => {
 			logger.info('Bootstrapper', 'Including emulators and platforms data.');
-			let platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
-			let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
-			let emulated: any = this.vitrineConfig.emulated || {};
-			let newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
+			const platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
+			const emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
+			const emulated: any = this.vitrineConfig.emulated || {};
+			const newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
 			newVitrineConfig.emulated.platforms = fs.readJsonSync(platformsConfigFilePath, { throws: false });
 			newVitrineConfig.emulated.emulators = fs.readJsonSync(emulatorsConfigFilePath, { throws: false });
 			logger.info('Bootstrapper', 'Emulators and platforms added to config.');
@@ -62,10 +60,10 @@ export class Bootstrapper {
 
 	private launchMainClient() {
 		logger.info('Bootstrapper', 'Launching main client.');
-		if (!this.prod)
+		if (!isProduction())
 			this.registerDebugPromiseHandler();
 		this.serverInstance = new Server(this.vitrineConfig, this.vitrineConfigFilePath, this.configFolderPath);
 		this.serverInstance.registerEvents();
-		this.serverInstance.run(this.prod);
+		this.serverInstance.run();
 	}
 }

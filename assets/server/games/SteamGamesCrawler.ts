@@ -1,13 +1,13 @@
-import * as path from 'path';
 import * as glob from 'glob';
+import * as path from 'path';
 
-import { PotentialGamesCrawler } from './PotentialGamesCrawler';
+import { GamesCollection } from '../../models/GamesCollection';
+import { PlayableGame } from '../../models/PlayableGame';
+import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { AcfParser } from '../api/AcfParser';
 import { searchIgdbGame } from '../api/IgdbWrapper';
-import { GameSource, PotentialGame } from '../../models/PotentialGame';
-import { PlayableGame } from '../../models/PlayableGame';
-import { GamesCollection } from '../../models/GamesCollection';
 import { logger } from '../Logger';
+import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
 class SteamGamesCrawler extends PotentialGamesCrawler {
 	private manifestRegEx: string;
@@ -43,7 +43,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 			this.callback(null, new GamesCollection());
 			return;
 		}
-		let gameManifests: any[] = files.map((appManifest: any) => new AcfParser(appManifest).toObject().AppState)
+		const gameManifests: any[] = files.map((appManifest: any) => new AcfParser(appManifest).toObject().AppState)
 			.filter((appManifest: any) => {
 				const found: boolean = this.playableGames.filter((playableGame: any) =>
 					appManifest.appid === playableGame.details.steamId
@@ -62,7 +62,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 			searchIgdbGame(gameManifest.name, 1).then((game: any) => {
 				game = game[0];
 				delete game.name;
-				let potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
+				const potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
 				potentialGame.source = GameSource.STEAM;
 				potentialGame.commandLine = [
 					path.resolve(this.moduleConfig.installFolder, 'steam.exe'),
@@ -81,7 +81,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 	}
 }
 
-let steamGamesCrawler: SteamGamesCrawler = new SteamGamesCrawler();
+const steamGamesCrawler: SteamGamesCrawler = new SteamGamesCrawler();
 
 export function searchSteamGames(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
