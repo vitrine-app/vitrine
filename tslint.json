@@ -1,0 +1,23 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-eslint-rules"
+  ],
+  "rules": {
+    "curly": false,
+    "quotemark": [ true, "single", "jsx-single" ],
+    "semicolon": [ true ],
+    "interface-name": false,
+    "indent": [ "tabs" ],
+    "no-multi-spaces": true,
+    "max-line-length": [ true, 150 ],
+    "one-line": false,
+    "trailing-comma": false,
+    "object-literal-sort-keys": false,
+    "no-console": false,
+    "triple-equals": [ true, "allow-null-check", "allow-undefined-check" ],
+    "radix": false,
+    "no-shadowed-variable": false
+  }
+}

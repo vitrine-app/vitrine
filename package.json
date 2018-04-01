@@ -107,19 +107,28 @@
     "semantic-ui-less": "^2.2.14",
     "style-loader": "^0.20.3",
     "ts-node": "5.0.1",
+    "tslint": "^5.9.1",
+    "tslint-eslint-rules": "^5.1.0",
     "typescript": "^2.7.2",
     "webpack": "^4.4.0",
     "webpack-cli": "^2.0.13"
   },
   "scripts": {
-    "build": "webpack --progress && electron .",
+    "build-app": "webpack --progress",
+    "build-prod": "webpack --progress --config webpack.prod.config.js",
+    "build-server": "webpack --progress --config webpack.server.config.js",
+    "build-client": "webpack --progress --config webpack.client.config.js",
     "build-scripts": "call scripts/buildModules.bat",
-    "run-server": "webpack --progress --config webpack.server.config.js && electron .",
-    "run-client": "webpack --progress --config webpack.client.config.js && electron .",
+    "run-app": "yarn lint-app && yarn build-app && electron .",
+    "run-server": "yarn build-server && yarn start",
+    "run-client": "yarn lint-client && yarn build-client && yarn start",
+    "lint-app": "tslint assets/**/*.ts*",
+    "lint-server": "tslint assets/server/**/*.ts assets/models/**/*.ts",
+    "lint-client": "tslint assets/client/**/*.ts*",
     "watch-client": "webpack --progress --config webpack.client.config.js --watch",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
-    "pack": "yarn build-scripts && webpack --progress --config webpack.prod.config.js && build --dir",
-    "dist": "yarn build-scripts && yarn test && webpack --progress --config webpack.prod.config.js && build"
+    "pack": "yarn build-scripts && yarn build-prod && build --dir",
+    "dist": "yarn build-scripts && yarn test && yarn build-prod && build"
   }
 }
