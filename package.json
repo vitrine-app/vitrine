@@ -84,7 +84,7 @@
     "run-app": "yarn lint-app && yarn build-app && electron .",
     "run-server": "yarn lint-server && yarn build-server && yarn start",
     "run-client": "yarn build-client && yarn start",
-    "lint-app": "tslint assets/ **/*.ts*",
+    "lint-app": "tslint assets/**/*.ts*",
     "lint-server": "tslint assets/server/**/*.ts assets/models/**/*.ts",
     "lint-client": "tslint assets/client/**/*.ts*",
     "watch-client": "webpack --progress --config webpack.client.config.js --watch",
