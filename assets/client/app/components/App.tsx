@@ -36,15 +36,15 @@ export class App extends React.Component<Props, State> {
 		const systemLang: string = remote.app.getLocale();
 
 		const langFilesPaths: string[] = glob.sync(`${langFilesFolder}/*`);
-		let counter: number = 0;
-		langFilesPaths.forEach((langFilePath: string) => {
+		langFilesPaths.forEachEnd((langFilePath: string, done: () => void) => {
 			const langName: string = path.basename(langFilePath).slice(0, -5);
 			const langFile: any = fs.readJsonSync(langFilePath);
 			localizer.addLanguage(langName, langFile);
 			if (!configLang && systemLang === langName)
 				localizer.setLanguage(langName);
-			counter++;
-			if (counter === langFilesPaths.length && configLang)
+			done();
+		}, () => {
+			if (configLang)
 				localizer.setLanguage(configLang);
 		});
 	}

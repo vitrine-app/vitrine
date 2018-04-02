@@ -18,7 +18,7 @@ class PlayableGamesCrawler {
 
 	public search(callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void) {
 		this.callback = callback;
-		fs.readdir(this.gamesDirectory, (error, files) => {
+		fs.readdir(this.gamesDirectory, (error: Error, files: string[]) => {
 			if (error) {
 				this.callback(error, null);
 				return;
@@ -27,8 +27,7 @@ class PlayableGamesCrawler {
 				this.callback(null, new GamesCollection());
 				return;
 			}
-			let counter: number = 0;
-			files.forEach((gameUuid) => {
+			files.forEachEnd((gameUuid: string, done: () => void) => {
 				const configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, 'config.json');
 				if (fs.existsSync(configFilePath)) {
 					const rawGame = fs.readJsonSync(configFilePath);
@@ -42,13 +41,12 @@ class PlayableGamesCrawler {
 					logger.info('PlayableGamesCrawler', `Playable game ${playableGame.name} (${playableGame.uuid}) found.`);
 					this.playableGames.push(playableGame);
 				}
-				counter++;
-				if (counter === files.length) {
-					const playableGames: GamesCollection<PlayableGame> = new GamesCollection();
-					playableGames.setGames(this.playableGames);
-					this.callback(null, playableGames);
-					delete this.callback;
-				}
+				done();
+			}, () => {
+				const playableGames: GamesCollection<PlayableGame> = new GamesCollection();
+				playableGames.setGames(this.playableGames);
+				this.callback(null, playableGames);
+				delete this.callback;
 			});
 		});
 	}

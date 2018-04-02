@@ -23,6 +23,7 @@
     "!tests",
     "!scripts",
     "!.gitignore",
+    "!CHANGELOG.md",
     "!LICENSE.md",
     "!README.md",
     "!tsconfig.json",

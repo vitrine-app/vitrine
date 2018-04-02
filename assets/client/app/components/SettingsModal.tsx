@@ -215,20 +215,18 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 
 		let emulatorsError: string = '';
-		let counter: number = 0;
-		this.state.emulatorsCurrentConfig.forEach((emulatorConfig: any) => {
+		this.state.emulatorsCurrentConfig.forEachEnd((emulatorConfig: any, done: () => void) => {
 			if (emulatorConfig.active && (!emulatorConfig.path || !emulatorConfig.command)) {
 				canBeSent = false;
 				emulatorsError += `${emulatorConfig.name} ${localizer.f('emulatorConfigError')} `;
 			}
-			counter++;
-			if (counter === this.state.emulatorsCurrentConfig.length) {
-				this.setState({
-					emulatorsError
-				});
-				if (canBeSent)
-					serverListener.send('update-settings', { ...form, emulators: this.state.emulatorsCurrentConfig });
-			}
+			done();
+		}, () => {
+			this.setState({
+				emulatorsError
+			});
+			if (canBeSent)
+				serverListener.send('update-settings', { ...form, emulators: this.state.emulatorsCurrentConfig });
 		});
 	}
 

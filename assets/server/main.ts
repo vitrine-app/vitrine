@@ -1,4 +1,5 @@
-import '../models/Array';
+import 'foreach-end';
+
 import { Bootstrapper } from './Bootstrapper';
 import { logger } from './Logger';
 

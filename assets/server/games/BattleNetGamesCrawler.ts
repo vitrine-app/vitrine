@@ -80,13 +80,14 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 		const gameTags: string[] = Object.keys(battleNetConfig.Games)
 			.filter((gamesTag: string) => gamesTag !== 'battle_net' && battleNetConfig.Games[gamesTag].Resumable);
 
-		gameTags.forEach((gameTag: string) => {
+		gameTags.forEachEnd((gameTag: string, done: () => void) => {
 			const gameData: BattleNetGame = gamesData.filter((battleNetGame: BattleNetGame) => battleNetGame.tag === gameTag)[0];
 			logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} found.`);
 			if (!this.gameDirExists(gameData.name))
 				this.gamesData.push(gameData);
 			else
 				logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} is already a playable game.`);
+			done();
 		}, () => {
 			this.parseFolders();
 		});
@@ -99,27 +100,24 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 			return;
 		}
 		const foundGames: BattleNetGame[] = [];
-		let counter: number = 0;
-		this.gamesData.forEach((gameData: BattleNetGame) => {
+		this.gamesData.forEachEnd((gameData: BattleNetGame, done: () => void) => {
 			gameData.path = path.resolve(this.rootInstallPath, gameData.name, gameData.path);
 			fs.pathExists(gameData.path).then((exists: boolean) => {
 				if (exists) {
 					logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} is present on disk.`);
 					foundGames.push(gameData);
 				}
-				counter++;
-				if (counter === this.gamesData.length)
-					this.getGamesData(foundGames);
+				done();
 			}).catch((error: Error) => {
 				this.callback(error, null);
 			});
+		}, () => {
+			this.getGamesData(foundGames);
 		});
 	}
 
 	private getGamesData(foundGames: BattleNetGame[]) {
-		let counter: number = 0;
-
-		foundGames.forEach((foundGame: BattleNetGame) => {
+		foundGames.forEachEnd((foundGame: BattleNetGame, done: () => void) => {
 			searchIgdbGame(foundGame.name, 1).then((game: any) => {
 				game = game[0];
 				delete game.name;
@@ -128,12 +126,12 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 				potentialGame.commandLine = [ foundGame.path ];
 				this.potentialGames.push(potentialGame);
 				logger.info('BattleNetGamesCrawler', `Adding ${foundGame.name} to potential Battle.net games.`);
-				counter++;
-				if (counter === foundGames.length)
-					this.sendResults();
+				done();
 			}).catch((error: Error) => {
 				this.callback(error, null);
 			});
+		}, () => {
+			this.sendResults();
 		});
 	}
 }

@@ -34,9 +34,10 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 				resolve();
 				return;
 			}
-			files.forEach((file: string) => {
+			files.forEachEnd((file: string, done: () => void) => {
 				if (file !== except.replace(/\\/g, '/'))
 					fs.removeSync(file);
+				done();
 			}, () => {
 				resolve();
 			});
