@@ -1,0 +1,38 @@
+{
+  "appId": "com.paul-roman.vitrine",
+  "productName": "Vitrine",
+  "win": {
+    "target": "nsis",
+    "icon": "assets/client/resources/images/vitrine.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "artifactName": "${productName}_${version}_Setup.${ext}",
+    "multiLanguageInstaller": true,
+    "publish": {
+      "provider": "github",
+      "vPrefixedTagName": true
+    }
+  },
+  "files": [
+    "!.circleci",
+    "!.idea",
+    "!assets",
+    "!games",
+    "!node_modules",
+    "!tests",
+    "!scripts",
+    "!.gitignore",
+    "!LICENSE.md",
+    "!README.md",
+    "!tsconfig.json",
+    "!vitrine.log.html",
+    "!webpack.*.js",
+    "!yarn.lock"
+  ],
+  "extraResources": [
+    "config",
+    "scripts/*.node",
+    "*app-update.yml"
+  ]
+}
