@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
+import * as React from 'react';
 
-import { MinimizeSvg } from './MinimizeSvg';
-import { MaximizeSvg } from './MaximizeSvg';
 import { CloseSvg } from './CloseSvg';
+import { MaximizeSvg } from './MaximizeSvg';
+import { MinimizeSvg } from './MinimizeSvg';
 
 export enum WindowControl {
 	MinimizeIcon,
@@ -13,13 +13,13 @@ export enum WindowControl {
 }
 
 interface Props {
-	icon: WindowControl,
-	onClick: React.MouseEventHandler<any>,
-	redBackground?: boolean
+	icon: WindowControl;
+	onClick: React.MouseEventHandler<any>;
+	redBackground?: boolean;
 }
 
 interface State {
-	hovered: boolean
+	hovered: boolean;
 }
 
 export class WindowControlIcon extends React.Component<Props, State> {
@@ -29,6 +29,21 @@ export class WindowControlIcon extends React.Component<Props, State> {
 		this.state = {
 			hovered: false
 		};
+
+		this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
+		this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
+	}
+
+	private mouseEnterHandler() {
+		this.setState({
+			hovered: true
+		});
+	}
+
+	private mouseLeaveHandler() {
+		this.setState({
+			hovered: false
+		});
 	}
 
 	private iconRender(): JSX.Element {
@@ -45,8 +60,8 @@ export class WindowControlIcon extends React.Component<Props, State> {
 	public render(): JSX.Element {
 		return (
 			<div
-				onMouseEnter={() => this.setState({ hovered: true })}
-				onMouseLeave={() => this.setState({ hovered: false })}
+				onMouseEnter={this.mouseEnterHandler}
+				onMouseLeave={this.mouseLeaveHandler}
 				className={css(styles.icon, (this.props.redBackground) ? (styles.redIcon) : (styles.regularIcon))}
 				onClick={this.props.onClick}
 			>

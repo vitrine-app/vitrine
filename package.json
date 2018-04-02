@@ -9,47 +9,6 @@
     "type": "git",
     "url": "git://github.com/paul-roman/vitrine.git"
   },
-  "build": {
-    "appId": "com.github.paul-roman.vitrine",
-    "productName": "Vitrine",
-    "win": {
-      "target": "nsis",
-      "icon": "assets/client/resources/images/vitrine.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "artifactName": "${productName}_${version}_Setup.${ext}",
-      "multiLanguageInstaller": true,
-      "publish": {
-        "provider": "github",
-        "vPrefixedTagName": true
-      }
-    },
-    "files": [
-      "!.circleci",
-      "!.idea",
-      "!assets",
-      "!games",
-      "!node_modules",
-      "!tests",
-      "!scripts",
-      "!.gitignore",
-      "!LICENSE.md",
-      "!README.md",
-      "!tsconfig.json",
-      "!vitrine.log.html",
-      "!webpack.*.js",
-      "!yarn.lock"
-    ],
-    "extraResources": [
-      "config",
-      "scripts/*.node",
-      "*app-update.yml"
-    ],
-    "extraMetadata": {
-      "env": "prod"
-    }
-  },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "@fortawesome/fontawesome-free-solid": "^5.0.8",
@@ -62,7 +21,7 @@
     "glob": "^7.1.2",
     "google-translate-api": "^2.3.0",
     "igdb-api-node": "3.1.3",
-    "moment": "2.21.0",
+    "moment": "^2.22.0",
     "react": "^16.2.0",
     "react-contextmenu": "^2.9.2",
     "react-datetime": "^2.14.0",
@@ -71,7 +30,7 @@
     "react-tooltip": "^3.4.0",
     "redux": "^3.7.2",
     "rimraf": "^2.6.2",
-    "semantic-ui-react": "^0.78.3",
+    "semantic-ui-react": "0.79.0",
     "steam-web": "0.7.0",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
@@ -98,7 +57,9 @@
     "electron": "^1.8.4",
     "electron-builder": "^20.6.2",
     "electron-node-loader": "^1.1.1",
+    "github-release-notes": "^0.15.0",
     "html-webpack-plugin": "^3.1.0",
+    "husky": "^0.14.3",
     "less": "^2.7.3",
     "less-loader": "^4.1.0",
     "less-vars-loader": "^1.1.0",
@@ -106,20 +67,31 @@
     "node-gyp": "^3.6.2",
     "semantic-ui-less": "^2.2.14",
     "style-loader": "^0.20.3",
-    "ts-node": "^3.3.0",
+    "ts-node": "5.0.1",
+    "tslint": "^5.9.1",
+    "tslint-eslint-rules": "^5.1.0",
+    "tslint-react": "^3.5.1",
     "typescript": "^2.7.2",
-    "webpack": "^4.2.0",
+    "webpack": "^4.4.0",
     "webpack-cli": "^2.0.13"
   },
   "scripts": {
-    "build": "webpack --progress && electron .",
+    "build-app": "webpack --progress",
+    "build-prod": "webpack --progress --config webpack.prod.config.js",
+    "build-server": "webpack --progress --config webpack.server.config.js",
+    "build-client": "webpack --progress --config webpack.client.config.js",
     "build-scripts": "call scripts/buildModules.bat",
-    "run-server": "webpack --progress --config webpack.server.config.js && electron .",
-    "run-client": "webpack --progress --config webpack.client.config.js && electron .",
+    "run-app": "yarn lint-app && yarn build-app && electron .",
+    "run-server": "yarn lint-server && yarn build-server && yarn start",
+    "run-client": "yarn build-client && yarn start",
+    "lint-app": "tslint assets/**/*.ts*",
+    "lint-server": "tslint assets/server/**/*.ts assets/models/**/*.ts",
+    "lint-client": "tslint assets/client/**/*.ts*",
     "watch-client": "webpack --progress --config webpack.client.config.js --watch",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
-    "pack": "yarn build-scripts && webpack --progress --config webpack.prod.config.js && build --dir",
-    "dist": "yarn build-scripts && yarn test && webpack --progress --config webpack.prod.config.js && build"
+    "pack": "yarn build-scripts && yarn build-prod && build --dir",
+    "dist": "yarn build-scripts && yarn test && yarn build-prod && build",
+    "precommit": "tslint --fix assets/**/*.ts*"
   }
 }

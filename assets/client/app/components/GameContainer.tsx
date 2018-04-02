@@ -1,28 +1,28 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { border, margin, padding, rgba } from 'css-verbose';
+import * as moment from 'moment';
 import * as React from 'react';
 import { Button, Grid } from 'semantic-ui-react';
-import * as moment from 'moment';
-import { StyleSheet, css } from 'aphrodite';
-import { border, margin, padding, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
 import { PlayableGame } from '../../../models/PlayableGame';
-import { VitrineComponent } from './VitrineComponent';
-import { BlurPicture } from './BlurPicture';
-import { CirclePercentage } from './CirclePercentage';
 import { formatTimePlayed, urlify } from '../helpers';
 import { localizer } from '../Localizer';
+import { BlurPicture } from './BlurPicture';
+import { CirclePercentage } from './CirclePercentage';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faPlay } from '@fortawesome/fontawesome-free-solid';
 import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../resources/less/theme/globals/site.variables';
 
 interface Props {
-	selectedGame: PlayableGame
-	launchGame: (gameUuid: string) => void
+	selectedGame: PlayableGame;
+	launchGame: (gameUuid: string) => void;
 }
 
 interface State {
-	backgroundImage: string,
-	mainColor: string
+	backgroundImage: string;
+	mainColor: string;
 }
 
 export class GameContainer extends VitrineComponent<Props, State> {
@@ -43,7 +43,8 @@ export class GameContainer extends VitrineComponent<Props, State> {
 			});
 			return;
 		}
-		let backgroundImage, mainColor: string;
+		let backgroundImage: string;
+		let mainColor: string;
 		if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
 			backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
 			mainColor = props.selectedGame.ambientColor || lessVars.primaryColor;

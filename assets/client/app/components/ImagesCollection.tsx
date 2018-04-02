@@ -1,23 +1,23 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
 import * as React from 'react';
 import { Button } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { VitrineComponent } from './VitrineComponent';
-import { localizer } from '../Localizer';
 import { openImageDialog } from '../helpers';
+import { localizer } from '../Localizer';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faPlus } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	images?: string[]
-	onChange?: (backgroundScreen: string) => void
+	images?: string[];
+	onChange?: (backgroundScreen: string) => void;
 }
 
 interface State {
-	images: string[],
-	selectedImage: string,
-	customImage: boolean
+	images: string[];
+	selectedImage: string;
+	customImage: boolean;
 }
 
 export class ImagesCollection extends VitrineComponent<Props, State> {
@@ -29,14 +29,16 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 			selectedImage: '',
 			customImage: false
 		};
+
+		this.imageClick = this.imageClick.bind(this);
 	}
 
-	private addImageBtnClick() {
-		let newImage: string = openImageDialog();
+	private addImageButton() {
+		const newImage: string = openImageDialog();
 		if (!newImage)
 			return;
 
-		let newImages: string[] = this.state.images;
+		const newImages: string[] = this.state.images;
 		if (this.state.customImage === true)
 			newImages[0] = newImage;
 		else
@@ -51,7 +53,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private imageClickHandler(image: string) {
+	private imageClick(image: string) {
 		this.setState({
 			selectedImage: image
 		}, () => {
@@ -78,7 +80,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 			<div>
 				<Button
 					primary={true}
-					onClick={this.addImageBtnClick.bind(this)}
+					onClick={this.addImageButton}
 				>
 					<FontAwesomeIcon icon={faPlus}/> {localizer.f('addCustomBgImage')}
 				</Button>
@@ -88,7 +90,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 							key={index}
 							src={image}
 							className={css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))}
-							onClick={this.imageClickHandler.bind(this, image)}
+							onClick={this.imageClick.bind(this, image)}
 						/>
 					)}
 				</div>

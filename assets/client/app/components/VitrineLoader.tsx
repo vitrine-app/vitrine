@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { ProgressInfo } from 'builder-util-runtime';
-import { css, StyleSheet } from 'aphrodite';
-import { rgba } from 'css-verbose';
-import { Header } from 'semantic-ui-react';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { ProgressInfo } from 'builder-util-runtime';
+import { rgba } from 'css-verbose';
+import * as React from 'react';
+import { Header } from 'semantic-ui-react';
 
 import { loaderServerListener } from '../ServerListener';
 
@@ -11,8 +11,8 @@ import { faCog } from '@fortawesome/fontawesome-free-solid';
 import * as vitrineIcon from '../../resources/images/vitrine.ico';
 
 interface State {
-	displayedInfo: string,
-	updateDownloadProgress: number
+	displayedInfo: string;
+	updateDownloadProgress: number;
 }
 
 export class VitrineLoader extends React.Component<null, State> {
@@ -47,8 +47,8 @@ export class VitrineLoader extends React.Component<null, State> {
 	}
 
 	private updateProgress(progress: ProgressInfo) {
-		let updateDownloadProgress: number = Math.round(progress.percent);
-		let displayedInfo: string = (updateDownloadProgress < 100)
+		const updateDownloadProgress: number = Math.round(progress.percent);
+		const displayedInfo: string = (updateDownloadProgress < 100)
 			? (`Updating to ${this.lastUpdateVersion}... | ${updateDownloadProgress.percents()}`)
 			: ('Restarting...');
 		this.setState({
@@ -87,7 +87,7 @@ export class VitrineLoader extends React.Component<null, State> {
 				>
 					<div
 						className={`progress-bar active ${css(styles.downloadBarProgress)}`}
-						role="progressbar"
+						role='progressbar'
 						style={{ width: (this.state.updateDownloadProgress) ? (this.state.updateDownloadProgress.percents()) : (0..percents()) }}
 					/>
 				</div>
@@ -97,17 +97,17 @@ export class VitrineLoader extends React.Component<null, State> {
 }
 
 const pulseKeyframes: any = {
-	'to': {
+	to: {
 		boxShadow: `${0} ${0} ${0} ${45..px()} ${rgba(141, 89, 24, 0)}`
 	}
 };
 
 const styles: React.CSSProperties = StyleSheet.create({
 	loader: {
-		textAlign: 'center',
-		padding: 7,
-		userSelect: 'none',
-		cursor: 'default',
+		'textAlign': 'center',
+		'padding': 7,
+		'userSelect': 'none',
+		'cursor': 'default',
 		'-webkitAppRegion': 'no-drag'
 	},
 	loaderDiv: {

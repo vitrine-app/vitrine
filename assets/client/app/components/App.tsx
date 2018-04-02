@@ -1,22 +1,22 @@
-import * as React from 'react';
 import { remote } from 'electron';
-import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
+import * as path from 'path';
+import * as React from 'react';
 
 import { getEnvFolder } from '../../../models/env';
-import { serverListener } from '../ServerListener';
 import { Vitrine } from '../containers/Vitrine';
 import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
 import { ErrorsWrapper } from './ErrorsWrapper';
 
 interface Props {
-	settings: any,
-	updateSettings: (settings: any) => void
+	settings: any;
+	updateSettings: (settings: any) => void;
 }
 
 interface State {
-	settingsReceived: boolean
+	settingsReceived: boolean;
 }
 
 export class App extends React.Component<Props, State> {
@@ -31,15 +31,15 @@ export class App extends React.Component<Props, State> {
 	}
 
 	private initLanguages() {
-		let langFilesFolder: string = getEnvFolder('config/lang');
-		let configLang: string = (this.props.settings && this.props.settings.lang) ? (this.props.settings.lang) : ('');
-		let systemLang: string = remote.app.getLocale();
+		const langFilesFolder: string = getEnvFolder('config/lang');
+		const configLang: string = (this.props.settings && this.props.settings.lang) ? (this.props.settings.lang) : ('');
+		const systemLang: string = remote.app.getLocale();
 
-		let langFilesPaths: string[] = glob.sync(`${langFilesFolder}/*`);
+		const langFilesPaths: string[] = glob.sync(`${langFilesFolder}/*`);
 		let counter: number = 0;
 		langFilesPaths.forEach((langFilePath: string) => {
-			let langName: string = path.basename(langFilePath).slice(0, -5);
-			let langFile: any = fs.readJsonSync(langFilePath);
+			const langName: string = path.basename(langFilePath).slice(0, -5);
+			const langFile: any = fs.readJsonSync(langFilePath);
 			localizer.addLanguage(langName, langFile);
 			if (!configLang && systemLang === langName)
 				localizer.setLanguage(langName);

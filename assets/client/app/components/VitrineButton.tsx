@@ -1,27 +1,27 @@
-import * as React from 'react';
-import { StyleSheet, css } from 'aphrodite';
-import { padding, rgba } from 'css-verbose';
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { padding, rgba } from 'css-verbose';
+import * as React from 'react';
 
+import * as ReactTooltip from 'react-tooltip';
 import { randomHashedString } from '../../../models/env';
 import { VitrineComponent } from './VitrineComponent';
-import * as ReactTooltip from 'react-tooltip';
 
 interface Props {
-	icon: FontAwesomeIcon.IconDefinition,
-	spin?: boolean,
-	tooltip?: string,
-	onClick?: React.MouseEventHandler<any>,
-	className?: string
+	icon: FontAwesomeIcon.IconDefinition;
+	spin?: boolean;
+	tooltip?: string;
+	onClick?: React.MouseEventHandler<any>;
+	className?: string;
 }
 
 interface State {
-	buttonClassName: string,
-	iconClassName: string
+	buttonClassName: string;
+	iconClassName: string;
 }
 
 export class VitrineButton extends VitrineComponent<Props, State> {
-	private id: string;
+	private readonly id: string;
 
 	public constructor() {
 		super();
@@ -31,6 +31,9 @@ export class VitrineButton extends VitrineComponent<Props, State> {
 			iconClassName: css(styles.iconStandard)
 		};
 		this.id = `tooltip_${randomHashedString(6)}`;
+
+		this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
+		this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
 	}
 
 	private mouseEnterHandler() {
@@ -48,20 +51,24 @@ export class VitrineButton extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		const icon: JSX.Element = <FontAwesomeIcon
-			icon={this.props.icon}
-			className={`${css(styles.icon)} ${this.state.iconClassName}`}
-			spin={this.props.spin}
-		/>;
+		const icon: JSX.Element = (
+			<FontAwesomeIcon
+				icon={this.props.icon}
+				className={`${css(styles.icon)} ${this.state.iconClassName}`}
+				spin={this.props.spin}
+			/>
+		);
 		const button: JSX.Element = (
 			<div
 				className={`${css(styles.button)} ${this.state.buttonClassName}`}
-				data-tip
+				data-tip={true}
 				data-for={this.id}
-				onMouseEnter={this.mouseEnterHandler.bind(this)}
-				onMouseLeave={this.mouseLeaveHandler.bind(this)}
+				onMouseEnter={this.mouseEnterHandler}
+				onMouseLeave={this.mouseLeaveHandler}
 				onClick={this.props.onClick}
-			>{icon}</div>
+			>
+				{icon}
+			</div>
 		);
 
 		return (

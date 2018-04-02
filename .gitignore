@@ -5,5 +5,5 @@
 !/public/img
 /games/*
 /config/vitrine_config.json
-/assets/server/api/apiKeys.json
 /vitrine.log.html
+/yarn-error.log

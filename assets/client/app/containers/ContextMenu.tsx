@@ -1,28 +1,28 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { VitrineState } from '../VitrineState';
-import { ContextMenu as VisualContextMenu } from '../components/ContextMenu';
+import { PlayableGame } from '../../../models/PlayableGame';
 import { Action } from '../actions/actionsTypes';
 import { launchGame, setGameToEdit } from '../actions/games';
 import { openGameAddModal, openTimePlayedEditionModal } from '../actions/modals';
-import { PlayableGame } from '../../../models/PlayableGame';
+import { AppState } from '../AppState';
+import { ContextMenu as VisualContextMenu } from '../components/ContextMenu';
 
-const mapStateToProps = (state: VitrineState) => ({
+const mapStateToProps = (state: AppState) => ({
 	playableGames: state.playableGames
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	launchGame: (launchedGame: PlayableGame) => {
-		dispatch(launchGame(launchedGame))
+		dispatch(launchGame(launchedGame));
 	},
 	setGameToEdit: (gameToEdit: PlayableGame) => {
-		dispatch(setGameToEdit(gameToEdit))
+		dispatch(setGameToEdit(gameToEdit));
 	},
 	openGameAddModal: () => {
-		dispatch(openGameAddModal())
+		dispatch(openGameAddModal());
 	},
 	openTimePlayedEditionModal: () => {
-		dispatch(openTimePlayedEditionModal())
+		dispatch(openTimePlayedEditionModal());
 	}
 });
 

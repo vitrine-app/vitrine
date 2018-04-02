@@ -1,6 +1,6 @@
 @echo off
 set scripts=(gameLauncher regWatcher)
-set electron_version=1.8.2
+set electron_version=1.8.4
 set electron_url=https://atom.io/download/electron
 
 cd scripts

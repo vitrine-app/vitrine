@@ -1,6 +1,6 @@
+import * as downloadFileCb from 'download-file';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
-import * as downloadFileCb from 'download-file';
 
 import { logger } from './Logger';
 
@@ -34,13 +34,11 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 				resolve();
 				return;
 			}
-			let counter: number = 0;
 			files.forEach((file: string) => {
 				if (file !== except.replace(/\\/g, '/'))
 					fs.removeSync(file);
-				counter++;
-				if (counter === files.length)
-					resolve();
+			}, () => {
+				resolve();
 			});
 		});
 	});
@@ -58,7 +56,7 @@ export async function downloadImage(src: string, dest: string): Promise<any> {
 		try {
 			logger.info('downloadImage', `Copying local source image (${src}) to ${dest}.`);
 			await fs.copy(src, dest);
-			let fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
+			const fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
 			try {
 				await deleteFiles(fileGlob, dest);
 				return true;
@@ -72,11 +70,11 @@ export async function downloadImage(src: string, dest: string): Promise<any> {
 		}
 	}
 	else {
-		let filename: string = dest.split('\\').pop();
+		const filename: string = dest.split('\\').pop();
 		dest = dest.substring(0, dest.indexOf(filename));
 		try {
 			logger.info('downloadImage', `Downloading distant source image (${src}) to ${dest}${filename}.`);
-			let succeeded: boolean = await Promise.race([
+			const succeeded: boolean = await Promise.race([
 				downloadFile(src, {
 					directory: dest,
 					filename
@@ -96,5 +94,5 @@ export function isAlreadyStored(imageSrcPath: string, imageDestPath: string): bo
 }
 
 export function spatStr(str: string) {
-	return str.replace(/ /g, '').replace(/([-:])/g, '|')
+	return str.replace(/ /g, '').replace(/([-:])/g, '|');
 }

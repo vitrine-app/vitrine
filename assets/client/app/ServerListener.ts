@@ -4,7 +4,7 @@ class ServerListener {
 	public constructor(private emitterName: string, private receiverName: string) {}
 
 	public send(channelName, ...args) {
-		let sentArgs: any[] = [
+		const sentArgs: any[] = [
 			`${this.emitterName}.${channelName}`,
 			...args
 		];

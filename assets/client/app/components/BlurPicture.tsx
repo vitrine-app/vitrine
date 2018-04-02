@@ -1,36 +1,36 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { rgba } from 'css-verbose';
 import * as React from 'react';
 import { Transition } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { VitrineComponent } from './VitrineComponent';
 import { urlify } from '../helpers';
+import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-	width?: number,
-	height?: number,
-	fontSize: number,
-	background: string,
-	faIcon: FontAwesomeIcon.IconDefinition,
-	clickHandler: () => void
+	width?: number;
+	height?: number;
+	fontSize: number;
+	background: string;
+	faIcon: FontAwesomeIcon.IconDefinition;
+	clickHandler: () => void;
 }
 
 interface State {
-	iconVisible: boolean,
-	pulseVisible: boolean,
-	divStyle: React.CSSProperties,
-	imageStyle: React.CSSProperties
+	iconVisible: boolean;
+	pulseVisible: boolean;
+	divStyle: React.CSSProperties;
+	imageStyle: React.CSSProperties;
 }
 
 export class BlurPicture extends VitrineComponent<Props, State> {
-	private pulseDuration: number;
+	private readonly pulseDuration: number;
 
 	public constructor(props: Props) {
 		super(props);
 
-		let divWidth: number = this.props.width || 3.136;
-		let divHeight: number = this.props.height || 4.48;
+		const divWidth: number = this.props.width || 3.136;
+		const divHeight: number = this.props.height || 4.48;
 		this.pulseDuration = 165;
 
 		this.state = {
@@ -46,10 +46,14 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 				backgroundImage: urlify(this.props.background)
 			}
 		};
+
+		this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
+		this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
+		this.clickHandler = this.clickHandler.bind(this);
 	}
 
 	private mouseEnterHandler() {
-		let imageStyle: any = this.state.imageStyle;
+		const imageStyle: any = this.state.imageStyle;
 		imageStyle.filter = `blur(${4..px()})`;
 
 		this.setState({
@@ -62,7 +66,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 	}
 
 	private mouseLeaveHandler() {
-		let imageStyle: any = this.state.imageStyle;
+		const imageStyle: any = this.state.imageStyle;
 		imageStyle.filter = '';
 
 		this.setState({
@@ -100,9 +104,9 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 			>
 				<div
 					className={css(styles.container)}
-					onMouseEnter={this.mouseEnterHandler.bind(this)}
-					onMouseLeave={this.mouseLeaveHandler.bind(this)}
-					onClick={this.clickHandler.bind(this)}
+					onMouseEnter={this.mouseEnterHandler}
+					onMouseLeave={this.mouseLeaveHandler}
+					onClick={this.clickHandler}
 					style={this.state.divStyle}
 				>
 					<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>

@@ -10,31 +10,31 @@
     ]
   },
   {
-    "active": false,
+    "active": true,
     "command": "-m \"%g\"",
     "glob": "*.sfc",
     "name": "ZSNES",
-    "path": "",
+    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
     "platforms": [
       1
     ]
   },
   {
-    "active": false,
+    "active": true,
     "command": "\"%g\"",
     "glob": "*.n64",
     "name": "Project64",
-    "path": "",
+    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
     "platforms": [
       2
     ]
   },
   {
-    "active": false,
+    "active": true,
     "command": "--batch --exec=\"%g\"",
     "glob": "*.iso",
     "name": "Dolphin",
-    "path": "",
+    "path": "C:\\Users\\Paul\\Desktop\\putty.exe",
     "platforms": [
       3,
       6

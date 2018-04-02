@@ -1,24 +1,24 @@
+import { css, StyleSheet } from 'aphrodite';
+import { margin } from 'css-verbose';
 import * as React from 'react';
 import { Button, Form, Grid, Modal } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { margin } from 'css-verbose';
 
 import { PlayableGame } from '../../../models/PlayableGame';
-import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
-import { NumberPicker } from './NumberPicker';
 import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
+import { NumberPicker } from './NumberPicker';
+import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-	gameToEdit: PlayableGame,
-	visible: boolean,
-	closeTimePlayedEditionModal: () => void
+	gameToEdit: PlayableGame;
+	visible: boolean;
+	closeTimePlayedEditionModal: () => void;
 }
 
 interface State {
-	hours: number,
-	minutes: number,
-	seconds: number
+	hours: number;
+	minutes: number;
+	seconds: number;
 }
 
 export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
@@ -30,6 +30,12 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 			minutes: 0,
 			seconds: 0
 		};
+
+		this.closeModal = this.closeModal.bind(this);
+		this.setHours = this.setHours.bind(this);
+		this.setMinutes = this.setMinutes.bind(this);
+		this.setSeconds = this.setSeconds.bind(this);
+		this.submitButton = this.submitButton.bind(this);
 	}
 
 	private closeModal() {
@@ -41,18 +47,30 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private changeTimeHandler(field: any, value: number) {
+	private setHours(hours: number) {
 		this.setState({
-			[field]: value
+			hours
+		});
+	}
+
+	private setMinutes(minutes: number) {
+		this.setState({
+			minutes
+		});
+	}
+
+	private setSeconds(seconds: number) {
+		this.setState({
+			seconds
 		});
 	}
 
 	public componentWillReceiveProps(props: Props) {
 		if (props.gameToEdit) {
-			let timePlayed: number = props.gameToEdit.timePlayed;
-			let hours: number = Math.floor(timePlayed / 3600);
-			let minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
-			let seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
+			const timePlayed: number = props.gameToEdit.timePlayed;
+			const hours: number = Math.floor(timePlayed / 3600);
+			const minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
+			const seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
 			this.setState({
 				hours,
 				minutes,
@@ -62,7 +80,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 	}
 
 	private submitButton() {
-		let timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
+		const timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
 		serverListener.send('edit-game-time-played', this.props.gameToEdit.uuid, timePlayed);
 	}
 
@@ -70,7 +88,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 		return (
 			<Modal
 				open={this.props.visible}
-				onClose={this.closeModal.bind(this)}
+				onClose={this.closeModal}
 				className={css(styles.modal)}
 			>
 				<Modal.Header>
@@ -88,7 +106,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 										value={this.state.hours}
 										name={'hours'}
 										placeholder={localizer.f('hours')}
-										onChange={(value: number) => this.changeTimeHandler('hours', value)}
+										onChange={this.setHours}
 									/>
 								</Form.Field>
 							</Grid.Column>
@@ -101,7 +119,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 										value={this.state.minutes}
 										name={'minutes'}
 										placeholder={localizer.f('minutes')}
-										onChange={(value: number) => this.changeTimeHandler('minutes', value)}
+										onChange={this.setMinutes}
 									/>
 								</Form.Field>
 							</Grid.Column>
@@ -114,7 +132,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 										value={this.state.seconds}
 										name={'seconds'}
 										placeholder={localizer.f('seconds')}
-										onChange={(value: number) => this.changeTimeHandler('seconds', value)}
+										onChange={this.setSeconds}
 									/>
 								</Form.Field>
 							</Grid.Column>
@@ -124,7 +142,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 				<Modal.Actions>
 					<Button
 						primary={true}
-						onClick={this.submitButton.bind(this)}
+						onClick={this.submitButton}
 					>
 						{localizer.f('confirm')}
 					</Button>

@@ -1,42 +1,40 @@
+import { css, StyleSheet } from 'aphrodite';
 import * as React from 'react';
 import { Grid } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
 
-import { VitrineComponent } from './VitrineComponent';
-import { PotentialGame } from '../../../models/PotentialGame';
-import { PlayableGame } from '../../../models/PlayableGame';
 import { GamesCollection } from '../../../models/GamesCollection';
-import { serverListener } from '../ServerListener';
-import { SideBar } from '../containers/SideBar';
-import { GameContainer } from '../containers/GameContainer';
+import { PlayableGame } from '../../../models/PlayableGame';
+import { PotentialGame } from '../../../models/PotentialGame';
 import { GameAddModal } from '../containers/GameAddModal';
+import { GameContainer } from '../containers/GameContainer';
 import { PotentialGamesAddModal } from '../containers/PotentialGamesAddModal';
-import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
 import { SettingsModal } from '../containers/SettingsModal';
-import { LaunchedGameContainer } from '../containers/LaunchedGameContainer';
+import { SideBar } from '../containers/SideBar';
+import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
+import { serverListener } from '../ServerListener';
 import { TaskBar } from './TaskBar';
-import { localizer } from '../Localizer';
+import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-	settings: any,
-	playableGames: GamesCollection<PlayableGame>,
-	selectedGame: PlayableGame,
-	launchedGame: PlayableGame,
-	updateSettings: (settings: any) => void,
-	addPotentialGames: (potentialGames: PotentialGame[]) => void,
-	addPlayableGames: (playableGames: PlayableGame[]) => void,
-	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void,
-	launchGame: (launchedGame: PlayableGame) => void,
-	stopGame: (playedGame: PlayableGame) => void,
-	selectGame: (selectedGame: PlayableGame) => void,
-	openSettingsModal: () => void,
-	closeSettingsModal: () => void
+	settings: any;
+	playableGames: GamesCollection<PlayableGame>;
+	selectedGame: PlayableGame;
+	launchedGame: PlayableGame;
+	updateSettings: (settings: any) => void;
+	addPotentialGames: (potentialGames: PotentialGame[]) => void;
+	addPlayableGames: (playableGames: PlayableGame[]) => void;
+	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void;
+	launchGame: (launchedGame: PlayableGame) => void;
+	stopGame: (playedGame: PlayableGame) => void;
+	selectGame: (selectedGame: PlayableGame) => void;
+	openSettingsModal: () => void;
+	closeSettingsModal: () => void;
 }
 
 interface State {
-	firstLaunch: boolean,
-	launchedGamePictureActivated: boolean,
-	gameWillBeEdited: boolean
+	firstLaunch: boolean;
+	launchedGamePictureActivated: boolean;
+	gameWillBeEdited: boolean;
 }
 
 export class Vitrine extends VitrineComponent<Props, State> {
@@ -48,6 +46,8 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			launchedGamePictureActivated: true,
 			gameWillBeEdited: false
 		};
+
+		this.launchGame = this.launchGame.bind(this);
 	}
 
 	private removePlayableGame(gameUuid: string) {
@@ -60,7 +60,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private stopGame(gameUuid: string, totalTimePlayed: number) {
-		let playedGame: PlayableGame = this.props.playableGames.getGame(gameUuid);
+		const playedGame: PlayableGame = this.props.playableGames.getGame(gameUuid);
 		playedGame.timePlayed = totalTimePlayed;
 		this.props.stopGame(playedGame);
 		this.forceUpdate();
@@ -77,7 +77,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private serverError(errorName: string, errorStack: string) {
-		let error: Error = new Error(errorName);
+		const error: Error = new Error(errorName);
 		error.stack = errorStack;
 		error.name = errorName;
 		this.throwError(error);
@@ -94,7 +94,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			case 'ArrowDown': {
 				event.preventDefault();
 
-				let index: number = this.props.playableGames.getIndex(this.props.selectedGame);
+				const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
 				if (index < this.props.playableGames.size() - 1)
 					this.props.selectGame(this.props.playableGames.getGame(index + 1));
 				break;
@@ -102,7 +102,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			case 'ArrowUp': {
 				event.preventDefault();
 
-				let index: number = this.props.playableGames.getIndex(this.props.selectedGame);
+				const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
 				if (index)
 					this.props.selectGame(this.props.playableGames.getGame(index - 1));
 				break;
@@ -145,30 +145,15 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	public render(): JSX.Element {
-		let vitrineContent: JSX.Element = (!this.props.launchedGame || !this.state.launchedGamePictureActivated) ? (
-			<Grid className={css(styles.mainContainer)}>
-				<SideBar
-					launchGame={this.launchGame.bind(this)}
-				/>
-				<GameContainer
-					launchGame={this.launchGame.bind(this)}
-				/>
-			</Grid>
-		) : (
-			<LaunchedGameContainer
-				clickHandler={this.launchedGamePictureToggleHandler.bind(this)}
-			/>
-		);
-
 		return (
 			<div className={css(styles.vitrineApp)}>
 				<TaskBar/>
 				<Grid className={css(styles.mainContainer)}>
 					<SideBar
-						launchGame={this.launchGame.bind(this)}
+						launchGame={this.launchGame}
 					/>
 					<GameContainer
-						launchGame={this.launchGame.bind(this)}
+						launchGame={this.launchGame}
 					/>
 				</Grid>
 				<GameAddModal/>

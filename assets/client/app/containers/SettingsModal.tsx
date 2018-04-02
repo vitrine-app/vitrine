@@ -1,12 +1,12 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { VitrineState } from '../VitrineState';
-import { SettingsModal as VisualSettingsModal } from '../components/SettingsModal';
 import { Action } from '../actions/actionsTypes';
-import { updateSettings } from '../actions/settings';
 import { closeSettingsModal } from '../actions/modals';
+import { updateSettings } from '../actions/settings';
+import { AppState } from '../AppState';
+import { SettingsModal as VisualSettingsModal } from '../components/SettingsModal';
 
-const mapStateToProps = (state: VitrineState) => ({
+const mapStateToProps = (state: AppState) => ({
 	settings: state.settings,
 	visible: state.settingsModalVisible
 });

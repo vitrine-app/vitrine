@@ -1,29 +1,26 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import * as path from 'path';
 
-import { logger} from './Logger';
+import { isProduction } from '../models/env';
+import { logger } from './Logger';
 
 export class WindowsHandler {
+	private readonly clientEntryPoint: string;
+	private readonly loaderEntryPoint: string;
+	private readonly iconPath: string;
 	private loaderWindow: BrowserWindow;
 	private clientWindow: BrowserWindow;
-	private clientEntryPoint: string;
-	private loaderEntryPoint: string;
 	private tray: Tray;
-	private devTools: boolean;
-	private iconPath: string;
 	private appQuit: boolean;
-	private reactDevToolsPath: string;
 
 	public constructor() {
 		this.clientEntryPoint = path.resolve('file://', __dirname, 'client.html');
 		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
 		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
 		this.appQuit = false;
-		this.reactDevToolsPath = path.resolve(process.env.APPDATA, '../Local', 'Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.1.0_0')
 	}
 
-	public run(devTools?: boolean) {
-		this.devTools = devTools;
+	public run() {
 		if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
 			this.quitApplication();
 			return;
@@ -47,8 +44,6 @@ export class WindowsHandler {
 
 	public createLoaderWindow() {
 		logger.info('WindowsHandler', 'Creating loader window.');
-		if (this.devTools)
-			BrowserWindow.addDevToolsExtension(this.reactDevToolsPath);
 		this.loaderWindow = new BrowserWindow({
 			height: 300,
 			width: 500,
@@ -75,7 +70,7 @@ export class WindowsHandler {
 		this.clientWindow.maximize();
 		this.clientWindow.loadURL(this.clientEntryPoint);
 		this.clientWindow.hide();
-		if (this.devTools)
+		if (!isProduction())
 			this.clientWindow.webContents.openDevTools();
 
 		this.clientWindow.on('close', (event: Event) => {
@@ -104,7 +99,7 @@ export class WindowsHandler {
 	}
 
 	public sendToLoader(channelName, ...args) {
-		let sentArgs: any[] = [
+		const sentArgs: any[] = [
 			`loaderServer.${channelName}`,
 			...args
 		];
@@ -112,7 +107,7 @@ export class WindowsHandler {
 	}
 
 	public sendToClient(channelName, ...args) {
-		let sentArgs: any[] = [
+		const sentArgs: any[] = [
 			`server.${channelName}`,
 			...args
 		];

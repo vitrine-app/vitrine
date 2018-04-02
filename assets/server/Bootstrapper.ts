@@ -1,21 +1,19 @@
-import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as path from 'path';
 
-import { VitrineServer } from './VitrineServer';
-import { getEnvFolder, isProd } from '../models/env';
+import { getEnvFolder, isProduction } from '../models/env';
 import { logger } from './Logger';
+import { Server } from './Server';
 
-export class VitrinePipeline {
-	private serverInstance: VitrineServer;
-	private prod: boolean;
-	private configFileName: string;
-	private gamesFolderPath: string;
-	private configFolderPath: string;
+export class Bootstrapper {
+	private readonly configFileName: string;
+	private readonly gamesFolderPath: string;
+	private readonly configFolderPath: string;
+	private serverInstance: Server;
 	private vitrineConfigFilePath: string;
 	private vitrineConfig: any;
 
-	public constructor(prod?: boolean) {
-		this.prod = (prod !== undefined) ? (prod) : ((isProd()) ? (true) : (false));
+	public constructor() {
 		this.configFileName = 'vitrine_config.json';
 		this.gamesFolderPath = getEnvFolder('games');
 		this.configFolderPath = getEnvFolder('config');
@@ -25,12 +23,12 @@ export class VitrinePipeline {
 		fs.ensureDirSync(this.configFolderPath);
 		fs.ensureDirSync(this.gamesFolderPath);
 
-		let configFolderOriginalPath: string = getEnvFolder('config', true);
+		const configFolderOriginalPath: string = getEnvFolder('config', true);
 		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, this.configFileName);
 		if (!fs.pathExistsSync(this.vitrineConfigFilePath))
 			fs.copySync(configFolderOriginalPath, this.configFolderPath);
 		this.vitrineConfig = fs.readJsonSync(this.vitrineConfigFilePath, { throws: false });
-		logger.info('VitrinePipeline', 'vitrine_config.json read.');
+		logger.info('Bootstrapper', 'vitrine_config.json read.');
 		this.includeEmulatorsConfig().then(() => {
 			this.launchMainClient();
 		});
@@ -47,25 +45,25 @@ export class VitrinePipeline {
 
 	private includeEmulatorsConfig(): Promise<any> {
 		return new Promise((resolve) => {
-			logger.info('VitrinePipeline', 'Including emulators and platforms data.');
-			let platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
-			let emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
-			let emulated: any = this.vitrineConfig.emulated || {};
-			let newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
+			logger.info('Bootstrapper', 'Including emulators and platforms data.');
+			const platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
+			const emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
+			const emulated: any = this.vitrineConfig.emulated || {};
+			const newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
 			newVitrineConfig.emulated.platforms = fs.readJsonSync(platformsConfigFilePath, { throws: false });
 			newVitrineConfig.emulated.emulators = fs.readJsonSync(emulatorsConfigFilePath, { throws: false });
-			logger.info('VitrinePipeline', 'Emulators and platforms added to config.');
+			logger.info('Bootstrapper', 'Emulators and platforms added to config.');
 			this.vitrineConfig = newVitrineConfig;
 			resolve();
 		});
 	}
 
 	private launchMainClient() {
-		logger.info('VitrinePipeline', 'Launching main client.');
-		if (!this.prod)
+		logger.info('Bootstrapper', 'Launching main client.');
+		if (!isProduction())
 			this.registerDebugPromiseHandler();
-		this.serverInstance = new VitrineServer(this.vitrineConfig, this.vitrineConfigFilePath, this.configFolderPath);
+		this.serverInstance = new Server(this.vitrineConfig, this.vitrineConfigFilePath, this.configFolderPath);
 		this.serverInstance.registerEvents();
-		this.serverInstance.run(this.prod);
+		this.serverInstance.run();
 	}
 }

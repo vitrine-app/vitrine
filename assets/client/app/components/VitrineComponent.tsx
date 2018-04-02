@@ -2,11 +2,11 @@ import * as React from 'react';
 import { ReactNode } from 'react';
 
 interface State {
-	error?: Error
+	error?: Error;
 }
 
 export abstract class VitrineComponent<P, S> extends React.Component<P, S & State> {
-	public constructor(props?: P) {
+	protected constructor(props?: P) {
 		super(props);
 
 		this.state = {} as any;

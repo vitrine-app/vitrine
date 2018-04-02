@@ -1,28 +1,28 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { rgba } from 'css-verbose';
 import * as React from 'react';
 import { Button, Checkbox, Input, Table } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { VitrineComponent } from './VitrineComponent';
 import { openExecutableDialog } from '../helpers';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	id: string,
-	emulator: any,
-	platforms: any[],
-	onChange: (emulatorId: number, emulatorConfig: any) => void
+	id: string;
+	emulator: any;
+	platforms: any[];
+	onChange: (emulatorId: number, emulatorConfig: any) => void;
 }
 
 interface State {
-	name: string,
-	platforms: any[],
-	active: boolean,
-	path: string,
-	command: string,
-	glob: string
+	name: string;
+	platforms: any[];
+	active: boolean;
+	path: string;
+	command: string;
+	glob: string;
 }
 
 export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
@@ -37,9 +37,13 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 			command: props.emulator.command,
 			glob: props.emulator.glob
 		};
+
+		this.activeCheckBox = this.activeCheckBox.bind(this);
+		this.programButton = this.programButton.bind(this);
+		this.commandLineChange = this.commandLineChange.bind(this);
 	}
 
-	private activeCheckBoxHandler(event: any, data: any) {
+	private activeCheckBox(event: any, data: any) {
 		this.setState({
 			active: data.checked
 		}, () => {
@@ -47,8 +51,8 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private programBtnClickHandler() {
-		let dialogRet: string = openExecutableDialog();
+	private programButton() {
+		const dialogRet: string = openExecutableDialog();
 		if (!dialogRet)
 			return;
 		this.setState({
@@ -58,7 +62,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private commandLineChangeHandler(event: any) {
+	private commandLineChange(event: any) {
 		this.setState({
 			command: event.target.value
 		}, () => {
@@ -87,7 +91,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 				<Table.Cell>
 					<Checkbox
 						checked={this.state.active}
-						onChange={this.activeCheckBoxHandler.bind(this)}
+						onChange={this.activeCheckBox}
 					/>
 				</Table.Cell>
 				<Table.Cell>
@@ -95,7 +99,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 						label={
 							<Button
 								secondary={true}
-								onClick={this.programBtnClickHandler.bind(this)}
+								onClick={this.programButton}
 								disabled={!this.state.active}
 							>
 								<FontAwesomeIcon icon={faFolderOpen}/>
@@ -106,16 +110,16 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 						className={(!this.state.active) ? (css(styles.inactiveInput)) : ('')}
 						readOnly={true}
 						value={this.state.path}
-						onClick={(this.state.active) ? (this.programBtnClickHandler.bind(this)) : (null)}
+						onClick={(this.state.active) ? (this.programButton) : (null)}
 					/>
 				</Table.Cell>
 				<Table.Cell>
-					<div className="ui small input">
+					<div className={'ui small input'}>
 						<input
 							value={this.state.command}
 							className={`${css(styles.commandInput)} ${(!this.state.active) ? (css(styles.inactiveInput)) : ('')}`}
 							disabled={!this.state.active}
-							onChange={this.commandLineChangeHandler.bind(this)}
+							onChange={this.commandLineChange}
 						/>
 					</div>
 				</Table.Cell>

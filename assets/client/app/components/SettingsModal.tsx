@@ -1,45 +1,45 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal, Tab, Table } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import { border, margin, padding, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
-import { GamesModule } from './GamesModule';
-import { EmulatorSettingsRow } from './EmulatorSettingsRow';
-import { localizer } from '../Localizer';
 import { openDirectory } from '../helpers';
+import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
+import { EmulatorSettingsRow } from './EmulatorSettingsRow';
+import { GamesModule } from './GamesModule';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
-import * as steamIcon from '../../resources/images/steamIcon.png';
-import * as originIcon from '../../resources/images/originIcon.png';
 import * as battleNetIcon from '../../resources/images/battleNetIcon.png';
 import * as emulatedIcon from '../../resources/images/emulatedIcon.png';
+import * as originIcon from '../../resources/images/originIcon.png';
+import * as steamIcon from '../../resources/images/steamIcon.png';
 
 interface Props {
-	settings: any,
-	visible: boolean,
-	firstLaunch: boolean,
-	updateSettings: (settings: any) => void,
-	closeSettingsModal: () => void
+	settings: any;
+	visible: boolean;
+	firstLaunch: boolean;
+	updateSettings: (settings: any) => void;
+	closeSettingsModal: () => void;
 }
 
 interface State {
-	langs: any[],
-	lang: string,
-	steamEnabled: boolean,
-	originEnabled: boolean,
-	battleNetEnabled: boolean,
-	emulatedEnabled: boolean,
-	steamPath: string,
-	originPath: string,
-	emulatedPath: string,
-	steamError: boolean,
-	originError: boolean,
-	emulatedError: boolean,
-	emulatorsCurrentConfig: any,
-	emulatorsError: string,
+	langs: any[];
+	lang: string;
+	steamEnabled: boolean;
+	originEnabled: boolean;
+	battleNetEnabled: boolean;
+	emulatedEnabled: boolean;
+	steamPath: string;
+	originPath: string;
+	emulatedPath: string;
+	steamError: boolean;
+	originError: boolean;
+	emulatedError: boolean;
+	emulatorsCurrentConfig: any;
+	emulatorsError: string;
 }
 
 export class SettingsModal extends VitrineComponent<Props, State> {
@@ -65,6 +65,18 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			emulatorsError: ''
 		};
 		this.state = this.emptyState;
+
+		this.closeModal = this.closeModal.bind(this);
+		this.steamIconClick = this.steamIconClick.bind(this);
+		this.originIconClick = this.originIconClick.bind(this);
+		this.battleNetIconClick = this.battleNetIconClick.bind(this);
+		this.emulatedIconClick = this.emulatedIconClick.bind(this);
+		this.steamPathButton = this.steamPathButton.bind(this);
+		this.originPathButton = this.originPathButton.bind(this);
+		this.emulatedPathButton = this.emulatedPathButton.bind(this);
+		this.langSelect = this.langSelect.bind(this);
+		this.emulatorConfigChange = this.emulatorConfigChange.bind(this);
+		this.submitButton = this.submitButton.bind(this);
 	}
 
 	private closeModal() {
@@ -74,7 +86,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		this.setState(this.emptyState);
 	}
 
-	private steamIconClickHandler(checked: boolean) {
+	private steamIconClick(checked: boolean) {
 		if ((checked && !this.state.steamEnabled) || (!checked && this.state.steamEnabled)) {
 			this.setState({
 				steamEnabled: !this.state.steamEnabled,
@@ -83,7 +95,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private originIconClickHandler(checked: boolean) {
+	private originIconClick(checked: boolean) {
 		if ((checked && !this.state.originEnabled) || (!checked && this.state.originEnabled)) {
 			this.setState({
 				originEnabled: !this.state.originEnabled,
@@ -92,7 +104,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private battleNetIconClickHandler(checked: boolean) {
+	private battleNetIconClick(checked: boolean) {
 		if ((checked && !this.state.battleNetEnabled) || (!checked && this.state.battleNetEnabled)) {
 			this.setState({
 				battleNetEnabled: !this.state.battleNetEnabled
@@ -100,7 +112,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private emulatedIconClickHandler(checked: boolean) {
+	private emulatedIconClick(checked: boolean) {
 		if ((checked && !this.state.emulatedEnabled) || (!checked && this.state.emulatedEnabled)) {
 			this.setState({
 				emulatedEnabled: !this.state.emulatedEnabled,
@@ -109,8 +121,8 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private steamPathBtnClickHandler() {
-		let steamPath: string = openDirectory();
+	private steamPathButton() {
+		const steamPath: string = openDirectory();
 		if (steamPath) {
 			this.setState({
 				steamPath
@@ -118,8 +130,8 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private originPathBtnClickHandler() {
-		let originPath: string = openDirectory();
+	private originPathButton() {
+		const originPath: string = openDirectory();
 		if (originPath) {
 			this.setState({
 				originPath
@@ -127,8 +139,8 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private emulatedPathBtnClickHandler() {
-		let emulatedPath: string = openDirectory();
+	private emulatedPathButton() {
+		const emulatedPath: string = openDirectory();
 		if (emulatedPath) {
 			this.setState({
 				emulatedPath
@@ -136,14 +148,14 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private langSelectChangeHandler(event: any, data: any) {
+	private langSelect(event: any, data: any) {
 		this.setState({
 			lang: data.value
 		});
 	}
 
-	private emulatorConfigChangeHandler(emulatorId: number, emulatorConfig: any) {
-		let emulatorsCurrentConfig: any[] = this.state.emulatorsCurrentConfig;
+	private emulatorConfigChange(emulatorId: number, emulatorConfig: any) {
+		const emulatorsCurrentConfig: any[] = this.state.emulatorsCurrentConfig;
 		emulatorsCurrentConfig[emulatorId] = emulatorConfig;
 		this.setState({
 			emulatorsCurrentConfig
@@ -153,7 +165,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 	private submitButton() {
 		let canBeSent: boolean = true;
 
-		let form: any = {
+		const form: any = {
 			lang: this.state.lang
 		};
 		if (this.state.steamEnabled) {
@@ -229,7 +241,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							clicked={this.state.steamEnabled}
 							iconFile={steamIcon}
 							iconAlt={'Steam'}
-							clickHandler={this.steamIconClickHandler.bind(this)}
+							clickHandler={this.steamIconClick}
 						/>
 					</Grid.Column>
 					<Grid.Column width={4}>
@@ -237,7 +249,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							clicked={this.state.originEnabled}
 							iconFile={originIcon}
 							iconAlt={'Origin'}
-							clickHandler={this.originIconClickHandler.bind(this)}
+							clickHandler={this.originIconClick}
 						/>
 					</Grid.Column>
 					<Grid.Column width={4}>
@@ -245,7 +257,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							clicked={this.state.battleNetEnabled}
 							iconFile={battleNetIcon}
 							iconAlt={'Battle.net'}
-							clickHandler={this.battleNetIconClickHandler.bind(this)}
+							clickHandler={this.battleNetIconClick}
 						/>
 					</Grid.Column>
 					<Grid.Column width={4}>
@@ -253,7 +265,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							clicked={this.state.emulatedEnabled}
 							iconFile={emulatedIcon}
 							iconAlt={'Origin'}
-							clickHandler={this.emulatedIconClickHandler.bind(this)}
+							clickHandler={this.emulatedIconClick}
 						/>
 					</Grid.Column>
 				</Grid>
@@ -267,7 +279,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 								label={
 									<Button
 										secondary={true}
-										onClick={this.steamPathBtnClickHandler.bind(this)}
+										onClick={this.steamPathButton}
 									>
 										<FontAwesomeIcon icon={faFolderOpen}/>
 									</Button>
@@ -277,7 +289,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 								size={'large'}
 								placeholder={localizer.f('steamPath')}
 								value={this.state.steamPath}
-								onClick={this.steamPathBtnClickHandler.bind(this)}
+								onClick={this.steamPathButton}
 								readOnly={true}
 							/>
 							<span
@@ -297,7 +309,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 								label={
 									<Button
 										secondary={true}
-										onClick={this.originPathBtnClickHandler.bind(this)}
+										onClick={this.originPathButton}
 									>
 										<FontAwesomeIcon icon={faFolderOpen}/>
 									</Button>
@@ -307,7 +319,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 								size={'large'}
 								placeholder={localizer.f('originGamesPath')}
 								value={this.state.originPath}
-								onClick={this.originPathBtnClickHandler.bind(this)}
+								onClick={this.originPathButton}
 								readOnly={true}
 							/>
 							<span
@@ -327,7 +339,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 								label={
 									<Button
 										secondary={true}
-										onClick={this.emulatedPathBtnClickHandler.bind(this)}
+										onClick={this.emulatedPathButton}
 									>
 										<FontAwesomeIcon icon={faFolderOpen}/>
 									</Button>
@@ -337,7 +349,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 								size={'large'}
 								placeholder={localizer.f('emulatedGamesPath')}
 								value={this.state.emulatedPath}
-								onClick={this.emulatedPathBtnClickHandler.bind(this)}
+								onClick={this.emulatedPathButton}
 								readOnly={true}
 							/>
 							<span
@@ -384,7 +396,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 								platforms={this.props.settings.emulated.emulators[emulatorId].platforms.map(
 									(platformsId) => this.props.settings.emulated.platforms[platformsId]
 								)}
-								onChange={this.emulatorConfigChangeHandler.bind(this)}
+								onChange={this.emulatorConfigChange}
 							/>
 						)}
 					</Table.Body>
@@ -399,7 +411,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 					name={'lang'}
 					fluid={true}
 					value={this.state.lang}
-					onChange={this.langSelectChangeHandler.bind(this)}
+					onChange={this.langSelect}
 					className={css(styles.langSelect)}
 					options={Object.keys(this.state.langs).map((langName: string, index: number) => ({
 						key: index,
@@ -413,7 +425,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		return (
 			<Modal
 				open={this.props.visible}
-				onClose={this.closeModal.bind(this)}
+				onClose={this.closeModal}
 				className={css(styles.modal)}
 			>
 				<Modal.Header
@@ -447,13 +459,13 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 					<Button
 						secondary={true}
 						style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
-						onClick={this.closeModal.bind(this)}
+						onClick={this.closeModal}
 					>
 						{localizer.f('cancel')}
 					</Button>
 					<Button
 						primary={true}
-						onClick={this.submitButton.bind(this)}
+						onClick={this.submitButton}
 					>
 						{localizer.f('confirm')}
 					</Button>

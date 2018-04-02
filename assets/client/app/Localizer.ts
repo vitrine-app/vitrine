@@ -1,5 +1,5 @@
 class Localizer {
-	private languages: any[];
+	private readonly languages: any[];
 	private selectedLanguage: string;
 
 	public constructor(languages?: any) {
@@ -8,7 +8,7 @@ class Localizer {
 	}
 
 	public getLanguages(): any[] {
-		return this.languages
+		return this.languages;
 	}
 
 	public getSelectedLanguage(): string {
@@ -30,7 +30,7 @@ class Localizer {
 	}
 
 	public genre(key: string): string {
-		let genre: string = (this.languages[this.selectedLanguage]).genresNames[key];
+		const genre: string = (this.languages[this.selectedLanguage]).genresNames[key];
 		return genre || key;
 	}
 }

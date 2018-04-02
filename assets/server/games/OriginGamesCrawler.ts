@@ -1,14 +1,14 @@
+import * as glob from 'glob';
 import * as path from 'path';
 import * as Registry from 'winreg';
-import * as glob from 'glob';
 
-import { PotentialGamesCrawler } from './PotentialGamesCrawler';
-import { GameSource, PotentialGame } from '../../models/PotentialGame';
-import { PlayableGame } from '../../models/PlayableGame';
 import { GamesCollection } from '../../models/GamesCollection';
+import { PlayableGame } from '../../models/PlayableGame';
+import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
+import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
 class OriginGamesCrawler extends PotentialGamesCrawler {
 	private regDetails: any[];
@@ -24,7 +24,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		super.search(moduleConfig, callback);
 
 		this.gamesFolder = path.resolve(this.moduleConfig.installFolder);
-		let regKey = new Registry({
+		const regKey = new Registry({
 			hive: Registry[this.moduleConfig.regHive],
 			key: this.moduleConfig.regKey
 		});
@@ -61,43 +61,40 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			this.callback(error, null);
 		if (!files.length) {
 			logger.info('OriginGamesCrawler', 'Not Origin games found in this directory.');
-			let potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
+			const potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
 			return;
 		}
-		let counter: number = 0;
-		files.forEach((gameFolder: string) => {
-			let gameName: string = gameFolder.split('/').pop();
+		const gameInfos: any[] = files.map((gameFolder: string) => ({
+			gameName: gameFolder.split('/').pop(),
+			gameFolder
+		})).filter(({gameName}: any) => {
+			const found: boolean = this.playableGames.filter((playableGame: any) =>
+				spatStr(gameName) === spatStr(playableGame.name)
+			).length > 0;
 
-			if (this.isGameAlreadyAdded(gameName)) {
+			if (this.gameDirExists(gameName) || found) {
 				logger.info('OriginGamesCrawler', `Origin game ${gameName} is already a playable game.`);
-				counter++;
-				if (counter === files.length)
-					this.sendResults();
-				return;
+				return false;
 			}
-			for (let playableGame of this.playableGames) {
-				if (spatStr(gameName) === spatStr(playableGame.name)) {
-					counter++;
-					if (counter === files.length)
-						this.sendResults();
-					return;
-				}
-			}
+			return true;
+		});
 
+		let counter: number = 0;
+		gameInfos.forEach(({gameName, gameFolder}: any) => {
 			this.getRegExe(gameFolder, (error: Error, gamePath: string) => {
 				if (error)
 					this.callback(error, null);
 				searchIgdbGame(gameName, 1).then((game: any) => {
 					game = game[0];
 					delete game.name;
-					let potentialGame: PotentialGame = new PotentialGame(gameName, game);
+					const potentialGame: PotentialGame = new PotentialGame(gameName, game);
 					potentialGame.source = GameSource.ORIGIN;
 					potentialGame.commandLine = [ path.resolve(gamePath) ];
 					this.potentialGames.push(potentialGame);
 					logger.info('OriginGamesCrawler', `Adding ${gameName} to potential Origin games.`);
 					counter++;
-					if (counter === files.length)
+					if (counter === gameInfos.length)
 						this.sendResults();
 				}).catch((error: Error) => {
 					this.callback(error, null);
@@ -107,7 +104,6 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 	}
 
 	private getRegExe(gamePath: string, callback: (error: Error, gamePath: string) => void) {
-		let counter: number = 0;
 		let found: boolean = false;
 		this.regDetails.forEach((regDetail: any) => {
 			if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
@@ -115,14 +111,14 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 				callback(null, regDetail.exe);
 				found = true;
 			}
-			counter++;
-			if (!found && counter === this.regDetails.length)
+		}, () => {
+			if (!found)
 				callback(new Error('Registry not matching.'), null);
 		});
 	}
 }
 
-let originGamesCrawler: OriginGamesCrawler = new OriginGamesCrawler();
+const originGamesCrawler: OriginGamesCrawler = new OriginGamesCrawler();
 
 export function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {

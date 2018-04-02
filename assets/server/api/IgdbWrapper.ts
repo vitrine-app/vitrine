@@ -1,13 +1,13 @@
-import * as igdb from 'igdb-api-node';
 import * as googleTranslate from 'google-translate-api';
+import * as igdb from 'igdb-api-node';
 
 import { logger } from '../Logger';
 
 // TODO: Rework IgdbWrapper class
 class IgdbWrapper {
-	private apiKey: string;
+	private readonly apiKey: string;
+	private readonly levenshteinRefiner: number;
 	private client: any;
-	private levenshteinRefiner: number;
 	private callback: (error: Error, game: any) => void;
 	private game: any;
 
@@ -50,13 +50,12 @@ class IgdbWrapper {
 	}
 
 	public searchGames(name: string, callback: (error: Error, games: any) => void, resultsNb?: number) {
-		let limit = resultsNb || this.levenshteinRefiner;
+		const limit = resultsNb || this.levenshteinRefiner;
 		logger.info('IgdbWrapper', `Looking for ${limit} result(s) of ${name} in IGDB.`);
 		this.client.games({
 			limit,
 			search: name.replace('²', '2')
 		}, ['name', 'cover']).then((response) => {
-			let counter: number = 0;
 			response.body.forEach((game: any) => {
 				logger.info('IgdbWrapper', `${game.name} found in IGDB.`);
 				if (game.cover) {
@@ -66,9 +65,8 @@ class IgdbWrapper {
 				}
 				else // TODO: Change default image
 					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
-				counter++;
-				if (counter === response.body.length)
-					callback(null, response.body);
+			}, () => {
+				callback(null, response.body);
 			});
 		}).catch((error: Error) => {
 			callback(error, null);
@@ -77,7 +75,7 @@ class IgdbWrapper {
 
 	private basicFormatting() {
 		if (this.game.total_rating) {
-			let rating: number = this.game.total_rating;
+			const rating: number = this.game.total_rating;
 			this.game.rating = Math.round(rating);
 			delete this.game.total_rating;
 		}
@@ -108,7 +106,7 @@ class IgdbWrapper {
 			callback({ name: '' });
 			return;
 		}
-		let ids: number | number[] = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
+		const ids: number | number[] = (Array.isArray(array[0])) ? (array[0]) : ([array[0]]);
 		this.client.companies({
 			ids
 		}, ['name']).then((response) => {
@@ -136,10 +134,10 @@ class IgdbWrapper {
 	}
 
 	private findGenreById(id: number, callback: (genres: any) => void) {
-		let ids: number |number[] = (Array.isArray(id)) ? (id) : ([id]);
+		const ids: number |number[] = (Array.isArray(id)) ? (id) : ([id]);
 
 		this.client.genres({
-			ids: ids
+			ids
 		}, ['name']).then((response) => {
 			callback(response.body);
 		}).catch((error: Error) => {
@@ -169,31 +167,28 @@ class IgdbWrapper {
 	}
 
 	private addGenresCallback(genres: any) {
-		let genresArray: any[] = [];
-		let counter: number = 0;
+		const genresArray: any[] = [];
 		genres.forEach((genre) => {
 			genresArray.push(genre.name);
-			counter++;
-			if (counter === genres.length) {
-				this.game.genres = genresArray;
-				if (this.game.summary && this.lang) {
-					googleTranslate(this.game.summary, {
-						to: this.lang
-					}).then(({text}: any) => {
-						this.game.summary = text;
-						this.callback(null, this.game);
-					}).catch((error: Error) => {
-						this.callback(error, null);
-					});
-				}
-				else
+		}, () => {
+			this.game.genres = genresArray;
+			if (this.game.summary && this.lang) {
+				googleTranslate(this.game.summary, {
+					to: this.lang
+				}).then(({text}: any) => {
+					this.game.summary = text;
 					this.callback(null, this.game);
+				}).catch((error: Error) => {
+					this.callback(error, null);
+				});
 			}
+			else
+				this.callback(null, this.game);
 		});
 	}
 }
 
-let igdbWrapper: IgdbWrapper = new IgdbWrapper();
+const igdbWrapper: IgdbWrapper = new IgdbWrapper();
 
 export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -208,7 +203,7 @@ export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
 
 export function searchIgdbGame(gameName: string, resultsNb?: number): Promise<any> {
 	return new Promise((resolve, reject) => {
-		igdbWrapper.searchGames(gameName,(error: Error, games: any) => {
+		igdbWrapper.searchGames(gameName, (error: Error, games: any) => {
 			if (error)
 				reject(error);
 			else

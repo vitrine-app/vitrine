@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { css, StyleSheet } from 'aphrodite';
 import { BrowserWindow, remote } from 'electron';
-import { StyleSheet, css } from 'aphrodite';
+import * as React from 'react';
 
+import { WindowControl, WindowControlIcon } from './icons/WindowControlIcon';
 import { VitrineComponent } from './VitrineComponent';
-import { WindowControlIcon, WindowControl } from './icons/WindowControlIcon';
 
 export class TaskBar extends VitrineComponent<{}, {}> {
 	private currentWindow: BrowserWindow;
@@ -11,6 +11,10 @@ export class TaskBar extends VitrineComponent<{}, {}> {
 	public constructor() {
 		super();
 		this.currentWindow = remote.getCurrentWindow();
+
+		this.minimizeBtnClickHandler = this.minimizeBtnClickHandler.bind(this);
+		this.maximizeBtnClickHandler = this.maximizeBtnClickHandler.bind(this);
+		this.closeBtnClickHandler = this.closeBtnClickHandler.bind(this);
 	}
 
 	private minimizeBtnClickHandler() {
@@ -35,16 +39,16 @@ export class TaskBar extends VitrineComponent<{}, {}> {
 				<div className={css(styles.windowControlBtnGroup)}>
 					<WindowControlIcon
 						icon={WindowControl.MinimizeIcon}
-						onClick={this.minimizeBtnClickHandler.bind(this)}
+						onClick={this.minimizeBtnClickHandler}
 					/>
 					<WindowControlIcon
 						icon={WindowControl.MaximizeIcon}
-						onClick={this.maximizeBtnClickHandler.bind(this)}
+						onClick={this.maximizeBtnClickHandler}
 					/>
 					<WindowControlIcon
 						icon={WindowControl.CloseIcon}
 						redBackground={true}
-						onClick={this.closeBtnClickHandler.bind(this)}
+						onClick={this.closeBtnClickHandler}
 					/>
 				</div>
 				{this.checkErrors()}

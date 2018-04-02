@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 
-import { VitrineState } from '../VitrineState';
+import { AppState } from '../AppState';
 import { GameContainer as VisualGameContainer } from '../components/GameContainer';
 
-const mapStateToProps = (state: VitrineState) => ({
+const mapStateToProps = (state: AppState) => ({
 	selectedGame: state.selectedGame
 });
 

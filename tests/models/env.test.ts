@@ -1,6 +1,9 @@
 import { expect } from 'chai';
 
-import { uuidV5 } from '../../assets/models/env';
+import { randomHashedString, uuidV5 } from '../../assets/models/env';
+import { logger } from '../../assets/server/Logger';
+
+logger.createLogger(true);
 
 describe('uuidV5 function', () => {
 	let uuid: string;
@@ -12,5 +15,17 @@ describe('uuidV5 function', () => {
 	});
 	it('Should have 5 hyphen-separated parts', () => {
 		expect(uuid.split('-')).to.have.length(5);
+	});
+});
+
+describe('randomHashedString function', () => {
+	let hashedString: string;
+	let length: number;
+	before(() => {
+		length = 12;
+		hashedString = randomHashedString(length);
+	});
+	it('Should return a hashed string of the corresponding length', () => {
+		expect(hashedString).to.have.length(length);
 	});
 });

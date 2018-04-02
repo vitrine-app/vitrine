@@ -3,7 +3,7 @@ import * as SteamWeb from 'steam-web';
 import { logger } from '../Logger';
 
 class SteamPlayTimeWrapper {
-	private apiKey: string;
+	private readonly apiKey: string;
 	private client: SteamWeb;
 
 	public constructor() {
@@ -29,22 +29,20 @@ class SteamPlayTimeWrapper {
 
 	private handleGames(steamId: number, timedGames: any[], callback: (error: Error, timePlayed: number) => void) {
 		let found: boolean = false;
-		let counter: number = 0;
-
 		timedGames.forEach((timedGame: any) => {
-			if (steamId == timedGame.appid) {
-				logger.info('SteamPlayTimeWrapper', `Played time for ${steamId} found (${timedGame.playtime_forever}).`);
+			if (steamId === timedGame.appid) {
+				logger.info('SteamPlayTimeWrapper', `Played time for ${steamId} found (${timedGame.playtime_forever} mins).`);
 				found = true;
 				callback(null, timedGame.playtime_forever * 60);
 			}
-			counter++;
-			if (counter === timedGame.length && !found)
+		}, () => {
+			if (!found)
 				callback(new Error('Your Steam games files are corrupted. Please reinstall your game'), null);
 		});
 	}
 }
 
-let steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
+const steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
 
 export function getGamePlayTime(steamUserId: number, steamId: number): Promise<any> {
 	return new Promise((resolve, reject) => {

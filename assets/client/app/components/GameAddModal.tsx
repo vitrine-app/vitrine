@@ -1,62 +1,62 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { border, margin, rgba } from 'css-verbose';
+import * as moment from 'moment';
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
-import { StyleSheet, css } from 'aphrodite';
-import * as moment from 'moment';
-import { border, margin, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { VitrineComponent } from './VitrineComponent';
-import { PotentialGame, GameSource } from '../../../models/PotentialGame';
-import { serverListener } from '../ServerListener';
+import { GameSource, PotentialGame } from '../../../models/PotentialGame';
 import { IgdbResearchModal } from '../containers/IgdbResearchModal';
+import { openExecutableDialog, openImageDialog } from '../helpers';
+import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
 import { BlurPicture } from './BlurPicture';
-import { NumberPicker } from './NumberPicker';
 import { DatePicker } from './DatePicker';
 import { ImagesCollection } from './ImagesCollection';
-import { localizer } from '../Localizer';
-import { openExecutableDialog, openImageDialog } from '../helpers';
+import { NumberPicker } from './NumberPicker';
+import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 interface Props {
-	selectedGame: PlayableGame,
-	potentialGameToAdd: PotentialGame,
-	gameToEdit: PlayableGame,
-	visible: boolean,
-	igdbResearchModalVisible: boolean,
-	addPlayableGames: (playableGames: PlayableGame[]) => void,
-	editPlayableGame: (playableGame: PlayableGame) => void,
-	setPotentialGameToAdd: (potentialGame: PotentialGame) => void,
-	setGameToEdit: (playableGame: PlayableGame) => void,
-	selectGame: (selectedGame: PlayableGame) => void,
-	closeGameAddModal: () => void,
-	openIgdbResearchModal: () => void,
-	closeIgdbResearchModal: () => void,
-	closeTimePlayedEditionModal: () => void
+	selectedGame: PlayableGame;
+	potentialGameToAdd: PotentialGame;
+	gameToEdit: PlayableGame;
+	visible: boolean;
+	igdbResearchModalVisible: boolean;
+	addPlayableGames: (playableGames: PlayableGame[]) => void;
+	editPlayableGame: (playableGame: PlayableGame) => void;
+	setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
+	setGameToEdit: (playableGame: PlayableGame) => void;
+	selectGame: (selectedGame: PlayableGame) => void;
+	closeGameAddModal: () => void;
+	openIgdbResearchModal: () => void;
+	closeIgdbResearchModal: () => void;
+	closeTimePlayedEditionModal: () => void;
 }
 
 interface State {
-	name: string,
-	series: string,
-	date: string,
-	developer: string,
-	publisher: string,
-	genres: string,
-	rating: number,
-	summary: string,
-	executable: string,
-	arguments: string,
-	cover: string,
-	backgroundScreen: string,
-	potentialBackgrounds: string[],
-	source: GameSource,
-	editing: boolean,
-	igdbFilled: boolean
+	name: string;
+	series: string;
+	date: string;
+	developer: string;
+	publisher: string;
+	genres: string;
+	rating: number;
+	summary: string;
+	executable: string;
+	arguments: string;
+	cover: string;
+	backgroundScreen: string;
+	potentialBackgrounds: string[];
+	source: GameSource;
+	editing: boolean;
+	igdbFilled: boolean;
 }
 
 export class GameAddModal extends VitrineComponent<Props, State> {
-	private emptyState: State;
+	private readonly emptyState: State;
 
 	public constructor(props: Props) {
 		super(props);
@@ -80,6 +80,15 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			igdbFilled: false
 		};
 		this.state = { ...this.emptyState };
+
+		this.closeModal = this.closeModal.bind(this);
+		this.changeBackgroundHandler = this.changeBackgroundHandler.bind(this);
+		this.gameCoverClickHandler = this.gameCoverClickHandler.bind(this);
+		this.inputChangeHandler = this.inputChangeHandler.bind(this);
+		this.dateChangeHandler = this.dateChangeHandler.bind(this);
+		this.executableBtnClickHandler = this.executableBtnClickHandler.bind(this);
+		this.searchIgdbButton = this.searchIgdbButton.bind(this);
+		this.submitButton = this.submitButton.bind(this);
 	}
 
 	private fillIgdbGame(gameInfos: any) {
@@ -126,7 +135,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private gameCoverClickHandler() {
-		let cover: string = openImageDialog();
+		const cover: string = openImageDialog();
 		if (cover)
 			this.setState({
 				cover
@@ -134,8 +143,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private inputChangeHandler(event: any) {
-		let name: string | any = event.target.name;
-		let value: string = event.target.value;
+		const name: string | any = event.target.name;
+		const value: string = event.target.value;
 
 		this.setState({
 			[name]: value
@@ -155,7 +164,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private executableBtnClickHandler() {
-		let dialogRet: string = openExecutableDialog();
+		const dialogRet: string = openExecutableDialog();
 		if (!dialogRet)
 			return;
 		this.setState({
@@ -175,7 +184,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private submitButton() {
-		let gameInfos: any = { ...this.state };
+		const gameInfos: any = { ...this.state };
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.editing;
 		delete gameInfos.igdbFilled;
@@ -212,7 +221,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		else
 			return;
 
-		let [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
+		const [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
 		if (!this.state.igdbFilled)
 			this.setState({
 				name: gameToHandle.name,
@@ -241,7 +250,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		return (
 			<Modal
 				open={this.props.visible}
-				onClose={this.closeModal.bind(this)}
+				onClose={this.closeModal}
 				size={'large'}
 				className={css(styles.modal)}
 			>
@@ -255,7 +264,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 									faIcon={faFolderOpen}
 									fontSize={55}
 									background={this.state.cover}
-									clickHandler={this.gameCoverClickHandler.bind(this)}
+									clickHandler={this.gameCoverClickHandler}
 								/>
 							</div>
 						</Grid.Column>
@@ -269,7 +278,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 										size={'large'}
 										placeholder={localizer.f('gameName')}
 										value={this.state.name}
-										onChange={this.inputChangeHandler.bind(this)}
+										onChange={this.inputChangeHandler}
 									/>
 								</Form.Field>
 								<Grid>
@@ -281,7 +290,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												size={'large'}
 												placeholder={localizer.f('gamesSeries')}
 												value={this.state.series}
-												onChange={this.inputChangeHandler.bind(this)}
+												onChange={this.inputChangeHandler}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -291,7 +300,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 											<DatePicker
 												value={this.state.date}
 												dateFormat={'DD/MM/YYYY'}
-												onChange={this.dateChangeHandler.bind(this)}
+												onChange={this.dateChangeHandler}
 												inputProps={{
 													size: 'large',
 													placeholder: localizer.f('releaseDate'),
@@ -310,7 +319,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												size={'large'}
 												placeholder={localizer.f('developer')}
 												value={this.state.developer}
-												onChange={this.inputChangeHandler.bind(this)}
+												onChange={this.inputChangeHandler}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -322,7 +331,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												size={'large'}
 												placeholder={localizer.f('publisher')}
 												value={this.state.publisher}
-												onChange={this.inputChangeHandler.bind(this)}
+												onChange={this.inputChangeHandler}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -336,7 +345,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												size={'large'}
 												placeholder={localizer.f('genres')}
 												value={this.state.genres}
-												onChange={this.inputChangeHandler.bind(this)}
+												onChange={this.inputChangeHandler}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -349,7 +358,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												name={'rating'}
 												placeholder={localizer.f('rating')}
 												value={this.state.rating}
-												onChange={this.ratingChangeHandler.bind(this)}
+												onChange={this.ratingChangeHandler}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -363,7 +372,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												className={css(styles.formTextArea)}
 												placeholder={localizer.f('summary')}
 												value={this.state.summary}
-												onChange={this.inputChangeHandler.bind(this)}
+												onChange={this.inputChangeHandler}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -387,7 +396,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												size={'large'}
 												placeholder={localizer.f('executable')}
 												value={this.state.executable}
-												onClick={this.executableBtnClickHandler.bind(this)}
+												onClick={this.executableBtnClickHandler}
 												readOnly={true}
 											/>
 										</Form.Field>
@@ -397,13 +406,13 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 									<Grid.Column width={16}>
 										<Form.Field>
 											<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
-											<div className="ui large input">
+											<div className={'ui large input'}>
 												<input
 													name={'arguments'}
 													className={css(styles.lineArgumentsInput)}
 													placeholder={localizer.f('lineArguments')}
 													value={this.state.arguments}
-													onChange={this.inputChangeHandler.bind(this)}
+													onChange={this.inputChangeHandler}
 												/>
 											</div>
 										</Form.Field>
@@ -416,7 +425,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 											<label className={css(styles.formLabel)}>{localizer.f('backgroundImage')}</label>
 											<ImagesCollection
 												images={this.state.potentialBackgrounds}
-												onChange={this.changeBackgroundHandler.bind(this)}
+												onChange={this.changeBackgroundHandler}
 											/>
 										</Form.Field>
 									</Grid.Column>
@@ -424,19 +433,19 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 								<input
 									name={'cover'}
 									value={this.state.cover}
-									onChange={this.inputChangeHandler.bind(this)}
-									hidden
+									onChange={this.inputChangeHandler}
+									hidden={true}
 								/>
 								<input
 									name={'background'}
 									value={this.state.backgroundScreen}
-									onChange={this.inputChangeHandler.bind(this)}
-									hidden
+									onChange={this.inputChangeHandler}
+									hidden={true}
 								/>
 								<input
 									name={'source'}
 									value={this.state.source}
-									onChange={this.inputChangeHandler.bind(this)}
+									onChange={this.inputChangeHandler}
 									hidden={true}
 								/>
 							</Form>
@@ -447,14 +456,14 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 					<Button
 						secondary={true}
 						disabled={!this.state.name}
-						onClick={this.searchIgdbButton.bind(this)}
+						onClick={this.searchIgdbButton}
 					>
 						{localizer.f('fillWithIgdb')}
 					</Button>
 					<Button
 						primary={true}
 						disabled={!this.state.name || !this.state.executable}
-						onClick={this.submitButton.bind(this)}
+						onClick={this.submitButton}
 					>
 						{(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
 					</Button>

@@ -1,28 +1,28 @@
+import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { css, StyleSheet } from 'aphrodite';
+import { margin, padding, rgba } from 'css-verbose';
+import { shell } from 'electron';
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal } from 'semantic-ui-react';
-import { shell } from 'electron';
-import { StyleSheet, css } from 'aphrodite';
-import { margin, padding, rgba } from 'css-verbose';
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
-import { NumberPicker } from './NumberPicker';
 import { localizer } from '../Localizer';
+import { serverListener } from '../ServerListener';
+import { NumberPicker } from './NumberPicker';
+import { VitrineComponent } from './VitrineComponent';
 
-import { faSearch, faCircleNotch } from '@fortawesome/fontawesome-free-solid';
+import { faCircleNotch, faSearch } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	visible: boolean,
-	closeIgdbResearchModal: () => void
+	visible: boolean;
+	closeIgdbResearchModal: () => void;
 }
 
 interface State {
-	loading: boolean,
-	research: string,
-	resultsNb: number,
-	researches: any[],
-	selectedResearchId: number | string
+	loading: boolean;
+	research: string;
+	resultsNb: number;
+	researches: any[];
+	selectedResearchId: number | string;
 }
 
 export class IgdbResearchModal extends VitrineComponent<Props, State> {
@@ -36,35 +36,44 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 			researches: [],
 			selectedResearchId: ''
 		};
+
+		this.researchClick = this.researchClick.bind(this);
+		this.gameDoubleClick = this.gameDoubleClick.bind(this);
+		this.researchChange = this.researchChange.bind(this);
+		this.resultsNbChange = this.resultsNbChange.bind(this);
+		this.igdbSearchButton = this.igdbSearchButton.bind(this);
+		this.igdbFillButton = this.igdbFillButton.bind(this);
+		this.closeModal = this.closeModal.bind(this);
+		this.igdbLinkClick = this.igdbLinkClick.bind(this);
 	}
 
-	private clickResearchHandler(id: number) {
+	private researchClick(id: number) {
 		this.setState({
 			selectedResearchId: id
 		});
 	}
 
-	private gameDoubleClickHandler(id: number) {
+	private gameDoubleClick(id: number) {
 		this.setState({
 			selectedResearchId: id
 		}, () => {
-			this.igdbFillBtnClickHandler();
-		})
+			this.igdbFillButton();
+		});
 	}
 
-	private changeResearchHandler(event: any) {
+	private researchChange(event: any) {
 		this.setState({
 			research: event.target.value
 		});
 	}
 
-	private changeResultsNbHandler(value: number) {
+	private resultsNbChange(value: number) {
 		this.setState({
 			resultsNb: value
 		});
 	}
 
-	private igdbSearchBtnClickHandler() {
+	private igdbSearchButton() {
 		this.setState({
 			loading: true
 		}, () => {
@@ -72,7 +81,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private igdbFillBtnClickHandler() {
+	private igdbFillButton() {
 		this.setState({
 			loading: true
 		}, () => {
@@ -89,8 +98,8 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private igdbLinkClickHandler() {
-		let igdbUrl: string = 'https://www.igdb.com';
+	private igdbLinkClick() {
+		const igdbUrl: string = 'https://www.igdb.com';
 		shell.openExternal(igdbUrl);
 	}
 
@@ -98,8 +107,8 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		serverListener.listen('send-igdb-searches', (research: string, researches: any[]) => {
 			this.setState({
 				loading: false,
-				research: research,
 				selectedResearchId: '',
+				research,
 				researches
 			});
 		});
@@ -118,7 +127,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 									size={'large'}
 									placeholder={localizer.f('gameName')}
 									value={this.state.research}
-									onChange={this.changeResearchHandler.bind(this)}
+									onChange={this.researchChange}
 								/>
 							</Form.Field>
 						</Grid.Column>
@@ -131,14 +140,14 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 									name={'rating'}
 									value={this.state.resultsNb}
 									placeholder={localizer.f('resultsNumber')}
-									onChange={this.changeResultsNbHandler.bind(this)}
+									onChange={this.resultsNbChange}
 								/>
 							</Form.Field>
 						</Grid.Column>
 						<Grid.Column width={2}>
 							<Button
 								primary={true}
-								onClick={this.igdbSearchBtnClickHandler.bind(this)}
+								onClick={this.igdbSearchButton}
 								className={css(styles.searchBtn)}
 							>
 								<FontAwesomeIcon icon={faSearch}/>
@@ -151,8 +160,8 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 						<div
 							key={index}
 							className={css(styles.igdbResearch) + ' ' + ((this.state.selectedResearchId === research.id) ? (css(styles.selectedIgdbResearch)) : (''))}
-							onClick={this.clickResearchHandler.bind(this, research.id)}
-							onDoubleClick={this.gameDoubleClickHandler.bind(this, research.id)}
+							onClick={this.researchClick.bind(this, research.id)}
+							onDoubleClick={this.gameDoubleClick.bind(this, research.id)}
 						>
 							<Grid>
 								<Grid.Column
@@ -172,7 +181,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 					{localizer.f('igdbDisclaimer')}
 					<a
 						className={css(styles.igdbLink)}
-						onClick={this.igdbLinkClickHandler.bind(this)}
+						onClick={this.igdbLinkClick}
 					>
 						IGDB
 					</a>.
@@ -193,7 +202,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		return (
 			<Modal
 				open={this.props.visible}
-				onClose={this.closeModal.bind(this)}
+				onClose={this.closeModal}
 				size={'tiny'}
 				className={css(styles.modal)}
 			>
@@ -203,7 +212,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 					<Button
 						primary={true}
 						disabled={!this.state.selectedResearchId}
-						onClick={this.igdbFillBtnClickHandler.bind(this)}
+						onClick={this.igdbFillButton}
 					>
 						{localizer.f('submitNewGame')}
 					</Button>

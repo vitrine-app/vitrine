@@ -1,9 +1,9 @@
 import * as path from 'path';
 
-import { GameSource } from '../models/PotentialGame';
+import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../scripts/gameLauncher.node';
+import { watchRegKey } from '../../scripts/regWatcher.node';
 import { PlayableGame } from '../models/PlayableGame';
-import { launchGame as nativeLaunchGame, GameLauncherOptions } from '../../scripts/gameLauncher.node';
-import { watchRegKey } from '../../scripts/regWatcher.node'
+import { GameSource } from '../models/PotentialGame';
 import { logger } from './Logger';
 
 class GameLauncher {
@@ -13,7 +13,7 @@ class GameLauncher {
 	public launch(game: PlayableGame, callback: (error: Error, minutesPlayed: number) => void) {
 		this.callback = callback;
 		this.game = game;
-		if (this.game.source == GameSource.STEAM)
+		if (this.game.source === GameSource.STEAM)
 			this.launchSteamGame();
 		else
 			this.launchStandardGame();
@@ -22,8 +22,8 @@ class GameLauncher {
 	private launchStandardGame() {
 		logger.info('GameLauncher', 'Launching non-Steam game.');
 
-		let [ executable, args ]: string[] = this.game.commandLine;
-		let launcherOptions: any = {
+		const [ executable, args ]: string[] = this.game.commandLine;
+		const launcherOptions: any = {
 			program: executable,
 			cwd: path.parse(executable).dir
 		};
@@ -49,8 +49,8 @@ class GameLauncher {
 
 		logger.info('GameLauncher', 'Launching Steam game.');
 
-		let regNest: string = 'HKEY_CURRENT_USER';
-		let regKey: string = `Software\\Valve\\Steam\\Apps\\${this.game.details.steamId}`;
+		const regNest: string = 'HKEY_CURRENT_USER';
+		const regKey: string = `Software\\Valve\\Steam\\Apps\\${this.game.details.steamId}`;
 		logger.info('GameLauncher', `Watching Steam registry key for game begin (${this.game.details.steamId}).`);
 		watchRegKey(regNest, regKey, (error: string) => {
 			if (error) {
@@ -69,17 +69,17 @@ class GameLauncher {
 			});
 		});
 
-		let [ program, args ]: string[] = this.game.commandLine;
+		const [ program, args ]: string[] = this.game.commandLine;
 		logger.info('GameLauncher', `Launching Steam game (${this.game.details.steamId}}) with native module.`);
 		nativeLaunchGame({ program, args });
 	}
 }
 
-let gameLauncher: GameLauncher = new GameLauncher();
+const gameLauncher: GameLauncher = new GameLauncher();
 
 export function launchGame(game: PlayableGame): Promise<any> {
 	return new Promise((resolve, reject) => {
-		gameLauncher.launch(game,(error, minutesPlayed) => {
+		gameLauncher.launch(game, (error, minutesPlayed) => {
 			if (error)
 				reject(error);
 			else

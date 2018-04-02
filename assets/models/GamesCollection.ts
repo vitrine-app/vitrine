@@ -1,12 +1,12 @@
-export class GamesCollection<T extends Object> {
+export class GamesCollection<T extends object> {
+	private readonly evaluatedKey: string;
+	private readonly idKey: string;
 	private games: T[];
-	private evaluatedKey: string;
-	private idKey: string;
 
 	public constructor(games?: T[]) {
 		this.games = games || [];
 		this.evaluatedKey = 'name';
-		this.idKey = 'uuid'
+		this.idKey = 'uuid';
 	}
 
 	public getGames(): T[] {
@@ -49,14 +49,14 @@ export class GamesCollection<T extends Object> {
 	}
 
 	public editGame(game: T): this {
-		let index: number = this.getIndex(this.getGame(game[this.idKey]));
+		const index: number = this.getIndex(this.getGame(game[this.idKey]));
 		this.games[index] = game;
 		this.sort();
 		return this;
 	}
 
 	public removeGame(gameUuid: string) {
-		let index: number = this.getIndex(this.getGame(gameUuid));
+		const index: number = this.getIndex(this.getGame(gameUuid));
 		this.games.splice(index, 1);
 		return this;
 	}
@@ -75,6 +75,6 @@ export class GamesCollection<T extends Object> {
 	}
 
 	private removeDuplicates(array: T[]) {
-		return array.filter((value, index, array) => array.indexOf(value) == index);
+		return array.filter((value: T, index: number, array: T[]) => array.indexOf(value) === index);
 	}
 }

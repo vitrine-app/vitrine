@@ -1,27 +1,26 @@
-import * as React from 'react';
-import { Button, Modal } from 'semantic-ui-react';
 import { css, StyleSheet } from 'aphrodite';
-import { ContextMenu as ContextMenuDiv, MenuItem } from 'react-contextmenu';
 import { margin } from 'css-verbose';
+import * as React from 'react';
+import { ContextMenu as ContextMenuDiv, MenuItem } from 'react-contextmenu';
+import { Button, Modal } from 'semantic-ui-react';
 
-import { serverListener } from '../ServerListener';
-import { VitrineComponent } from './VitrineComponent';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { localizer } from '../Localizer';
-import { openGameAddModal } from '../actions/modals';
+import { serverListener } from '../ServerListener';
+import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-	playableGames: GamesCollection<PlayableGame>
-	launchGame: (launchedGame: PlayableGame) => void,
-	setGameToEdit: (gameToEdit: PlayableGame) => void,
-	openGameAddModal: () => void,
-	openTimePlayedEditionModal: () => void
+	playableGames: GamesCollection<PlayableGame>;
+	launchGame: (launchedGame: PlayableGame) => void;
+	setGameToEdit: (gameToEdit: PlayableGame) => void;
+	openGameAddModal: () => void;
+	openTimePlayedEditionModal: () => void;
 }
 
 interface State {
-	confirmVisible: boolean,
-	toDeleteGame: PlayableGame
+	confirmVisible: boolean;
+	toDeleteGame: PlayableGame;
 }
 
 export class ContextMenu extends VitrineComponent<Props, State> {
@@ -32,11 +31,46 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 			confirmVisible: false,
 			toDeleteGame: null
 		};
+
+		this.removeGame = this.removeGame.bind(this);
+		this.resetModalData = this.resetModalData.bind(this);
+		this.launchClick = this.launchClick.bind(this);
+		this.editClick = this.editClick.bind(this);
+		this.editTimeClick = this.editTimeClick.bind(this);
+		this.deleteClick = this.deleteClick.bind(this);
+	}
+
+	private launchClick(event: any, data: any, target: HTMLElement) {
+		this.contextAction(target, 'launch');
+	}
+
+	private editClick(event: any, data: any, target: HTMLElement) {
+		this.contextAction(target, 'edit');
+	}
+
+	private editTimeClick(event: any, data: any, target: HTMLElement) {
+		this.contextAction(target, 'editTime');
+	}
+
+	private deleteClick(event: any, data: any, target: HTMLElement) {
+		this.contextAction(target, 'delete');
+	}
+
+	private removeGame() {
+		serverListener.send('remove-game', this.state.toDeleteGame.uuid);
+		this.resetModalData();
+	}
+
+	private resetModalData() {
+		this.setState({
+			confirmVisible: false,
+			toDeleteGame: null
+		});
 	}
 
 	private contextAction(target: HTMLElement, action: string) {
-		let gameUuid: string = target.children[0].id.replace('sidebar-game:', '');
-		let game: PlayableGame = this.props.playableGames.getGame(gameUuid);
+		const gameUuid: string = target.children[0].id.replace('sidebar-game:', '');
+		const game: PlayableGame = this.props.playableGames.getGame(gameUuid);
 
 		switch (action) {
 			case 'launch': {
@@ -63,39 +97,27 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 		}
 	}
 
-	private removeGame() {
-		serverListener.send('remove-game', this.state.toDeleteGame.uuid);
-		this.resetModalData();
-	}
-
-	private resetModalData() {
-		this.setState({
-			confirmVisible: false,
-			toDeleteGame: null
-		});
-	}
-
 	public render(): JSX.Element {
 		return (
 			<div>
-				<ContextMenuDiv id="sidebar-games-context-menu">
-					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'launch')}>
+				<ContextMenuDiv id={'sidebar-games-context-menu'}>
+					<MenuItem onClick={this.launchClick}>
 						{localizer.f('play')}
 					</MenuItem>
-					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'edit')}>
+					<MenuItem onClick={this.editClick}>
 						{localizer.f('edit')}
 					</MenuItem>
-					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'editTime')}>
+					<MenuItem onClick={this.editTimeClick}>
 						{localizer.f('editTimePlayed')}
 					</MenuItem>
 					<MenuItem divider={true}/>
-					<MenuItem onClick={(event: any, data: any, target: HTMLElement) => this.contextAction(target, 'delete')}>
+					<MenuItem onClick={this.deleteClick}>
 						{localizer.f('delete')}
 					</MenuItem>
 				</ContextMenuDiv>
 				<Modal
 					open={this.state.confirmVisible}
-					onClose={this.resetModalData.bind(this)}
+					onClose={this.resetModalData}
 					className={css(styles.modal)}
 				>
 					<Modal.Header>{localizer.f('removeGame')}</Modal.Header>
@@ -108,13 +130,13 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 					<Modal.Actions>
 						<Button
 							secondary={true}
-							onClick={this.resetModalData.bind(this)}
+							onClick={this.resetModalData}
 						>
 							{localizer.f('cancel')}
 						</Button>
 						<Button
 							primary={true}
-							onClick={this.removeGame.bind(this)}
+							onClick={this.removeGame}
 						>
 							{localizer.f('confirm')}
 						</Button>
