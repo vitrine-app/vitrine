@@ -8,7 +8,7 @@ class Localizer {
 	}
 
 	public getLanguages(): any[] {
-		return this.languages
+		return this.languages;
 	}
 
 	public getSelectedLanguage(): string {

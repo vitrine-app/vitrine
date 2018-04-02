@@ -99,6 +99,7 @@
     "electron-builder": "^20.6.2",
     "electron-node-loader": "^1.1.1",
     "html-webpack-plugin": "^3.1.0",
+    "husky": "^0.14.3",
     "less": "^2.7.3",
     "less-loader": "^4.1.0",
     "less-vars-loader": "^1.1.0",
@@ -130,6 +131,8 @@
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "pack": "yarn build-scripts && yarn build-prod && build --dir",
-    "dist": "yarn build-scripts && yarn test && yarn build-prod && build"
+    "dist": "yarn build-scripts && yarn test && yarn build-prod && build",
+
+    "precommit": "tslint --fix assets/**/*.ts*"
   }
 }

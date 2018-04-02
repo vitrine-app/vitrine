@@ -46,6 +46,8 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			launchedGamePictureActivated: true,
 			gameWillBeEdited: false
 		};
+
+		this.launchGame = this.launchGame.bind(this);
 	}
 
 	private removePlayableGame(gameUuid: string) {
@@ -148,10 +150,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<TaskBar/>
 				<Grid className={css(styles.mainContainer)}>
 					<SideBar
-						launchGame={this.launchGame.bind(this)}
+						launchGame={this.launchGame}
 					/>
 					<GameContainer
-						launchGame={this.launchGame.bind(this)}
+						launchGame={this.launchGame}
 					/>
 				</Grid>
 				<GameAddModal/>

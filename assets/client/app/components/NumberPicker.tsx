@@ -28,6 +28,10 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 		this.state = {
 			value: (this.props.value !== undefined) ? (this.props.value) : ('')
 		};
+
+		this.increaseCounterHandler = this.increaseCounterHandler.bind(this);
+		this.decreaseCounterHandler = this.decreaseCounterHandler.bind(this);
+		this.inputChangeHandler = this.inputChangeHandler.bind(this);
 	}
 
 	private increaseCounterHandler() {
@@ -93,14 +97,14 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 				<Button
 					secondary={true}
 					className={css(styles.verticalBtn, styles.firstVerticalBtn)}
-					onClick={this.increaseCounterHandler.bind(this)}
+					onClick={this.increaseCounterHandler}
 				>
 					<FontAwesomeIcon icon={faCaretUp}/>
 				</Button>
 				<Button
 					secondary={true}
 					className={css(styles.verticalBtn, styles.lastVerticalBtn)}
-					onClick={this.decreaseCounterHandler.bind(this)}
+					onClick={this.decreaseCounterHandler}
 				>
 					<FontAwesomeIcon icon={faCaretDown}/>
 				</Button>
@@ -118,7 +122,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 					name={this.props.name}
 					placeholder={this.props.placeholder}
 					value={this.state.value}
-					onChange={this.inputChangeHandler.bind(this)}
+					onChange={this.inputChangeHandler}
 				/>
 				{this.checkErrors()}
 			</div>

@@ -2,10 +2,6 @@ class GamepadHandler {
 	private gamePads: Gamepad[];
 	private start: number;
 
-	public constructor() {
-
-	}
-
 	public loop() {
 		this.gamePads = navigator.getGamepads();
 		const gamePad: Gamepad = this.gamePads[0];

@@ -19,9 +19,11 @@ export class GamesModule extends VitrineComponent<Props, any> {
 		this.state = {
 			clicked: this.props.clicked
 		};
+
+		this.imageClick = this.imageClick.bind(this);
 	}
 
-	private imgClickHandler() {
+	private imageClick() {
 		this.setState({
 			clicked: !this.state.clicked
 		}, () => {
@@ -39,7 +41,7 @@ export class GamesModule extends VitrineComponent<Props, any> {
 						css(styles.gamesModuleIcon) + ' ' +
 						(((this.state.clicked) ? (css(styles.clickedGamesModuleIcon)) : ('')))
 					}
-					onClick={this.imgClickHandler.bind(this)}
+					onClick={this.imageClick}
 				/>
 				{this.checkErrors()}
 			</div>

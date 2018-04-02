@@ -12,7 +12,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeTimePlayedEditionModal: () => {
-		dispatch(closeTimePlayedEditionModal())
+		dispatch(closeTimePlayedEditionModal());
 	}
 });
 

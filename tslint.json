@@ -2,24 +2,29 @@
   "defaultSeverity": "error",
   "extends": [
     "tslint:recommended",
-    "tslint-eslint-rules"
+    "tslint-eslint-rules",
+    "tslint-react"
   ],
   "rules": {
-    "curly": false,
-    "quotemark": [ true, "single", "jsx-single" ],
-    "semicolon": [ true ],
     "interface-name": false,
-    "indent": [ "tabs" ],
-    "no-multi-spaces": true,
-    "max-line-length": [ true, 150 ],
     "one-line": false,
     "trailing-comma": false,
     "object-literal-sort-keys": false,
     "no-console": false,
     "triple-equals": [ true, "allow-null-check", "allow-undefined-check" ],
     "radix": false,
+    "no-namespace": false,
     "no-shadowed-variable": false,
     "member-ordering": false,
-    "object-literal-key-quotes": [ "as-needed" ]
+    "object-literal-key-quotes": [ "as-needed" ],
+    "jsx-curly-spacing": "never",
+    "jsx-equals-spacing": "never",
+    "jsx-no-multiline-js": false,
+    "quotemark": [ true, "single", "jsx-single" ],
+    "indent": [ "tabs" ],
+    "max-line-length": [ true, 150 ],
+    "semicolon": [ true ],
+    "curly": false,
+    "no-multi-spaces": true
   }
 }

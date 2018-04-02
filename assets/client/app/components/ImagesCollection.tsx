@@ -29,9 +29,11 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 			selectedImage: '',
 			customImage: false
 		};
+
+		this.imageClick = this.imageClick.bind(this);
 	}
 
-	private addImageBtnClick() {
+	private addImageButton() {
 		const newImage: string = openImageDialog();
 		if (!newImage)
 			return;
@@ -51,7 +53,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private imageClickHandler(image: string) {
+	private imageClick(image: string) {
 		this.setState({
 			selectedImage: image
 		}, () => {
@@ -78,7 +80,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 			<div>
 				<Button
 					primary={true}
-					onClick={this.addImageBtnClick.bind(this)}
+					onClick={this.addImageButton}
 				>
 					<FontAwesomeIcon icon={faPlus}/> {localizer.f('addCustomBgImage')}
 				</Button>
@@ -88,7 +90,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 							key={index}
 							src={image}
 							className={css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))}
-							onClick={this.imageClickHandler.bind(this, image)}
+							onClick={this.imageClick.bind(this, image)}
 						/>
 					)}
 				</div>

@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	updateSettings: (settings: any) => {
-		dispatch(updateSettings(settings))
+		dispatch(updateSettings(settings));
 	}
 });
 

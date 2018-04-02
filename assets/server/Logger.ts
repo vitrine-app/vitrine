@@ -12,27 +12,30 @@ class Logger {
 		if (isProduction()) {
 			this.filePath = path.resolve(process.env.APPDATA, 'vitrine', 'data', 'vitrine.log.html');
 			fs.ensureFileSync(this.filePath);
-		}
-		else
+		} else {
 			this.filePath = path.resolve('vitrine.log.html');
+		}
 	}
 
 	public createLogger(testEnv?: boolean) {
 		this.testEnv = testEnv || false;
-		if (this.testEnv)
+		if (this.testEnv) {
 			return;
+		}
 		const dateTime: string = moment().format('DD/MM HH:mm:ss');
 		const initialLog: string = `<style>p { margin: 0 }</style><h3>Vitrine log</h3><p><strong>[ ${dateTime} ]</strong> Starting logging.</p>`;
 		fs.writeFileSync(this.filePath, initialLog);
 	}
 
 	public info(channelName: string, message: any, displayed?: boolean) {
-		if (this.testEnv)
+		if (this.testEnv) {
 			return;
+		}
 		const dateTime: string = moment().format('DD/MM HH:mm:ss');
 		const log: string = `<p><strong>[ ${dateTime} ][ ${channelName} ]</strong> ${message}</p>`;
-		if (displayed)
+		if (displayed) {
 			console.log(`[ ${dateTime} ][ ${channelName} ] ${message}`);
+		}
 		fs.appendFileSync(this.filePath, log);
 	}
 }

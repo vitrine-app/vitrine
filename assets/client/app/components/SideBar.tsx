@@ -27,7 +27,6 @@ interface Props {
 }
 
 export const SideBar: React.StatelessComponent<Props> = (props: Props) => {
-
 	const clickGameHandler = (event: any) => {
 		const selectedGame: PlayableGame = props.playableGames.getGame(event.target.id.replace('sidebar-game:', ''));
 		props.selectGame(selectedGame);

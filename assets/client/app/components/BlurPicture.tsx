@@ -46,6 +46,10 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 				backgroundImage: urlify(this.props.background)
 			}
 		};
+
+		this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
+		this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
+		this.clickHandler = this.clickHandler.bind(this);
 	}
 
 	private mouseEnterHandler() {
@@ -100,9 +104,9 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 			>
 				<div
 					className={css(styles.container)}
-					onMouseEnter={this.mouseEnterHandler.bind(this)}
-					onMouseLeave={this.mouseLeaveHandler.bind(this)}
-					onClick={this.clickHandler.bind(this)}
+					onMouseEnter={this.mouseEnterHandler}
+					onMouseLeave={this.mouseLeaveHandler}
+					onClick={this.clickHandler}
 					style={this.state.divStyle}
 				>
 					<div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>

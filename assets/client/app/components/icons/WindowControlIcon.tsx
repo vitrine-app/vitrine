@@ -29,6 +29,21 @@ export class WindowControlIcon extends React.Component<Props, State> {
 		this.state = {
 			hovered: false
 		};
+
+		this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
+		this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
+	}
+
+	private mouseEnterHandler() {
+		this.setState({
+			hovered: true
+		});
+	}
+
+	private mouseLeaveHandler() {
+		this.setState({
+			hovered: false
+		});
 	}
 
 	private iconRender(): JSX.Element {
@@ -45,8 +60,8 @@ export class WindowControlIcon extends React.Component<Props, State> {
 	public render(): JSX.Element {
 		return (
 			<div
-				onMouseEnter={() => this.setState({ hovered: true })}
-				onMouseLeave={() => this.setState({ hovered: false })}
+				onMouseEnter={this.mouseEnterHandler}
+				onMouseLeave={this.mouseLeaveHandler}
 				className={css(styles.icon, (this.props.redBackground) ? (styles.redIcon) : (styles.regularIcon))}
 				onClick={this.props.onClick}
 			>
