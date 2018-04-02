@@ -1,12 +1,17 @@
-# Vitrine
+<h1 align="center">Vitrine</h1>
+
+<h3 align="center">Centralize all of your games within a simple interface.</h3>
+
+<p align="center">
+
 [![license](https://img.shields.io/github/license/paul-roman/vitrine.svg?style=flat-square)](https://github.com/paul-roman/vitrine/blob/master/LICENSE.md)
 [![GitHub (pre-)release](https://img.shields.io/github/release/paul-roman/vitrine/all.svg?style=flat-square)](https://github.com/paul-roman/vitrine/releases)
 [![CircleCI](https://img.shields.io/circleci/project/github/paul-roman/vitrine.svg?style=flat-square)](https://circleci.com/gh/paul-roman/vitrine)
 [![dependencies](https://david-dm.org/paul-roman/vitrine/status.svg?style=flat-square)](https://david-dm.org/paul-roman/vitrine)
 [![devDependencies](https://david-dm.org/paul-roman/vitrine/dev-status.svg?style=flat-square)](https://david-dm.org/paul-roman/vitrine?type=dev)
+[![code style: TSLint](https://img.shields.io/badge/code%20style-tslint-ff69b4.svg?style=flat-square)](https://palantir.github.io/tslint)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square)](https://stackshare.io/paul-roman/vitrine)
-
-_Centralize all of your games within a simple interface._
+</p>
 
 ## About Vitrine
 Vitrine is a modern game library using the Electron framework and the IGDB database to display games installed on your computer. It scans your Steam and Origin games folder to retrieve your libraries, use the IGDB database to provide details about your games (developer, publisher, release date, screenshots, ...) and display them in a smooth and simple interface. It can also measure the time spend playing a game and can be synchronized to Steam playing times.
