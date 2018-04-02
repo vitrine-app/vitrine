@@ -24,9 +24,9 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 		glob(`${this.moduleConfig.romsFolder}/*`, (error: Error, folders: string[]) => {
 			if (error)
 				return this.callback(error, null);
-			let counter: number = 0;
-			folders.forEach((romFolder: string) => {
-				this.moduleConfig.platforms.forEach((platform: any) => {
+
+			folders.forEachEnd((romFolder: string, done: () => void) => {
+				this.moduleConfig.platforms.forEachEnd((platform: any, secondDone: () => void) => {
 					if (platform.folder.toUpperCase() === path.basename(romFolder).toUpperCase()) {
 						const romEmulator: any = this.moduleConfig.emulators.filter((emulator: any) => emulator.platforms
 							.filter((platformId: number) => platformId === platform.id).length)[0];
@@ -38,18 +38,18 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 							});
 						}
 					}
+					secondDone();
 				}, () => {
-					counter++;
-					if (counter === folders.length)
-						this.analyzeFolders();
+					done();
 				});
+			}, () => {
+				this.analyzeFolders();
 			});
 		});
 	}
 
 	private analyzeFolders() {
-		let counter: number = 0;
-		this.romsFolders.forEach(({romFolder, romEmulator}) => {
+		this.romsFolders.forEachEnd(({romFolder, romEmulator}: any, done: () => void) => {
 			logger.info('EmulatedGamesCrawler', `Parsing roms in ${romFolder} with ${romEmulator.name} pattern (${romEmulator.glob}).`);
 			glob(`${romFolder}/${romEmulator.glob}`, (error: Error, roms: string[]) => {
 				if (error) {
@@ -71,8 +71,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					return !found;
 				});
 
-				let secondCounter: number = 0;
-				romInfos.forEach(({romName, romPath}: any) => {
+				romInfos.forEachEnd(({romName, romPath}: any, secondDone: () => void) => {
 					searchIgdbGame(romName, 1).then((game: any) => {
 						game = game[0];
 						delete game.name;
@@ -84,17 +83,16 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 						];
 						this.potentialGames.push(potentialGame);
 						logger.info('EmulatedGamesCrawler', `Adding ${romName} to potential emulated games.`);
-						secondCounter++;
-						if (secondCounter === romInfos.length) {
-							counter++;
-							if (counter === this.romsFolders.length)
-								this.sendResults();
-						}
+						secondDone();
 					}).catch((error: Error) => {
 						this.callback(error, null);
 					});
+				}, () => {
+					done();
 				});
 			});
+		}, () => {
+			this.sendResults();
 		});
 	}
 }

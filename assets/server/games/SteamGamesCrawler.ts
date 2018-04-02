@@ -56,8 +56,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 				return true;
 			});
 
-		let counter: number = 0;
-		gameManifests.forEach((gameManifest: any) => {
+		gameManifests.forEachEnd((gameManifest: any, done: () => void) => {
 			logger.info('SteamGamesCrawler', `Steam game ${gameManifest.name} (Steam ID ${gameManifest.appid}) found.`);
 			searchIgdbGame(gameManifest.name, 1).then((game: any) => {
 				game = game[0];
@@ -71,12 +70,12 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 				potentialGame.details.steamId = parseInt(gameManifest.appid);
 				this.potentialGames.push(potentialGame);
 				logger.info('SteamGamesCrawler', `Adding ${gameManifest.name} to potential Steam games.`);
-				counter++;
-				if (counter === gameManifests.length)
-					this.sendResults();
+				done();
 			}).catch((error: Error) => {
 				this.callback(error, null);
 			});
+		}, () => {
+			this.sendResults();
 		});
 	}
 }

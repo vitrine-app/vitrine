@@ -36,8 +36,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		if (error)
 			this.callback(error, null);
 
-		let counter: number = 0;
-		items.forEach((key: Winreg.Registry) => {
+		items.forEachEnd((key: Winreg.Registry, done: () => void) => {
 			key.values((error: Error, values: Winreg.RegistryItem[]) => {
 				if (error)
 					this.callback(error, null);
@@ -47,12 +46,11 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 					path: values[1].value,
 					exe: values[5].value
 				});
-				counter++;
-				if (counter === items.length) {
-					logger.info('OriginGamesCrawler', `Looking for games folders in (${this.gamesFolder}).`);
-					glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
-				}
+				done();
 			});
+		}, () => {
+			logger.info('OriginGamesCrawler', `Looking for games folders in (${this.gamesFolder}).`);
+			glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
 		});
 	}
 
@@ -80,11 +78,12 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			return true;
 		});
 
-		let counter: number = 0;
-		gameInfos.forEach(({gameName, gameFolder}: any) => {
+		gameInfos.forEachEnd(({gameName, gameFolder}: any, done: () => void) => {
 			this.getRegExe(gameFolder, (error: Error, gamePath: string) => {
-				if (error)
+				if (error) {
 					this.callback(error, null);
+					return;
+				}
 				searchIgdbGame(gameName, 1).then((game: any) => {
 					game = game[0];
 					delete game.name;
@@ -93,24 +92,25 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 					potentialGame.commandLine = [ path.resolve(gamePath) ];
 					this.potentialGames.push(potentialGame);
 					logger.info('OriginGamesCrawler', `Adding ${gameName} to potential Origin games.`);
-					counter++;
-					if (counter === gameInfos.length)
-						this.sendResults();
+					done();
 				}).catch((error: Error) => {
 					this.callback(error, null);
 				});
 			});
+		}, () => {
+			this.sendResults();
 		});
 	}
 
 	private getRegExe(gamePath: string, callback: (error: Error, gamePath: string) => void) {
 		let found: boolean = false;
-		this.regDetails.forEach((regDetail: any) => {
+		this.regDetails.forEachEnd((regDetail: any, done: () => void) => {
 			if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
 				logger.info('OriginGamesCrawler', `Origin game found (${gamePath}).`);
 				callback(null, regDetail.exe);
 				found = true;
 			}
+			done();
 		}, () => {
 			if (!found)
 				callback(new Error('Registry not matching.'), null);

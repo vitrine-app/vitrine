@@ -56,7 +56,7 @@ class IgdbWrapper {
 			limit,
 			search: name.replace('²', '2')
 		}, ['name', 'cover']).then((response) => {
-			response.body.forEach((game: any) => {
+			response.body.forEachEnd((game: any, done: () => void) => {
 				logger.info('IgdbWrapper', `${game.name} found in IGDB.`);
 				if (game.cover) {
 					if (game.cover.url.substr(0, 6) === 'https:')
@@ -65,6 +65,7 @@ class IgdbWrapper {
 				}
 				else // TODO: Change default image
 					game.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
+				done();
 			}, () => {
 				callback(null, response.body);
 			});
@@ -168,8 +169,9 @@ class IgdbWrapper {
 
 	private addGenresCallback(genres: any) {
 		const genresArray: any[] = [];
-		genres.forEach((genre) => {
+		genres.forEachEnd((genre: any, done: () => void) => {
 			genresArray.push(genre.name);
+			done();
 		}, () => {
 			this.game.genres = genresArray;
 			if (this.game.summary && this.lang) {

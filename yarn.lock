@@ -3088,6 +3088,10 @@ for-own@^0.1.4:
   dependencies:
     for-in "^1.0.1"
 
+foreach-end@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/foreach-end/-/foreach-end-1.0.1.tgz#547ca10b0c3c47a8b02f96f76b2750742a13d04c"
+
 foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
