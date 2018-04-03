@@ -62,17 +62,17 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 		});
 	}
 
-	public componentWillReceiveProps(props: Props) {
+	public static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
 		let images: string[] = [];
 		let selectedImage: string = '';
-		if (props.images.length) {
-			images = props.images;
-			selectedImage = this.state.selectedImage || props.images[0];
+		if (nextProps.images.length) {
+			images = nextProps.images;
+			selectedImage = prevState.selectedImage || nextProps.images[0];
 		}
-		this.setState({
+		return {
 			images,
 			selectedImage
-		});
+		};
 	}
 
 	public render(): JSX.Element {

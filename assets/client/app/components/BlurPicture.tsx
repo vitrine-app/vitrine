@@ -86,13 +86,13 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 		this.props.clickHandler();
 	}
 
-	public componentWillReceiveProps(props: Props) {
-		this.setState({
+	public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
+		return {
 			imageStyle: {
-				backgroundImage: urlify(props.background),
+				backgroundImage: urlify(nextProps.background),
 				filter: ''
 			}
-		});
+		};
 	}
 
 	public render(): JSX.Element {

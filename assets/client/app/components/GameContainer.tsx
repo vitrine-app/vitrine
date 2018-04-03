@@ -35,28 +35,27 @@ export class GameContainer extends VitrineComponent<Props, State> {
 		};
 	}
 
-	public componentWillReceiveProps(props: Props) {
-		if (!props.selectedGame) {
-			this.setState({
+	public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
+		if (!nextProps.selectedGame)
+			return {
 				backgroundImage: 'none',
 				mainColor: lessVars.primaryColor
-			});
-			return;
-		}
+			};
+
 		let backgroundImage: string;
 		let mainColor: string;
-		if (props.selectedGame && props.selectedGame.details.backgroundScreen) {
-			backgroundImage = urlify(props.selectedGame.details.backgroundScreen);
-			mainColor = props.selectedGame.ambientColor || lessVars.primaryColor;
+		if (nextProps.selectedGame && nextProps.selectedGame.details.backgroundScreen) {
+			backgroundImage = urlify(nextProps.selectedGame.details.backgroundScreen);
+			mainColor = nextProps.selectedGame.ambientColor || lessVars.primaryColor;
 		}
 		else {
 			backgroundImage = 'none';
 			mainColor = lessVars.primaryColor;
 		}
-		this.setState({
+		return {
 			backgroundImage,
 			mainColor
-		});
+		};
 	}
 
 	public render(): JSX.Element {

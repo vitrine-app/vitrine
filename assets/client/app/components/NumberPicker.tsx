@@ -85,10 +85,10 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 		});
 	}
 
-	public componentWillReceiveProps(props: Props) {
-		this.setState({
-			value: (props.value !== undefined) ? (props.value) : ('')
-		});
+	public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
+		return {
+			value: (nextProps.value !== undefined) ? (nextProps.value) : ('')
+		};
 	}
 
 	public render(): JSX.Element {

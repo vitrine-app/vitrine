@@ -65,23 +65,24 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	public componentWillReceiveProps(props: Props) {
-		if (props.gameToEdit) {
-			const timePlayed: number = props.gameToEdit.timePlayed;
-			const hours: number = Math.floor(timePlayed / 3600);
-			const minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
-			const seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
-			this.setState({
-				hours,
-				minutes,
-				seconds
-			});
-		}
+	public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
+		if (!nextProps.gameToEdit)
+			return null;
+		const timePlayed: number = nextProps.gameToEdit.timePlayed;
+		const hours: number = Math.floor(timePlayed / 3600);
+		const minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
+		const seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
+		return {
+			hours,
+			minutes,
+			seconds
+		};
 	}
 
 	private submitButton() {
 		const timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
 		serverListener.send('edit-game-time-played', this.props.gameToEdit.uuid, timePlayed);
+		this.props.closeTimePlayedEditionModal();
 	}
 
 	public render(): JSX.Element {

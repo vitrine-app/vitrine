@@ -86,7 +86,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		this.gameCoverClickHandler = this.gameCoverClickHandler.bind(this);
 		this.inputChangeHandler = this.inputChangeHandler.bind(this);
 		this.dateChangeHandler = this.dateChangeHandler.bind(this);
-		this.executableBtnClickHandler = this.executableBtnClickHandler.bind(this);
+		this.ratingChangeHandler = this.ratingChangeHandler.bind(this);
+		this.executableButton = this.executableButton.bind(this);
 		this.searchIgdbButton = this.searchIgdbButton.bind(this);
 		this.submitButton = this.submitButton.bind(this);
 	}
@@ -163,7 +164,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private executableBtnClickHandler() {
+	private executableButton() {
 		const dialogRet: string = openExecutableDialog();
 		if (!dialogRet)
 			return;
@@ -206,24 +207,24 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			.listen('edit-playable-game', this.editPlayableGame.bind(this));
 	}
 
-	public componentWillReceiveProps(props: Props) {
+	public static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
 		let gameToHandle: PotentialGame;
 		let editing: boolean;
 
-		if (props.gameToEdit) {
-			gameToHandle = props.gameToEdit;
+		if (nextProps.gameToEdit) {
+			gameToHandle = nextProps.gameToEdit;
 			editing = true;
 		}
-		else if (props.potentialGameToAdd) {
-			gameToHandle = props.potentialGameToAdd;
+		else if (nextProps.potentialGameToAdd) {
+			gameToHandle = nextProps.potentialGameToAdd;
 			editing = false;
 		}
 		else
-			return;
+			return null;
 
 		const [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
-		if (!this.state.igdbFilled)
-			this.setState({
+		if (!prevState.igdbFilled)
+			return {
 				name: gameToHandle.name,
 				cover: gameToHandle.details.cover,
 				source: gameToHandle.source,
@@ -239,11 +240,10 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 				potentialBackgrounds: (gameToHandle.details.backgroundScreen) ? ([gameToHandle.details.backgroundScreen]) : ([]),
 				backgroundScreen: gameToHandle.details.backgroundScreen || '',
 				editing
-			});
-		else
-			this.setState({
-				igdbFilled: false
-			});
+			};
+		return {
+			igdbFilled: false
+		};
 	}
 
 	public render(): JSX.Element {
@@ -386,7 +386,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												label={
 													<Button
 														secondary={true}
-														onClick={this.executableBtnClickHandler.bind(this)}
+														onClick={this.executableButton.bind(this)}
 													>
 														<FontAwesomeIcon icon={faFolderOpen}/>
 													</Button>
@@ -396,7 +396,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 												size={'large'}
 												placeholder={localizer.f('executable')}
 												value={this.state.executable}
-												onClick={this.executableBtnClickHandler}
+												onClick={this.executableButton}
 												readOnly={true}
 											/>
 										</Form.Field>
