@@ -16,15 +16,19 @@ export function formatTimePlayed(timePlayed: number): string {
 	if (hours && minutes) {
 		const hoursStr: string = localizer.f((hours !== 1) ? ('hoursPlur') : ('hoursSing'));
 		const minutesStr: string = localizer.f((minutes) ? ((minutes !== 1) ? ('minutesPlur') : ('minutesSing')) : (''));
-		return hours + ' ' + hoursStr + ((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''));
+		return `${hours}  ${hoursStr}${((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''))}`;
+	}
+	else if (hours) {
+		const hoursStr: string = localizer.f((hours !== 1) ? ('hoursPlur') : ('hoursSing'));
+		return `${hours} ${hoursStr}`;
 	}
 	else if (minutes) {
 		const minutesStr: string = localizer.f((minutes !== 1) ? ('minutesPlur') : ('minutesSing'));
-		return minutes + ' ' + minutesStr;
+		return `${minutes} ${minutesStr}`;
 	}
 	else if (seconds) {
 		const secondsStr: string = localizer.f((seconds !== 1) ? ('secondsPlur') : ('secondsSing'));
-		return timePlayed + ' ' + secondsStr;
+		return `${timePlayed} ${secondsStr}`;
 	}
 	else
 		return '';
