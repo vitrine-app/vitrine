@@ -23,6 +23,7 @@
     "!tests",
     "!scripts",
     "!.gitignore",
+    "!AUTHORS.md",
     "!CHANGELOG.md",
     "!LICENSE.md",
     "!README.md",
