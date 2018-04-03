@@ -82,7 +82,7 @@
     "build-prod": "webpack --progress --config webpack.prod.config.js",
     "build-server": "webpack --progress --config webpack.server.config.js",
     "build-client": "webpack --progress --config webpack.client.config.js",
-    "build-scripts": "node scripts/build_modules.js",
+    "build-scripts": "node scripts/run.js build_modules.sh",
     "run-app": "yarn lint-app && yarn build-app && electron .",
     "run-server": "yarn lint-server && yarn build-server && yarn start",
     "run-client": "yarn build-client && yarn start",
