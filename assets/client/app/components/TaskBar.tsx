@@ -65,8 +65,8 @@ const styles: React.CSSProperties = StyleSheet.create({
 		'-webkitAppRegion': 'drag'
 	},
 	title: {
-		fontSize: 13,
-		opacity: 0.4
+		fontSize: 15,
+		opacity: 0.6
 	},
 	windowControlBtnGroup: {
 		position: 'absolute',
