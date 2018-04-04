@@ -1,3 +1,7 @@
+/* Fonts */
+@importGoogleFonts: false;
+@fontName: 'Whitney';
+
 /* Page */
 @pageBackground: #2F2C28;
 @textColor: #B9B0A2;

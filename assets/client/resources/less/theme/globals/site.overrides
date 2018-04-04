@@ -1,0 +1,14 @@
+/* Fonts */
+@font-face {
+	font-family: 'Whitney';
+	src: url('../../../fonts/Whitney.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Inconsolata';
+	src: url('../../../fonts/Inconsolata.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+}

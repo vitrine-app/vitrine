@@ -7,7 +7,7 @@ import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
 
 import { GameSource, PotentialGame } from '../../../models/PotentialGame';
 import { IgdbResearchModal } from '../containers/IgdbResearchModal';
-import { openExecutableDialog, openImageDialog } from '../helpers';
+import { notify, openExecutableDialog, openImageDialog } from '../helpers';
 import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { BlurPicture } from './BlurPicture';
@@ -113,6 +113,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	private addPlayableGame(game: PlayableGame) {
 		this.props.addPlayableGames([game]);
 		this.closeModal();
+		notify(`<b>${game.name}</b> ${localizer.f('addingGameToast')}.`, true);
 	}
 
 	private editPlayableGame(game: PlayableGame) {
@@ -123,6 +124,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			this.props.closeTimePlayedEditionModal();
 		if (this.props.visible)
 			this.closeModal();
+		notify(`<b>${game.name}</b> ${localizer.f('editingGameToast')}.`, true);
 	}
 
 	private closeModal() {

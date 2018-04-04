@@ -47,7 +47,6 @@
   "quit": "Quit",
   "relaunch": "Relaunch",
   "show": "Show",
-
   "hours": "Hours",
   "minutes": "Minutes",
   "seconds": "Seconds",
@@ -84,6 +83,11 @@
   "emulatorConfigError": "must have a correct config.",
   "emulatorPlatforms": "Platforms",
   "loaderLoading": "Loading...",
+  "launchingGameToast": "Launching",
+  "stoppingGameToast": "has been played for",
+  "addingGameToast": "has been added to Vitrine",
+  "editingGameToast": "has been modified",
+  "removingGameToast": "has been removed from Vitrine",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Fighting",

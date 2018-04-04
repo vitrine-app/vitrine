@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 
 import { VitrineLoader } from './app/components/VitrineLoader';
 
-import 'semantic-ui-less/semantic.less';
+import './resources/less/main.less';
 
 const appRoot: HTMLElement = document.createElement('div');
 document.body.appendChild(appRoot);
