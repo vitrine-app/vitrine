@@ -36,7 +36,6 @@ class PlayableGamesCrawler {
 					playableGame.commandLine = rawGame.commandLine;
 					playableGame.timePlayed = parseInt(rawGame.timePlayed);
 					playableGame.source = rawGame.source;
-					playableGame.ambientColor = rawGame.ambientColor;
 
 					logger.info('PlayableGamesCrawler', `Playable game ${playableGame.name} (${playableGame.uuid}) found.`);
 					this.playableGames.push(playableGame);

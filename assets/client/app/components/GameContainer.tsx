@@ -22,7 +22,6 @@ interface Props {
 
 interface State {
 	backgroundImage: string;
-	mainColor: string;
 }
 
 export class GameContainer extends VitrineComponent<Props, State> {
@@ -30,32 +29,20 @@ export class GameContainer extends VitrineComponent<Props, State> {
 		super(props);
 
 		this.state = {
-			backgroundImage: 'none',
-			mainColor: lessVars.primaryColor
+			backgroundImage: 'none'
 		};
 	}
 
 	public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
 		if (!nextProps.selectedGame)
-			return {
-				backgroundImage: 'none',
-				mainColor: lessVars.primaryColor
-			};
+			return { backgroundImage: 'none' };
 
 		let backgroundImage: string;
-		let mainColor: string;
-		if (nextProps.selectedGame && nextProps.selectedGame.details.backgroundScreen) {
+		if (nextProps.selectedGame && nextProps.selectedGame.details.backgroundScreen)
 			backgroundImage = urlify(nextProps.selectedGame.details.backgroundScreen);
-			mainColor = nextProps.selectedGame.ambientColor || lessVars.primaryColor;
-		}
-		else {
+		else
 			backgroundImage = 'none';
-			mainColor = lessVars.primaryColor;
-		}
-		return {
-			backgroundImage,
-			mainColor
-		};
+		return { backgroundImage };
 	}
 
 	public render(): JSX.Element {
@@ -116,7 +103,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 								<Grid.Column width={5}>
 									<CirclePercentage
 										percentage={this.props.selectedGame.details.rating}
-										color={this.state.mainColor}
+										color={lessVars.primaryColor}
 									/>
 								</Grid.Column>
 							</Grid>
