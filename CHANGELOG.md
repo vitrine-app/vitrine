@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.8.0 (04/04/2018)
+- [**enhancement**][**idea**] Make native addons built cross-platform [#41](https://github.com/paul-roman/vitrine/issues/41)
+- [**enhancement**] Update to React 16.3 [#39](https://github.com/paul-roman/vitrine/issues/39)
+
+---
+
 ## v0.7.1 (02/04/2018)
 - [**enhancement**] Considering release notes generator [#35](https://github.com/paul-roman/vitrine/issues/35)
 
