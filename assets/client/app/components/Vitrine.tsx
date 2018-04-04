@@ -1,5 +1,6 @@
 import { css, StyleSheet } from 'aphrodite';
 import * as React from 'react';
+import { ToastContainer } from 'react-toastify';
 import { Grid } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../models/GamesCollection';
@@ -11,6 +12,8 @@ import { PotentialGamesAddModal } from '../containers/PotentialGamesAddModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { SideBar } from '../containers/SideBar';
 import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
+import { formatTimePlayed, notify } from '../helpers';
+import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { TaskBar } from './TaskBar';
 import { VitrineComponent } from './VitrineComponent';
@@ -55,15 +58,18 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private launchGame(gameUuid: string) {
+		const playedGame: PlayableGame = this.props.playableGames.getGame(gameUuid);
+		notify(`${localizer.f('launchingGameToast')} <b>${playedGame.name}</b>...`, true);
 		serverListener.send('launch-game', gameUuid);
 		this.props.launchGame(this.props.playableGames.getGame(gameUuid));
 	}
 
 	private stopGame(gameUuid: string, totalTimePlayed: number) {
-		const playedGame: PlayableGame = this.props.playableGames.getGame(gameUuid);
+		const playedGame: PlayableGame = { ...this.props.playableGames.getGame(gameUuid) } as PlayableGame;
+		const timeJustPlayed: number = totalTimePlayed - playedGame.timePlayed;
 		playedGame.timePlayed = totalTimePlayed;
 		this.props.stopGame(playedGame);
-		this.forceUpdate();
+		notify(`<b>${playedGame.name}</b> ${localizer.f('stoppingGameToast')} ${formatTimePlayed(timeJustPlayed)}.`, true);
 	}
 
 	private settingsUpdated(settings: any) {
@@ -162,6 +168,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<SettingsModal
 					firstLaunch={this.state.firstLaunch}
 				/>
+				<ToastContainer/>
 				{this.checkErrors()}
 			</div>
 		);

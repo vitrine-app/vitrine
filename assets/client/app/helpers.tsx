@@ -1,5 +1,11 @@
+import { padding, rgba } from 'css-verbose';
 import { remote } from 'electron';
+import * as React from 'react';
+import { toast } from 'react-toastify';
+
 import { localizer } from './Localizer';
+
+import { fontName } from 'less-vars-loader?camelCase&resolveVariables!../resources/less/theme/globals/site.variables';
 
 function openDialog(options: any): string {
 	const dialogRet: string[] = remote.dialog.showOpenDialog(options);
@@ -70,4 +76,24 @@ export function openImageDialog(): string {
 
 export function urlify(imgPath: string): string {
 	return (imgPath) ? ('url(' + imgPath.replace(/\\/g, '\\\\') + ')') : ('');
+}
+
+const NotificationContent: React.StatelessComponent<any> = ({ content }: any) => <span dangerouslySetInnerHTML={{ __html: content }} />;
+
+export function notify(content: string, minor?: boolean) {
+	const toastStyle: React.CSSProperties = {
+		color: rgba(255, 255, 255, 0.72),
+		background: (!minor) ? rgba(216, 147, 98, 0.85) : (rgba(90, 85, 81, 0.60)),
+		padding: padding(5, 9, 7, 16),
+		borderRadius: 2,
+		fontFamily: fontName.replace(/'/g, '')
+	};
+
+	toast(<NotificationContent content={content}/>, {
+		type: 'default',
+		position: 'bottom-right',
+		className: toastStyle,
+		hideProgressBar: true,
+		autoClose: (!minor) ? (5000) : (3500)
+	});
 }
