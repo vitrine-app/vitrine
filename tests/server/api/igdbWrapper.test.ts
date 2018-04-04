@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import 'foreach-end';
 
 import { fillIgdbGame, searchIgdbGame } from '../../../assets/server/api/IgdbWrapper';
 import { logger } from '../../../assets/server/Logger';
