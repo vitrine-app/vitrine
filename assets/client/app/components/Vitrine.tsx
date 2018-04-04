@@ -54,7 +54,9 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 
 	private removePlayableGame(gameUuid: string) {
+		const playedGameName: string = this.props.playableGames.getGame(gameUuid).name;
 		this.props.removePlayableGame(gameUuid, (this.props.playableGames.size() - 1) ? (this.props.playableGames.getGame(0)) : (null));
+		notify(`<b>${playedGameName}</b> ${localizer.f('removingGameToast')}.`, true);
 	}
 
 	private launchGame(gameUuid: string) {

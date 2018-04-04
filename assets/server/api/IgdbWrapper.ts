@@ -39,7 +39,7 @@ class IgdbWrapper {
 			'first_release_date',
 			'screenshots',
 			'cover'
-		]).then((response) => {
+		]).then((response: any) => {
 			this.game = response.body[0];
 			this.callback = callback;
 			this.basicFormatting();

@@ -85,8 +85,9 @@
   "loaderLoading": "Loading...",
   "launchingGameToast": "Launching",
   "stoppingGameToast": "has been played for",
-  "addingGameToast": "has been added to Vitrine.",
-  "removingGameToast": "has been removed from Vitrine.",
+  "addingGameToast": "has been added to Vitrine",
+  "editingGameToast": "has been modified",
+  "removingGameToast": "has been removed from Vitrine",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Fighting",

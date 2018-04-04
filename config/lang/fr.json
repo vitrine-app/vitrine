@@ -85,8 +85,9 @@
   "loaderLoading": "Chargement...",
   "launchingGameToast": "Lancement de",
   "stoppingGameToast": "a été joué pendant",
-  "addingGameToast": "a été ajouté à Vitrine.",
-  "removingGameToast": "a été supprimé Vitrine.",
+  "addingGameToast": "a été ajouté à Vitrine",
+  "editingGameToast": "a été modifié",
+  "removingGameToast": "a été supprimé Vitrine",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Combat",
