@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "A modern game library using Electron, Node and IGDB.",
   "main": "public/server.js",
   "author": "Paul Roman",
@@ -93,6 +93,7 @@
     "watch-client": "webpack --progress --config webpack.client.config.js --watch",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
+    "generate-authors": "node scripts/run.js authors.sh",
     "pack": "yarn build-scripts && yarn build-prod && build --dir",
     "dist": "yarn build-scripts && yarn test && yarn build-prod && build",
     "precommit": "tslint --fix assets/**/*.ts*"
