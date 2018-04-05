@@ -55,6 +55,7 @@
     "awesome-typescript-loader": "^4.0.1",
     "base64-inline-loader": "^1.1.1",
     "chai": "^4.1.2",
+    "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
     "electron": "^1.8.4",
     "electron-builder": "^20.6.2",
@@ -80,7 +81,7 @@
   },
   "scripts": {
     "build-app": "webpack --progress",
-    "build-prod": "webpack --progress --config webpack.prod.config.js",
+    "build-prod": "cross-env NODE_ENV=production webpack --progress",
     "build-server": "webpack --progress --config webpack.server.config.js",
     "build-client": "webpack --progress --config webpack.client.config.js",
     "build-scripts": "node scripts/run.js build_modules.sh",
