@@ -2018,6 +2018,13 @@ create-react-class@^15.5.2:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
+cross-env@^5.1.4:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.1.4.tgz#f61c14291f7cc653bb86457002ea80a04699d022"
+  dependencies:
+    cross-spawn "^5.1.0"
+    is-windows "^1.0.0"
+
 cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -3059,9 +3066,9 @@ for-own@^0.1.4:
   dependencies:
     for-in "^1.0.1"
 
-foreach-end@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/foreach-end/-/foreach-end-1.0.1.tgz#547ca10b0c3c47a8b02f96f76b2750742a13d04c"
+foreach-end@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/foreach-end/-/foreach-end-1.1.0.tgz#7797bc9b05a485bc794ef2c889909e0ec3db81de"
 
 foreach@^2.0.5:
   version "2.0.5"
@@ -4200,7 +4207,7 @@ is-utf8@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
 
-is-windows@^1.0.1, is-windows@^1.0.2:
+is-windows@^1.0.0, is-windows@^1.0.1, is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
 

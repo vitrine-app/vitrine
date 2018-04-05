@@ -12,10 +12,10 @@ import { GamesModule } from './GamesModule';
 import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
-import * as battleNetIcon from '../../resources/images/battleNetIcon.png';
-import * as emulatedIcon from '../../resources/images/emulatedIcon.png';
-import * as originIcon from '../../resources/images/originIcon.png';
-import * as steamIcon from '../../resources/images/steamIcon.png';
+import * as battleNetIcon from '../../resources/images/battle_net_icon.png';
+import * as emulatedIcon from '../../resources/images/emulated_icon.png';
+import * as originIcon from '../../resources/images/origin_icon.png';
+import * as steamIcon from '../../resources/images/steam_icon.png';
 
 interface Props {
 	settings: any;

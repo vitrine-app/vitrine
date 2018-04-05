@@ -71,9 +71,9 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					return !found;
 				});
 
-				romInfos.forEachEnd(({romName, romPath}: any, secondDone: () => void) => {
-					searchIgdbGame(romName, 1).then((game: any) => {
-						game = game[0];
+				romInfos.forEachEnd(async ({romName, romPath}: any, secondDone: () => void) => {
+					try {
+						const game: any = (await searchIgdbGame(romName, 1))[0];
 						delete game.name;
 						const potentialGame: PotentialGame = new PotentialGame(romName, game);
 						potentialGame.source = GameSource.ROM;
@@ -84,9 +84,10 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 						this.potentialGames.push(potentialGame);
 						logger.info('EmulatedGamesCrawler', `Adding ${romName} to potential emulated games.`);
 						secondDone();
-					}).catch((error: Error) => {
+					}
+					catch (error) {
 						this.callback(error, null);
-					});
+					}
 				}, () => {
 					done();
 				});

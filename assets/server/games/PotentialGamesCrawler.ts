@@ -35,6 +35,6 @@ export abstract class PotentialGamesCrawler {
 		const gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 		const configFilePath: string = path.resolve(gameDirectory, 'config.json');
 
-		return fs.existsSync(configFilePath);
+		return fs.pathExistsSync(configFilePath);
 	}
 }

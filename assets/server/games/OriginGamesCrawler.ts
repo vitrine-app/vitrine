@@ -78,42 +78,42 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			return true;
 		});
 
-		gameInfos.forEachEnd(({gameName, gameFolder}: any, done: () => void) => {
-			this.getRegExe(gameFolder, (error: Error, gamePath: string) => {
-				if (error) {
-					this.callback(error, null);
-					return;
-				}
-				searchIgdbGame(gameName, 1).then((game: any) => {
-					game = game[0];
-					delete game.name;
-					const potentialGame: PotentialGame = new PotentialGame(gameName, game);
-					potentialGame.source = GameSource.ORIGIN;
-					potentialGame.commandLine = [ path.resolve(gamePath) ];
-					this.potentialGames.push(potentialGame);
-					logger.info('OriginGamesCrawler', `Adding ${gameName} to potential Origin games.`);
-					done();
-				}).catch((error: Error) => {
-					this.callback(error, null);
-				});
-			});
+		gameInfos.forEachEnd(async ({gameName, gameFolder}: any, done: () => void) => {
+			try {
+				const [ gamePath, [ game ] ]: any = await Promise.all([
+					this.getRegGamePath(gameFolder),
+					await searchIgdbGame(gameName, 1)
+				]);
+				delete game.name;
+				const potentialGame: PotentialGame = new PotentialGame(gameName, game);
+				potentialGame.source = GameSource.ORIGIN;
+				potentialGame.commandLine = [ path.resolve(gamePath) ];
+				this.potentialGames.push(potentialGame);
+				logger.info('OriginGamesCrawler', `Adding ${gameName} to potential Origin games.`);
+				done();
+			}
+			catch (error) {
+				this.callback(error, null);
+			}
 		}, () => {
 			this.sendResults();
 		});
 	}
 
-	private getRegExe(gamePath: string, callback: (error: Error, gamePath: string) => void) {
-		let found: boolean = false;
-		this.regDetails.forEachEnd((regDetail: any, done: () => void) => {
-			if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
-				logger.info('OriginGamesCrawler', `Origin game found (${gamePath}).`);
-				callback(null, regDetail.exe);
-				found = true;
-			}
-			done();
-		}, () => {
-			if (!found)
-				callback(new Error('Registry not matching.'), null);
+	private getRegGamePath(gamePath: string): Promise<any> {
+		return new Promise((resolve, reject) => {
+			let found: boolean = false;
+			this.regDetails.forEachEnd((regDetail: any, done: () => void) => {
+				if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
+					logger.info('OriginGamesCrawler', `Origin game found (${gamePath}).`);
+					resolve(regDetail.exe);
+					found = true;
+				}
+				done();
+			}, () => {
+				if (!found)
+					reject(new Error('Registry not matching.'));
+			});
 		});
 	}
 }

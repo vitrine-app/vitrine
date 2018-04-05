@@ -1,5 +1,7 @@
 const path = require('path');
 
+const production = process.env.NODE_ENV === 'production';
+
 module.exports = {
 	entry: './assets/server/main.ts',
 	output: {
@@ -26,12 +28,14 @@ module.exports = {
 					{
 						loader: 'electron-node-loader',
 						options: {
-							folder: 'scripts'
+							folder: 'scripts',
+							prod: production
 						}
 					}
 				]
 			}
 		]
 	},
-	mode: 'development'
+	mode: (production) ? ('production') : ('development'),
+	devtool: (production) ? ('source-map') : (false)
 };

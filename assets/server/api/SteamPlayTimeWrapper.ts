@@ -18,9 +18,9 @@ class SteamPlayTimeWrapper {
 		logger.info('SteamPlayTimeWrapper', `Looking for played time for Steam game ${steamId}.`);
 		this.client.getOwnedGames({
 			steamid: steamUserId,
-			callback: (error: Error, data: any) => {
+			callback: (error: string, data: any) => {
 				if (error)
-					callback(error, null);
+					callback(new Error(error), null);
 				else
 					this.handleGames(steamId, data.response.games, callback);
 			}

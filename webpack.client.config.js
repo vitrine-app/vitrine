@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlPlugin = require('html-webpack-plugin');
 
+const production = process.env.NODE_ENV === 'production';
+
 let clientConfig = {
 	node: {
 		__dirname: false,
@@ -33,7 +35,8 @@ let clientConfig = {
 			}
 		]
 	},
-	mode: 'development'
+	mode: (production) ? ('production') : ('development'),
+	devtool: (production) ? ('source-map') : (false)
 };
 
 module.exports = [
