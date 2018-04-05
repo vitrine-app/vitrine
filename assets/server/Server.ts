@@ -230,7 +230,6 @@ export class Server {
 		});
 	}
 
-	// TODO: Improve potential games pipeline
 	private async findPotentialGames() {
 		logger.info('Server', 'Beginning to search potential games.');
 		this.windowsHandler.sendToClient('potential-games-search-begin');
