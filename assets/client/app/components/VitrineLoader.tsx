@@ -98,7 +98,7 @@ export class VitrineLoader extends React.Component<null, State> {
 
 const pulseKeyframes: any = {
 	to: {
-		boxShadow: `${0} ${0} ${0} ${45..px()} ${rgba(141, 89, 24, 0)}`
+		boxShadow: `${0} ${0} ${0} ${45..px()} ${rgba(117, 76, 46, 0)}`
 	}
 };
 
@@ -117,11 +117,13 @@ const styles: React.CSSProperties = StyleSheet.create({
 		width: 125,
 		margin: 14,
 		borderRadius: 100,
-		boxShadow: `${0} ${0} ${0} ${0} ${rgba(141, 89, 24, 0.7)}`,
-		animationName: [pulseKeyframes],
-		animationDuration: `${1.25}s`,
+		boxShadow: `${0} ${0} ${0} ${0} ${rgba(117, 76, 46, 0.8)}`,
+		animationName: [ pulseKeyframes ],
+		animationDuration: `${1.5}s`,
 		animationIterationCount: 'infinite',
-		animationTimingFunction: `cubic-bezier(${0.66}, ${0}, ${0}, ${1})`
+		animationTimingFunction: `cubic-bezier(${0.66}, ${0}, ${0}, ${1})`,
+		userSelect: 'none',
+		'-webkitUserDrag': 'none'
 	},
 	titleSpan: {
 		marginTop: 15,
