@@ -37,8 +37,8 @@ interface ModulesConfig {
 }
 
 export class Server {
+	private readonly emulatorsConfigFilePath: string;
 	private windowsHandler: WindowsHandler;
-	private emulatorsConfigFilePath: string;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
@@ -93,7 +93,7 @@ export class Server {
 		this.windowsHandler.sendToClient('error', error.name, error.stack);
 	}
 
-	private loaderReady() {
+	private async loaderReady() {
 		logger.info('Server', 'Checking for updates.');
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {
@@ -102,7 +102,8 @@ export class Server {
 		autoUpdater.signals.updateDownloaded(() => {
 			autoUpdater.quitAndInstall(true, true);
 		});
-		autoUpdater.checkForUpdates().then((lastUpdate: UpdateCheckResult) => {
+		try {
+			const lastUpdate: UpdateCheckResult = await autoUpdater.checkForUpdates();
 			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion) {
 				logger.info('Server', `Update ${lastUpdate.updateInfo.version} found.`);
 				this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
@@ -111,31 +112,32 @@ export class Server {
 				logger.info('Server', 'No updates found.');
 				this.windowsHandler.sendToLoader('no-update-found');
 			}
-		});
+		}
+		catch (error) {
+			this.throwServerError(error);
+		}
 	}
 
-	private clientSettingsAsked() {
+	private async clientSettingsAsked() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
 		logger.info('Server', 'Sending configuration to client.');
 		this.windowsHandler.sendToClient('init-settings', this.vitrineConfig);
 		if (!this.vitrineConfig.firstLaunch) {
-			if (this.vitrineConfig.steam) {
-				findSteamUser(this.vitrineConfig.steam).then((steamUser: any) => {
+			try {
+				if (this.vitrineConfig.steam) {
+					const steamUser: any = await findSteamUser(this.vitrineConfig.steam);
 					Object.assign(this.vitrineConfig.steam, { ...steamUser });
-				}).catch((error: Error) => {
-					this.throwServerError(error);
-				});
-			}
-			getPlayableGames().then((games: GamesCollection<PlayableGame>) => {
-				this.playableGames = games;
+				}
+				this.playableGames = await getPlayableGames();
 				logger.info('Server', 'Sending playable games to client.');
 				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
 				this.findPotentialGames();
-			}).catch((error: Error) => {
+			}
+			catch (error) {
 				this.throwServerError(error);
-			});
+			}
 		}
 		else
 			logger.info('Server', 'Vitrine first launch.');
@@ -146,20 +148,22 @@ export class Server {
 		autoUpdater.quitAndInstall(true, true);
 	}
 
-	private fillIgdbGame(gameId: number) {
-		fillIgdbGame(gameId, this.vitrineConfig.lang).then((game) => {
-			this.windowsHandler.sendToClient('send-igdb-game', game);
-		}).catch((error: Error) => {
+	private async fillIgdbGame(gameId: number) {
+		try {
+			this.windowsHandler.sendToClient('send-igdb-game', await fillIgdbGame(gameId, this.vitrineConfig.lang));
+		}
+		catch (error) {
 			this.throwServerError(error);
-		});
+		}
 	}
 
-	private searchIgdbGames(gameName: string, resultsNb?: number) {
-		searchIgdbGame(gameName, resultsNb).then((games: any) => {
-			this.windowsHandler.sendToClient('send-igdb-searches', gameName, games);
-		}).catch((error: Error) => {
+	private async searchIgdbGames(gameName: string, resultsNb?: number) {
+		try {
+			this.windowsHandler.sendToClient('send-igdb-searches', gameName, await searchIgdbGame(gameName, resultsNb));
+		}
+		catch (error) {
 			this.throwServerError(error);
-		});
+		}
 	}
 
 	private addGame(gameForm: any) {
@@ -195,24 +199,26 @@ export class Server {
 		this.sendRegisteredGame(editedGame, configFilePath, true);
 	}
 
-	private launchGame(gameUuid: string) {
+	private async launchGame(gameUuid: string) {
 		if (this.gameLaunched) {
 			logger.info('Server', 'Trying to launch a game but another one is already running.');
 			return;
 		}
 		const launchingGame: PlayableGame = this.playableGames.getGame(gameUuid);
 		this.gameLaunched = true;
-		launchGame(launchingGame).then((secondsPlayed: number) => {
+		try {
+			const secondsPlayed: number = await launchGame(launchingGame);
 			this.gameLaunched = false;
 			launchingGame.addPlayTime(secondsPlayed, (error: Error) => {
 				logger.info('Server', `Adding time played ${secondsPlayed} to ${launchingGame.name} (${launchingGame.uuid}).`);
 				this.throwServerError(error);
 			});
 			this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
-		}).catch((error: Error) => {
+		}
+		catch (error) {
 			this.gameLaunched = false;
 			this.throwServerError(error);
-		});
+		}
 	}
 
 	private removeGame(gameUuid: string) {
@@ -225,21 +231,19 @@ export class Server {
 	}
 
 	// TODO: Improve potential games pipeline
-	private findPotentialGames() {
+	private async findPotentialGames() {
 		logger.info('Server', 'Beginning to search potential games.');
 		this.windowsHandler.sendToClient('potential-games-search-begin');
 		this.potentialGames.clean();
-		this.searchSteamGames()
-			.then(this.searchOriginGames.bind(this))
-			.then(this.searchBattleNetGames.bind(this))
-			.then(this.searchEmulatedGames.bind(this))
-			.then(() => {
-				logger.info('Server', `${this.potentialGames.size()} potential games sent to client.`);
-				this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
-			});
+		await this.searchSteamGames();
+		await this.searchOriginGames();
+		await this.searchBattleNetGames();
+		await this.searchEmulatedGames();
+		logger.info('Server', `${this.potentialGames.size()} potential games sent to client.`);
+		this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 	}
 
-	private updateSettings(settingsForm: any) {
+	private async updateSettings(settingsForm: any) {
 		logger.info('Server', 'Updating global settings.');
 		const config: any = {
 			lang: settingsForm.lang
@@ -270,7 +274,8 @@ export class Server {
 				romsFolder: settingsForm.emulatedPath
 			};
 		}
-		fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 }).then(() => {
+		try {
+			await fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 });
 			logger.info('Server', 'Settings outputted to vitrine_config.json.');
 			const emulatorsConfig: any = {
 				...this.vitrineConfig.emulated,
@@ -279,17 +284,15 @@ export class Server {
 			};
 			if (!settingsForm.emulatedPath)
 				delete emulatorsConfig.romsFolder;
-			fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 }).then(() => {
-				logger.info('Server', 'Emulators config outputted to emulators.json.');
-				this.vitrineConfig = { ...config, emulated: emulatorsConfig };
-				this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
-				this.findPotentialGames();
-			}).catch((error: Error) => {
-				this.throwServerError(error);
-			});
-		}).catch((error: Error) => {
+			await fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 });
+			logger.info('Server', 'Emulators config outputted to emulators.json.');
+			this.vitrineConfig = { ...config, emulated: emulatorsConfig };
+			this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
+			this.findPotentialGames();
+		}
+		catch (error) {
 			this.throwServerError(error);
-		});
+		}
 	}
 
 	private async searchSteamGames(): Promise<any> {
@@ -356,7 +359,7 @@ export class Server {
 		}
 	}
 
-	private registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
+	private async registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
 		game.commandLine = [ gameForm.executable ];
 		if (gameForm.arguments)
 			game.commandLine.push(gameForm.arguments);
@@ -372,18 +375,18 @@ export class Server {
 		logger.info('Server', `Game form data for ${game.name} being formatted.`);
 
 		if (!editing && game.source === GameSource.STEAM) {
-			getGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId).then((timePlayed: number) => {
-				game.timePlayed = timePlayed;
-				this.ensureRegisteredGame(game, gameForm, editing);
-			}).catch((error: Error) => {
+			try {
+				game.timePlayed = await getGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
+			}
+			catch (error) {
 				this.throwServerError(error);
-			});
+				return;
+			}
 		}
-		else
-			this.ensureRegisteredGame(game, gameForm, editing);
+		this.ensureRegisteredGame(game, gameForm, editing);
 	}
 
-	private ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
+	private async ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
 		const gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
 		const configFilePath: string = path.resolve(gameDirectory, 'config.json');
 		if (!editing && fs.existsSync(configFilePath))
@@ -399,14 +402,17 @@ export class Server {
 			const backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
 				: (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
 			const coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
-			this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath}).then(() => {
-				this.sendRegisteredGame(game, configFilePath, editing);
-			}).catch((error: Error) => this.throwServerError(error));
+			try {
+				await this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath});
+			}
+			catch (error) {
+				this.throwServerError(error);
+				return;
+			}
 		}
-		else {
+		else
 			logger.info('Server', `Background picture and cover for ${game.name} already stored.`);
-			this.sendRegisteredGame(game, configFilePath, editing);
-		}
+		this.sendRegisteredGame(game, configFilePath, editing);
 	}
 
 	private async downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
@@ -434,9 +440,10 @@ export class Server {
 		}
 	}
 
-	private sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
+	private async sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
 		logger.info('Server', `Outputting game config file for ${game.name}.`);
-		fs.outputJSON(configFilePath, game , { spaces: 2 }).then(() => {
+		try {
+			await fs.outputJson(configFilePath, game , { spaces: 2 });
 			if (!editing && game.source !== GameSource.LOCAL)
 				this.findPotentialGames();
 			if (!editing) {
@@ -449,8 +456,9 @@ export class Server {
 				this.playableGames.editGame(game);
 				this.windowsHandler.sendToClient('edit-playable-game', game);
 			}
-		}).catch((error: Error) => {
+		}
+		catch (error) {
 			this.throwServerError(error);
-		});
+		}
 	}
 }

@@ -19,7 +19,7 @@ export class Bootstrapper {
 		this.configFolderPath = getEnvFolder('config');
 	}
 
-	public launch() {
+	public async launch() {
 		fs.ensureDirSync(this.configFolderPath);
 		fs.ensureDirSync(this.gamesFolderPath);
 
@@ -29,9 +29,8 @@ export class Bootstrapper {
 			fs.copySync(configFolderOriginalPath, this.configFolderPath);
 		this.vitrineConfig = fs.readJsonSync(this.vitrineConfigFilePath, { throws: false });
 		logger.info('Bootstrapper', 'vitrine_config.json read.');
-		this.includeEmulatorsConfig().then(() => {
-			this.launchMainClient();
-		});
+		await this.includeEmulatorsConfig();
+		this.launchMainClient();
 	}
 
 	private registerDebugPromiseHandler() {
