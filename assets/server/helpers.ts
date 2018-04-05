@@ -34,9 +34,9 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 				resolve();
 				return;
 			}
-			files.forEachEnd((file: string, done: () => void) => {
+			files.forEachEnd(async (file: string, done: () => void) => {
 				if (file !== except.replace(/\\/g, '/'))
-					fs.removeSync(file);
+					await fs.remove(file);
 				done();
 			}, () => {
 				resolve();
@@ -46,7 +46,7 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 }
 
 export async function downloadImage(src: string, dest: string): Promise<any> {
-	if (!src || (src.startsWith('file://') && !fs.existsSync(src.substring(7)))) {
+	if (!src || (src.startsWith('file://') && !await fs.pathExists(src.substring(7)))) {
 		logger.info('downloadImage', `Local source image (${src}) not found.`);
 		return false;
 	}

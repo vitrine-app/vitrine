@@ -9,11 +9,13 @@ import { logger } from '../Logger';
 class PlayableGamesCrawler {
 	private readonly playableGames: PlayableGame[];
 	private readonly gamesDirectory: string;
+	private readonly configFileName: string;
 	private callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void;
 
 	public constructor() {
 		this.playableGames = [];
 		this.gamesDirectory = getEnvFolder('games');
+		this.configFileName = 'config.json';
 	}
 
 	public search(callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void) {
@@ -27,10 +29,10 @@ class PlayableGamesCrawler {
 				this.callback(null, new GamesCollection());
 				return;
 			}
-			files.forEachEnd((gameUuid: string, done: () => void) => {
-				const configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, 'config.json');
-				if (fs.existsSync(configFilePath)) {
-					const rawGame = fs.readJsonSync(configFilePath);
+			files.forEachEnd(async (gameUuid: string, done: () => void) => {
+				const configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, this.configFileName);
+				if (await fs.pathExists(configFilePath)) {
+					const rawGame = await fs.readJson(configFilePath);
 					const playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
 					playableGame.uuid = rawGame.uuid;
 					playableGame.commandLine = rawGame.commandLine;

@@ -235,10 +235,12 @@ export class Server {
 		logger.info('Server', 'Beginning to search potential games.');
 		this.windowsHandler.sendToClient('potential-games-search-begin');
 		this.potentialGames.clean();
-		await this.searchSteamGames();
-		await this.searchOriginGames();
-		await this.searchBattleNetGames();
-		await this.searchEmulatedGames();
+		await Promise.all([
+			this.searchSteamGames(),
+			this.searchOriginGames(),
+			this.searchBattleNetGames(),
+			this.searchEmulatedGames()
+		]);
 		logger.info('Server', `${this.potentialGames.size()} potential games sent to client.`);
 		this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 	}
@@ -389,9 +391,9 @@ export class Server {
 	private async ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
 		const gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
 		const configFilePath: string = path.resolve(gameDirectory, 'config.json');
-		if (!editing && fs.existsSync(configFilePath))
+		if (!editing && await fs.pathExists(configFilePath))
 			return;
-		fs.ensureDirSync(gameDirectory);
+		await fs.ensureDir(gameDirectory);
 
 		if (!isAlreadyStored(game.details.backgroundScreen, gameForm.backgroundScreen) || !isAlreadyStored(game.details.cover, gameForm.cover)) {
 			const gameHash: string = randomHashedString(8);
