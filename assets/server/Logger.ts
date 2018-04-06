@@ -33,7 +33,7 @@ class Logger {
 		}
 		const dateTime: string = moment().format('DD/MM HH:mm:ss');
 		const log: string = `<p><strong>[ ${dateTime} ][ ${channelName} ]</strong> ${message}</p>`;
-		if (displayed) {
+		if (displayed || isProduction()) {
 			console.log(`[ ${dateTime} ][ ${channelName} ] ${message}`);
 		}
 		fs.appendFileSync(this.filePath, log);

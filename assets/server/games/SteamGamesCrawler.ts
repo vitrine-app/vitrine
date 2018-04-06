@@ -46,14 +46,11 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 		const gameManifests: any[] = files.map((appManifest: any) => new AcfParser(appManifest).toObject().AppState)
 			.filter((appManifest: any) => {
 				const found: boolean = this.playableGames.filter((playableGame: any) =>
-					appManifest.appid === playableGame.details.steamId
+					parseInt(appManifest.appid) === playableGame.details.steamId
 				).length > 0;
-
-				if (this.gameDirExists(appManifest.name) || found) {
+				if (found)
 					logger.info('SteamGamesCrawler', `Steam game ${appManifest.name} is already a playable game.`);
-					return false;
-				}
-				return true;
+				return !found;
 			});
 
 		gameManifests.forEachEnd(async (gameManifest: any, done: () => void) => {

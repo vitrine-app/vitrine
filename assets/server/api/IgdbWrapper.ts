@@ -12,7 +12,7 @@ class IgdbWrapper {
 	public constructor(private lang?: string) {
 		this.apiKey = 'cb14c151b2f67d505d13ee673d5acde4';
 		this.client = igdb.default(this.apiKey);
-		this.timeOut = 15000;
+		this.timeOut = 25000;
 		this.levenshteinRefiner = 5;
 	}
 
