@@ -24,15 +24,17 @@ import { WindowsHandler } from './WindowsHandler';
 
 interface ModulesConfig {
 	steam?: {
-		gamesFolders: string[],
-		launchCommand: string
+		gamesFolders: string[];
+		launchCommand: string;
+		userId?: number;
+		userName?: string;
 	};
 	origin?: {
-		regHive: string,
-		regKey: string
+		regHive: string;
+		regKey: string;
 	};
 	battleNet?: {
-		configFilePath: string
+		configFilePath: string;
 	};
 }
 
@@ -249,12 +251,15 @@ export class Server {
 		const config: any = {
 			lang: settingsForm.lang
 		};
+		let firstTimeSteam: boolean = false;
 		if (settingsForm.steamPath) {
 			logger.info('Server', 'Updating Steam configuration.');
 			config.steam = {
 				installFolder: settingsForm.steamPath,
 				...this.modulesConfig.steam
 			};
+			if (!this.modulesConfig.steam.userId)
+				firstTimeSteam = true;
 		}
 		if (settingsForm.originPath) {
 			logger.info('Server', 'Updating Origin configuration.');
@@ -288,6 +293,10 @@ export class Server {
 			await fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 });
 			logger.info('Server', 'Emulators config outputted to emulators.json.');
 			this.vitrineConfig = { ...config, emulated: emulatorsConfig };
+			if (firstTimeSteam) {
+				const steamUser: any = await findSteamUser(this.vitrineConfig.steam);
+				Object.assign(this.vitrineConfig.steam, { ...steamUser });
+			}
 			this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
 			this.findPotentialGames();
 		}
@@ -301,7 +310,8 @@ export class Server {
 			return;
 
 		try {
-			const games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam,
+				this.playableGames.getGames().filter((playableGame: PlayableGame) => playableGame.source === GameSource.STEAM));
 			logger.info('Server', 'Adding potential Steam games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -317,7 +327,8 @@ export class Server {
 			return;
 
 		try {
-			const games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin,
+				this.playableGames.getGames().filter((playableGame: PlayableGame) => playableGame.source === GameSource.ORIGIN));
 			logger.info('Server', 'Adding potential Origin games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -333,7 +344,8 @@ export class Server {
 			return;
 
 		try {
-			const games: GamesCollection<PotentialGame> = await searchBattleNetGames(this.vitrineConfig.battleNet, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchBattleNetGames(this.vitrineConfig.battleNet,
+				this.playableGames.getGames().filter((playableGame: PlayableGame) => playableGame.source === GameSource.BATTLE_NET));
 			logger.info('Server', 'Adding potential Battle.net games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -349,7 +361,8 @@ export class Server {
 			return;
 
 		try {
-			const games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated,
+				this.playableGames.getGames().filter((playableGame: PlayableGame) => playableGame.source === GameSource.ROM));
 			logger.info('Server', 'Adding potential emulated games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;

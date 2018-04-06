@@ -122,7 +122,7 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 				delete game.name;
 				const potentialGame: PotentialGame = new PotentialGame(foundGame.name, game);
 				potentialGame.source = GameSource.BATTLE_NET;
-				potentialGame.commandLine = [foundGame.path];
+				potentialGame.commandLine = [ foundGame.path ];
 				this.potentialGames.push(potentialGame);
 				logger.info('BattleNetGamesCrawler', `Adding ${foundGame.name} to potential Battle.net games.`);
 				done();

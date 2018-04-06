@@ -68,6 +68,8 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					const found: boolean = this.playableGames.filter((playableGame: any) =>
 						spatStr(romName) === spatStr(playableGame.name)
 					).length > 0;
+					if (found)
+						logger.info('OriginGamesCrawler', `Emulated game ${romName} is already a playable game.`);
 					return !found;
 				});
 
