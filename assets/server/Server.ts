@@ -19,7 +19,7 @@ import { searchOriginGames } from './games/OriginGamesCrawler';
 import { getPlayableGames } from './games/PlayableGamesCrawler';
 import { searchSteamGames } from './games/SteamGamesCrawler';
 import { downloadImage, isAlreadyStored } from './helpers';
-import { logger} from './Logger';
+import { logger } from './Logger';
 import { WindowsHandler } from './WindowsHandler';
 
 interface ModulesConfig {

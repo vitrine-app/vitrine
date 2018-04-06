@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
+import { EventEmitter } from 'events';
 import * as path from 'path';
 
 import { isProduction } from '../models/env';
@@ -25,14 +26,19 @@ export class WindowsHandler {
 			this.quitApplication();
 			return;
 		}
-		app.on('ready', this.createLoaderWindow.bind(this));
+		if (app.isReady())
+			this.createLoaderWindow();
+		else
+			app.on('ready', this.createLoaderWindow.bind(this));
 		app.on('window-all-closed', () => {
-			if (process.platform !== 'darwin')
+			if (process.platform !== 'darwin') {
 				this.quitApplication();
+			}
 		});
 		app.on('activate', () => {
-			if (!this.clientWindow)
+			if (!this.clientWindow) {
 				this.createClientWindow();
+			}
 		});
 	}
 

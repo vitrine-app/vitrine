@@ -20,16 +20,18 @@ export class Bootstrapper {
 	}
 
 	public async launch() {
-		fs.ensureDirSync(this.configFolderPath);
-		fs.ensureDirSync(this.gamesFolderPath);
+		await Promise.all([
+			fs.ensureDir(this.configFolderPath),
+			fs.ensureDir(this.gamesFolderPath)
+		]);
 
 		const configFolderOriginalPath: string = getEnvFolder('config', true);
 		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, this.configFileName);
 		if (!fs.pathExistsSync(this.vitrineConfigFilePath))
 			fs.copySync(configFolderOriginalPath, this.configFolderPath);
 		this.vitrineConfig = fs.readJsonSync(this.vitrineConfigFilePath, { throws: false });
-		logger.info('Bootstrapper', 'vitrine_config.json read.');
 		await this.includeEmulatorsConfig();
+		logger.info('Bootstrapper', `${this.configFileName} read.`);
 		this.launchMainClient();
 	}
 
@@ -38,23 +40,25 @@ export class Bootstrapper {
 			console.error('[PROCESS] Unhandled Promise Rejection');
 			console.error('=====================================');
 			console.error(reason);
-			console.error('===');
+			console.error('=====================================');
 		});
 	}
 
-	private includeEmulatorsConfig(): Promise<any> {
-		return new Promise((resolve) => {
-			logger.info('Bootstrapper', 'Including emulators and platforms data.');
-			const platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
-			const emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
-			const emulated: any = this.vitrineConfig.emulated || {};
-			const newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
-			newVitrineConfig.emulated.platforms = fs.readJsonSync(platformsConfigFilePath, { throws: false });
-			newVitrineConfig.emulated.emulators = fs.readJsonSync(emulatorsConfigFilePath, { throws: false });
-			logger.info('Bootstrapper', 'Emulators and platforms added to config.');
-			this.vitrineConfig = newVitrineConfig;
-			resolve();
-		});
+	private async includeEmulatorsConfig() {
+		logger.info('Bootstrapper', 'Including emulators and platforms data.');
+		const platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
+		const emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
+		const emulated: any = this.vitrineConfig.emulated || {};
+		const newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
+		const [ platforms, emulators ]: any = await Promise.all([
+			fs.readJson(platformsConfigFilePath),
+			fs.readJson(emulatorsConfigFilePath)
+		]);
+		newVitrineConfig.emulated.platforms = platforms;
+		newVitrineConfig.emulated.emulators = emulators;
+		console.log(newVitrineConfig);
+		logger.info('Bootstrapper', 'Emulators and platforms added to config.');
+		this.vitrineConfig = newVitrineConfig;
 	}
 
 	private launchMainClient() {
