@@ -28,11 +28,21 @@ export class Bootstrapper {
 		const configFolderOriginalPath: string = getEnvFolder('config', true);
 		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, this.configFileName);
 		if (!fs.pathExistsSync(this.vitrineConfigFilePath))
-			fs.copySync(configFolderOriginalPath, this.configFolderPath);
-		this.vitrineConfig = fs.readJsonSync(this.vitrineConfigFilePath, { throws: false });
-		await this.includeEmulatorsConfig();
+			await fs.copy(configFolderOriginalPath, this.configFolderPath);
+		const [ globalConfig, emulatorsConfig ] = await Promise.all([
+			fs.readJson(this.vitrineConfigFilePath, { throws: false }),
+			this.includeEmulatorsConfig()
+		]);
+		this.vitrineConfig = {
+			...globalConfig,
+			emulated: {
+				...globalConfig.emulated,
+				...emulatorsConfig
+			}
+		};
+		console.log(this.vitrineConfig);
 		logger.info('Bootstrapper', `${this.configFileName} read.`);
-		this.launchMainClient();
+		this.runServer();
 	}
 
 	private registerDebugPromiseHandler() {
@@ -48,25 +58,22 @@ export class Bootstrapper {
 		logger.info('Bootstrapper', 'Including emulators and platforms data.');
 		const platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
 		const emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
-		const emulated: any = this.vitrineConfig.emulated || {};
-		const newVitrineConfig: any = (this.vitrineConfig.lang) ? ({ ...this.vitrineConfig, emulated }) : ({ firstLaunch: true, emulated });
 		const [ platforms, emulators ]: any = await Promise.all([
 			fs.readJson(platformsConfigFilePath),
 			fs.readJson(emulatorsConfigFilePath)
 		]);
-		newVitrineConfig.emulated.platforms = platforms;
-		newVitrineConfig.emulated.emulators = emulators;
-		console.log(newVitrineConfig);
 		logger.info('Bootstrapper', 'Emulators and platforms added to config.');
-		this.vitrineConfig = newVitrineConfig;
+		return {
+			platforms,
+			emulators
+		};
 	}
 
-	private launchMainClient() {
-		logger.info('Bootstrapper', 'Launching main client.');
+	private runServer() {
+		logger.info('Bootstrapper', 'Running server.');
 		if (!isProduction())
 			this.registerDebugPromiseHandler();
 		this.serverInstance = new Server(this.vitrineConfig, this.vitrineConfigFilePath, this.configFolderPath);
-		this.serverInstance.registerEvents();
 		this.serverInstance.run();
 	}
 }
