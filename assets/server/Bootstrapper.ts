@@ -40,7 +40,6 @@ export class Bootstrapper {
 				...emulatorsConfig
 			}
 		};
-		console.log(this.vitrineConfig);
 		logger.info('Bootstrapper', `${this.configFileName} read.`);
 		this.runServer();
 	}
@@ -62,7 +61,7 @@ export class Bootstrapper {
 			fs.readJson(platformsConfigFilePath),
 			fs.readJson(emulatorsConfigFilePath)
 		]);
-		logger.info('Bootstrapper', 'Emulators and platforms added to config.');
+		logger.info('Bootstrapper', 'Emulators and platforms config read.');
 		return {
 			platforms,
 			emulators

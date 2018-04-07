@@ -26,8 +26,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	addPlayableGames: (playableGames: PlayableGame[]) => {
 		dispatch(addPlayableGames(playableGames));
 	},
-	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => {
-		dispatch(removePlayableGame(gameUuid, selectedGame));
+	removePlayableGame: (gameUuid: string) => {
+		dispatch(removePlayableGame(gameUuid));
 	},
 	launchGame: (launchedGame: PlayableGame) => {
 		dispatch(launchGame(launchedGame));
