@@ -11,7 +11,7 @@ import { PotentialGame } from '../../../models/PotentialGame';
 import { ContextMenu } from '../containers/ContextMenu';
 import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
-import { VitrineButton } from './VitrineButton';
+import { ActionButton } from './ActionButton';
 
 interface Props {
 	potentialGames: GamesCollection<PotentialGame>;
@@ -48,14 +48,14 @@ export const SideBar: React.StatelessComponent<Props> = (props: Props) => {
 		<div className={css(styles.commandsGroup)}>
 			<Grid className={css(styles.commandsGrid)}>
 				<Grid.Column width={4} className={css(styles.commandButton)}>
-					<VitrineButton
+					<ActionButton
 						icon={faPlus}
 						tooltip={localizer.f('addGameLabel')}
 						onClick={props.openGameAddModal}
 					/>
 				</Grid.Column>
 				<Grid.Column width={4} className={css(styles.commandButton)}>
-					<VitrineButton
+					<ActionButton
 						icon={faSyncAlt}
 						spin={props.refreshingGames}
 						tooltip={localizer.f('refreshLabel')}
@@ -63,7 +63,7 @@ export const SideBar: React.StatelessComponent<Props> = (props: Props) => {
 					/>
 				</Grid.Column>
 				<Grid.Column width={4} className={css(styles.commandButton)}>
-					<VitrineButton
+					<ActionButton
 						icon={faCogs}
 						tooltip={localizer.f('settings')}
 						onClick={props.openSettingsModal}

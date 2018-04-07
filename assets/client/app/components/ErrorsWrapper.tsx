@@ -78,9 +78,6 @@ const styles: React.CSSProperties = StyleSheet.create({
 		cursor: 'default',
 		userSelect: 'none'
 	},
-	modalContent: {
-		backgroundColor: '#332929'
-	},
 	errorIcon: {
 		fontSize: 205,
 		position: 'absolute',

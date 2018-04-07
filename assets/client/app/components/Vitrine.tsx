@@ -168,8 +168,5 @@ const styles: React.CSSProperties = StyleSheet.create({
 	mainContainer: {
 		height: `calc(${100..percents()} - ${22..px()})`,
 		margin: 0
-	},
-	case1: {
-		width: 15.5.percents()
 	}
 });

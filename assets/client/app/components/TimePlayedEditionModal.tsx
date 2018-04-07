@@ -158,6 +158,5 @@ const styles: React.CSSProperties = StyleSheet.create({
 	modal: {
 		width: 300,
 		margin: margin(20..rem(), 'auto')
-	},
-
+	}
 });
