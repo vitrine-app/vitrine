@@ -28,7 +28,7 @@ module.exports = {
 					{
 						loader: 'electron-node-loader',
 						options: {
-							folder: 'scripts',
+							folder: 'modules',
 							prod: production
 						}
 					}
