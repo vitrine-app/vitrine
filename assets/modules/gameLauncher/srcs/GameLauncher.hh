@@ -8,6 +8,7 @@ struct Worker {
 	v8::Persistent<v8::Function> callback;
 	bool callbackUsed;
 	std::string commandLine;
+	std::string args;
 	std::string workingDirectory;
 	DWORD startingTimeStamp;
 };

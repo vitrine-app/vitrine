@@ -4,26 +4,21 @@ using namespace v8;
 
 static void workAsync(uv_work_t *request) {
 	Worker* worker = static_cast<Worker*>(request->data);
-
-	STARTUPINFO startUpInfo;
-	PROCESS_INFORMATION processInfo;
-
-	ZeroMemory(&startUpInfo, sizeof(startUpInfo));
-	startUpInfo.cb = sizeof(startUpInfo);
-	ZeroMemory(&processInfo, sizeof(processInfo));
+	SHELLEXECUTEINFO shellInfo = {0};
+	shellInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	shellInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	shellInfo.hwnd = nullptr;
+	shellInfo.lpVerb = nullptr;
+	shellInfo.lpFile = worker->commandLine.c_str();
+	shellInfo.lpParameters = worker->args.c_str();
+	shellInfo.lpDirectory = (worker->workingDirectory.length() > 0) ? (worker->workingDirectory.c_str()) : (nullptr);
+	shellInfo.nShow = SW_SHOW;
+	shellInfo.hInstApp = nullptr;
 
 	worker->startingTimeStamp = GetTickCount();
-	if (!CreateProcess(nullptr, const_cast<LPSTR>(worker->commandLine.c_str()), nullptr, nullptr, false, 0, nullptr,
-					   (worker->workingDirectory.length()) ? (const_cast<LPSTR>(worker->workingDirectory.c_str())) : (nullptr), &startUpInfo, &processInfo)) {
-
-		Isolate* isolate = Isolate::GetCurrent();
-		Local<Value> av[2] = { String::NewFromUtf8(isolate, "Error happened during child process execution."), Undefined(isolate) };
-		Local<Function>::New(isolate, worker->callback)->Call(isolate->GetCurrentContext()->Global(), 2, av);
-		return;
-	}
-	WaitForSingleObject(processInfo.hProcess, INFINITE);
-	CloseHandle(processInfo.hProcess);
-	CloseHandle(processInfo.hThread);
+	ShellExecuteEx(&shellInfo);
+	WaitForSingleObject(shellInfo.hProcess, INFINITE);
+	CloseHandle(shellInfo.hProcess);
 }
 
 static void workAsyncComplete(uv_work_t *request, int status) {
@@ -57,7 +52,8 @@ void parseArgsObject(Isolate* isolate, Local<Object> arguments, Worker* worker) 
 	Local<Value> argsField = arguments->Get(argsFieldName);
 	if (argsField->IsString()) {
 		String::Utf8Value arg(argsField->ToString());
-		worker->commandLine += std::string(" ") + *arg;
+		worker->args = std::string(*arg);
+		// worker->commandLine += std::string(" ") + *arg;
 	}
 
 	Local<Value> cwdField = arguments->Get(cwdFieldName);

@@ -70,7 +70,7 @@ class GameLauncher {
 		});
 
 		const [ program, args ]: string[] = this.game.commandLine;
-		logger.info('GameLauncher', `Launching Steam game (${this.game.details.steamId}}) with native module.`);
+		logger.info('GameLauncher', `Launching Steam game (${this.game.details.steamId}) with native module.`);
 		nativeLaunchGame({ program, args });
 	}
 }

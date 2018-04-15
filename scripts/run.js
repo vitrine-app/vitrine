@@ -6,7 +6,7 @@ if (!process.argv[2])
 	throw new Error('Script name missing.');
 
 if (process.platform === 'win32') {
-	const { cd, exec } = require('shelljs');
+	const { cd } = require('shelljs');
 	cd('scripts').exec(process.argv[2]);
 }
 else {
