@@ -26,7 +26,7 @@ interface Props {
 	updateSettings: (settings: any) => void;
 	addPotentialGames: (potentialGames: PotentialGame[]) => void;
 	addPlayableGames: (playableGames: PlayableGame[]) => void;
-	removePlayableGame: (gameUuid: string, selectedGame: PlayableGame) => void;
+	removePlayableGame: (gameUuid: string) => void;
 	launchGame: (launchedGame: PlayableGame) => void;
 	stopGame: (playedGame: PlayableGame) => void;
 	selectGame: (selectedGame: PlayableGame) => void;
@@ -36,7 +36,6 @@ interface Props {
 
 interface State {
 	firstLaunch: boolean;
-	launchedGamePictureActivated: boolean;
 	gameWillBeEdited: boolean;
 }
 
@@ -46,7 +45,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 		this.state = {
 			firstLaunch: false,
-			launchedGamePictureActivated: true,
 			gameWillBeEdited: false
 		};
 
@@ -55,7 +53,8 @@ export class Vitrine extends VitrineComponent<Props, State> {
 
 	private removePlayableGame(gameUuid: string) {
 		const playedGameName: string = this.props.playableGames.getGame(gameUuid).name;
-		this.props.removePlayableGame(gameUuid, (this.props.playableGames.size() - 1) ? (this.props.playableGames.getGame(0)) : (null));
+		this.props.removePlayableGame(gameUuid);
+		this.props.selectGame((this.props.playableGames.size()) ? (this.props.playableGames.getGame(0)) : (null));
 		notify(`<b>${playedGameName}</b> ${localizer.f('removingGameToast')}.`, true);
 	}
 
@@ -91,17 +90,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.throwError(error);
 	}
 
-	private launchedGamePictureToggleHandler() {
-		this.setState({
-			launchedGamePictureActivated: false
-		});
-	}
-
 	private keyDownHandler(event: KeyboardEvent) {
 		switch (event.code) {
 			case 'ArrowDown': {
 				event.preventDefault();
-
 				const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
 				if (index < this.props.playableGames.size() - 1)
 					this.props.selectGame(this.props.playableGames.getGame(index + 1));
@@ -109,7 +101,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			}
 			case 'ArrowUp': {
 				event.preventDefault();
-
 				const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
 				if (index)
 					this.props.selectGame(this.props.playableGames.getGame(index - 1));
@@ -143,9 +134,6 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			.listen('error', this.serverError.bind(this));
 
 		window.addEventListener('keydown', this.keyDownHandler.bind(this));
-		/*window.addEventListener('gamepadconnected', (e: GamepadEvent) => {
-			console.log(e.gamepad);
-		});*/
 	}
 
 	public componentWillUnmount() {
@@ -157,19 +145,13 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			<div className={css(styles.vitrineApp)}>
 				<TaskBar/>
 				<Grid className={css(styles.mainContainer)}>
-					<SideBar
-						launchGame={this.launchGame}
-					/>
-					<GameContainer
-						launchGame={this.launchGame}
-					/>
+					<SideBar launchGame={this.launchGame}/>
+					<GameContainer launchGame={this.launchGame}/>
 				</Grid>
 				<GameAddModal/>
 				<TimePlayedEditionModal/>
 				<PotentialGamesAddModal/>
-				<SettingsModal
-					firstLaunch={this.state.firstLaunch}
-				/>
+				<SettingsModal firstLaunch={this.state.firstLaunch}/>
 				<ToastContainer/>
 				{this.checkErrors()}
 			</div>
@@ -186,8 +168,5 @@ const styles: React.CSSProperties = StyleSheet.create({
 	mainContainer: {
 		height: `calc(${100..percents()} - ${22..px()})`,
 		margin: 0
-	},
-	case1: {
-		width: 15.5.percents()
 	}
 });

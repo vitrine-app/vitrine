@@ -1,7 +1,7 @@
 import * as path from 'path';
 
-import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../scripts/gameLauncher.node';
-import { watchRegKey } from '../../scripts/regWatcher.node';
+import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../modules/gameLauncher.node';
+import { watchRegKey } from '../../modules/regWatcher.node';
 import { PlayableGame } from '../models/PlayableGame';
 import { GameSource } from '../models/PotentialGame';
 import { logger } from './Logger';
@@ -23,7 +23,7 @@ class GameLauncher {
 		logger.info('GameLauncher', 'Launching non-Steam game.');
 
 		const [ executable, args ]: string[] = this.game.commandLine;
-		const launcherOptions: any = {
+		const launcherOptions: GameLauncherOptions = {
 			program: executable,
 			cwd: path.parse(executable).dir
 		};
@@ -70,7 +70,7 @@ class GameLauncher {
 		});
 
 		const [ program, args ]: string[] = this.game.commandLine;
-		logger.info('GameLauncher', `Launching Steam game (${this.game.details.steamId}}) with native module.`);
+		logger.info('GameLauncher', `Launching Steam game (${this.game.details.steamId}) with native module.`);
 		nativeLaunchGame({ program, args });
 	}
 }

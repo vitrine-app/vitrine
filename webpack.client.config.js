@@ -19,7 +19,7 @@ let clientConfig = {
 		rules: [
 			{
 				test: /\.(ts|tsx)?$/,
-				use: 'awesome-typescript-loader'
+				use: 'ts-loader'
 			},
 			{
 				test: /\.less$/,

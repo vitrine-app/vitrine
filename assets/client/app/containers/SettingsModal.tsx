@@ -8,6 +8,7 @@ import { SettingsModal as VisualSettingsModal } from '../components/SettingsModa
 
 const mapStateToProps = (state: AppState) => ({
 	settings: state.settings,
+	emulators: state.modulesConfig.emulated.emulators,
 	visible: state.settingsModalVisible
 });
 

@@ -1,18 +1,17 @@
 import * as googleTranslate from 'google-translate-api';
 import * as igdb from 'igdb-api-node';
 
+import { igdbKey } from '../../../modules/keysProvider.node';
 import { logger } from '../Logger';
 
 class IgdbWrapper {
-	private readonly apiKey: string;
 	private readonly timeOut: number;
 	private readonly levenshteinRefiner: number;
 	private client: any;
 
 	public constructor(private lang?: string) {
-		this.apiKey = 'cb14c151b2f67d505d13ee673d5acde4';
-		this.client = igdb.default(this.apiKey);
-		this.timeOut = 15000;
+		this.client = igdb.default(igdbKey());
+		this.timeOut = 25000;
 		this.levenshteinRefiner = 5;
 	}
 

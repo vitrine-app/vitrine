@@ -20,7 +20,7 @@ interface State {
 	iconClassName: string;
 }
 
-export class VitrineButton extends VitrineComponent<Props, State> {
+export class ActionButton extends VitrineComponent<Props, State> {
 	private readonly id: string;
 
 	public constructor() {

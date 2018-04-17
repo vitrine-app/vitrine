@@ -44,8 +44,6 @@ export function selectedGame(state: PlayableGame = null, action: Action): Playab
 			return action.payload.selectedGame;
 		case ActionType.ADD_PLAYABLE_GAMES:
 			return action.payload.selectedGame;
-		case ActionType.REMOVE_PLAYABLE_GAME:
-			return action.payload.selectedGame;
 		case ActionType.STOP_GAME:
 			return action.payload.playedGame;
 		default:

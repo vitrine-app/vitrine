@@ -10,19 +10,16 @@ import { VitrineComponent } from './VitrineComponent';
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
-	id: string;
-	emulator: any;
 	platforms: any[];
-	onChange: (emulatorId: number, emulatorConfig: any) => void;
+	emulatorData: any;
+	emulator: any;
+	onChange: (emulatorConfig: any) => void;
 }
 
 interface State {
-	name: string;
-	platforms: any[];
 	active: boolean;
 	path: string;
-	command: string;
-	glob: string;
+	command?: string;
 }
 
 export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
@@ -30,12 +27,9 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		super(props);
 
 		this.state = {
-			name: props.emulator.name,
-			platforms: props.platforms,
-			active: props.emulator.active,
-			path: props.emulator.path,
-			command: props.emulator.command,
-			glob: props.emulator.glob
+			active: !!this.props.emulator,
+			path: (this.props.emulator) ? (this.props.emulator.path) : (this.props.emulatorData.path),
+			command: (this.props.emulator) ? (this.props.emulator.command || this.props.emulatorData.command) : (this.props.emulatorData.command)
 		};
 
 		this.activeCheckBox = this.activeCheckBox.bind(this);
@@ -47,18 +41,18 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		this.setState({
 			active: data.checked
 		}, () => {
-			this.props.onChange(parseInt(this.props.id), this.getEmulatorFromState());
+			this.props.onChange(this.getEmulatorFromState());
 		});
 	}
 
 	private programButton() {
-		const dialogRet: string = openExecutableDialog();
-		if (!dialogRet)
+		const path: string = openExecutableDialog();
+		if (!path)
 			return;
 		this.setState({
-			path: dialogRet
+			path
 		}, () => {
-			this.props.onChange(parseInt(this.props.id), this.getEmulatorFromState());
+			this.props.onChange(this.getEmulatorFromState());
 		});
 	}
 
@@ -66,27 +60,34 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 		this.setState({
 			command: event.target.value
 		}, () => {
-			this.props.onChange(parseInt(this.props.id), this.getEmulatorFromState());
+			this.props.onChange(this.getEmulatorFromState());
 		});
 	}
 
-	private getEmulatorFromState() {
-		return {
-			...this.state,
-			platforms: this.state.platforms.map((platforms: any) => platforms.id)
-		};
+	private getEmulatorFromState(): any {
+		const emulator: any = { id: this.props.emulatorData.id };
+		if (this.state.active)
+			emulator.path = this.state.path || null;
+		else
+			return emulator;
+		if (this.state.command !== this.props.emulatorData.command)
+			emulator.command = this.state.command;
+		return emulator;
 	}
 
 	public render(): JSX.Element {
+		const platforms: string[] = this.props.emulatorData.platforms.map((platformId: any) =>
+			this.props.platforms.filter((platform: any) => platform.id === platformId)[0].name
+		);
 		return (
 			<Table.Row
 				className={`${css(styles.emulatorTr)} ${(!this.state.active) ? (css(styles.inactiveTr)) : ('')}`}
 			>
 				<Table.Cell>
-					<strong>{this.state.name}</strong>
+					<strong>{this.props.emulatorData.name}</strong>
 				</Table.Cell>
 				<Table.Cell>
-					{this.state.platforms.map((platforms: any) => platforms.name).join(', ')}
+					{platforms.join(', ')}
 				</Table.Cell>
 				<Table.Cell>
 					<Checkbox

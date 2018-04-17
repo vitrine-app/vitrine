@@ -34,7 +34,7 @@
   ],
   "extraResources": [
     "config",
-    "scripts/*.node",
+    "modules/*.node",
     "*app-update.yml"
   ]
 }

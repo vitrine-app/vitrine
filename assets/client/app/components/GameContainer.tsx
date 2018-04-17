@@ -118,7 +118,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 							</p>
 						</div>
 					</Grid.Column>
-					<Grid.Column width={5} style={{ height: 75..percents() }}>
+					<Grid.Column width={5} className={css(styles.gameCover)}>
 						<BlurPicture
 							faIcon={faPlay}
 							fontSize={125}
@@ -225,8 +225,7 @@ const styles: React.CSSProperties = StyleSheet.create({
 		borderRadius: 3
 	},
 	gameCover: {
-		height: 80..percents(),
-		paddingTop: 25
+		height: 75..percents()
 	},
 	noSelectedGame: {
 		padding: 50

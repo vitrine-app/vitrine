@@ -70,12 +70,9 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			const found: boolean = this.playableGames.filter((playableGame: any) =>
 				spatStr(gameName) === spatStr(playableGame.name)
 			).length > 0;
-
-			if (this.gameDirExists(gameName) || found) {
+			if (found)
 				logger.info('OriginGamesCrawler', `Origin game ${gameName} is already a playable game.`);
-				return false;
-			}
-			return true;
+			return !found;
 		});
 
 		gameInfos.forEachEnd(async ({gameName, gameFolder}: any, done: () => void) => {

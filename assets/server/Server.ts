@@ -19,50 +19,19 @@ import { searchOriginGames } from './games/OriginGamesCrawler';
 import { getPlayableGames } from './games/PlayableGamesCrawler';
 import { searchSteamGames } from './games/SteamGamesCrawler';
 import { downloadImage, isAlreadyStored } from './helpers';
-import { logger} from './Logger';
+import { logger } from './Logger';
 import { WindowsHandler } from './WindowsHandler';
 
-interface ModulesConfig {
-	steam?: {
-		gamesFolders: string[],
-		launchCommand: string
-	};
-	origin?: {
-		regHive: string,
-		regKey: string
-	};
-	battleNet?: {
-		configFilePath: string
-	};
-}
-
 export class Server {
-	private readonly emulatorsConfigFilePath: string;
 	private windowsHandler: WindowsHandler;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
-	private modulesConfig: ModulesConfig;
 
-	public constructor(private vitrineConfig: any, private vitrineConfigFilePath: string, configFolderPath: string) {
+	public constructor(private vitrineConfig: any, private modulesConfig: any, private vitrineConfigFilePath: string) {
 		this.windowsHandler = new WindowsHandler();
-		this.emulatorsConfigFilePath = path.resolve(configFolderPath, 'emulators.json');
 		this.gameLaunched = false;
-		this.modulesConfig = {
-			steam: {
-				gamesFolders: [
-					'~steamapps'
-				],
-				launchCommand: 'steam://run/%id'
-			},
-			origin: {
-				regHive: 'HKLM',
-				regKey: '\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games'
-			},
-			battleNet: {
-				configFilePath: '%appdata%/Battle.net/Battle.net.config'
-			}
-		};
+		this.registerEvents();
 	}
 
 	public run() {
@@ -76,7 +45,7 @@ export class Server {
 
 		this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
 			.listenToClient('ready', this.windowsHandler.clientReady.bind(this.windowsHandler))
-			.listenToClient('quit-application', (mustRelaunch?: boolean) => this.windowsHandler.quitApplication(mustRelaunch))
+			.listenToClient('quit-application', this.quitApplication.bind(this))
 			.listenToClient('fill-igdb-game', this.fillIgdbGame.bind(this))
 			.listenToClient('search-igdb-games', this.searchIgdbGames.bind(this))
 			.listenToClient('add-game', this.addGame.bind(this))
@@ -88,12 +57,7 @@ export class Server {
 			.listenToClient('update-settings', this.updateSettings.bind(this));
 	}
 
-	private throwServerError(error: Error) {
-		logger.info('Server', 'An error happened.');
-		this.windowsHandler.sendToClient('error', error.name, error.stack);
-	}
-
-	private async loaderReady() {
+	public async loaderReady() {
 		logger.info('Server', 'Checking for updates.');
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {
@@ -118,12 +82,17 @@ export class Server {
 		}
 	}
 
-	private async clientSettingsAsked() {
+	public updateApp() {
+		logger.info('Server', 'Quitting Vitrine and installing new version.');
+		autoUpdater.quitAndInstall(true, true);
+	}
+
+	public async clientSettingsAsked() {
 		this.potentialGames = new GamesCollection();
 		this.playableGames = new GamesCollection();
 
 		logger.info('Server', 'Sending configuration to client.');
-		this.windowsHandler.sendToClient('init-settings', this.vitrineConfig);
+		this.windowsHandler.sendToClient('init-settings', this.vitrineConfig, this.modulesConfig);
 		if (!this.vitrineConfig.firstLaunch) {
 			try {
 				if (this.vitrineConfig.steam) {
@@ -143,12 +112,11 @@ export class Server {
 			logger.info('Server', 'Vitrine first launch.');
 	}
 
-	private updateApp() {
-		logger.info('Server', 'Quitting Vitrine and installing new version.');
-		autoUpdater.quitAndInstall(true, true);
+	public quitApplication(mustRelaunch?: boolean) {
+		this.windowsHandler.quitApplication(mustRelaunch);
 	}
 
-	private async fillIgdbGame(gameId: number) {
+	public async fillIgdbGame(gameId: number) {
 		try {
 			this.windowsHandler.sendToClient('send-igdb-game', await fillIgdbGame(gameId, this.vitrineConfig.lang));
 		}
@@ -157,7 +125,7 @@ export class Server {
 		}
 	}
 
-	private async searchIgdbGames(gameName: string, resultsNb?: number) {
+	public async searchIgdbGames(gameName: string, resultsNb?: number) {
 		try {
 			this.windowsHandler.sendToClient('send-igdb-searches', gameName, await searchIgdbGame(gameName, resultsNb));
 		}
@@ -166,7 +134,7 @@ export class Server {
 		}
 	}
 
-	private addGame(gameForm: any) {
+	public addGame(gameForm: any) {
 		logger.info('Server', `Adding ${gameForm.name} to Vitrine.`);
 		const gameName: string = gameForm.name;
 		const addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
@@ -175,7 +143,7 @@ export class Server {
 		this.registerGame(addedGame, gameForm, false);
 	}
 
-	private editGame(gameUuid: string, gameForm: any) {
+	public editGame(gameUuid: string, gameForm: any) {
 		logger.info('Server', `Editing ${gameForm.name}.`);
 		const editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
 		editedGame.name = gameForm.name;
@@ -189,7 +157,7 @@ export class Server {
 		this.registerGame(editedGame, gameForm, true);
 	}
 
-	private editGameTimePlayed(gameUuid: string, timePlayed: number) {
+	public editGameTimePlayed(gameUuid: string, timePlayed: number) {
 		const editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
 		const gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
 		const configFilePath: string = path.resolve(gameDirectory, 'config.json');
@@ -199,7 +167,7 @@ export class Server {
 		this.sendRegisteredGame(editedGame, configFilePath, true);
 	}
 
-	private async launchGame(gameUuid: string) {
+	public async launchGame(gameUuid: string) {
 		if (this.gameLaunched) {
 			logger.info('Server', 'Trying to launch a game but another one is already running.');
 			return;
@@ -221,7 +189,7 @@ export class Server {
 		}
 	}
 
-	private removeGame(gameUuid: string) {
+	public removeGame(gameUuid: string) {
 		this.potentialGames.removeGame(gameUuid);
 		const gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 		rimraf(gameDirectory, () => {
@@ -230,7 +198,7 @@ export class Server {
 		});
 	}
 
-	private async findPotentialGames() {
+	public async findPotentialGames() {
 		logger.info('Server', 'Beginning to search potential games.');
 		this.windowsHandler.sendToClient('potential-games-search-begin');
 		this.potentialGames.clean();
@@ -244,50 +212,20 @@ export class Server {
 		this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 	}
 
-	private async updateSettings(settingsForm: any) {
+	public async updateSettings(settingsForm: any) {
 		logger.info('Server', 'Updating global settings.');
-		const config: any = {
-			lang: settingsForm.lang
-		};
-		if (settingsForm.steamPath) {
-			logger.info('Server', 'Updating Steam configuration.');
-			config.steam = {
-				installFolder: settingsForm.steamPath,
-				...this.modulesConfig.steam
-			};
-		}
-		if (settingsForm.originPath) {
-			logger.info('Server', 'Updating Origin configuration.');
-			config.origin = {
-				installFolder: settingsForm.originPath,
-				...this.modulesConfig.origin
-			};
-		}
-		if (settingsForm.battleNetEnabled) {
-			logger.info('Server', 'Updating Battle.net configuration.');
-			config.battleNet = {
-				...this.modulesConfig.battleNet
-			};
-		}
-		if (settingsForm.emulatedPath) {
-			logger.info('Server', 'Updating emulated games configuration.');
-			config.emulated = {
-				romsFolder: settingsForm.emulatedPath
-			};
-		}
+		const config: any = { ...settingsForm };
+		let firstTimeSteam: boolean = false;
+		if (settingsForm.steam && !this.modulesConfig.steam.userId)
+			firstTimeSteam = true;
 		try {
 			await fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 });
 			logger.info('Server', 'Settings outputted to vitrine_config.json.');
-			const emulatorsConfig: any = {
-				...this.vitrineConfig.emulated,
-				...config.emulated,
-				emulators: settingsForm.emulators
-			};
-			if (!settingsForm.emulatedPath)
-				delete emulatorsConfig.romsFolder;
-			await fs.outputJson(this.emulatorsConfigFilePath, emulatorsConfig.emulators, { spaces: 2 });
-			logger.info('Server', 'Emulators config outputted to emulators.json.');
-			this.vitrineConfig = { ...config, emulated: emulatorsConfig };
+			this.vitrineConfig = config;
+			if (firstTimeSteam) {
+				const steamUser: any = await findSteamUser(this.vitrineConfig.steam);
+				Object.assign(this.vitrineConfig.steam, { ...steamUser });
+			}
 			this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
 			this.findPotentialGames();
 		}
@@ -299,9 +237,12 @@ export class Server {
 	private async searchSteamGames(): Promise<any> {
 		if (!this.vitrineConfig.steam)
 			return;
-
 		try {
-			const games: GamesCollection<PotentialGame> = await searchSteamGames(this.vitrineConfig.steam, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchSteamGames({
+					...this.modulesConfig.steam,
+					...this.vitrineConfig.steam
+				},
+				this.playableGames.getGamesFromSource(GameSource.STEAM));
 			logger.info('Server', 'Adding potential Steam games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -315,9 +256,12 @@ export class Server {
 	private async searchOriginGames(): Promise<any> {
 		if (!this.vitrineConfig.origin)
 			return;
-
 		try {
-			const games: GamesCollection<PotentialGame> = await searchOriginGames(this.vitrineConfig.origin, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchOriginGames({
+					...this.modulesConfig.origin,
+					...this.vitrineConfig.origin
+				},
+				this.playableGames.getGamesFromSource(GameSource.ORIGIN));
 			logger.info('Server', 'Adding potential Origin games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -331,9 +275,12 @@ export class Server {
 	private async searchBattleNetGames(): Promise<any> {
 		if (!this.vitrineConfig.battleNet)
 			return;
-
 		try {
-			const games: GamesCollection<PotentialGame> = await searchBattleNetGames(this.vitrineConfig.battleNet, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchBattleNetGames({
+					...this.modulesConfig.battleNet,
+					...this.vitrineConfig.battleNet
+				},
+				this.playableGames.getGamesFromSource(GameSource.BATTLE_NET));
 			logger.info('Server', 'Adding potential Battle.net games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -345,11 +292,14 @@ export class Server {
 	}
 
 	private async searchEmulatedGames(): Promise<any> {
-		if (!this.vitrineConfig.emulated.romsFolder)
+		if (!this.vitrineConfig.emulated)
 			return;
-
 		try {
-			const games: GamesCollection<PotentialGame> = await searchEmulatedGames(this.vitrineConfig.emulated, this.playableGames.getGames());
+			const games: GamesCollection<PotentialGame> = await searchEmulatedGames({
+					...this.modulesConfig.emulated,
+					...this.vitrineConfig.emulated
+				},
+				this.playableGames.getGamesFromSource(GameSource.EMULATED));
 			logger.info('Server', 'Adding potential emulated games to potential games list.');
 			this.potentialGames.addGames(games.getGames());
 			return;
@@ -461,5 +411,10 @@ export class Server {
 		catch (error) {
 			this.throwServerError(error);
 		}
+	}
+
+	private throwServerError(error: Error) {
+		logger.info('Server', `An error happened: ${error.message}`);
+		this.windowsHandler.sendToClient('error', error.name, error.stack);
 	}
 }

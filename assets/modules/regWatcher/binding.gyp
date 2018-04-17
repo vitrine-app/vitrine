@@ -3,7 +3,7 @@
     {
       "target_name": "regWatcher",
       "sources": [
-        "srcs/main.cpp"
+        "srcs/RegWatcher.cpp"
       ],
       "librairies": [
         "Advapi32.lib"

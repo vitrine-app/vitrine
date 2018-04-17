@@ -1,15 +1,14 @@
 import * as SteamWeb from 'steam-web';
 
+import { steamKey } from '../../../modules/keysProvider.node';
 import { logger } from '../Logger';
 
 class SteamPlayTimeWrapper {
-	private readonly apiKey: string;
 	private client: SteamWeb;
 
 	public constructor() {
-		this.apiKey = '27853E803FB3CEFE82DBACEF152A905A';
 		this.client = new SteamWeb({
-			apiKey: this.apiKey,
+			apiKey: steamKey(),
 			format: 'json'
 		});
 	}

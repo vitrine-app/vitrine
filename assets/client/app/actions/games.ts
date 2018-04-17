@@ -43,12 +43,11 @@ export function editPlayableGame(playableGame: PlayableGame): Action {
 	};
 }
 
-export function removePlayableGame(gameUuid: string, selectedGame: PlayableGame): Action {
+export function removePlayableGame(gameUuid: string): Action {
 	return {
 		type: ActionType.REMOVE_PLAYABLE_GAME,
 		payload: {
-			gameUuid,
-			selectedGame
+			gameUuid
 		}
 	};
 }

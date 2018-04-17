@@ -1,11 +1,11 @@
 /.idea
+/assets/modules/**/build
 /config/vitrine_config.json
 /dist
 /games/*
 /node_modules
 /public/*
 !/public/img
-/scripts/*.node
-/scripts/**/build
+/modules/*.node
 /vitrine.log.html
 /yarn-error.log

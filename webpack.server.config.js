@@ -20,7 +20,7 @@ module.exports = {
 		rules: [
 			{
 				test: /\.ts?$/,
-				use: 'awesome-typescript-loader'
+				use: 'ts-loader'
 			},
 			{
 				test: /\.node?$/,
@@ -28,7 +28,7 @@ module.exports = {
 					{
 						loader: 'electron-node-loader',
 						options: {
-							folder: 'scripts',
+							folder: 'modules',
 							prod: production
 						}
 					}
