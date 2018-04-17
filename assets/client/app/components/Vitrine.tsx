@@ -159,7 +159,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	vitrineApp: {
 		height: 100..percents(),
 		userSelect: 'none',

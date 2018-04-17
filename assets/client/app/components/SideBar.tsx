@@ -12,6 +12,7 @@ import { ContextMenu } from '../containers/ContextMenu';
 import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { ActionButton } from './ActionButton';
+import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
 	potentialGames: GamesCollection<PotentialGame>;
@@ -26,94 +27,106 @@ interface Props {
 	launchGame: (gameUuid: string) => void;
 }
 
-export const SideBar: React.StatelessComponent<Props> = (props: Props) => {
-	const clickGameHandler = (event: any) => {
-		const selectedGame: PlayableGame = props.playableGames.getGame(event.target.id.replace('sidebar-game:', ''));
-		props.selectGame(selectedGame);
-	};
+export class SideBar extends VitrineComponent<Props, {}> {
+	public constructor(props: Props) {
+		super(props);
 
-	const taskBarRefreshBtnClickHandler = () => {
+		this.clickGameHandler = this.clickGameHandler.bind(this);
+		this.taskBarRefreshBtnClickHandler = this.taskBarRefreshBtnClickHandler.bind(this);
+		this.potentialGamesButton = this.potentialGamesButton.bind(this);
+	}
+
+	private clickGameHandler(event: any) {
+		const selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('sidebar-game:', ''));
+		this.props.selectGame(selectedGame);
+	}
+
+	private taskBarRefreshBtnClickHandler() {
 		serverListener.send('refresh-potential-games');
-	};
+	}
 
-	const potentialGamesButton = () => {
-		props.openPotentialGamesAddModal();
-	};
+	private potentialGamesButton() {
+		this.props.openPotentialGamesAddModal();
+	}
 
-	serverListener.listen('potential-games-search-begin', () => {
-		props.refreshGames();
-	});
+	public componentDidMount() {
+		serverListener.listen('potential-games-search-begin', () => {
+			this.props.refreshGames();
+		});
+	}
 
-	const taskBarElements: JSX.Element = (
-		<div className={css(styles.commandsGroup)}>
-			<Grid className={css(styles.commandsGrid)}>
-				<Grid.Column width={4} className={css(styles.commandButton)}>
-					<ActionButton
-						icon={faPlus}
-						tooltip={localizer.f('addGameLabel')}
-						onClick={props.openGameAddModal}
-					/>
-				</Grid.Column>
-				<Grid.Column width={4} className={css(styles.commandButton)}>
-					<ActionButton
-						icon={faSyncAlt}
-						spin={props.refreshingGames}
-						tooltip={localizer.f('refreshLabel')}
-						onClick={taskBarRefreshBtnClickHandler}
-					/>
-				</Grid.Column>
-				<Grid.Column width={4} className={css(styles.commandButton)}>
-					<ActionButton
-						icon={faCogs}
-						tooltip={localizer.f('settings')}
-						onClick={props.openSettingsModal}
-					/>
-				</Grid.Column>
-				<Grid.Column width={4} className={css(styles.commandButton, styles.addGameButton)}>
-					<Button
-						primary={true}
-						style={{ visibility: (props.potentialGames.size()) ? ('visible') : ('hidden') }}
-						onClick={potentialGamesButton}
-					>
-						{props.potentialGames.size()}
-					</Button>
-				</Grid.Column>
-			</Grid>
-		</div>
-	);
-
-	return (
-		<Grid.Column className={css(styles.sideBarWrapper)}>
-			{taskBarElements}
-			<div className={css(styles.sideBarContent)}>
-				<ul className={css(styles.gamesListUl)}>
-					{props.playableGames.map((game: PlayableGame, index: number) => (
-							<ContextMenuTrigger
-								id='sidebar-games-context-menu'
-								key={index}
-							>
-								<li
-									id={`sidebar-game:${game.uuid}`}
-									className={
-										css(styles.gamesListLi) +
-										((props.selectedGame && props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
-									}
-									onClick={clickGameHandler}
-									onDoubleClick={props.launchGame.bind(null, game.uuid)}
-								>
-									{game.name}
-								</li>
-							</ContextMenuTrigger>
-						)
-					)}
-				</ul>
+	public render() {
+		const taskBarElements: JSX.Element = (
+			<div className={css(styles.commandsGroup)}>
+				<Grid className={css(styles.commandsGrid)}>
+					<Grid.Column width={4} className={css(styles.commandButton)}>
+						<ActionButton
+							icon={faPlus}
+							tooltip={localizer.f('addGameLabel')}
+							onClick={this.props.openGameAddModal}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4} className={css(styles.commandButton)}>
+						<ActionButton
+							icon={faSyncAlt}
+							spin={this.props.refreshingGames}
+							tooltip={localizer.f('refreshLabel')}
+							onClick={this.taskBarRefreshBtnClickHandler}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4} className={css(styles.commandButton)}>
+						<ActionButton
+							icon={faCogs}
+							tooltip={localizer.f('settings')}
+							onClick={this.props.openSettingsModal}
+						/>
+					</Grid.Column>
+					<Grid.Column width={4} className={css(styles.commandButton, styles.addGameButton)}>
+						<Button
+							primary={true}
+							style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
+							onClick={this.potentialGamesButton}
+						>
+							{this.props.potentialGames.size()}
+						</Button>
+					</Grid.Column>
+				</Grid>
 			</div>
-			<ContextMenu/>
-		</Grid.Column>
-	);
-};
+		);
 
-const styles: React.CSSProperties = StyleSheet.create({
+		return (
+			<Grid.Column className={css(styles.sideBarWrapper)}>
+				{taskBarElements}
+				<div className={css(styles.sideBarContent)}>
+					<ul className={css(styles.gamesListUl)}>
+						{this.props.playableGames.map((game: PlayableGame, index: number) => (
+								<ContextMenuTrigger
+									id='sidebar-games-context-menu'
+									key={index}
+								>
+									<li
+										id={`sidebar-game:${game.uuid}`}
+										className={
+											css(styles.gamesListLi) +
+											((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
+										}
+										onClick={this.clickGameHandler}
+										onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
+									>
+										{game.name}
+									</li>
+								</ContextMenuTrigger>
+							)
+						)}
+					</ul>
+				</div>
+				<ContextMenu/>
+			</Grid.Column>
+		);
+	}
+}
+
+const styles: React.CSSProperties & any = StyleSheet.create({
 	sideBarWrapper: {
 		padding: 0,
 		width: 15.5.percents(),

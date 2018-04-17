@@ -130,7 +130,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	spinnerInput: {
 		textAlign: 'right'
 	},

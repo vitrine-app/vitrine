@@ -49,7 +49,7 @@ export class GamesModule extends VitrineComponent<Props, any> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	gamesModuleIcon: {
 		opacity: 0.05,
 		width: 150..px(),

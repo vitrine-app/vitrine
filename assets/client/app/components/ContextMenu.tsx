@@ -147,7 +147,7 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	modal: {
 		margin: margin(22..rem(), 'auto')
 	},

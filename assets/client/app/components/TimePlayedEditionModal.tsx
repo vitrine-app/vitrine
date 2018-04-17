@@ -154,7 +154,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	modal: {
 		width: 300,
 		margin: margin(20..rem(), 'auto')

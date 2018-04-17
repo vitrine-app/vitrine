@@ -57,7 +57,7 @@ export class TaskBar extends VitrineComponent<{}, {}> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	taskBar: {
 		height: 22,
 		backgroundColor: '#23211F',

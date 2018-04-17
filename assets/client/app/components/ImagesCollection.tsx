@@ -100,7 +100,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	imagesContainer: {
 		overflowX: 'auto',
 		overflowY: 'hidden',
