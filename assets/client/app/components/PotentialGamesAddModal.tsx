@@ -55,7 +55,7 @@ export const PotentialGamesAddModal: React.StatelessComponent<Props> = (props: P
 	);
 };
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	modal: {
 		margin: margin(3..rem(), 'auto'),
 		cursor: 'default',

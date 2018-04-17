@@ -157,7 +157,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	gameContainerWrapper: {
 		width: 84.5.percents(),
 		padding: 0,

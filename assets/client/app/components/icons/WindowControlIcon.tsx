@@ -71,7 +71,7 @@ export class WindowControlIcon extends React.Component<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	icon: {
 		backgroundColor: rgba(0, 0, 255, 0),
 		width: 40,

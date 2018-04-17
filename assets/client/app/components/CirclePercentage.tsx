@@ -50,13 +50,13 @@ export class CirclePercentage extends VitrineComponent<Props, {}> {
 	}
 }
 
-const progressKeyframe: React.CSSProperties = {
+const progressKeyframe: React.CSSProperties & any = {
 	'0%': {
 		strokeDasharray: '0 100'
 	}
 };
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	svg: {
 		display: 'block',
 		height: 110,

@@ -222,7 +222,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	modal: {
 		margin: margin(9..rem(), 'auto'),
 		cursor: 'default',

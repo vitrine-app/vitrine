@@ -72,7 +72,7 @@ export class ErrorsWrapper extends React.Component<{}, State> {
 	}
 }
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	modal: {
 		margin: margin(13..rem(), 'auto'),
 		cursor: 'default',

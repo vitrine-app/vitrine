@@ -96,13 +96,13 @@ export class VitrineLoader extends React.Component<null, State> {
 	}
 }
 
-const pulseKeyframes: any = {
+const pulseKeyframes: React.CSSProperties & any = {
 	to: {
 		boxShadow: `${0} ${0} ${0} ${45..px()} ${rgba(117, 76, 46, 0)}`
 	}
 };
 
-const styles: React.CSSProperties = StyleSheet.create({
+const styles: React.CSSProperties & any = StyleSheet.create({
 	loader: {
 		'textAlign': 'center',
 		'padding': 7,
