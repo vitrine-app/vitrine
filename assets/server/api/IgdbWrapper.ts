@@ -1,7 +1,7 @@
 import * as googleTranslate from 'google-translate-api';
 import * as igdb from 'igdb-api-node';
 
-import { igdb as igdbKey } from '../../../modules/keysProvider.node';
+import { igdbKey } from '../../../modules/keysProvider.node';
 import { logger } from '../Logger';
 
 class IgdbWrapper {

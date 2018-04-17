@@ -4,10 +4,10 @@ import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { Button, Form, Grid, Input, Modal, Tab, Table } from 'semantic-ui-react';
 
+import { EmulatorSettingsRow } from '../containers/EmulatorSettingsRow';
 import { openDirectory } from '../helpers';
 import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
-import { EmulatorSettingsRow } from './EmulatorSettingsRow';
 import { GamesModule } from './GamesModule';
 import { VitrineComponent } from './VitrineComponent';
 
@@ -19,6 +19,7 @@ import * as steamIcon from '../../resources/images/steam_icon.png';
 
 interface Props {
 	settings: any;
+	emulators: any[];
 	visible: boolean;
 	firstLaunch: boolean;
 	updateSettings: (settings: any) => void;
@@ -38,12 +39,12 @@ interface State {
 	steamError: boolean;
 	originError: boolean;
 	emulatedError: boolean;
-	emulatorsCurrentConfig: any;
+	aliveEmulators: any[];
 	emulatorsError: string;
 }
 
 export class SettingsModal extends VitrineComponent<Props, State> {
-	private emptyState: State;
+	private readonly emptyState: State;
 
 	public constructor(props: Props) {
 		super(props);
@@ -54,14 +55,14 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			steamEnabled: (this.props.settings && this.props.settings.steam) ? (true) : (false),
 			originEnabled: (this.props.settings && this.props.settings.origin) ? (true) : (false),
 			battleNetEnabled: (this.props.settings && this.props.settings.battleNet) ? (true) : (false),
-			emulatedEnabled: (this.props.settings && this.props.settings.emulated.romsFolder) ? (true) : (false),
+			emulatedEnabled: (this.props.settings && this.props.settings.emulated) ? (true) : (false),
 			steamPath: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
 			originPath: (this.props.settings && this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
-			emulatedPath: (this.props.settings.emulated.romsFolder) ? (this.props.settings.emulated.romsFolder) : (''),
+			emulatedPath: (this.props.settings.emulated) ? (this.props.settings.emulated.romsFolder) : (''),
 			steamError: false,
 			originError: false,
 			emulatedError: false,
-			emulatorsCurrentConfig: this.props.settings.emulated.emulators,
+			aliveEmulators: (this.props.settings.emulated) ? (this.props.settings.emulated.aliveEmulators) : ([]),
 			emulatorsError: ''
 		};
 		this.state = this.emptyState;
@@ -154,29 +155,40 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		});
 	}
 
-	private emulatorConfigChange(emulatorId: number, emulatorConfig: any) {
-		const emulatorsCurrentConfig: any[] = this.state.emulatorsCurrentConfig;
-		emulatorsCurrentConfig[emulatorId] = emulatorConfig;
+	private emulatorConfigChange(emulatorConfig: any) {
+		let aliveEmulators: any[] = this.state.aliveEmulators;
+		if (emulatorConfig.path !== undefined) {
+			const found: boolean = this.state.aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id === emulatorConfig.id).length > 0;
+			if (!found)
+				aliveEmulators.push(emulatorConfig);
+			else
+				aliveEmulators = aliveEmulators.map((aliveEmulator: any) =>
+					(aliveEmulator.id !== emulatorConfig.id) ? (aliveEmulator) : (emulatorConfig)
+				);
+		}
+		else
+			aliveEmulators = aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id !== emulatorConfig.id);
 		this.setState({
-			emulatorsCurrentConfig
+			aliveEmulators
 		});
 	}
 
 	private submitButton() {
-		let canBeSent: boolean = true;
-
-		const form: any = {
+		let sendable: boolean = true;
+		const settingsForm: any = {
 			lang: this.state.lang
 		};
 		if (this.state.steamEnabled) {
 			if (this.state.steamPath) {
-				form.steamPath = this.state.steamPath;
+				settingsForm.steam = {
+					installFolder: this.state.steamPath
+				};
 				this.setState({
 					steamError: false
 				});
 			}
 			else {
-				canBeSent = false;
+				sendable = false;
 				this.setState({
 					steamError: true
 				});
@@ -184,50 +196,54 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 		if (this.state.originEnabled) {
 			if (this.state.originPath) {
-				form.originPath = this.state.originPath;
+				settingsForm.origin = {
+					installFolder: this.state.originPath
+				};
 				this.setState({
 					originError: false
 				});
 			}
 			else {
-				canBeSent = false;
+				sendable = false;
 				this.setState({
 					originError: true
 				});
 			}
 		}
-		if (this.state.battleNetEnabled) {
-			form.battleNetEnabled = true;
-		}
+		if (this.state.battleNetEnabled)
+			settingsForm.battleNet = {};
 		if (this.state.emulatedEnabled) {
 			if (this.state.emulatedPath) {
-				form.emulatedPath = this.state.emulatedPath;
+				settingsForm.emulated = {
+					romsFolder: this.state.emulatedPath,
+					aliveEmulators: this.state.aliveEmulators
+				};
 				this.setState({
 					emulatedError: false
 				});
 			}
 			else {
-				canBeSent = false;
+				sendable = false;
 				this.setState({
 					emulatedError: true
 				});
 			}
 		}
-
-		let emulatorsError: string = '';
-		this.state.emulatorsCurrentConfig.forEachEnd((emulatorConfig: any, done: () => void) => {
-			if (emulatorConfig.active && (!emulatorConfig.path || !emulatorConfig.command)) {
-				canBeSent = false;
-				emulatorsError += `${emulatorConfig.name} ${localizer.f('emulatorConfigError')} `;
+		const emulatorsError: string = this.state.aliveEmulators.map((aliveEmulator: any) => {
+			if (!aliveEmulator.path || (aliveEmulator.command !== undefined && !aliveEmulator.command)) {
+				sendable = false;
+				const emulatorName: string = this.props.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0].name;
+				return `${emulatorName} ${localizer.f('emulatorConfigError')}`;
 			}
-			done();
-		}, () => {
-			this.setState({
-				emulatorsError
-			});
-			if (canBeSent)
-				serverListener.send('update-settings', { ...form, emulators: this.state.emulatorsCurrentConfig });
+			return;
+		}).filter((error: string) => error).join(' ');
+		this.setState({
+			emulatorsError
 		});
+		if (sendable) {
+			console.log('new Form:', settingsForm);
+			serverListener.send('update-settings', settingsForm);
+		}
 	}
 
 	public render(): JSX.Element {
@@ -386,14 +402,13 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{Object.keys(this.props.settings.emulated.emulators).map((emulatorId: string, index: number) =>
+						{this.props.emulators.map((emulator: any, index: number) =>
 							<EmulatorSettingsRow
 								key={index}
-								id={emulatorId}
-								emulator={this.props.settings.emulated.emulators[emulatorId]}
-								platforms={this.props.settings.emulated.emulators[emulatorId].platforms.map(
-									(platformsId) => this.props.settings.emulated.platforms[platformsId]
-								)}
+								emulatorData={emulator}
+								emulator={(this.props.settings.emulated) ? (this.props.settings.emulated.aliveEmulators.filter(
+									(aliveEmulator: any) => aliveEmulator.id === emulator.id
+								)[0]) : (null)}
 								onChange={this.emulatorConfigChange}
 							/>
 						)}

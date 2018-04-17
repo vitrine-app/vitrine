@@ -1,25 +1,29 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getEnvFolder, isProduction } from '../models/env';
+import { getEnvFolder } from '../models/env';
 import { logger } from './Logger';
 import { Server } from './Server';
 
 export class Bootstrapper {
 	private readonly configFileName: string;
+	private readonly modulesConfigFileName: string;
 	private readonly gamesFolderPath: string;
 	private readonly configFolderPath: string;
 	private serverInstance: Server;
 	private vitrineConfigFilePath: string;
 	private vitrineConfig: any;
+	private modulesConfig: any;
 
 	public constructor() {
 		this.configFileName = 'vitrine_config.json';
+		this.modulesConfigFileName = 'modules_config.json';
 		this.gamesFolderPath = getEnvFolder('games');
 		this.configFolderPath = getEnvFolder('config');
 	}
 
 	public async launch() {
+		this.registerDebugPromiseHandler();
 		await Promise.all([
 			fs.ensureDir(this.configFolderPath),
 			fs.ensureDir(this.gamesFolderPath)
@@ -27,19 +31,15 @@ export class Bootstrapper {
 
 		const configFolderOriginalPath: string = getEnvFolder('config', true);
 		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, this.configFileName);
-		if (!fs.pathExistsSync(this.vitrineConfigFilePath))
-			await fs.copy(configFolderOriginalPath, this.configFolderPath);
-		const [ globalConfig, emulatorsConfig ] = await Promise.all([
-			fs.readJson(this.vitrineConfigFilePath, { throws: false }),
-			this.includeEmulatorsConfig()
+		const vitrineModulesConfigFilePath: string = path.resolve(this.configFolderPath, this.modulesConfigFileName);
+		if (!fs.pathExistsSync(this.vitrineConfigFilePath) || !fs.pathExistsSync(vitrineModulesConfigFilePath))
+				await fs.copy(configFolderOriginalPath, this.configFolderPath);
+		const [ modulesConfig, vitrineConfig ] = await Promise.all([
+			fs.readJson(vitrineModulesConfigFilePath),
+			fs.readJson(this.vitrineConfigFilePath, { throws: false })
 		]);
-		this.vitrineConfig = {
-			...globalConfig,
-			emulated: {
-				...globalConfig.emulated,
-				...emulatorsConfig
-			}
-		};
+		this.modulesConfig = modulesConfig;
+		this.vitrineConfig = vitrineConfig;
 		logger.info('Bootstrapper', `${this.configFileName} read.`);
 		this.runServer();
 	}
@@ -53,26 +53,9 @@ export class Bootstrapper {
 		});
 	}
 
-	private async includeEmulatorsConfig() {
-		logger.info('Bootstrapper', 'Including emulators and platforms data.');
-		const platformsConfigFilePath: string = path.resolve(this.configFolderPath, 'platforms.json');
-		const emulatorsConfigFilePath: string = path.resolve(this.configFolderPath, 'emulators.json');
-		const [ platforms, emulators ]: any = await Promise.all([
-			fs.readJson(platformsConfigFilePath),
-			fs.readJson(emulatorsConfigFilePath)
-		]);
-		logger.info('Bootstrapper', 'Emulators and platforms config read.');
-		return {
-			platforms,
-			emulators
-		};
-	}
-
 	private runServer() {
 		logger.info('Bootstrapper', 'Running server.');
-		if (!isProduction())
-			this.registerDebugPromiseHandler();
-		this.serverInstance = new Server(this.vitrineConfig, this.vitrineConfigFilePath, this.configFolderPath);
+		this.serverInstance = new Server(this.vitrineConfig, this.modulesConfig, this.vitrineConfigFilePath);
 		this.serverInstance.run();
 	}
 }

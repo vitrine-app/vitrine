@@ -8,3 +8,12 @@ export function updateSettings(settings: any): Action {
 		}
 	};
 }
+
+export function updateModulesConfig(modulesConfig: any): Action {
+	return {
+		type: ActionType.UPDATE_MODULES_CONFIG,
+		payload: {
+			modulesConfig
+		}
+	};
+}

@@ -9,7 +9,7 @@ import { App } from './app/containers/App';
 import { gameToEdit, launchedGame, playableGames, potentialGames, potentialGameToAdd, refreshingGames, selectedGame } from './app/reducers/games';
 import { gameAddModalVisible, igdbResearchModalVisible, potentialGamesAddModalVisible, settingsModalVisible,
 	timePlayedEditionModalVisible } from './app/reducers/modals';
-import { settings } from './app/reducers/settings';
+import { modulesConfig, settings } from './app/reducers/settings';
 
 import './resources/less/main.less';
 
@@ -22,6 +22,7 @@ const logger: Middleware = (store: any) => (next: any) => (action: any): any => 
 
 const store: Store<AppState> = createStore(combineReducers({
 	settings,
+	modulesConfig,
 	potentialGames,
 	playableGames,
 	selectedGame,

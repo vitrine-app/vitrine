@@ -11,48 +11,8 @@ import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 interface BattleNetGame {
 	tag: string;
 	name: string;
-	execTag?: string;
 	path?: string;
 }
-
-const gamesData: BattleNetGame[] = [
-	{
-		name: 'World of Warcraft',
-		tag: 'wow',
-		execTag: 'WoW'
-	},
-	{
-		name: 'Diablo III',
-		tag: 'd3cn',
-		execTag: 'D3'
-	},
-	{
-		name: 'StarCraft II',
-		tag: 's2',
-		execTag: 'S2'
-	},
-	{
-		name: 'Hearthstone',
-		tag: 'hs_beta',
-		path: 'Hearthstone.exe',
-		execTag: 'WTCG'
-	},
-	{
-		name: 'StarCraft',
-		tag: 's1',
-		execTag: 'SCR'
-	},
-	{
-		name: 'Heroes of the Storm',
-		tag: 'heroes',
-		execTag: 'Hero'
-	},
-	{
-		name: 'Destiny 2',
-		tag: 'destiny2',
-		execTag: 'DST2'
-	}
-];
 
 class BattleNetGamesCrawler extends PotentialGamesCrawler {
 	private gamesData: BattleNetGame[];
@@ -84,7 +44,7 @@ class BattleNetGamesCrawler extends PotentialGamesCrawler {
 			.filter((gamesTag: string) => gamesTag !== 'battle_net' && battleNetConfig.Games[gamesTag].Resumable);
 
 		gameTags.forEachEnd((gameTag: string, done: () => void) => {
-			const gameData: BattleNetGame = gamesData.filter((battleNetGame: BattleNetGame) => battleNetGame.tag === gameTag)[0];
+			const gameData: BattleNetGame = this.moduleConfig.gamesData.filter((battleNetGame: BattleNetGame) => battleNetGame.tag === gameTag)[0];
 			logger.info('BattleNetGamesCrawler', `Battle.net game ${gameData.name} found.`);
 			if (!this.gameDirExists(gameData.name))
 				this.gamesData.push(gameData);

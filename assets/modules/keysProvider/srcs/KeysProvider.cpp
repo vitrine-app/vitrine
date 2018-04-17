@@ -12,8 +12,8 @@ void getSteamKey(const FunctionCallbackInfo<Value>& args) {
 }
 
 void init(Local<Object> exports) {
-	NODE_SET_METHOD(exports, "igdb", getIgdbKey);
-	NODE_SET_METHOD(exports, "steam", getSteamKey);
+	NODE_SET_METHOD(exports, "igdbKey", getIgdbKey);
+	NODE_SET_METHOD(exports, "steamKey", getSteamKey);
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, init);

@@ -1,6 +1,6 @@
 import * as SteamWeb from 'steam-web';
 
-import { steam } from '../../../modules/keysProvider.node';
+import { steamKey } from '../../../modules/keysProvider.node';
 import { logger } from '../Logger';
 
 class SteamPlayTimeWrapper {
@@ -8,7 +8,7 @@ class SteamPlayTimeWrapper {
 
 	public constructor() {
 		this.client = new SteamWeb({
-			apiKey: steam(),
+			apiKey: steamKey(),
 			format: 'json'
 		});
 	}

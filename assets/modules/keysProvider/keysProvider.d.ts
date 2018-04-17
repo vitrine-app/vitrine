@@ -1,4 +1,4 @@
 declare module '*keysProvider.node' {
-	export function igdb(): string;
-	export function steam(): string;
+	export function igdbKey(): string;
+	export function steamKey(): string;
 }

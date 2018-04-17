@@ -13,6 +13,7 @@ import { ErrorsWrapper } from './ErrorsWrapper';
 interface Props {
 	settings: any;
 	updateSettings: (settings: any) => void;
+	updateModulesConfig: (modulesConfig: any) => void;
 }
 
 interface State {
@@ -50,8 +51,9 @@ export class App extends React.Component<Props, State> {
 	}
 
 	public componentDidMount() {
-		serverListener.listen('init-settings', (settings: any) => {
+		serverListener.listen('init-settings', (settings: any, modulesConfig: any) => {
 			this.props.updateSettings(settings);
+			this.props.updateModulesConfig(modulesConfig);
 			this.setState({
 				settingsReceived: true
 			}, () => {

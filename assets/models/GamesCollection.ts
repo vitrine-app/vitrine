@@ -1,12 +1,16 @@
+import { GameSource } from './PotentialGame';
+
 export class GamesCollection<T extends object> {
 	private readonly evaluatedKey: string;
 	private readonly idKey: string;
+	private readonly sourceKey: string;
 	private games: T[];
 
 	public constructor(games?: T[]) {
 		this.games = games || [];
 		this.evaluatedKey = 'name';
 		this.idKey = 'uuid';
+		this.sourceKey = 'source';
 	}
 
 	public getGames(): T[] {
@@ -63,6 +67,10 @@ export class GamesCollection<T extends object> {
 
 	public map(loopCallBack: (value: T, index: number, array: T[]) => any): T[] {
 		return this.games.map(loopCallBack);
+	}
+
+	public getGamesFromSource(source: GameSource): T[] {
+		return this.games.filter((game: T) => game[this.sourceKey] === source);
 	}
 
 	private sort() {

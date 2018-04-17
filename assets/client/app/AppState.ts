@@ -4,6 +4,7 @@ import { PotentialGame } from '../../models/PotentialGame';
 
 export interface AppState {
 	settings: any;
+	modulesConfig: any;
 	potentialGames: GamesCollection<PotentialGame>;
 	playableGames: GamesCollection<PlayableGame>;
 	selectedGame: PlayableGame;
@@ -20,6 +21,7 @@ export interface AppState {
 
 export const initialState: AppState = {
 	settings: null,
+	modulesConfig: null,
 	potentialGames: new GamesCollection<PotentialGame>(),
 	playableGames: new GamesCollection<PlayableGame>(),
 	selectedGame: null,

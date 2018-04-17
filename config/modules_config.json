@@ -1,0 +1,204 @@
+{
+  "steam": {
+    "gamesFolders": [ "~steamapps" ],
+    "launchCommand": "steam://run/%id"
+  },
+  "origin": {
+    "regHive": "HKLM",
+    "regKey": "\\Software\\Microsoft\\Windows\\CurrentVersion\\GameUX\\Games"
+  },
+  "battleNet": {
+    "configFilePath": "%appdata%/Battle.net/Battle.net.config",
+    "gamesData": [
+      {
+        "name": "World of Warcraft",
+        "tag": "wow"
+      },
+      {
+        "name": "Diablo III",
+        "tag": "d3cn"
+      },
+      {
+        "name": "StarCraft II",
+        "tag": "s2",
+        "path": "StarCraft II.exe"
+      },
+      {
+        "name": "Hearthstone",
+        "tag": "hs_beta",
+        "path": "Hearthstone.exe"
+      },
+      {
+        "name": "StarCraft",
+        "tag": "s1"
+      },
+      {
+        "name": "Heroes of the Storm",
+        "tag": "heroes"
+      },
+      {
+        "name": "Destiny 2",
+        "tag": "destiny2"
+      }
+    ]
+  },
+  "emulated": {
+    "emulators": [
+      {
+        "id": 0,
+        "command": "\"%g\"",
+        "glob": "*.nes",
+        "name": "Nestopia",
+        "platforms": [ 0 ]
+      },
+      {
+        "id": 1,
+        "command": "-m \"%g\"",
+        "glob": "*.sfc",
+        "name": "ZSNES",
+        "platforms": [ 1 ]
+      },
+      {
+        "id": 2,
+        "command": "\"%g\"",
+        "glob": "*.n64",
+        "name": "Project64",
+        "platforms": [ 2 ]
+      },
+      {
+        "id": 3,
+        "command": "--batch --exec=\"%g\"",
+        "glob": "*.iso",
+        "name": "Dolphin",
+        "platforms": [ 3, 6 ]
+      },
+      {
+        "id": 4,
+        "command": "\"%g\" -f",
+        "glob": "*.gba",
+        "name": "mGBA",
+        "platforms": [ 4 ]
+      },
+      {
+        "id": 5,
+        "command": "\"%g\"",
+        "glob": "*.nds",
+        "name": "DeSmuME",
+        "platforms": [ 5 ]
+      },
+      {
+        "id": 6,
+        "command": "\"%g\"",
+        "glob": "*.3ds",
+        "name": "Citra",
+        "platforms": [ 7 ]
+      },
+      {
+        "id": 7,
+        "command": "-g \"%g\" -f",
+        "glob": "*/code/*.rpx",
+        "name": "Cemu",
+        "platforms": [ 8 ]
+      },
+      {
+        "id": 8,
+        "command": "-nogui -loadiso \"%g\"",
+        "glob": "*.bin",
+        "name": "ePSXe",
+        "platforms": [ 14 ]
+      }
+    ],
+    "platforms": [
+      {
+        "id": 0,
+        "name": "Nintendo Entertainment System",
+        "folder": "NES"
+      },
+      {
+        "id": 1,
+        "name": "Super Nintendo Entertainment System",
+        "folder": "SNES"
+      },
+      {
+        "id": 2,
+        "name": "Nintendo 64",
+        "folder": "N64"
+      },
+      {
+        "id": 3,
+        "name": "Nintendo GameCube",
+        "folder": "GameCube"
+      },
+      {
+        "id": 4,
+        "name": "Game Boy Advance",
+        "folder": "GBA"
+      },
+      {
+        "id": 5,
+        "name": "Nintendo DS",
+        "folder": "DS"
+      },
+      {
+        "id": 6,
+        "name": "Nintendo Wii",
+        "folder": "Wii"
+      },
+      {
+        "id": 7,
+        "name": "Nintendo 3DS",
+        "folder": "3DS"
+      },
+      {
+        "id": 8,
+        "name": "Nintendo Wii U",
+        "folder": "Wii U"
+      },
+      {
+        "id": 9,
+        "name": "Master System",
+        "folder": "Master System"
+      },
+      {
+        "id": 10,
+        "name": "Mega Drive",
+        "folder": "Mega Drive"
+      },
+      {
+        "id": 11,
+        "name": "Game Gear",
+        "folder": "Game Gear"
+      },
+      {
+        "id": 12,
+        "name": "Sega Saturn",
+        "folder": "Saturn"
+      },
+      {
+        "id": 13,
+        "name": "Dreamcast",
+        "folder": "Dreamcast"
+      },
+      {
+        "id": 14,
+        "name": "PlayStation",
+        "folder": "PS"
+      },
+      {
+        "id": 15,
+        "name": "PlayStation 2",
+        "folder": "PS2"
+      },
+      {
+        "id": 16,
+        "name": "PlayStation 3",
+        "folder": "PS3"
+      },
+      {
+        "id": 17,
+        "name": "Xbox",
+        "folder": "Xbox"
+      }
+    ]
+  }
+}

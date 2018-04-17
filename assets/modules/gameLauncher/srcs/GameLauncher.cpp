@@ -53,7 +53,6 @@ void parseArgsObject(Isolate* isolate, Local<Object> arguments, Worker* worker) 
 	if (argsField->IsString()) {
 		String::Utf8Value arg(argsField->ToString());
 		worker->args = std::string(*arg);
-		// worker->commandLine += std::string(" ") + *arg;
 	}
 
 	Local<Value> cwdField = arguments->Get(cwdFieldName);
