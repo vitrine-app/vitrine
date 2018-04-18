@@ -29,17 +29,28 @@ class ControlsHandler {
 		this.actionCallbacks.up = callback;
 	}
 
+	public registerEnterAction(callback: () => void) {
+		this.actionCallbacks.enter = callback;
+	}
+
 	private registerKeyboardActions(event: KeyboardEvent) {
-		event.preventDefault();
 		switch (event.code) {
 			case 'ArrowUp': {
+				event.preventDefault();
 				if (this.actionCallbacks.up)
 					this.actionCallbacks.up();
 				break;
 			}
 			case 'ArrowDown': {
+				event.preventDefault();
 				if (this.actionCallbacks.down)
 					this.actionCallbacks.down();
+				break;
+			}
+			case 'Enter': {
+				event.preventDefault();
+				if (this.actionCallbacks.enter)
+					this.actionCallbacks.enter();
 				break;
 			}
 		}
@@ -53,6 +64,10 @@ class ControlsHandler {
 				if (event.value > 0.96 && this.actionCallbacks.down)
 					this.actionCallbacks.down();
 			}
+		});
+		this.gamepadListener.on('gamepad:button:0', (event: ListenerEvent) => {
+			if (event.button.pressed && this.actionCallbacks.enter)
+				this.actionCallbacks.enter();
 		});
 	}
 }

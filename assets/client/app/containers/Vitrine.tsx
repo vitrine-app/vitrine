@@ -13,7 +13,12 @@ const mapStateToProps = (state: AppState) => ({
 	settings: state.settings,
 	playableGames: state.playableGames,
 	selectedGame: state.selectedGame,
-	launchedGame: state.launchedGame
+	launchedGame: state.launchedGame,
+	gameAddModalVisible: state.gameAddModalVisible,
+	igdbResearchModalVisible: state.igdbResearchModalVisible,
+	timePlayedEditionModalVisible: state.timePlayedEditionModalVisible,
+	potentialGamesAddModalVisible: state.potentialGamesAddModalVisible,
+	settingsModalVisible: state.settingsModalVisible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
