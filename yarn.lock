@@ -3199,6 +3199,10 @@ function-bind@^1.0.2, function-bind@^1.1.0, function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
 
+gamepad-listener@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/gamepad-listener/-/gamepad-listener-0.3.0.tgz#93c24cecb36d9f226d0f7dbdf32029405d019133"
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
