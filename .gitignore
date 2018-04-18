@@ -1,5 +1,6 @@
 /.idea
 /assets/modules/**/build
+/assets/modules/keysProvider/srcs/keys.hh
 /config/vitrine_config.json
 /dist
 /games/*
