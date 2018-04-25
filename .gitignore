@@ -1,6 +1,4 @@
 /.idea
-/assets/modules/**/build
-/assets/modules/keysProvider/srcs/keys.hh
 /config/vitrine_config.json
 /dist
 /games/*
@@ -8,5 +6,7 @@
 /public/*
 !/public/img
 /modules/*.node
+/sources/modules/**/build
+/sources/modules/keysProvider/srcs/keys.hh
 /vitrine.log.html
 /yarn-error.log

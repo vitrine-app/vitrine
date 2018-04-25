@@ -90,15 +90,15 @@
     "run-app": "yarn lint-app && yarn build-app && electron .",
     "run-server": "yarn lint-server && yarn build-server && yarn start",
     "run-client": "yarn build-client && yarn start",
-    "lint-app": "tslint assets/**/*.ts*",
-    "lint-server": "tslint assets/server/**/*.ts assets/models/**/*.ts",
-    "lint-client": "tslint assets/client/**/*.ts*",
+    "lint-app": "tslint sources/**/*.ts*",
+    "lint-server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
+    "lint-client": "tslint sources/client/**/*.ts*",
     "watch-client": "parallel-webpack --progress --config=webpack.client.config.js --watch",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "generate-authors": "node scripts/run.js authors.sh",
     "pack": "yarn build-scripts && yarn build-prod && build --dir",
     "dist": "yarn build-scripts && yarn test && yarn build-prod && build",
-    "precommit": "tslint --fix assets/**/*.ts*"
+    "precommit": "tslint --fix sources/**/*.ts*"
   }
 }

@@ -3,7 +3,7 @@ const path = require('path');
 const production = process.env.NODE_ENV === 'production';
 
 module.exports = {
-	entry: './assets/server/main.ts',
+	entry: './sources/server/main.ts',
 	output: {
 		path: path.resolve(__dirname, 'public'),
 		filename: 'server.js'

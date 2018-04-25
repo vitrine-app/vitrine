@@ -3,7 +3,7 @@
   "productName": "Vitrine",
   "win": {
     "target": "nsis",
-    "icon": "assets/client/resources/images/vitrine.ico"
+    "icon": "sources/client/resources/images/vitrine.ico"
   },
   "nsis": {
     "oneClick": false,
@@ -17,7 +17,7 @@
   "files": [
     "!.circleci",
     "!.idea",
-    "!assets",
+    "!sources",
     "!games",
     "!node_modules",
     "!tests",
