@@ -11,5 +11,5 @@ if (process.platform === 'win32') {
 }
 else {
 	const { exec } = require('child_process');
-	exec(`sh scripts/${process.argv[2]}`);
+	exec(`bash scripts/${process.argv[2]}`);
 }
