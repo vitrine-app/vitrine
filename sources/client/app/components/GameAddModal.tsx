@@ -31,7 +31,6 @@ interface Props {
 	setGameToEdit: (playableGame: PlayableGame) => void;
 	selectGame: (selectedGame: PlayableGame) => void;
 	closeGameAddModal: () => void;
-	openIgdbResearchModal: () => void;
 	closeIgdbResearchModal: () => void;
 	closeTimePlayedEditionModal: () => void;
 }
@@ -53,6 +52,8 @@ interface State {
 	source: GameSource;
 	editing: boolean;
 	igdbFilled: boolean;
+	submitButtonLoading: boolean;
+	igdbButtonLoading: boolean;
 }
 
 export class GameAddModal extends VitrineComponent<Props, State> {
@@ -77,7 +78,9 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			potentialBackgrounds: [],
 			source: GameSource.LOCAL,
 			editing: false,
-			igdbFilled: false
+			igdbFilled: false,
+			submitButtonLoading: false,
+			igdbButtonLoading: false
 		};
 		this.state = { ...this.emptyState };
 
@@ -105,7 +108,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			cover: gameInfos.cover,
 			potentialBackgrounds: gameInfos.screenshots || [],
 			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : (''),
-			igdbFilled: true
+			igdbFilled: true,
+			igdbButtonLoading: false
 		});
 		this.props.closeIgdbResearchModal();
 	}
@@ -114,6 +118,9 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		this.props.addPlayableGames([game]);
 		this.closeModal();
 		notify(`<b>${game.name}</b> ${localizer.f('addingGameToast')}.`, true);
+		this.setState({
+			submitButtonLoading: false
+		});
 	}
 
 	private editPlayableGame(game: PlayableGame) {
@@ -125,6 +132,9 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		if (this.props.visible)
 			this.closeModal();
 		notify(`<b>${game.name}</b> ${localizer.f('editingGameToast')}.`, true);
+		this.setState({
+			submitButtonLoading: false
+		});
 	}
 
 	private closeModal() {
@@ -182,8 +192,10 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	}
 
 	private searchIgdbButton() {
+		this.setState({
+			igdbButtonLoading: true
+		});
 		serverListener.send('search-igdb-games', this.state.name);
-		this.props.openIgdbResearchModal();
 	}
 
 	private submitButton() {
@@ -191,12 +203,16 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		delete gameInfos.potentialBackgrounds;
 		delete gameInfos.editing;
 		delete gameInfos.igdbFilled;
+		delete gameInfos.submitButtonLoading;
 
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
 		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
 			gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
 
+		this.setState({
+			submitButtonLoading: true
+		});
 		if (this.state.editing)
 			serverListener.send('edit-game', this.props.gameToEdit.uuid, gameInfos);
 		else
@@ -458,6 +474,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 					<Button
 						secondary={true}
 						disabled={!this.state.name}
+						loading={this.state.igdbButtonLoading}
 						onClick={this.searchIgdbButton}
 					>
 						{localizer.f('fillWithIgdb')}
@@ -465,6 +482,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 					<Button
 						primary={true}
 						disabled={!this.state.name || !this.state.executable}
+						loading={this.state.submitButtonLoading}
 						onClick={this.submitButton}
 					>
 						{(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}

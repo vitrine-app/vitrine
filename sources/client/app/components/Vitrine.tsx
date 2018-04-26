@@ -12,6 +12,7 @@ import { PotentialGamesAddModal } from '../containers/PotentialGamesAddModal';
 import { SettingsModal } from '../containers/SettingsModal';
 import { SideBar } from '../containers/SideBar';
 import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
+import { controlsHandler } from '../ControlsHandler';
 import { formatTimePlayed, notify } from '../helpers';
 import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
@@ -23,6 +24,11 @@ interface Props {
 	playableGames: GamesCollection<PlayableGame>;
 	selectedGame: PlayableGame;
 	launchedGame: PlayableGame;
+	gameAddModalVisible: boolean;
+	igdbResearchModalVisible: boolean;
+	timePlayedEditionModalVisible: boolean;
+	potentialGamesAddModalVisible: boolean;
+	settingsModalVisible: boolean;
 	updateSettings: (settings: any) => void;
 	addPotentialGames: (potentialGames: PotentialGame[]) => void;
 	addPlayableGames: (playableGames: PlayableGame[]) => void;
@@ -90,33 +96,22 @@ export class Vitrine extends VitrineComponent<Props, State> {
 		this.throwError(error);
 	}
 
-	private keyDownHandler(event: KeyboardEvent) {
-		switch (event.code) {
-			case 'ArrowDown': {
-				event.preventDefault();
-				const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
-				if (index < this.props.playableGames.size() - 1)
-					this.props.selectGame(this.props.playableGames.getGame(index + 1));
-				break;
-			}
-			case 'ArrowUp': {
-				event.preventDefault();
-				const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
-				if (index)
-					this.props.selectGame(this.props.playableGames.getGame(index - 1));
-				break;
-			}
-			/*case 'Enter': {
-				if ($('#add-game-modal').is(':visible') || $('#add-potential-games-modal').is(':visible') ||
-					$('#update-modal').is(':visible') || $('#igdb-research-modal').is(':visible') ||
-					$('#settings-modal').is(':visible') || $('#edit-time-played-modal').is(':visible'))
-					break;
-				event.preventDefault();
-
+	private registerActions() {
+		controlsHandler.registerDownAction(() => {
+			const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
+			if (index < this.props.playableGames.size() - 1)
+				this.props.selectGame(this.props.playableGames.getGame(index + 1));
+		});
+		controlsHandler.registerUpAction(() => {
+			const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
+			if (index)
+				this.props.selectGame(this.props.playableGames.getGame(index - 1));
+		});
+		controlsHandler.registerEnterAction(() => {
+			if (!this.props.gameAddModalVisible && !this.props.potentialGamesAddModalVisible
+				&& !this.props.settingsModalVisible && !this.props.timePlayedEditionModalVisible)
 				this.launchGame(this.props.selectedGame.uuid);
-				break;
-			}*/
-		}
+		});
 	}
 
 	public componentDidMount() {
@@ -133,11 +128,11 @@ export class Vitrine extends VitrineComponent<Props, State> {
 			.listen('settings-updated', this.settingsUpdated.bind(this))
 			.listen('error', this.serverError.bind(this));
 
-		window.addEventListener('keydown', this.keyDownHandler.bind(this));
+		this.registerActions();
 	}
 
 	public componentWillUnmount() {
-		window.removeEventListener('keydown', this.keyDownHandler.bind(this));
+		controlsHandler.unregister();
 	}
 
 	public render(): JSX.Element {

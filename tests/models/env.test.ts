@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
-import { randomHashedString, uuidV5 } from '../../assets/models/env';
-import { logger } from '../../assets/server/Logger';
+import { randomHashedString, uuidV5 } from '../../sources/models/env';
+import { logger } from '../../sources/server/Logger';
 
 logger.createLogger(true);
 

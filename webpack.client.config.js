@@ -11,7 +11,7 @@ let clientConfig = {
 	resolve: {
 		extensions: [ '.ts', '.tsx', '.js' ],
 		alias: {
-			'../../theme.config$': path.join(__dirname, 'assets/client/resources/less/theme.config.less')
+			'../../theme.config$': path.join(__dirname, 'sources/client/resources/less/theme.config.less')
 		}
 	},
 	target: 'electron-renderer',
@@ -42,7 +42,7 @@ let clientConfig = {
 module.exports = [
 	{
 		...clientConfig,
-		entry: './assets/client/main.tsx',
+		entry: './sources/client/main.tsx',
 		output: {
 			path: path.resolve(__dirname, 'public'),
 			filename: 'client.js'
@@ -56,7 +56,7 @@ module.exports = [
 	},
 	{
 		...clientConfig,
-		entry: './assets/client/loader.tsx',
+		entry: './sources/client/loader.tsx',
 		output: {
 			path: path.resolve(__dirname, 'public'),
 			filename: 'loader.js'

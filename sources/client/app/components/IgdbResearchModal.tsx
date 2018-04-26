@@ -14,6 +14,7 @@ import { faCircleNotch, faSearch } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	visible: boolean;
+	openIgdbResearchModal: () => void;
 	closeIgdbResearchModal: () => void;
 }
 
@@ -110,6 +111,8 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 				selectedResearchId: '',
 				research,
 				researches
+			}, () => {
+				this.props.openIgdbResearchModal();
 			});
 		});
 	}

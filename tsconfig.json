@@ -19,7 +19,7 @@
     "baseUrl": "./",
     "typeRoots": [ "node_modules/@types" ],
     "paths": {
-      "react-datetime": [ "assets/defs/react-datetime" ]
+      "react-datetime": [ "sources/defs/react-datetime" ]
     }
   },
   "exclude": [

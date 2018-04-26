@@ -35,9 +35,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeGameAddModal: () => {
 		dispatch(closeGameAddModal());
 	},
-	openIgdbResearchModal: () => {
-		dispatch(openIgdbResearchModal());
-	},
 	closeIgdbResearchModal: () => {
 		dispatch(closeIgdbResearchModal());
 	},

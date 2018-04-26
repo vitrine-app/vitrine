@@ -19,6 +19,7 @@
     "electron-updater": "^2.21.3",
     "foreach-end": "1.1.0",
     "fs-extra": "5.0.0",
+    "gamepad-listener": "0.4.0",
     "glob": "^7.1.2",
     "glob-promise": "^3.4.0",
     "google-translate-api": "^2.3.0",
@@ -67,6 +68,7 @@
     "less-vars-loader": "^1.1.0",
     "mocha": "^5.0.5",
     "node-gyp": "^3.6.2",
+    "parallel-webpack": "^2.3.0",
     "semantic-ui-less": "^2.2.14",
     "shelljs": "^0.8.1",
     "style-loader": "^0.20.3",
@@ -80,23 +82,23 @@
     "webpack-cli": "^2.0.13"
   },
   "scripts": {
-    "build-app": "webpack --progress",
-    "build-prod": "cross-env NODE_ENV=production webpack --progress",
-    "build-server": "webpack --progress --config webpack.server.config.js",
-    "build-client": "webpack --progress --config webpack.client.config.js",
+    "build-app": "parallel-webpack --progress",
+    "build-prod": "cross-env NODE_ENV=production parallel-webpack --progress",
+    "build-server": "parallel-webpack --progress --config=webpack.server.config.js",
+    "build-client": "parallel-webpack --progress --config=webpack.client.config.js",
     "build-scripts": "node scripts/run.js build_modules.sh",
     "run-app": "yarn lint-app && yarn build-app && electron .",
     "run-server": "yarn lint-server && yarn build-server && yarn start",
     "run-client": "yarn build-client && yarn start",
-    "lint-app": "tslint assets/**/*.ts*",
-    "lint-server": "tslint assets/server/**/*.ts assets/models/**/*.ts",
-    "lint-client": "tslint assets/client/**/*.ts*",
-    "watch-client": "webpack --progress --config webpack.client.config.js --watch",
+    "lint-app": "tslint sources/**/*.ts*",
+    "lint-server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
+    "lint-client": "tslint sources/client/**/*.ts*",
+    "watch-client": "parallel-webpack --progress --config=webpack.client.config.js --watch",
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "generate-authors": "node scripts/run.js authors.sh",
     "pack": "yarn build-scripts && yarn build-prod && build --dir",
     "dist": "yarn build-scripts && yarn test && yarn build-prod && build",
-    "precommit": "tslint --fix assets/**/*.ts*"
+    "precommit": "tslint --fix sources/**/*.ts*"
   }
 }

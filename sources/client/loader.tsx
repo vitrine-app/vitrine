@@ -8,4 +8,7 @@ import './resources/less/main.less';
 const appRoot: HTMLElement = document.createElement('div');
 document.body.appendChild(appRoot);
 
-render(<VitrineLoader/>, appRoot);
+render(
+	<VitrineLoader/>,
+	appRoot
+);
