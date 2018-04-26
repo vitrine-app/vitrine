@@ -66,6 +66,7 @@ class ControlsHandler {
 			}
 		});
 		this.gamepadListener.on('gamepad:button:0', (event: ListenerEvent) => {
+			console.log(event.button.value);
 			if (event.button.pressed && this.actionCallbacks.enter)
 				this.actionCallbacks.enter();
 		});
