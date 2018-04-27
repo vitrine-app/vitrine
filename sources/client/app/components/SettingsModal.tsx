@@ -437,11 +437,13 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 
 		return (
 			<Modal
+				size={'large'}
 				open={this.props.visible}
 				onClose={this.closeModal}
 				className={css(styles.modal)}
 			>
 				<Modal.Header
+					className={css(styles.modalHeader)}
 					style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
 				>
 					{localizer.f('settings')}
@@ -452,6 +454,11 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 						<p>{localizer.f('wizardText')}</p>
 					</div>
 					<Tab
+						menu={{
+							fluid: true,
+							vertical: true,
+							tabular: 'right'
+						}}
 						panes={[
 							{
 								menuItem: localizer.f('modules'),
@@ -468,7 +475,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 						]}
 					/>
 				</Modal.Content>
-				<Modal.Actions>
+				<Modal.Actions className={css(styles.modalHeader)}>
 					<Button
 						secondary={true}
 						style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
@@ -492,12 +499,17 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 const styles: React.CSSProperties & any = StyleSheet.create({
 	modal: {
 		margin: margin(5..rem(), 'auto'),
+		width: 70..vw(),
 		cursor: 'default',
 		userSelect: 'none'
 	},
+	modalHeader: {
+		border: 'none'
+	},
 	settingsPane: {
-		maxHeight: 64..vh(),
-		overflowY: 'auto'
+		height: 64..vh(),
+		overflowY: 'auto',
+		border: 'none'
 	},
 	formHr: {
 		border: 'none',
