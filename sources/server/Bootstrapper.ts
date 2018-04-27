@@ -12,8 +12,7 @@ export class Bootstrapper {
 	private readonly configFolderPath: string;
 	private serverInstance: Server;
 	private vitrineConfigFilePath: string;
-	private vitrineConfig: any;
-	private modulesConfig: any;
+	private config: any;
 
 	public constructor() {
 		this.configFileName = 'vitrine_config.json';
@@ -38,8 +37,10 @@ export class Bootstrapper {
 			fs.readJson(vitrineModulesConfigFilePath),
 			fs.readJson(this.vitrineConfigFilePath, { throws: false })
 		]);
-		this.modulesConfig = modulesConfig;
-		this.vitrineConfig = vitrineConfig;
+		this.config = {
+			modulesConfig,
+			vitrineConfig
+		};
 		logger.info('Bootstrapper', `${this.configFileName} read.`);
 		this.runServer();
 	}
@@ -55,7 +56,7 @@ export class Bootstrapper {
 
 	private runServer() {
 		logger.info('Bootstrapper', 'Running server.');
-		this.serverInstance = new Server(this.vitrineConfig, this.modulesConfig, this.vitrineConfigFilePath);
+		this.serverInstance = new Server(this.config, this.vitrineConfigFilePath);
 		this.serverInstance.run();
 	}
 }

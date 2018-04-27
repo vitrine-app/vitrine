@@ -1,4 +1,5 @@
 /.idea
+/config/potential_games.json
 /config/vitrine_config.json
 /dist
 /games/*
