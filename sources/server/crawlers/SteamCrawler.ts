@@ -5,11 +5,10 @@ import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { AcfParser } from '../api/AcfParser';
-import { searchIgdbGame } from '../api/IgdbWrapper';
 import { logger } from '../Logger';
 import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
-class SteamGamesCrawler extends PotentialGamesCrawler {
+class SteamCrawler extends PotentialGamesCrawler {
 	private manifestRegEx: string;
 
 	public setPlayableGames(playableGames?: PlayableGame[]): this {
@@ -28,7 +27,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 				gameFolder = path.resolve(this.moduleConfig.installFolder, folder.substr(1), this.manifestRegEx);
 			else
 				gameFolder = path.resolve(folder, this.manifestRegEx);
-			logger.info('SteamGamesCrawler', `Looking for Steam games manifests in ${gameFolder}.`);
+			logger.info('SteamCrawler', `Looking for Steam games manifests in ${gameFolder}.`);
 			glob(gameFolder, this.processGames.bind(this));
 		});
 	}
@@ -39,7 +38,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 			return;
 		}
 		if (!files.length) {
-			logger.info('SteamGamesCrawler', `No Steam games found in this directory.`);
+			logger.info('SteamCrawler', `No Steam games found in this directory.`);
 			this.callback(null, new GamesCollection());
 			return;
 		}
@@ -49,16 +48,14 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 					parseInt(appManifest.appid) === playableGame.details.steamId
 				).length > 0;
 				if (found)
-					logger.info('SteamGamesCrawler', `Steam game ${appManifest.name} is already a playable game.`);
+					logger.info('SteamCrawler', `Steam game ${appManifest.name} is already a playable game.`);
 				return !found;
 			});
 
 		gameManifests.forEachEnd(async (gameManifest: any, done: () => void) => {
-			logger.info('SteamGamesCrawler', `Steam game ${gameManifest.name} (Steam ID ${gameManifest.appid}) found.`);
+			logger.info('SteamCrawler', `Steam game ${gameManifest.name} (Steam ID ${gameManifest.appid}) found.`);
 			try {
-				const game: any = (await searchIgdbGame(gameManifest.name, 1))[0];
-				delete game.name;
-				const potentialGame: PotentialGame = new PotentialGame(gameManifest.name, game);
+				const potentialGame: PotentialGame = new PotentialGame(gameManifest.name);
 				potentialGame.source = GameSource.STEAM;
 				potentialGame.commandLine = [
 					path.resolve(this.moduleConfig.installFolder, 'steam.exe'),
@@ -66,7 +63,7 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 				];
 				potentialGame.details.steamId = parseInt(gameManifest.appid);
 				this.potentialGames.push(potentialGame);
-				logger.info('SteamGamesCrawler', `Adding ${gameManifest.name} to potential Steam games.`);
+				logger.info('SteamCrawler', `Adding ${gameManifest.name} to potential Steam games.`);
 				done();
 			}
 			catch (error) {
@@ -78,11 +75,11 @@ class SteamGamesCrawler extends PotentialGamesCrawler {
 	}
 }
 
-const steamGamesCrawler: SteamGamesCrawler = new SteamGamesCrawler();
+const steamCrawler: SteamCrawler = new SteamCrawler();
 
 export function searchSteamGames(steamConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		steamGamesCrawler.setPlayableGames(playableGames)
+		steamCrawler.setPlayableGames(playableGames)
 			.search(steamConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 				if (error)
 					reject(error);

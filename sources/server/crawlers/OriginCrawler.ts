@@ -5,12 +5,11 @@ import * as Registry from 'winreg';
 import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
-import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
 import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
-class OriginGamesCrawler extends PotentialGamesCrawler {
+class OriginCrawler extends PotentialGamesCrawler {
 	private regDetails: any[];
 	private gamesFolder: string;
 
@@ -28,7 +27,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			hive: Registry[this.moduleConfig.regHive],
 			key: this.moduleConfig.regKey
 		});
-		logger.info('OriginGamesCrawler', `Parsing registry key ${this.moduleConfig.regKey}.`);
+		logger.info('OriginCrawler', `Parsing registry key ${this.moduleConfig.regKey}.`);
 		regKey.keys(this.parseRegistry.bind(this));
 	}
 
@@ -41,7 +40,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 				if (error)
 					this.callback(error, null);
 
-				logger.info('OriginGamesCrawler', `Installed game found in registry (${values[5].value}).`);
+				logger.info('OriginCrawler', `Installed game found in registry (${values[5].value}).`);
 				this.regDetails.push({
 					path: values[1].value,
 					exe: values[5].value
@@ -49,7 +48,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 				done();
 			});
 		}, () => {
-			logger.info('OriginGamesCrawler', `Looking for games folders in (${this.gamesFolder}).`);
+			logger.info('OriginCrawler', `Looking for games folders in (${this.gamesFolder}).`);
 			glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
 		});
 	}
@@ -58,7 +57,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 		if (error)
 			this.callback(error, null);
 		if (!files.length) {
-			logger.info('OriginGamesCrawler', 'Not Origin games found in this directory.');
+			logger.info('OriginCrawler', 'Not Origin games found in this directory.');
 			const potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
 			this.callback(null, potentialGames);
 			return;
@@ -71,22 +70,18 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 				spatStr(gameName) === spatStr(playableGame.name)
 			).length > 0;
 			if (found)
-				logger.info('OriginGamesCrawler', `Origin game ${gameName} is already a playable game.`);
+				logger.info('OriginCrawler', `Origin game ${gameName} is already a playable game.`);
 			return !found;
 		});
 
 		gameInfos.forEachEnd(async ({gameName, gameFolder}: any, done: () => void) => {
 			try {
-				const [ gamePath, [ game ] ]: any = await Promise.all([
-					this.getRegGamePath(gameFolder),
-					await searchIgdbGame(gameName, 1)
-				]);
-				delete game.name;
-				const potentialGame: PotentialGame = new PotentialGame(gameName, game);
+				const gamePath: string = await this.getRegGamePath(gameFolder);
+				const potentialGame: PotentialGame = new PotentialGame(gameName);
 				potentialGame.source = GameSource.ORIGIN;
 				potentialGame.commandLine = [ path.resolve(gamePath) ];
 				this.potentialGames.push(potentialGame);
-				logger.info('OriginGamesCrawler', `Adding ${gameName} to potential Origin games.`);
+				logger.info('OriginCrawler', `Adding ${gameName} to potential Origin games.`);
 				done();
 			}
 			catch (error) {
@@ -102,7 +97,7 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 			let found: boolean = false;
 			this.regDetails.forEachEnd((regDetail: any, done: () => void) => {
 				if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
-					logger.info('OriginGamesCrawler', `Origin game found (${gamePath}).`);
+					logger.info('OriginCrawler', `Origin game found (${gamePath}).`);
 					resolve(regDetail.exe);
 					found = true;
 				}
@@ -115,11 +110,11 @@ class OriginGamesCrawler extends PotentialGamesCrawler {
 	}
 }
 
-const originGamesCrawler: OriginGamesCrawler = new OriginGamesCrawler();
+const originCrawler: OriginCrawler = new OriginCrawler();
 
 export function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {
-		originGamesCrawler.setPlayableGames(playableGames)
+		originCrawler.setPlayableGames(playableGames)
 			.search(originConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
 				if (error)
 					reject(error);

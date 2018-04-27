@@ -12,23 +12,27 @@ import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
+import { searchBattleNetGames } from './crawlers/BattleNetCrawler';
+import { searchEmulatedGames } from './crawlers/EmulatedCrawler';
+import { searchOriginGames } from './crawlers/OriginCrawler';
+import { getPlayableGames } from './crawlers/PlayableGamesCrawler';
+import { searchSteamGames } from './crawlers/SteamCrawler';
 import { launchGame } from './GameLauncher';
-import { searchBattleNetGames } from './games/BattleNetGamesCrawler';
-import { searchEmulatedGames } from './games/EmulatedGamesCrawler';
-import { searchOriginGames } from './games/OriginGamesCrawler';
-import { getPlayableGames } from './games/PlayableGamesCrawler';
-import { searchSteamGames } from './games/SteamGamesCrawler';
 import { downloadImage, isAlreadyStored } from './helpers';
 import { logger } from './Logger';
+import { potentialGamesCacher } from './PotentialGamesCacher';
 import { WindowsHandler } from './WindowsHandler';
 
 export class Server {
+	private vitrineConfig: any;
+	private modulesConfig: any;
 	private windowsHandler: WindowsHandler;
 	private potentialGames: GamesCollection<PotentialGame>;
 	private playableGames: GamesCollection<PlayableGame>;
 	private gameLaunched: boolean;
 
-	public constructor(private vitrineConfig: any, private modulesConfig: any, private vitrineConfigFilePath: string) {
+	public constructor(config: any, private vitrineConfigFilePath: string) {
+		({ vitrineConfig: this.vitrineConfig, modulesConfig: this.modulesConfig } = config);
 		this.windowsHandler = new WindowsHandler();
 		this.gameLaunched = false;
 		this.registerEvents();
@@ -190,11 +194,12 @@ export class Server {
 	}
 
 	public removeGame(gameUuid: string) {
-		this.potentialGames.removeGame(gameUuid);
+		this.playableGames.removeGame(gameUuid);
 		const gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
 		rimraf(gameDirectory, () => {
 			logger.info('Server', `Removing game ${gameUuid} from Vitrine and deleting corresponding directory.`);
 			this.windowsHandler.sendToClient('remove-playable-game', gameUuid);
+			this.findPotentialGames();
 		});
 	}
 
@@ -208,6 +213,8 @@ export class Server {
 			this.searchBattleNetGames(),
 			this.searchEmulatedGames()
 		]);
+		logger.info('Server', `Potential games are about to be cached.`);
+		this.potentialGames.setGames(await potentialGamesCacher.cache(this.potentialGames.getGames()));
 		logger.info('Server', `${this.potentialGames.size()} potential games sent to client.`);
 		this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
 	}
@@ -395,8 +402,6 @@ export class Server {
 		logger.info('Server', `Outputting game config file for ${game.name}.`);
 		try {
 			await fs.outputJson(configFilePath, game , { spaces: 2 });
-			if (!editing && game.source !== GameSource.LOCAL)
-				this.findPotentialGames();
 			if (!editing) {
 				logger.info('Server', `Added game ${game.name} sent to client.`);
 				this.playableGames.addGame(game);
@@ -407,6 +412,8 @@ export class Server {
 				this.playableGames.editGame(game);
 				this.windowsHandler.sendToClient('edit-playable-game', game);
 			}
+			if (!editing && game.source !== GameSource.LOCAL)
+				this.findPotentialGames();
 		}
 		catch (error) {
 			this.throwServerError(error);

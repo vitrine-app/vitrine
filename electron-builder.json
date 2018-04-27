@@ -33,7 +33,8 @@
     "!yarn.lock"
   ],
   "extraResources": [
-    "config",
+    "config/lang",
+    "config/modules_config.json",
     "modules/*.node",
     "*app-update.yml"
   ]

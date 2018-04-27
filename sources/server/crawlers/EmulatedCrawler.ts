@@ -4,12 +4,11 @@ import * as path from 'path';
 import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
-import { searchIgdbGame } from '../api/IgdbWrapper';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
 import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
-class EmulatedGamesCrawler extends PotentialGamesCrawler {
+class EmulatedCrawler extends PotentialGamesCrawler {
 	private folderDatas: any[];
 
 	public setPlayableGames(playableGames?: PlayableGame[]): this {
@@ -20,7 +19,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 
 	public async search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		super.search(moduleConfig, callback);
-		logger.info('EmulatedGamesCrawler', `Searching roms folders in ${this.moduleConfig.romsFolder}.`);
+		logger.info('EmulatedCrawler', `Searching roms folders in ${this.moduleConfig.romsFolder}.`);
 		const aliveEmulators: any[] = this.moduleConfig.aliveEmulators.map((aliveEmulator: any) => ({
 			...this.moduleConfig.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0],
 			...aliveEmulator
@@ -36,7 +35,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 			})).filter((folderData: any) => {
 				if (!folderData.emulator)
 					return false;
-				logger.info('EmulatedGamesCrawler', `Roms folder ${folderData.folder} found and binded to ${folderData.emulator.name}.`);
+				logger.info('EmulatedCrawler', `Roms folder ${folderData.folder} found and binded to ${folderData.emulator.name}.`);
 				return true;
 			});
 			this.analyzeFolders();
@@ -48,7 +47,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 
 	private async analyzeFolders() {
 		this.folderDatas.forEachEnd(async ({ folder: romFolder, emulator: romEmulator }: any, done: () => void) => {
-			logger.info('EmulatedGamesCrawler', `Parsing roms in ${romFolder} with ${romEmulator.name} glob (${romEmulator.glob}).`);
+			logger.info('EmulatedCrawler', `Parsing roms in ${romFolder} with ${romEmulator.name} glob (${romEmulator.glob}).`);
 			const roms: string[] = await glob(`${romFolder}/${romEmulator.glob}`);
 			const romInfos: any[] = roms.map((romPath: string) => {
 				const parsedPath: string[] = romPath.split('/');
@@ -60,20 +59,18 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 					spatStr(romName) === spatStr(playableGame.name)
 				).length > 0;
 				if (found)
-					logger.info('EmulatedGamesCrawler', `Emulated game ${romName} is already a playable game.`);
+					logger.info('EmulatedCrawler', `Emulated game ${romName} is already a playable game.`);
 				return !found;
 			});
 			romInfos.forEachEnd(async ({ romName, romPath }: any, secondDone: () => void) => {
-				const game: any = (await searchIgdbGame(romName, 1))[0];
-				delete game.name;
-				const potentialGame: PotentialGame = new PotentialGame(romName, game);
+				const potentialGame: PotentialGame = new PotentialGame(romName);
 				potentialGame.source = GameSource.EMULATED;
 				potentialGame.commandLine = [
 					romEmulator.path,
 					romEmulator.command.replace('%g', romPath)
 				];
 				this.potentialGames.push(potentialGame);
-				logger.info('EmulatedGamesCrawler', `Adding ${romName} to potential emulated games.`);
+				logger.info('EmulatedCrawler', `Adding ${romName} to potential emulated games.`);
 				secondDone();
 			}, () => {
 				done();
@@ -84,7 +81,7 @@ class EmulatedGamesCrawler extends PotentialGamesCrawler {
 	}
 }
 
-const emulatedGamesCrawler: EmulatedGamesCrawler = new EmulatedGamesCrawler();
+const emulatedGamesCrawler: EmulatedCrawler = new EmulatedCrawler();
 
 export async function searchEmulatedGames(emulatedConfig: any, playableGames?: PlayableGame[]): Promise<any> {
 	return new Promise((resolve, reject) => {

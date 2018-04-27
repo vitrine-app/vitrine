@@ -48,8 +48,8 @@ class IgdbWrapper {
 			]);
 			return {
 				...game,
+				publisher: publisher || developer,
 				developer,
-				publisher,
 				series,
 				genres
 			};
@@ -123,7 +123,7 @@ class IgdbWrapper {
 	}
 
 	private async findCompaniesByIds(ids: number[]) {
-		if (!ids.length)
+		if (!ids || !ids.length)
 			return '';
 		const { body: response }: any = await this.client.companies({ ids }, [ 'name' ]);
 		if (!response.length)
