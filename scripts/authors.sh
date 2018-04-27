@@ -8,4 +8,4 @@
 	git shortlog -se \
     	| sed -E "s/^\s+[0-9]+\s+(.*)/\1/" \
     	| sed -E "s/^(.*)\s<(.*)>/**\1** <*\2*>/"
-} > AUTHORS.md
+} > ../AUTHORS.md
