@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getEnvFolder } from '../models/env';
+import { getEnvFolder, isProduction } from '../models/env';
 import { logger } from './Logger';
 import { Server } from './Server';
 
@@ -10,8 +10,8 @@ export class Bootstrapper {
 	private readonly modulesConfigFileName: string;
 	private readonly gamesFolderPath: string;
 	private readonly configFolderPath: string;
+	private readonly vitrineConfigFilePath: string;
 	private serverInstance: Server;
-	private vitrineConfigFilePath: string;
 	private config: any;
 
 	public constructor() {
@@ -19,30 +19,36 @@ export class Bootstrapper {
 		this.modulesConfigFileName = 'modules_config.json';
 		this.gamesFolderPath = getEnvFolder('games');
 		this.configFolderPath = getEnvFolder('config');
+		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, this.configFileName);
+
+		this.registerDebugPromiseHandler();
 	}
 
 	public async launch() {
-		this.registerDebugPromiseHandler();
+		if (isProduction() && !await fs.pathExists(this.vitrineConfigFilePath))
+				await fs.copy(getEnvFolder('config', true), this.configFolderPath);
+
 		await Promise.all([
 			fs.ensureDir(this.configFolderPath),
-			fs.ensureDir(this.gamesFolderPath)
+			fs.ensureDir(this.gamesFolderPath),
+			fs.ensureFile(this.vitrineConfigFilePath)
 		]);
-
-		const configFolderOriginalPath: string = getEnvFolder('config', true);
-		this.vitrineConfigFilePath = path.resolve(this.configFolderPath, this.configFileName);
-		const vitrineModulesConfigFilePath: string = path.resolve(this.configFolderPath, this.modulesConfigFileName);
-		if (!fs.pathExistsSync(this.vitrineConfigFilePath) || !fs.pathExistsSync(vitrineModulesConfigFilePath))
-				await fs.copy(configFolderOriginalPath, this.configFolderPath);
 		const [ modulesConfig, vitrineConfig ] = await Promise.all([
-			fs.readJson(vitrineModulesConfigFilePath),
+			fs.readJson(path.resolve(this.configFolderPath, this.modulesConfigFileName)),
 			fs.readJson(this.vitrineConfigFilePath, { throws: false })
 		]);
 		this.config = {
-			modulesConfig,
-			vitrineConfig
+			vitrineConfig: vitrineConfig || { firstLaunch: true },
+			modulesConfig
 		};
 		logger.info('Bootstrapper', `${this.configFileName} read.`);
 		this.runServer();
+	}
+
+	private runServer() {
+		logger.info('Bootstrapper', 'Running server.');
+		this.serverInstance = new Server(this.config, this.vitrineConfigFilePath);
+		this.serverInstance.run();
 	}
 
 	private registerDebugPromiseHandler() {
@@ -52,11 +58,5 @@ export class Bootstrapper {
 			console.error(reason);
 			console.error('=====================================');
 		});
-	}
-
-	private runServer() {
-		logger.info('Bootstrapper', 'Running server.');
-		this.serverInstance = new Server(this.config, this.vitrineConfigFilePath);
-		this.serverInstance.run();
 	}
 }
