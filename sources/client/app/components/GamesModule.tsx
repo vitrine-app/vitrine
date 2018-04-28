@@ -1,4 +1,5 @@
 import { css, StyleSheet } from 'aphrodite';
+import { margin } from 'css-verbose';
 import * as React from 'react';
 
 import { VitrineComponent } from './VitrineComponent';
@@ -33,7 +34,7 @@ export class GamesModule extends VitrineComponent<Props, any> {
 
 	public render(): JSX.Element {
 		return (
-			<div>
+			<div className={css(styles.iconWrapper)}>
 				<img
 					alt={this.props.iconAlt}
 					src={this.props.iconFile}
@@ -50,6 +51,10 @@ export class GamesModule extends VitrineComponent<Props, any> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
+	iconWrapper: {
+		margin: margin(0, 'auto'),
+		width: 85..percents()
+	},
 	gamesModuleIcon: {
 		opacity: 0.05,
 		width: 150..px(),

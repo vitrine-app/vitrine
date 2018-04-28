@@ -1,3 +1,5 @@
 /* Tab Menu */
 @tabularActiveBackground: #50473E;
 @tabularHoveredTextColor: #B1A799;
+@tabularBorderWidth: 0;
+
