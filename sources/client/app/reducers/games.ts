@@ -33,6 +33,8 @@ export function playableGames(state: GamesCollection<PlayableGame> = null, actio
 			return new GamesCollection<PlayableGame>(state.getGames()).removeGame(action.payload.gameUuid);
 		case ActionType.STOP_GAME:
 			return new GamesCollection<PlayableGame>(state.getGames()).editGame(action.payload.playedGame);
+		case ActionType.SORT_GAMES:
+			return new GamesCollection<PlayableGame>().addGames(action.payload.playableGames);
 		default:
 			return state;
 	}

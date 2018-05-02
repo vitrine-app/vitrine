@@ -5,12 +5,11 @@ import { getEnvFolder } from './env';
 import { PotentialGame } from './PotentialGame';
 
 export enum SortParameter {
-	NAME,
-	DEVELOPER,
-	PUBLISHER,
-	RELEASE_DATE,
-	NOTE,
-	GENRES
+	NAME = 'name',
+	DEVELOPER = 'developer',
+	PUBLISHER = 'publisher',
+	RELEASE_DATE = 'releaseDate',
+	RATING = 'rating'
 }
 
 export class PlayableGame extends PotentialGame {

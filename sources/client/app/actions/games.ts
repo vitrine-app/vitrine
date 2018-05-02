@@ -1,5 +1,6 @@
 import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
+import { getSortedGamesFromStore } from '../AppState';
 import { Action, ActionType } from './actionsTypes';
 
 export function refreshGames(): Action {
@@ -21,7 +22,8 @@ export function addPotentialGames(potentialGames: PotentialGame[]): Action {
 	};
 }
 
-export function addPlayableGames(playableGames: PlayableGame[]): Action {
+export function addPlayableGames(unsortedGames: PlayableGame[]): Action {
+	const playableGames: PlayableGame[] = getSortedGamesFromStore(unsortedGames);
 	return {
 		type: ActionType.ADD_PLAYABLE_GAMES,
 		payload: {
@@ -99,10 +101,12 @@ export function setGameToEdit(gameToEdit: PlayableGame): Action {
 }
 
 export function sortGames(gamesSortParameter: SortParameter): Action {
+	const playableGames: PlayableGame[] = getSortedGamesFromStore(undefined, gamesSortParameter);
 	return {
 		type: ActionType.SORT_GAMES,
 		payload: {
-			gamesSortParameter
+			gamesSortParameter,
+			playableGames
 		}
 	};
 }

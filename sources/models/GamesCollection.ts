@@ -1,14 +1,12 @@
 import { GameSource } from './PotentialGame';
 
 export class GamesCollection<T extends object> {
-	private readonly evaluatedKey: string;
 	private readonly idKey: string;
 	private readonly sourceKey: string;
 	private games: T[];
 
 	public constructor(games?: T[]) {
 		this.games = games || [];
-		this.evaluatedKey = 'name';
 		this.idKey = 'uuid';
 		this.sourceKey = 'source';
 	}
@@ -19,7 +17,6 @@ export class GamesCollection<T extends object> {
 
 	public setGames(games: T[]) {
 		this.games = games;
-		this.sort();
 	}
 
 	public size(): number {
@@ -42,20 +39,17 @@ export class GamesCollection<T extends object> {
 
 	public addGame(game: T): this {
 		this.games.push(game);
-		this.sort();
 		return this;
 	}
 
 	public addGames(games: T[]): this {
 		this.games = this.removeDuplicates(this.games.concat(games));
-		this.sort();
 		return this;
 	}
 
 	public editGame(game: T): this {
 		const index: number = this.getIndex(this.getGame(game[this.idKey]));
 		this.games[index] = game;
-		this.sort();
 		return this;
 	}
 
@@ -71,15 +65,6 @@ export class GamesCollection<T extends object> {
 
 	public getGamesFromSource(source: GameSource): T[] {
 		return this.games.filter((game: T) => game[this.sourceKey] === source);
-	}
-
-	private sort() {
-		if (this.games.length)
-			this.games.sort(this.alphabeticSort.bind(this));
-	}
-
-	private alphabeticSort(nodeA: T, nodeB: T): number {
-		return (nodeA[this.evaluatedKey] > nodeB[this.evaluatedKey]) ? (1) : (-1);
 	}
 
 	private removeDuplicates(array: T[]) {

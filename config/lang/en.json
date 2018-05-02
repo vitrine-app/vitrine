@@ -93,7 +93,7 @@
   "sortByDeveloper": "By developer",
   "sortByPublisher": "By publisher",
   "sortByReleaseDate": "By release date",
-  "sortByNote": "By note",
+  "sortByRating": "By rating",
   "sortByGenres": "Par genres",
   "genresNames": {
     "Point-and-click": "Point-and-click",

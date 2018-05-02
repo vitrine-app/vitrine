@@ -2,6 +2,7 @@ import { padding, rgba } from 'css-verbose';
 import { remote } from 'electron';
 import * as React from 'react';
 import { toast } from 'react-toastify';
+import { Middleware } from 'redux';
 
 import { localizer } from './Localizer';
 
@@ -78,8 +79,6 @@ export function urlify(imgPath: string): string {
 	return (imgPath) ? ('url(' + imgPath.replace(/\\/g, '\\\\') + ')') : ('');
 }
 
-const NotificationContent: React.StatelessComponent<any> = ({ content }: any) => <span dangerouslySetInnerHTML={{ __html: content }} />;
-
 export function notify(content: string, minor?: boolean) {
 	const toastStyle: React.CSSProperties = {
 		color: rgba(255, 255, 255, 0.72),
@@ -89,7 +88,7 @@ export function notify(content: string, minor?: boolean) {
 		fontFamily: fontName.replace(/'/g, '')
 	};
 
-	toast(<NotificationContent content={content}/>, {
+	toast(<span dangerouslySetInnerHTML={{ __html: content }}/>, {
 		type: 'default',
 		position: 'bottom-right',
 		className: toastStyle,
@@ -97,3 +96,10 @@ export function notify(content: string, minor?: boolean) {
 		autoClose: (!minor) ? (5000) : (3500)
 	});
 }
+
+export const reduxLog: Middleware = (store: any) => (next: any) => (action: any): any => {
+	console.log('Dispatching: ', action);
+	const result = next(action);
+	console.log('New state: ', store.getState(), '\n---------------')
+	return result;
+};
