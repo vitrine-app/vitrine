@@ -6,10 +6,12 @@ import { PotentialGame } from './PotentialGame';
 
 export enum SortParameter {
 	NAME = 'name',
+	TIME_PLAYED = 'timePlayed',
+	RELEASE_DATE = 'releaseDate',
+	RATING = 'rating',
+	SERIES = 'series',
 	DEVELOPER = 'developer',
 	PUBLISHER = 'publisher',
-	RELEASE_DATE = 'releaseDate',
-	RATING = 'rating'
 }
 
 export class PlayableGame extends PotentialGame {

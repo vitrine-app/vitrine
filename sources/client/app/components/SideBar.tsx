@@ -41,12 +41,8 @@ export class SideBar extends VitrineComponent<Props, {}> {
 				text: 'sortByName'
 			},
 			{
-				parameter: SortParameter.DEVELOPER,
-				text: 'sortByDeveloper'
-			},
-			{
-				parameter: SortParameter.PUBLISHER,
-				text: 'sortByPublisher'
+				parameter: SortParameter.TIME_PLAYED,
+				text: 'sortByTimePlayed'
 			},
 			{
 				parameter: SortParameter.RELEASE_DATE,
@@ -55,6 +51,18 @@ export class SideBar extends VitrineComponent<Props, {}> {
 			{
 				parameter: SortParameter.RATING,
 				text: 'sortByRating'
+			},
+			{
+				parameter: SortParameter.SERIES,
+				text: 'sortBySeries'
+			},
+			{
+				parameter: SortParameter.DEVELOPER,
+				text: 'sortByDeveloper'
+			},
+			{
+				parameter: SortParameter.PUBLISHER,
+				text: 'sortByPublisher'
 			}
 		];
 
