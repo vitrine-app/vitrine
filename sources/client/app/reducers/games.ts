@@ -26,15 +26,15 @@ export function potentialGames(state: GamesCollection<PotentialGame> = null, act
 export function playableGames(state: GamesCollection<PlayableGame> = null, action: Action): GamesCollection<PlayableGame> {
 	switch (action.type) {
 		case ActionType.ADD_PLAYABLE_GAMES:
-			return new GamesCollection<PlayableGame>(state.getGames()).addGames(action.payload.playableGames);
+			return new GamesCollection<PlayableGame>(action.payload.playableGames);
 		case ActionType.EDIT_PLAYABLE_GAME:
-			return new GamesCollection<PlayableGame>(state.getGames()).editGame(action.payload.playableGame);
+			return new GamesCollection<PlayableGame>(action.payload.playableGames);
 		case ActionType.REMOVE_PLAYABLE_GAME:
 			return new GamesCollection<PlayableGame>(state.getGames()).removeGame(action.payload.gameUuid);
 		case ActionType.STOP_GAME:
 			return new GamesCollection<PlayableGame>(state.getGames()).editGame(action.payload.playedGame);
 		case ActionType.SORT_GAMES:
-			return new GamesCollection<PlayableGame>().addGames(action.payload.playableGames);
+			return new GamesCollection<PlayableGame>(action.payload.playableGames);
 		default:
 			return state;
 	}

@@ -6,7 +6,7 @@ export class GamesCollection<T extends object> {
 	private games: T[];
 
 	public constructor(games?: T[]) {
-		this.games = games || [];
+		this.games = (games) ? ([ ...games ]) : ([]);
 		this.idKey = 'uuid';
 		this.sourceKey = 'source';
 	}
@@ -43,7 +43,10 @@ export class GamesCollection<T extends object> {
 	}
 
 	public addGames(games: T[]): this {
-		this.games = this.removeDuplicates(this.games.concat(games));
+		this.games = this.removeDuplicates([
+			...this.games,
+			...games
+		]);
 		return this;
 	}
 

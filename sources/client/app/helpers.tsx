@@ -100,6 +100,6 @@ export function notify(content: string, minor?: boolean) {
 export const reduxLog: Middleware = (store: any) => (next: any) => (action: any): any => {
 	console.log('Dispatching: ', action);
 	const result = next(action);
-	console.log('New state: ', store.getState(), '\n---------------')
+	console.log('New state: ', store.getState(), '\n---------------');
 	return result;
 };

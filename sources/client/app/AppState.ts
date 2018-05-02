@@ -75,17 +75,29 @@ export const vitrineStore: Store<AppState> = createStore(combineReducers({
 	settingsModalVisible: false
 }, applyMiddleware(reduxLog));
 
-export function getSortedGamesFromStore(playableGames?: PlayableGame[], sortParameter?: SortParameter): PlayableGame[] {
-	const sortedGames: PlayableGame[] = [ ...(playableGames) ? (playableGames) : (vitrineStore.getState().playableGames.getGames()) ];
-	sortParameter = sortParameter || vitrineStore.getState().gamesSortParameter;
+export function getSortedGamesFromStore(dispatchedData: any): PlayableGame[] {
+	const { playableGames, editedGame, gamesSortParameter }: any = dispatchedData;
+	const sortedGames: GamesCollection<PlayableGame> = new GamesCollection();
+
+	if (playableGames && playableGames.length > 1)
+		sortedGames.addGames(playableGames);
+	else
+		sortedGames.addGames(vitrineStore.getState().playableGames.getGames());
+
+	if (playableGames && playableGames.length === 1)
+		sortedGames.addGame(playableGames[0]);
+	if (editedGame)
+		sortedGames.editGame(editedGame);
+
+	const sortParameter = gamesSortParameter || vitrineStore.getState().gamesSortParameter;
 	switch (sortParameter) {
 		case (SortParameter.NAME): {
-			return sortedGames.sort((gameA: PlayableGame, gameB: PlayableGame): number => {
+			return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
 				return (gameA.name > gameB.name) ? (1) : (-1);
 			});
 		}
 		default:
-			return sortedGames.sort((gameA: PlayableGame, gameB: PlayableGame): number => {
+			return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
 				if (!gameA.details[sortParameter])
 					return 1;
 				if (!gameB.details[sortParameter])
