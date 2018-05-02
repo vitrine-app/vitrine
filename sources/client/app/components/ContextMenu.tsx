@@ -2,7 +2,7 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin } from 'css-verbose';
 import * as React from 'react';
 import { ContextMenu as ContextMenuDiv, MenuItem } from 'react-contextmenu';
-import { Button, Modal } from 'semantic-ui-react';
+import { Button, Modal, Transition } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../models/GamesCollection';
 import { PlayableGame } from '../../../models/PlayableGame';
@@ -19,8 +19,9 @@ interface Props {
 }
 
 interface State {
-	confirmVisible: boolean;
 	toDeleteGame: PlayableGame;
+	confirmVisible: boolean;
+	transitionVisible: boolean;
 }
 
 export class ContextMenu extends VitrineComponent<Props, State> {
@@ -28,8 +29,9 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 		super(props);
 
 		this.state = {
+			toDeleteGame: null,
 			confirmVisible: false,
-			toDeleteGame: null
+			transitionVisible: false
 		};
 
 		this.removeGame = this.removeGame.bind(this);
@@ -38,6 +40,7 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 		this.editClick = this.editClick.bind(this);
 		this.editTimeClick = this.editTimeClick.bind(this);
 		this.deleteClick = this.deleteClick.bind(this);
+		this.animateModal = this.animateModal.bind(this);
 	}
 
 	private launchClick(event: any, data: any, target: HTMLElement) {
@@ -63,8 +66,14 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 
 	private resetModalData() {
 		this.setState({
-			confirmVisible: false,
-			toDeleteGame: null
+			confirmVisible: false
+		}, () => {
+			setTimeout(() => {
+				this.setState({
+					toDeleteGame: null,
+					transitionVisible: false
+				});
+			}, this.modalsTransitionDuration);
 		});
 	}
 
@@ -97,6 +106,13 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 		}
 	}
 
+	private animateModal(startingAnimation: boolean) {
+		if (startingAnimation === this.state.confirmVisible)
+			this.setState({
+				transitionVisible: this.state.confirmVisible
+			});
+	}
+
 	public render(): JSX.Element {
 		return (
 			<div>
@@ -115,33 +131,41 @@ export class ContextMenu extends VitrineComponent<Props, State> {
 						{localizer.f('delete')}
 					</MenuItem>
 				</ContextMenuDiv>
-				<Modal
-					open={this.state.confirmVisible}
-					onClose={this.resetModalData}
-					className={css(styles.modal)}
+				<Transition
+					animation={'fade down'}
+					duration={this.modalsTransitionDuration}
+					onStart={this.animateModal.bind(this, true)}
+					onComplete={this.animateModal.bind(this, false)}
+					visible={this.state.confirmVisible}
 				>
-					<Modal.Header>{localizer.f('removeGame')}</Modal.Header>
-					<Modal.Content
-						dangerouslySetInnerHTML={{
-							__html: localizer.f('removeGameText', (this.state.toDeleteGame) ? (this.state.toDeleteGame.name) : (''))
-						}}
-						className={css(styles.modalContent)}
-					/>
-					<Modal.Actions>
-						<Button
-							secondary={true}
-							onClick={this.resetModalData}
-						>
-							{localizer.f('cancel')}
-						</Button>
-						<Button
-							primary={true}
-							onClick={this.removeGame}
-						>
-							{localizer.f('confirm')}
-						</Button>
-					</Modal.Actions>
-				</Modal>
+					<Modal
+						open={this.state.transitionVisible}
+						onClose={this.resetModalData}
+						className={css(styles.modal)}
+					>
+						<Modal.Header>{localizer.f('removeGame')}</Modal.Header>
+						<Modal.Content
+							dangerouslySetInnerHTML={{
+								__html: localizer.f('removeGameText', (this.state.toDeleteGame) ? (this.state.toDeleteGame.name) : (''))
+							}}
+							className={css(styles.modalContent)}
+						/>
+						<Modal.Actions>
+							<Button
+								secondary={true}
+								onClick={this.resetModalData}
+							>
+								{localizer.f('cancel')}
+							</Button>
+							<Button
+								primary={true}
+								onClick={this.removeGame}
+							>
+								{localizer.f('confirm')}
+							</Button>
+						</Modal.Actions>
+					</Modal>
+				</Transition>
 			</div>
 		);
 	}

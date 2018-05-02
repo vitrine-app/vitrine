@@ -214,13 +214,13 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		return (
 			<Transition
 				animation={'fade down'}
-				duration={400}
+				duration={this.modalsTransitionDuration}
 				onStart={this.animateModal.bind(this, true)}
 				onComplete={this.animateModal.bind(this, false)}
 				visible={this.props.visible}
 			>
 				<Modal
-					open={this.props.visible}
+					open={this.state.transitionVisible}
 					onClose={this.closeModal}
 					size={'tiny'}
 					className={css(styles.modal)}

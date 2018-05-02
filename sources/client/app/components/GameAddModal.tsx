@@ -151,11 +151,14 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 
 	private closeModal() {
 		this.props.closeGameAddModal();
-		this.props.setPotentialGameToAdd(null);
-		this.props.setGameToEdit(null);
-		this.setState({
-			...this.emptyState
-		});
+		setTimeout( () => {
+			this.props.setPotentialGameToAdd(null);
+			this.props.setGameToEdit(null);
+			this.setState({
+				...this.emptyState,
+				transitionVisible: false
+			});
+		}, this.modalsTransitionDuration);
 	}
 
 	private gameCoverClickHandler() {
@@ -300,7 +303,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		return (
 			<Transition
 				animation={'fade down'}
-				duration={400}
+				duration={this.modalsTransitionDuration}
 				onStart={this.animateModal.bind(this, true)}
 				onComplete={this.animateModal.bind(this, false)}
 				visible={this.props.visible}

@@ -52,7 +52,7 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
 		return (
 			<Transition
 				animation={'fade down'}
-				duration={400}
+				duration={this.modalsTransitionDuration}
 				onStart={this.animateModal.bind(this, true)}
 				onComplete={this.animateModal.bind(this, false)}
 				visible={this.props.visible}

@@ -6,9 +6,12 @@ interface State {
 }
 
 export abstract class VitrineComponent<P, S> extends React.Component<P, S & State> {
+	protected modalsTransitionDuration: number;
+
 	protected constructor(props?: P) {
 		super(props);
 
+		this.modalsTransitionDuration = 400;
 		this.state = {} as any;
 	}
 
