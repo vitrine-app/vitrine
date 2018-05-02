@@ -143,7 +143,6 @@ export class Server {
 		const gameName: string = gameForm.name;
 		const addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
 		addedGame.source = gameForm.source;
-
 		this.registerGame(addedGame, gameForm, false);
 	}
 
@@ -324,7 +323,7 @@ export class Server {
 		game.details.rating = parseInt(game.details.rating);
 		game.details.genres = game.details.genres.split(', ');
 		game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
-		if (!editing && game.source === GameSource.STEAM)
+		if (game.source === GameSource.STEAM)
 			game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
 		delete game.details.name;
 		delete game.details.date;
