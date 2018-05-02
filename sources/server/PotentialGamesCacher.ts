@@ -19,7 +19,7 @@ class PotentialGamesCacher {
 		let gamesAddedNb: number = 0;
 		const populatedPotentialGames: PotentialGame[] = await Promise.all(potentialGames.map(async (potentialGame: PotentialGame) => {
 			if (!potentialGamesCache[potentialGame.uuid]) {
-				const [{ cover }]: any[] = await searchIgdbGame(potentialGame.name, 1);
+				const [ { cover } ]: any[] = await searchIgdbGame(potentialGame.name, 1);
 				potentialGamesCache[potentialGame.uuid] = {
 					name: potentialGame.name,
 					cover

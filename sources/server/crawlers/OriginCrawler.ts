@@ -31,11 +31,11 @@ class OriginCrawler extends PotentialGamesCrawler {
 		regKey.keys(this.parseRegistry.bind(this));
 	}
 
-	private parseRegistry(error: Error, items: Winreg.Registry[]) {
+	private async parseRegistry(error: Error, items: Winreg.Registry[]) {
 		if (error)
 			this.callback(error, null);
 
-		items.forEachEnd((key: Winreg.Registry, done: () => void) => {
+		await items.forEachEnd((key: Winreg.Registry, done: () => void) => {
 			key.values((error: Error, values: Winreg.RegistryItem[]) => {
 				if (error)
 					this.callback(error, null);
@@ -47,13 +47,12 @@ class OriginCrawler extends PotentialGamesCrawler {
 				});
 				done();
 			});
-		}, () => {
-			logger.info('OriginCrawler', `Looking for games folders in (${this.gamesFolder}).`);
-			glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
 		});
+		logger.info('OriginCrawler', `Looking for games folders in (${this.gamesFolder}).`);
+		glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
 	}
 
-	private parseFolder(error: Error, files: string[]) {
+	private async parseFolder(error: Error, files: string[]) {
 		if (error)
 			this.callback(error, null);
 		if (!files.length) {
@@ -65,7 +64,7 @@ class OriginCrawler extends PotentialGamesCrawler {
 		const gameInfos: any[] = files.map((gameFolder: string) => ({
 			gameName: gameFolder.split('/').pop(),
 			gameFolder
-		})).filter(({gameName}: any) => {
+		})).filter(({ gameName }: any) => {
 			const found: boolean = this.playableGames.filter((playableGame: any) =>
 				spatStr(gameName) === spatStr(playableGame.name)
 			).length > 0;
@@ -74,7 +73,7 @@ class OriginCrawler extends PotentialGamesCrawler {
 			return !found;
 		});
 
-		gameInfos.forEachEnd(async ({gameName, gameFolder}: any, done: () => void) => {
+		await gameInfos.forEachEnd(async ({ gameName, gameFolder }: any, done: () => void) => {
 			try {
 				const gamePath: string = await this.getRegGamePath(gameFolder);
 				const potentialGame: PotentialGame = new PotentialGame(gameName);
@@ -87,26 +86,22 @@ class OriginCrawler extends PotentialGamesCrawler {
 			catch (error) {
 				this.callback(error, null);
 			}
-		}, () => {
-			this.sendResults();
 		});
+		this.sendResults();
 	}
 
-	private getRegGamePath(gamePath: string): Promise<any> {
-		return new Promise((resolve, reject) => {
-			let found: boolean = false;
-			this.regDetails.forEachEnd((regDetail: any, done: () => void) => {
-				if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
-					logger.info('OriginCrawler', `Origin game found (${gamePath}).`);
-					resolve(regDetail.exe);
-					found = true;
-				}
-				done();
-			}, () => {
-				if (!found)
-					reject(new Error('Registry not matching.'));
-			});
+	private async getRegGamePath(gamePath: string) {
+		let regGamePath: string;
+		await this.regDetails.forEachEnd((regDetail: any, done: () => void) => {
+			if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
+				logger.info('OriginCrawler', `Origin game found (${gamePath}).`);
+				regGamePath = regDetail.exe;
+			}
+			done();
 		});
+		if (regGamePath)
+			return regGamePath;
+		throw new Error('Registry not matching.');
 	}
 }
 

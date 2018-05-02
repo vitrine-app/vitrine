@@ -32,7 +32,7 @@ class SteamCrawler extends PotentialGamesCrawler {
 		});
 	}
 
-	private processGames(error: Error, files: string[]) {
+	private async processGames(error: Error, files: string[]) {
 		if (error) {
 			this.callback(error, null);
 			return;
@@ -52,7 +52,7 @@ class SteamCrawler extends PotentialGamesCrawler {
 				return !found;
 			});
 
-		gameManifests.forEachEnd(async (gameManifest: any, done: () => void) => {
+		await gameManifests.forEachEnd(async (gameManifest: any, done: () => void) => {
 			logger.info('SteamCrawler', `Steam game ${gameManifest.name} (Steam ID ${gameManifest.appid}) found.`);
 			try {
 				const potentialGame: PotentialGame = new PotentialGame(gameManifest.name);
@@ -69,9 +69,8 @@ class SteamCrawler extends PotentialGamesCrawler {
 			catch (error) {
 				this.callback(error, null);
 			}
-		}, () => {
-			this.sendResults();
 		});
+		this.sendResults();
 	}
 }
 

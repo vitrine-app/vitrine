@@ -1,0 +1,4 @@
+/* Menu header */
+.ui.dropdown .menu > .header {
+	cursor: default;
+}

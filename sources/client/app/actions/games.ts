@@ -1,5 +1,6 @@
-import { PlayableGame } from '../../../models/PlayableGame';
+import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
+import { getSortedGamesFromStore } from '../AppState';
 import { Action, ActionType } from './actionsTypes';
 
 export function refreshGames(): Action {
@@ -21,22 +22,27 @@ export function addPotentialGames(potentialGames: PotentialGame[]): Action {
 	};
 }
 
-export function addPlayableGames(playableGames: PlayableGame[]): Action {
+export function addPlayableGames(unsortedGames: PlayableGame[]): Action {
+	const playableGames: PlayableGame[] = getSortedGamesFromStore({
+		playableGames: unsortedGames
+	});
 	return {
 		type: ActionType.ADD_PLAYABLE_GAMES,
 		payload: {
 			playableGames,
-			selectedGame: (playableGames.length) ? (playableGames[0]) : (null),
+			selectedGame: (unsortedGames.length) ? ((unsortedGames.length > 1) ? (playableGames[0]) : (unsortedGames[0])) : (null),
 			potentialGameToAdd: null
 		}
 	};
 }
 
-export function editPlayableGame(playableGame: PlayableGame): Action {
+export function editPlayableGame(editedGame: PlayableGame): Action {
+	const playableGames: PlayableGame[] = getSortedGamesFromStore({ editedGame });
 	return {
 		type: ActionType.EDIT_PLAYABLE_GAME,
 		payload: {
-			playableGame,
+			playableGames,
+			editedGame,
 			potentialGameToAdd: null,
 			gameToEdit: null
 		}
@@ -94,6 +100,17 @@ export function setGameToEdit(gameToEdit: PlayableGame): Action {
 		type: ActionType.SET_GAME_TO_EDIT,
 		payload: {
 			gameToEdit
+		}
+	};
+}
+
+export function sortGames(gamesSortParameter: SortParameter): Action {
+	const playableGames: PlayableGame[] = getSortedGamesFromStore({ gamesSortParameter });
+	return {
+		type: ActionType.SORT_GAMES,
+		payload: {
+			gamesSortParameter,
+			playableGames
 		}
 	};
 }

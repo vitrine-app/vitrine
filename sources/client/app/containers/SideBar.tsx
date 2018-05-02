@@ -1,8 +1,8 @@
 import { connect, Dispatch } from 'react-redux';
 
-import { PlayableGame } from '../../../models/PlayableGame';
+import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { Action } from '../actions/actionsTypes';
-import { refreshGames, selectGame } from '../actions/games';
+import { refreshGames, selectGame, sortGames } from '../actions/games';
 import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../actions/modals';
 import { AppState } from '../AppState';
 import { SideBar as VisualSideBar } from '../components/SideBar';
@@ -11,7 +11,8 @@ const mapStateToProps = (state: AppState) => ({
 	potentialGames: state.potentialGames,
 	playableGames: state.playableGames,
 	selectedGame: state.selectedGame,
-	refreshingGames: state.refreshingGames
+	refreshingGames: state.refreshingGames,
+	gamesSortParameter: state.gamesSortParameter
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -20,6 +21,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	refreshGames: () => {
 		dispatch(refreshGames());
+	},
+	sortGames: (gamesSortParameter: SortParameter) => {
+		dispatch(sortGames(gamesSortParameter));
 	},
 	openGameAddModal: () => {
 		dispatch(openGameAddModal());

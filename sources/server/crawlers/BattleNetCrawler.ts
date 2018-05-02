@@ -16,11 +16,13 @@ interface BattleNetGame {
 class BattleNetCrawler extends PotentialGamesCrawler {
 	private gamesData: BattleNetGame[];
 	private rootInstallPath: string;
+	private foundGames: BattleNetGame[];
 
 	public setPlayableGames(playableGames?: PlayableGame[]): this {
 		super.setPlayableGames(playableGames);
 
 		this.gamesData = [];
+		this.foundGames = [];
 		return this;
 	}
 
@@ -37,12 +39,12 @@ class BattleNetCrawler extends PotentialGamesCrawler {
 		}
 	}
 
-	private parseConfigFile(battleNetConfig: any) {
+	private async parseConfigFile(battleNetConfig: any) {
 		this.rootInstallPath = battleNetConfig.Client.Install.DefaultInstallPath;
 		const gameTags: string[] = Object.keys(battleNetConfig.Games)
 			.filter((gamesTag: string) => gamesTag !== 'battle_net' && battleNetConfig.Games[gamesTag].Resumable);
 
-		gameTags.forEachEnd((gameTag: string, done: () => void) => {
+		await gameTags.forEachEnd((gameTag: string, done: () => void) => {
 			const gameData: BattleNetGame = this.moduleConfig.gamesData.filter((battleNetGame: BattleNetGame) => battleNetGame.tag === gameTag)[0];
 			logger.info('BattleNetCrawler', `Battle.net game ${gameData.name} found.`);
 			if (!this.gameDirExists(gameData.name))
@@ -50,32 +52,30 @@ class BattleNetCrawler extends PotentialGamesCrawler {
 			else
 				logger.info('BattleNetCrawler', `Battle.net game ${gameData.name} is already a playable game.`);
 			done();
-		}, () => {
-			this.parseFolders();
 		});
+		await this.parseFolders();
+		await this.getGamesData();
+		this.sendResults();
 	}
 
-	private parseFolders() {
+	private async parseFolders() {
 		if (!this.gamesData.length) {
 			logger.info('BattleNetCrawler', 'No Battle.net games found.');
 			this.sendResults();
 			return;
 		}
-		const foundGames: BattleNetGame[] = [];
-		this.gamesData.forEachEnd(async (gameData: BattleNetGame, done: () => void) => {
+		await this.gamesData.forEachEnd(async (gameData: BattleNetGame, done: () => void) => {
 			gameData.path = path.resolve(this.rootInstallPath, gameData.name, gameData.path);
 			if (await fs.pathExists(gameData.path)) {
 				logger.info('BattleNetCrawler', `Battle.net game ${gameData.name} is present on disk.`);
-				foundGames.push(gameData);
+				this.foundGames.push(gameData);
 			}
 			done();
-		}, () => {
-			this.getGamesData(foundGames);
 		});
 	}
 
-	private getGamesData(foundGames: BattleNetGame[]) {
-		foundGames.forEachEnd(async (foundGame: BattleNetGame, done: () => void) => {
+	private async getGamesData() {
+		await this.foundGames.forEachEnd(async (foundGame: BattleNetGame, done: () => void) => {
 			try {
 				const potentialGame: PotentialGame = new PotentialGame(foundGame.name);
 				potentialGame.source = GameSource.BATTLE_NET;
@@ -87,8 +87,6 @@ class BattleNetCrawler extends PotentialGamesCrawler {
 			catch (error) {
 				this.callback(error, null);
 			}
-		}, () => {
-			this.sendResults();
 		});
 	}
 }

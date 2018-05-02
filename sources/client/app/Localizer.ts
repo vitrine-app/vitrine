@@ -30,7 +30,7 @@ class Localizer {
 	}
 
 	public genre(key: string): string {
-		const genre: string = (this.languages[this.selectedLanguage]).genresNames[key];
+		const genre: string = this.languages[this.selectedLanguage].genresNames[key];
 		return genre || key;
 	}
 }
