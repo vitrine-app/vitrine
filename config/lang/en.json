@@ -88,6 +88,13 @@
   "addingGameToast": "has been added to Vitrine",
   "editingGameToast": "has been modified",
   "removingGameToast": "has been removed from Vitrine",
+  "sortGames": "Sort games",
+  "sortByName": "By name",
+  "sortByDeveloper": "By developer",
+  "sortByPublisher": "By publisher",
+  "sortByReleaseDate": "By release date",
+  "sortByNote": "By note",
+  "sortByGenres": "Par genres",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Fighting",

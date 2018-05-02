@@ -1,5 +1,5 @@
 import { GamesCollection } from '../../models/GamesCollection';
-import { PlayableGame } from '../../models/PlayableGame';
+import { PlayableGame, SortParameter } from '../../models/PlayableGame';
 import { PotentialGame } from '../../models/PotentialGame';
 
 export interface AppState {
@@ -12,6 +12,7 @@ export interface AppState {
 	refreshingGames: boolean;
 	potentialGameToAdd: PotentialGame;
 	gameToEdit: PlayableGame;
+	gamesSortParameter: SortParameter;
 	gameAddModalVisible: boolean;
 	igdbResearchModalVisible: boolean;
 	timePlayedEditionModalVisible: boolean;
@@ -29,6 +30,7 @@ export const initialState: AppState = {
 	refreshingGames: false,
 	potentialGameToAdd: null,
 	gameToEdit: null,
+	gamesSortParameter: SortParameter.NAME,
 	gameAddModalVisible: false,
 	igdbResearchModalVisible: false,
 	timePlayedEditionModalVisible: false,

@@ -2,11 +2,11 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { ContextMenuTrigger } from 'react-contextmenu';
-import { Button, Grid } from 'semantic-ui-react';
+import { Button, Dropdown, Grid } from 'semantic-ui-react';
 
 import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
 import { GamesCollection } from '../../../models/GamesCollection';
-import { PlayableGame } from '../../../models/PlayableGame';
+import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { ContextMenu } from '../containers/ContextMenu';
 import { localizer } from '../Localizer';
@@ -19,7 +19,9 @@ interface Props {
 	playableGames: GamesCollection<PlayableGame>;
 	selectedGame: PlayableGame;
 	refreshingGames: boolean;
+	gamesSortParameter: SortParameter;
 	selectGame: (selectedGame: PlayableGame) => void;
+	sortGames: (gamesSortParameter: SortParameter) => void;
 	refreshGames: () => void;
 	openGameAddModal: () => void;
 	openPotentialGamesAddModal: () => void;
@@ -28,8 +30,37 @@ interface Props {
 }
 
 export class SideBar extends VitrineComponent<Props, {}> {
+	private readonly gamesSortParameters: any[];
+
 	public constructor(props: Props) {
 		super(props);
+
+		this.gamesSortParameters = [
+			{
+				parameter: SortParameter.NAME,
+				text: 'sortByName'
+			},
+			{
+				parameter: SortParameter.DEVELOPER,
+				text: 'sortByDeveloper'
+			},
+			{
+				parameter: SortParameter.PUBLISHER,
+				text: 'sortByPublisher'
+			},
+			{
+				parameter: SortParameter.RELEASE_DATE,
+				text: 'sortByReleaseDate'
+			},
+			{
+				parameter: SortParameter.NOTE,
+				text: 'sortByNote'
+			},
+			{
+				parameter: SortParameter.GENRES,
+				text: 'sortByGenres'
+			}
+		];
 
 		this.clickGameHandler = this.clickGameHandler.bind(this);
 		this.taskBarRefreshBtnClickHandler = this.taskBarRefreshBtnClickHandler.bind(this);
@@ -56,47 +87,72 @@ export class SideBar extends VitrineComponent<Props, {}> {
 	}
 
 	public render() {
-		const taskBarElements: JSX.Element = (
-			<div className={css(styles.commandsGroup)}>
-				<Grid className={css(styles.commandsGrid)}>
-					<Grid.Column width={4} className={css(styles.commandButton)}>
-						<ActionButton
-							icon={faPlus}
-							tooltip={localizer.f('addGameLabel')}
-							onClick={this.props.openGameAddModal}
-						/>
-					</Grid.Column>
-					<Grid.Column width={4} className={css(styles.commandButton)}>
-						<ActionButton
-							icon={faSyncAlt}
-							spin={this.props.refreshingGames}
-							tooltip={localizer.f('refreshLabel')}
-							onClick={this.taskBarRefreshBtnClickHandler}
-						/>
-					</Grid.Column>
-					<Grid.Column width={4} className={css(styles.commandButton)}>
-						<ActionButton
-							icon={faCogs}
-							tooltip={localizer.f('settings')}
-							onClick={this.props.openSettingsModal}
-						/>
-					</Grid.Column>
-					<Grid.Column width={4} className={css(styles.commandButton, styles.addGameButton)}>
-						<Button
-							primary={true}
-							style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
-							onClick={this.potentialGamesButton}
-						>
-							{this.props.potentialGames.size()}
-						</Button>
-					</Grid.Column>
-				</Grid>
-			</div>
+		const sideBarMenu: JSX.Element = (
+			<Grid className={css(styles.sideBarMenu)}>
+				<Grid.Column width={10} className={css(styles.sideBarColumn)}>
+					<Grid className={css(styles.sideBarGrid)}>
+						<Grid.Column className={css(styles.actionButton)}>
+							<ActionButton
+								icon={faPlus}
+								tooltip={localizer.f('addGameLabel')}
+								onClick={this.props.openGameAddModal}
+							/>
+						</Grid.Column>
+						<Grid.Column className={css(styles.actionButton)}>
+							<ActionButton
+								icon={faSyncAlt}
+								spin={this.props.refreshingGames}
+								tooltip={localizer.f('refreshLabel')}
+								onClick={this.taskBarRefreshBtnClickHandler}
+							/>
+						</Grid.Column>
+						<Grid.Column className={css(styles.actionButton)}>
+							<ActionButton
+								icon={faCogs}
+								tooltip={localizer.f('settings')}
+								onClick={this.props.openSettingsModal}
+							/>
+						</Grid.Column>
+					</Grid>
+				</Grid.Column>
+				<Grid.Column width={6} className={css(styles.sideBarColumn)}>
+					<Grid className={css(styles.sideBarGrid)}>
+						<Grid.Column width={10} className={css(styles.sideBarColumn)}>
+							<Button
+								primary={true}
+								className={css(styles.addGamesButton)}
+								style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
+								onClick={this.potentialGamesButton}
+							>
+								{this.props.potentialGames.size()}
+							</Button>
+						</Grid.Column>
+						<Grid.Column width={6} className={css(styles.sideBarColumn)}>
+							<Dropdown
+								className={css(styles.sortDropdown)}
+								style={{ display: (this.props.playableGames.size()) ? ('block') : ('none') }}
+							>
+								<Dropdown.Menu>
+									<Dropdown.Header icon='sort numeric ascending' content={localizer.f('sortGames')}/>
+									{this.gamesSortParameters.map((gamesSortParameter: any, index: number) => (
+										<Dropdown.Item
+											key={index}
+											text={localizer.f(gamesSortParameter.text)}
+											icon={(gamesSortParameter.parameter === this.props.gamesSortParameter) ? ('check') : ('')}
+											onClick={this.props.sortGames.bind(null, gamesSortParameter.parameter)}
+										/>
+									))}
+								</Dropdown.Menu>
+							</Dropdown>
+						</Grid.Column>
+					</Grid>
+				</Grid.Column>
+			</Grid>
 		);
 
 		return (
 			<Grid.Column className={css(styles.sideBarWrapper)}>
-				{taskBarElements}
+				{sideBarMenu}
 				<div className={css(styles.sideBarContent)}>
 					<ul className={css(styles.gamesListUl)}>
 						{this.props.playableGames.map((game: PlayableGame, index: number) => (
@@ -130,24 +186,31 @@ const styles: React.CSSProperties & any = StyleSheet.create({
 	sideBarWrapper: {
 		padding: 0,
 		width: 15.5.percents(),
-		height: 100..percents()
+		height: 100..percents(),
+		backgroundColor: '#23211F'
 	},
-	commandsGroup: {
-		height: 45,
-		backgroundColor: '#23211F',
-		paddingLeft: 5..percents(),
-		paddingRight: 5..percents()
-	},
-	commandsGrid: {
+	sideBarMenu: {
+		width: 100..percents(),
 		margin: 0,
-		height: 100..percents()
+		height: 45
 	},
-	commandButton: {
-		paddingTop: 0,
-		paddingBottom: 0
+	sideBarColumn: {
+		padding: 0
 	},
-	addGameButton: {
-		marginTop: 2
+	sideBarGrid: {
+		width: 100..percents(),
+		height: 100..percents(),
+		margin: 0
+	},
+	actionButton: {
+		padding: 0,
+		width: 33.25.percents()
+	},
+	addGamesButton: {
+		margin: margin(5..percents(), 16..percents())
+	},
+	sortDropdown: {
+		marginTop: 30..percents()
 	},
 	sideBarContent: {
 		height: `calc(${100..percents()} - ${45..px()})`,

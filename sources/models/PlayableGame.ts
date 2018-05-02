@@ -4,6 +4,15 @@ import * as path from 'path';
 import { getEnvFolder } from './env';
 import { PotentialGame } from './PotentialGame';
 
+export enum SortParameter {
+	NAME,
+	DEVELOPER,
+	PUBLISHER,
+	RELEASE_DATE,
+	NOTE,
+	GENRES
+}
+
 export class PlayableGame extends PotentialGame {
 	public timePlayed: number;
 

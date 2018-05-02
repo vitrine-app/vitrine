@@ -1,5 +1,5 @@
 import { GamesCollection } from '../../../models/GamesCollection';
-import { PlayableGame } from '../../../models/PlayableGame';
+import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { Action, ActionType } from '../actions/actionsTypes';
 
@@ -81,6 +81,15 @@ export function gameToEdit(state: PlayableGame = null, action: Action): Playable
 			return action.payload.gameToEdit;
 		case ActionType.EDIT_PLAYABLE_GAME:
 			return action.payload.gameToEdit;
+		default:
+			return state;
+	}
+}
+
+export function gamesSortParameter(state: SortParameter = null, action: Action): SortParameter {
+	switch (action.type) {
+		case ActionType.SORT_GAMES:
+			return action.payload.gamesSortParameter;
 		default:
 			return state;
 	}

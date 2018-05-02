@@ -1,6 +1,6 @@
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
-import { padding, rgba } from 'css-verbose';
+import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 
 import * as ReactTooltip from 'react-tooltip';
@@ -92,11 +92,17 @@ export class ActionButton extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties & any = StyleSheet.create({
 	buttonWrapper: {
-		display: 'inline-block'
+		display: 'inline-block',
+		width: 100..percents(),
+		height: 100..percents()
 	},
 	button: {
 		display: 'inline-block',
-		padding: padding(5, 8, 4, 8),
+		width: 84..percents(),
+		height: 88..percents(),
+		margin: margin(4..percents(), 8..percents()),
+		padding: padding(8..percents(), 14..percents()),
+		// padding: padding(5, 8, 4, 8),
 		borderRadius: 3,
 		cursor: 'pointer',
 		transition: `${100}ms ease`,
@@ -109,6 +115,8 @@ const styles: React.CSSProperties & any = StyleSheet.create({
 		backgroundColor: rgba(0, 0, 0, 0.3),
 	},
 	icon: {
+		width: 100..percents(),
+		margin: margin(0, 'auto'),
 		fontSize: 30,
 		textAlign: 'center',
 		transition: `${100}ms ease`

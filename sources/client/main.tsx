@@ -6,7 +6,16 @@ import { applyMiddleware, combineReducers, createStore, Middleware, Store } from
 
 import { AppState, initialState } from './app/AppState';
 import { App } from './app/containers/App';
-import { gameToEdit, launchedGame, playableGames, potentialGames, potentialGameToAdd, refreshingGames, selectedGame } from './app/reducers/games';
+import {
+	gamesSortParameter,
+	gameToEdit,
+	launchedGame,
+	playableGames,
+	potentialGames,
+	potentialGameToAdd,
+	refreshingGames,
+	selectedGame
+} from './app/reducers/games';
 import { gameAddModalVisible, igdbResearchModalVisible, potentialGamesAddModalVisible, settingsModalVisible,
 	timePlayedEditionModalVisible } from './app/reducers/modals';
 import { modulesConfig, settings } from './app/reducers/settings';
@@ -30,6 +39,7 @@ const store: Store<AppState> = createStore(combineReducers({
 	refreshingGames,
 	potentialGameToAdd,
 	gameToEdit,
+	gamesSortParameter,
 	gameAddModalVisible,
 	igdbResearchModalVisible,
 	timePlayedEditionModalVisible,

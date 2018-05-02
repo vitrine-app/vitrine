@@ -1,4 +1,4 @@
-import { PlayableGame } from '../../../models/PlayableGame';
+import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { Action, ActionType } from './actionsTypes';
 
@@ -94,6 +94,15 @@ export function setGameToEdit(gameToEdit: PlayableGame): Action {
 		type: ActionType.SET_GAME_TO_EDIT,
 		payload: {
 			gameToEdit
+		}
+	};
+}
+
+export function sortGames(gamesSortParameter: SortParameter): Action {
+	return {
+		type: ActionType.SORT_GAMES,
+		payload: {
+			gamesSortParameter
 		}
 	};
 }
