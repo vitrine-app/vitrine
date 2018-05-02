@@ -80,6 +80,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		this.langSelect = this.langSelect.bind(this);
 		this.emulatorConfigChange = this.emulatorConfigChange.bind(this);
 		this.submitButton = this.submitButton.bind(this);
+		this.animateModal = this.animateModal.bind(this);
 	}
 
 	private closeModal() {
@@ -245,6 +246,13 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		if (sendable) {
 			serverListener.send('update-settings', settingsForm);
 		}
+	}
+
+	private animateModal(startingAnimation: boolean) {
+		if (startingAnimation === this.props.visible)
+			this.setState({
+				transitionVisible: this.props.visible
+			});
 	}
 
 	public render(): JSX.Element {
@@ -440,18 +448,8 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			<Transition
 				animation={'fade down'}
 				duration={400}
-				onStart={() => {
-					if (this.props.visible)
-						this.setState({
-							transitionVisible: true
-						});
-				}}
-				onComplete={() => {
-					if (!this.props.visible)
-						this.setState({
-							transitionVisible: false
-						});
-				}}
+				onStart={this.animateModal.bind(this, true)}
+				onComplete={this.animateModal.bind(this, false)}
 				visible={this.props.visible}
 			>
 				<Modal
