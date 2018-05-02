@@ -3,7 +3,7 @@ import { css, StyleSheet } from 'aphrodite';
 import { border, margin, rgba } from 'css-verbose';
 import * as moment from 'moment';
 import * as React from 'react';
-import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, Modal, TextArea, Transition } from 'semantic-ui-react';
 
 import { GameSource, PotentialGame } from '../../../models/PotentialGame';
 import { IgdbResearchModal } from '../containers/IgdbResearchModal';
@@ -36,24 +36,28 @@ interface Props {
 }
 
 interface State {
-	name: string;
-	series: string;
-	date: string;
-	developer: string;
-	publisher: string;
-	genres: string;
-	rating: number;
-	summary: string;
-	executable: string;
-	arguments: string;
-	cover: string;
-	backgroundScreen: string;
-	potentialBackgrounds: string[];
-	source: GameSource;
+	gameData: Partial<{
+		name: string;
+		series: string;
+		date: string;
+		developer: string;
+		publisher: string;
+		genres: string;
+		rating: number;
+		summary: string;
+		executable: string;
+		arguments: string;
+		cover: string;
+		backgroundScreen: string;
+		potentialBackgrounds: string[];
+		source: GameSource;
+	}>;
 	editing: boolean;
+	modalVisible: boolean;
 	igdbFilled: boolean;
 	submitButtonLoading: boolean;
 	igdbButtonLoading: boolean;
+	transitionVisible: boolean;
 }
 
 export class GameAddModal extends VitrineComponent<Props, State> {
@@ -63,24 +67,28 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		super(props);
 
 		this.emptyState = {
-			name: '',
-			series: '',
-			date: '',
-			developer: '',
-			publisher: '',
-			genres: '',
-			rating: undefined,
-			summary: '',
-			executable: '',
-			arguments: '',
-			cover: '',
-			backgroundScreen: '',
-			potentialBackgrounds: [],
-			source: GameSource.LOCAL,
+			gameData: {
+				name: '',
+				series: '',
+				date: '',
+				developer: '',
+				publisher: '',
+				genres: '',
+				rating: undefined,
+				summary: '',
+				executable: '',
+				arguments: '',
+				cover: '',
+				backgroundScreen: '',
+				potentialBackgrounds: [],
+				source: GameSource.LOCAL
+			},
 			editing: false,
+			modalVisible: this.props.visible,
 			igdbFilled: false,
 			submitButtonLoading: false,
-			igdbButtonLoading: false
+			igdbButtonLoading: false,
+			transitionVisible: true
 		};
 		this.state = { ...this.emptyState };
 
@@ -93,21 +101,25 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		this.executableButton = this.executableButton.bind(this);
 		this.searchIgdbButton = this.searchIgdbButton.bind(this);
 		this.submitButton = this.submitButton.bind(this);
+		this.animateModal = this.animateModal.bind(this);
 	}
 
 	private fillIgdbGame(gameInfos: any) {
 		this.setState({
-			name: gameInfos.name,
-			series: gameInfos.series || '',
-			date: (gameInfos.releaseDate) ? (moment(gameInfos.releaseDate).format('DD/MM/YYYY')) : (''),
-			developer: gameInfos.developer || '',
-			publisher: gameInfos.publisher || '',
-			genres: (gameInfos.genres.length) ? (gameInfos.genres.join(', ')) : (''),
-			rating: gameInfos.rating || '',
-			summary: gameInfos.summary || '',
-			cover: gameInfos.cover,
-			potentialBackgrounds: gameInfos.screenshots || [],
-			backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : (''),
+			gameData: {
+				...this.state.gameData,
+				name: gameInfos.name,
+				series: gameInfos.series || '',
+				date: (gameInfos.releaseDate) ? (moment(gameInfos.releaseDate).format('DD/MM/YYYY')) : (''),
+				developer: gameInfos.developer || '',
+				publisher: gameInfos.publisher || '',
+				genres: (gameInfos.genres.length) ? (gameInfos.genres.join(', ')) : (''),
+				rating: gameInfos.rating || '',
+				summary: gameInfos.summary || '',
+				cover: gameInfos.cover,
+				potentialBackgrounds: gameInfos.screenshots || [],
+				backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
+			},
 			igdbFilled: true,
 			igdbButtonLoading: false
 		});
@@ -139,19 +151,24 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 
 	private closeModal() {
 		this.props.closeGameAddModal();
-		this.props.setPotentialGameToAdd(null);
-		this.props.setGameToEdit(null);
-		this.setState({
-			...this.emptyState,
-			potentialBackgrounds: []
-		});
+		setTimeout( () => {
+			this.props.setPotentialGameToAdd(null);
+			this.props.setGameToEdit(null);
+			this.setState({
+				...this.emptyState,
+				transitionVisible: false
+			});
+		}, this.modalsTransitionDuration);
 	}
 
 	private gameCoverClickHandler() {
 		const cover: string = openImageDialog();
 		if (cover)
 			this.setState({
-				cover
+				gameData: {
+					...this.state.gameData,
+					cover
+				}
 			});
 	}
 
@@ -160,34 +177,49 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		const value: string = event.target.value;
 
 		this.setState({
-			[name]: value
+			gameData: {
+				...this.state.gameData,
+				[name]: value
+			}
 		});
 	}
 
 	private dateChangeHandler(date: moment.Moment | string) {
 		this.setState({
-			date: (typeof date === 'string') ? (date) : (date.format('DD/MM/YYYY'))
+			gameData: {
+				...this.state.gameData,
+				date: (typeof date === 'string') ? (date) : (date.format('DD/MM/YYYY'))
+			}
 		});
 	}
 
-	private ratingChangeHandler(value: number | any) {
+	private ratingChangeHandler(rating: number | any) {
 		this.setState({
-			rating: value
+			gameData: {
+				...this.state.gameData,
+				rating
+			}
 		});
 	}
 
 	private executableButton() {
-		const dialogRet: string = openExecutableDialog();
-		if (!dialogRet)
+		const executable: string = openExecutableDialog();
+		if (!executable)
 			return;
 		this.setState({
-			executable: dialogRet
+			gameData: {
+				...this.state.gameData,
+				executable
+			}
 		});
 	}
 
 	private changeBackgroundHandler(backgroundScreen: string) {
 		this.setState({
-			backgroundScreen
+			gameData: {
+				...this.state.gameData,
+				backgroundScreen
+			}
 		});
 	}
 
@@ -195,16 +227,12 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		this.setState({
 			igdbButtonLoading: true
 		});
-		serverListener.send('search-igdb-games', this.state.name);
+		serverListener.send('search-igdb-games', this.state.gameData.name);
 	}
 
 	private submitButton() {
-		const gameInfos: any = { ...this.state };
+		const gameInfos: any = { ...this.state.gameData };
 		delete gameInfos.potentialBackgrounds;
-		delete gameInfos.editing;
-		delete gameInfos.igdbFilled;
-		delete gameInfos.submitButtonLoading;
-
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
 		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
@@ -217,6 +245,13 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			serverListener.send('edit-game', this.props.gameToEdit.uuid, gameInfos);
 		else
 			serverListener.send('add-game', gameInfos);
+	}
+
+	private animateModal(startingAnimation: boolean) {
+		if (startingAnimation === this.props.visible)
+			this.setState({
+				transitionVisible: this.props.visible
+			});
 	}
 
 	public componentDidMount() {
@@ -241,8 +276,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			return null;
 
 		const [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
-		if (!prevState.igdbFilled)
-			return {
+		return (!prevState.igdbFilled) ? ({
+			gameData: {
 				name: gameToHandle.name,
 				cover: gameToHandle.details.cover,
 				source: gameToHandle.source,
@@ -257,240 +292,248 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 				summary: gameToHandle.details.summary || '',
 				potentialBackgrounds: (gameToHandle.details.backgroundScreen) ? ([gameToHandle.details.backgroundScreen]) : ([]),
 				backgroundScreen: gameToHandle.details.backgroundScreen || '',
-				editing
-			};
-		return {
+			},
+			editing
+		}) : ({
 			igdbFilled: false
-		};
+		});
 	}
 
 	public render(): JSX.Element {
 		return (
-			<Modal
-				open={this.props.visible}
-				onClose={this.closeModal}
-				size={'large'}
-				className={css(styles.modal)}
+			<Transition
+				animation={'fade down'}
+				duration={this.modalsTransitionDuration}
+				onStart={this.animateModal.bind(this, true)}
+				onComplete={this.animateModal.bind(this, false)}
+				visible={this.props.visible}
 			>
-				<Modal.Header>{(this.state.editing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
-				<Modal.Content className={css(styles.modalBody)}>
-					<Grid>
-						<Grid.Column width={3}>
-							<label className={css(styles.formLabel)}>{localizer.f('coverLabel')}</label>
-							<div className={css(styles.coverWrapper)}>
-								<BlurPicture
-									faIcon={faFolderOpen}
-									fontSize={55}
-									background={this.state.cover}
-									clickHandler={this.gameCoverClickHandler}
-								/>
-							</div>
-						</Grid.Column>
-						<Grid.Column width={1}/>
-						<Grid.Column width={12}>
-							<Form>
-								<Form.Field>
-									<label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
-									<Input
-										name={'name'}
-										size={'large'}
-										placeholder={localizer.f('gameName')}
-										value={this.state.name}
-										onChange={this.inputChangeHandler}
+				<Modal
+					open={this.state.transitionVisible}
+					onClose={this.closeModal}
+					size={'large'}
+					className={css(styles.modal)}
+				>
+					<Modal.Header>{(this.state.editing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
+					<Modal.Content className={css(styles.modalBody)}>
+						<Grid>
+							<Grid.Column width={3}>
+								<label className={css(styles.formLabel)}>{localizer.f('coverLabel')}</label>
+								<div className={css(styles.coverWrapper)}>
+									<BlurPicture
+										faIcon={faFolderOpen}
+										fontSize={55}
+										background={this.state.gameData.cover}
+										clickHandler={this.gameCoverClickHandler}
 									/>
-								</Form.Field>
-								<Grid>
-									<Grid.Column width={11}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('gamesSeries')}</label>
-											<Input
-												name={'series'}
-												size={'large'}
-												placeholder={localizer.f('gamesSeries')}
-												value={this.state.series}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-									<Grid.Column width={5}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('releaseDate')}</label>
-											<DatePicker
-												value={this.state.date}
-												dateFormat={'DD/MM/YYYY'}
-												onChange={this.dateChangeHandler}
-												inputProps={{
-													size: 'large',
-													placeholder: localizer.f('releaseDate'),
-													readOnly: true
-												}}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column width={8}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('developer')}</label>
-											<Input
-												name={'developer'}
-												size={'large'}
-												placeholder={localizer.f('developer')}
-												value={this.state.developer}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-									<Grid.Column width={8}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('publisher')}</label>
-											<Input
-												name={'publisher'}
-												size={'large'}
-												placeholder={localizer.f('publisher')}
-												value={this.state.publisher}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column style={{ width: 84.5.percents() }}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('genres')}</label>
-											<Input
-												name={'genres'}
-												size={'large'}
-												placeholder={localizer.f('genres')}
-												value={this.state.genres}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-									<Grid.Column width={2}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('rating')}</label>
-											<NumberPicker
-												min={1}
-												max={100}
-												name={'rating'}
-												placeholder={localizer.f('rating')}
-												value={this.state.rating}
-												onChange={this.ratingChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('summary')}</label>
-											<TextArea
-												name={'summary'}
-												className={css(styles.formTextArea)}
-												placeholder={localizer.f('summary')}
-												value={this.state.summary}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<hr className={css(styles.formHr)}/>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('executable')}</label>
-											<Input
-												label={
-													<Button
-														secondary={true}
-														onClick={this.executableButton.bind(this)}
-													>
-														<FontAwesomeIcon icon={faFolderOpen}/>
-													</Button>
-												}
-												labelPosition={'right'}
-												name={'executable'}
-												size={'large'}
-												placeholder={localizer.f('executable')}
-												value={this.state.executable}
-												onClick={this.executableButton}
-												readOnly={true}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
-											<div className={'ui large input'}>
-												<input
-													name={'arguments'}
-													className={css(styles.lineArgumentsInput)}
-													placeholder={localizer.f('lineArguments')}
-													value={this.state.arguments}
+								</div>
+							</Grid.Column>
+							<Grid.Column width={1}/>
+							<Grid.Column width={12}>
+								<Form>
+									<Form.Field>
+										<label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
+										<Input
+											name={'name'}
+											size={'large'}
+											placeholder={localizer.f('gameName')}
+											value={this.state.gameData.name}
+											onChange={this.inputChangeHandler}
+										/>
+									</Form.Field>
+									<Grid>
+										<Grid.Column width={11}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('gamesSeries')}</label>
+												<Input
+													name={'series'}
+													size={'large'}
+													placeholder={localizer.f('gamesSeries')}
+													value={this.state.gameData.series}
 													onChange={this.inputChangeHandler}
 												/>
-											</div>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<hr className={css(styles.formHr)}/>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('backgroundImage')}</label>
-											<ImagesCollection
-												images={this.state.potentialBackgrounds}
-												onChange={this.changeBackgroundHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<input
-									name={'cover'}
-									value={this.state.cover}
-									onChange={this.inputChangeHandler}
-									hidden={true}
-								/>
-								<input
-									name={'background'}
-									value={this.state.backgroundScreen}
-									onChange={this.inputChangeHandler}
-									hidden={true}
-								/>
-								<input
-									name={'source'}
-									value={this.state.source}
-									onChange={this.inputChangeHandler}
-									hidden={true}
-								/>
-							</Form>
-						</Grid.Column>
-					</Grid>
-				</Modal.Content>
-				<Modal.Actions>
-					<Button
-						secondary={true}
-						disabled={!this.state.name}
-						loading={this.state.igdbButtonLoading}
-						onClick={this.searchIgdbButton}
-					>
-						{localizer.f('fillWithIgdb')}
-					</Button>
-					<Button
-						primary={true}
-						disabled={!this.state.name || !this.state.executable}
-						loading={this.state.submitButtonLoading}
-						onClick={this.submitButton}
-					>
-						{(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
-					</Button>
-				</Modal.Actions>
-				<IgdbResearchModal/>
-				{this.checkErrors()}
-			</Modal>
+											</Form.Field>
+										</Grid.Column>
+										<Grid.Column width={5}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('releaseDate')}</label>
+												<DatePicker
+													value={this.state.gameData.date}
+													dateFormat={'DD/MM/YYYY'}
+													onChange={this.dateChangeHandler}
+													inputProps={{
+														size: 'large',
+														placeholder: localizer.f('releaseDate'),
+														readOnly: true
+													}}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={8}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('developer')}</label>
+												<Input
+													name={'developer'}
+													size={'large'}
+													placeholder={localizer.f('developer')}
+													value={this.state.gameData.developer}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+										<Grid.Column width={8}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('publisher')}</label>
+												<Input
+													name={'publisher'}
+													size={'large'}
+													placeholder={localizer.f('publisher')}
+													value={this.state.gameData.publisher}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column style={{ width: 84.5.percents() }}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('genres')}</label>
+												<Input
+													name={'genres'}
+													size={'large'}
+													placeholder={localizer.f('genres')}
+													value={this.state.gameData.genres}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+										<Grid.Column width={2}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('rating')}</label>
+												<NumberPicker
+													min={1}
+													max={100}
+													name={'rating'}
+													placeholder={localizer.f('rating')}
+													value={this.state.gameData.rating}
+													onChange={this.ratingChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('summary')}</label>
+												<TextArea
+													name={'summary'}
+													className={css(styles.formTextArea)}
+													placeholder={localizer.f('summary')}
+													value={this.state.gameData.summary}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<hr className={css(styles.formHr)}/>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('executable')}</label>
+												<Input
+													label={
+														<Button
+															secondary={true}
+															onClick={this.executableButton.bind(this)}
+														>
+															<FontAwesomeIcon icon={faFolderOpen}/>
+														</Button>
+													}
+													labelPosition={'right'}
+													name={'executable'}
+													size={'large'}
+													placeholder={localizer.f('executable')}
+													value={this.state.gameData.executable}
+													onClick={this.executableButton}
+													readOnly={true}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
+												<div className={'ui large input'}>
+													<input
+														name={'arguments'}
+														className={css(styles.lineArgumentsInput)}
+														placeholder={localizer.f('lineArguments')}
+														value={this.state.gameData.arguments}
+														onChange={this.inputChangeHandler}
+													/>
+												</div>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<hr className={css(styles.formHr)}/>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('backgroundImage')}</label>
+												<ImagesCollection
+													images={this.state.gameData.potentialBackgrounds}
+													onChange={this.changeBackgroundHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<input
+										name={'cover'}
+										value={this.state.gameData.cover}
+										onChange={this.inputChangeHandler}
+										hidden={true}
+									/>
+									<input
+										name={'background'}
+										value={this.state.gameData.backgroundScreen}
+										onChange={this.inputChangeHandler}
+										hidden={true}
+									/>
+									<input
+										name={'source'}
+										value={this.state.gameData.source}
+										onChange={this.inputChangeHandler}
+										hidden={true}
+									/>
+								</Form>
+							</Grid.Column>
+						</Grid>
+					</Modal.Content>
+					<Modal.Actions>
+						<Button
+							secondary={true}
+							disabled={!this.state.gameData.name}
+							loading={this.state.igdbButtonLoading}
+							onClick={this.searchIgdbButton}
+						>
+							{localizer.f('fillWithIgdb')}
+						</Button>
+						<Button
+							primary={true}
+							disabled={!this.state.gameData.name || !this.state.gameData.executable}
+							loading={this.state.submitButtonLoading}
+							onClick={this.submitButton}
+						>
+							{(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
+						</Button>
+					</Modal.Actions>
+					<IgdbResearchModal/>
+					{this.checkErrors()}
+				</Modal>
+			</Transition>
 		);
 	}
 }

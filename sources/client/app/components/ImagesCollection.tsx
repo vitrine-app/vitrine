@@ -11,7 +11,7 @@ import { faPlus } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
 	images?: string[];
-	onChange?: (backgroundScreen: string) => void;
+	onChange: (backgroundScreen: string) => void;
 }
 
 interface State {
@@ -31,6 +31,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 		};
 
 		this.imageClick = this.imageClick.bind(this);
+		this.addImageButton = this.addImageButton.bind(this);
 	}
 
 	private addImageButton() {
@@ -38,18 +39,17 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 		if (!newImage)
 			return;
 
-		const newImages: string[] = this.state.images;
+		const images: string[] = this.state.images;
 		if (this.state.customImage === true)
-			newImages[0] = newImage;
+			images[0] = newImage;
 		else
-			newImages.unshift(newImage);
+			images.unshift(newImage);
 		this.setState({
-			images: newImages,
+			images,
 			selectedImage: newImage,
 			customImage: true
 		}, () => {
-			if (this.props.onChange)
-				this.props.onChange(this.state.selectedImage);
+			this.props.onChange(this.state.selectedImage);
 		});
 	}
 
@@ -57,8 +57,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
 		this.setState({
 			selectedImage: image
 		}, () => {
-			if (this.props.onChange)
-				this.props.onChange(this.state.selectedImage);
+			this.props.onChange(this.state.selectedImage);
 		});
 	}
 

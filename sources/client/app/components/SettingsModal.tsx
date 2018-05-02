@@ -2,7 +2,7 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
-import { Button, Form, Grid, Input, Modal, Tab, Table } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, Modal, Tab, Table, Transition } from 'semantic-ui-react';
 
 import { EmulatorSettingsRow } from '../containers/EmulatorSettingsRow';
 import { openDirectory } from '../helpers';
@@ -41,6 +41,7 @@ interface State {
 	emulatedError: boolean;
 	aliveEmulators: any[];
 	emulatorsError: string;
+	transitionVisible: boolean;
 }
 
 export class SettingsModal extends VitrineComponent<Props, State> {
@@ -63,7 +64,8 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			originError: false,
 			emulatedError: false,
 			aliveEmulators: (this.props.settings.emulated) ? (this.props.settings.emulated.aliveEmulators) : ([]),
-			emulatorsError: ''
+			emulatorsError: '',
+			transitionVisible: true
 		};
 		this.state = this.emptyState;
 
@@ -78,6 +80,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		this.langSelect = this.langSelect.bind(this);
 		this.emulatorConfigChange = this.emulatorConfigChange.bind(this);
 		this.submitButton = this.submitButton.bind(this);
+		this.animateModal = this.animateModal.bind(this);
 	}
 
 	private closeModal() {
@@ -241,9 +244,15 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			emulatorsError
 		});
 		if (sendable) {
-			console.log('new Form:', settingsForm);
 			serverListener.send('update-settings', settingsForm);
 		}
+	}
+
+	private animateModal(startingAnimation: boolean) {
+		if (startingAnimation === this.props.visible)
+			this.setState({
+				transitionVisible: this.props.visible
+			});
 	}
 
 	public render(): JSX.Element {
@@ -436,55 +445,70 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		);
 
 		return (
-			<Modal
-				open={this.props.visible}
-				onClose={this.closeModal}
-				className={css(styles.modal)}
+			<Transition
+				animation={'fade down'}
+				duration={this.modalsTransitionDuration}
+				onStart={this.animateModal.bind(this, true)}
+				onComplete={this.animateModal.bind(this, false)}
+				visible={this.props.visible}
 			>
-				<Modal.Header
-					style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
+				<Modal
+					size={'large'}
+					open={this.state.transitionVisible}
+					onClose={this.closeModal}
+					className={css(styles.modal)}
 				>
-					{localizer.f('settings')}
-				</Modal.Header>
-				<Modal.Content>
-					<div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
-						<h1>{localizer.f('welcomeMessage')}</h1>
-						<p>{localizer.f('wizardText')}</p>
-					</div>
-					<Tab
-						panes={[
-							{
-								menuItem: localizer.f('modules'),
-								render: () => modulesSettings
-							},
-							{
-								menuItem: localizer.f('emulators'),
-								render: () => emulatorsSettings
-							},
-							{
-								menuItem: localizer.f('lang'),
-								render: () => langsSettings
-							}
-						]}
-					/>
-				</Modal.Content>
-				<Modal.Actions>
-					<Button
-						secondary={true}
-						style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
-						onClick={this.closeModal}
+					<Modal.Header
+						className={css(styles.modalHeader)}
+						style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
 					>
-						{localizer.f('cancel')}
-					</Button>
-					<Button
-						primary={true}
-						onClick={this.submitButton}
-					>
-						{localizer.f('confirm')}
-					</Button>
-				</Modal.Actions>
-				{this.checkErrors()}
-			</Modal>
+						{localizer.f('settings')}
+					</Modal.Header>
+					<Modal.Content>
+						<div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
+							<h1>{localizer.f('welcomeMessage')}</h1>
+							<p>{localizer.f('wizardText')}</p>
+						</div>
+						<Tab
+							menu={{
+								fluid: true,
+								vertical: true,
+								tabular: 'right'
+							}}
+							panes={[
+								{
+									menuItem: localizer.f('modules'),
+									render: () => modulesSettings
+								},
+								{
+									menuItem: localizer.f('emulators'),
+									render: () => emulatorsSettings
+								},
+								{
+									menuItem: localizer.f('lang'),
+									render: () => langsSettings
+								}
+							]}
+						/>
+					</Modal.Content>
+					<Modal.Actions className={css(styles.modalHeader)}>
+						<Button
+							secondary={true}
+							style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
+							onClick={this.closeModal}
+						>
+							{localizer.f('cancel')}
+						</Button>
+						<Button
+							primary={true}
+							onClick={this.submitButton}
+						>
+							{localizer.f('confirm')}
+						</Button>
+					</Modal.Actions>
+					{this.checkErrors()}
+				</Modal>
+			</Transition>
 		);
 	}
 }
@@ -492,12 +516,17 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 const styles: React.CSSProperties & any = StyleSheet.create({
 	modal: {
 		margin: margin(5..rem(), 'auto'),
+		width: 70..vw(),
 		cursor: 'default',
 		userSelect: 'none'
 	},
+	modalHeader: {
+		border: 'none'
+	},
 	settingsPane: {
-		maxHeight: 64..vh(),
-		overflowY: 'auto'
+		height: 64..vh(),
+		overflowY: 'auto',
+		border: 'none'
 	},
 	formHr: {
 		border: 'none',

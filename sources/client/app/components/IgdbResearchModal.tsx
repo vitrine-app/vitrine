@@ -3,7 +3,7 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import { shell } from 'electron';
 import * as React from 'react';
-import { Button, Form, Grid, Input, Modal } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, Modal, Transition } from 'semantic-ui-react';
 
 import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
@@ -24,6 +24,7 @@ interface State {
 	resultsNb: number;
 	researches: any[];
 	selectedResearchId: number | string;
+	transitionVisible: boolean;
 }
 
 export class IgdbResearchModal extends VitrineComponent<Props, State> {
@@ -35,7 +36,8 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 			research: '',
 			resultsNb: 5,
 			researches: [],
-			selectedResearchId: ''
+			selectedResearchId: '',
+			transitionVisible: true
 		};
 
 		this.researchClick = this.researchClick.bind(this);
@@ -46,6 +48,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		this.igdbFillButton = this.igdbFillButton.bind(this);
 		this.closeModal = this.closeModal.bind(this);
 		this.igdbLinkClick = this.igdbLinkClick.bind(this);
+		this.animateModal = this.animateModal.bind(this);
 	}
 
 	private researchClick(id: number) {
@@ -104,6 +107,12 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		shell.openExternal(igdbUrl);
 	}
 
+	private animateModal(startingAnimation: boolean) {
+		if (startingAnimation === this.props.visible)
+			this.setState({
+				transitionVisible: this.props.visible
+			});
+	}
 	public componentDidMount() {
 		serverListener.listen('send-igdb-searches', (research: string, researches: any[]) => {
 			this.setState({
@@ -203,24 +212,32 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 		);
 
 		return (
-			<Modal
-				open={this.props.visible}
-				onClose={this.closeModal}
-				size={'tiny'}
-				className={css(styles.modal)}
+			<Transition
+				animation={'fade down'}
+				duration={this.modalsTransitionDuration}
+				onStart={this.animateModal.bind(this, true)}
+				onComplete={this.animateModal.bind(this, false)}
+				visible={this.props.visible}
 			>
-				<Modal.Header>{localizer.f('fillWithIgdb')}</Modal.Header>
-				{modalContent}
-				<Modal.Actions style={{ opacity: (!this.state.loading) ? (1) : (0) }}>
-					<Button
-						primary={true}
-						disabled={!this.state.selectedResearchId}
-						onClick={this.igdbFillButton}
-					>
-						{localizer.f('submitNewGame')}
-					</Button>
-				</Modal.Actions>
-			</Modal>
+				<Modal
+					open={this.state.transitionVisible}
+					onClose={this.closeModal}
+					size={'tiny'}
+					className={css(styles.modal)}
+				>
+					<Modal.Header>{localizer.f('fillWithIgdb')}</Modal.Header>
+					{modalContent}
+					<Modal.Actions style={{ opacity: (!this.state.loading) ? (1) : (0) }}>
+						<Button
+							primary={true}
+							disabled={!this.state.selectedResearchId}
+							onClick={this.igdbFillButton}
+						>
+							{localizer.f('submitNewGame')}
+						</Button>
+					</Modal.Actions>
+				</Modal>
+			</Transition>
 		);
 	}
 }
