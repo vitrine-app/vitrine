@@ -25,6 +25,8 @@
     "max-line-length": [ true, 150 ],
     "semicolon": [ true ],
     "curly": false,
-    "no-multi-spaces": true
+    "no-multi-spaces": true,
+
+    "jsx-no-lambda": false
   }
 }

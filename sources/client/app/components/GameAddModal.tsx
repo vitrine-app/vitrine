@@ -227,7 +227,6 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 	private submitButton() {
 		const gameInfos: any = { ...this.state.gameData };
 		delete gameInfos.potentialBackgrounds;
-		console.log(gameInfos);
 		if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
 			gameInfos.cover = `file://${gameInfos.cover}`;
 		if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
