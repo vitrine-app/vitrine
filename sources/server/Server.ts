@@ -143,6 +143,7 @@ export class Server {
 		const gameName: string = gameForm.name;
 		const addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
 		addedGame.source = gameForm.source;
+		delete gameForm.source;
 		this.registerGame(addedGame, gameForm, false);
 	}
 

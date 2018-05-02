@@ -29,10 +29,12 @@ class EmulatedCrawler extends PotentialGamesCrawler {
 			this.folderDatas = folders.map((folder: string) => ({
 				...this.moduleConfig.platforms.filter((platform: any) => platform.folder.toUpperCase() === path.basename(folder).toUpperCase())[0],
 				folder
-			})).filter((platform: any) => platform.id).map((platform: any) => ({
-				emulator: aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id === platform.id)[0],
-				folder: platform.folder
-			})).filter((folderData: any) => {
+			})).filter((platform: any) => platform.id).map((platform: any) => {
+				return ({
+					emulator: aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.platforms.includes(platform.id))[0],
+					folder: platform.folder
+				});
+			}).filter((folderData: any) => {
 				if (!folderData.emulator)
 					return false;
 				logger.info('EmulatedCrawler', `Roms folder ${folderData.folder} found and binded to ${folderData.emulator.name}.`);
