@@ -3,7 +3,7 @@ import { css, StyleSheet } from 'aphrodite';
 import { border, margin, rgba } from 'css-verbose';
 import * as moment from 'moment';
 import * as React from 'react';
-import { Button, Form, Grid, Input, Modal, TextArea } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, Modal, TextArea, Transition } from 'semantic-ui-react';
 
 import { GameSource, PotentialGame } from '../../../models/PotentialGame';
 import { IgdbResearchModal } from '../containers/IgdbResearchModal';
@@ -57,6 +57,7 @@ interface State {
 	igdbFilled: boolean;
 	submitButtonLoading: boolean;
 	igdbButtonLoading: boolean;
+	transitionVisible: boolean;
 }
 
 export class GameAddModal extends VitrineComponent<Props, State> {
@@ -86,7 +87,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			modalVisible: this.props.visible,
 			igdbFilled: false,
 			submitButtonLoading: false,
-			igdbButtonLoading: false
+			igdbButtonLoading: false,
+			transitionVisible: true
 		};
 		this.state = { ...this.emptyState };
 
@@ -99,6 +101,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 		this.executableButton = this.executableButton.bind(this);
 		this.searchIgdbButton = this.searchIgdbButton.bind(this);
 		this.submitButton = this.submitButton.bind(this);
+		this.animateModal = this.animateModal.bind(this);
 	}
 
 	private fillIgdbGame(gameInfos: any) {
@@ -241,6 +244,13 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 			serverListener.send('add-game', gameInfos);
 	}
 
+	private animateModal(startingAnimation: boolean) {
+		if (startingAnimation === this.props.visible)
+			this.setState({
+				transitionVisible: this.props.visible
+			});
+	}
+
 	public componentDidMount() {
 		serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this))
 			.listen('add-playable-game', this.addPlayableGame.bind(this))
@@ -288,231 +298,239 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 
 	public render(): JSX.Element {
 		return (
-			<Modal
-				open={this.props.visible}
-				onClose={this.closeModal}
-				size={'large'}
-				className={css(styles.modal)}
+			<Transition
+				animation={'fade down'}
+				duration={400}
+				onStart={this.animateModal.bind(this, true)}
+				onComplete={this.animateModal.bind(this, false)}
+				visible={this.props.visible}
 			>
-				<Modal.Header>{(this.state.editing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
-				<Modal.Content className={css(styles.modalBody)}>
-					<Grid>
-						<Grid.Column width={3}>
-							<label className={css(styles.formLabel)}>{localizer.f('coverLabel')}</label>
-							<div className={css(styles.coverWrapper)}>
-								<BlurPicture
-									faIcon={faFolderOpen}
-									fontSize={55}
-									background={this.state.gameData.cover}
-									clickHandler={this.gameCoverClickHandler}
-								/>
-							</div>
-						</Grid.Column>
-						<Grid.Column width={1}/>
-						<Grid.Column width={12}>
-							<Form>
-								<Form.Field>
-									<label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
-									<Input
-										name={'name'}
-										size={'large'}
-										placeholder={localizer.f('gameName')}
-										value={this.state.gameData.name}
-										onChange={this.inputChangeHandler}
+				<Modal
+					open={this.state.transitionVisible}
+					onClose={this.closeModal}
+					size={'large'}
+					className={css(styles.modal)}
+				>
+					<Modal.Header>{(this.state.editing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
+					<Modal.Content className={css(styles.modalBody)}>
+						<Grid>
+							<Grid.Column width={3}>
+								<label className={css(styles.formLabel)}>{localizer.f('coverLabel')}</label>
+								<div className={css(styles.coverWrapper)}>
+									<BlurPicture
+										faIcon={faFolderOpen}
+										fontSize={55}
+										background={this.state.gameData.cover}
+										clickHandler={this.gameCoverClickHandler}
 									/>
-								</Form.Field>
-								<Grid>
-									<Grid.Column width={11}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('gamesSeries')}</label>
-											<Input
-												name={'series'}
-												size={'large'}
-												placeholder={localizer.f('gamesSeries')}
-												value={this.state.gameData.series}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-									<Grid.Column width={5}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('releaseDate')}</label>
-											<DatePicker
-												value={this.state.gameData.date}
-												dateFormat={'DD/MM/YYYY'}
-												onChange={this.dateChangeHandler}
-												inputProps={{
-													size: 'large',
-													placeholder: localizer.f('releaseDate'),
-													readOnly: true
-												}}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column width={8}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('developer')}</label>
-											<Input
-												name={'developer'}
-												size={'large'}
-												placeholder={localizer.f('developer')}
-												value={this.state.gameData.developer}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-									<Grid.Column width={8}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('publisher')}</label>
-											<Input
-												name={'publisher'}
-												size={'large'}
-												placeholder={localizer.f('publisher')}
-												value={this.state.gameData.publisher}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column style={{ width: 84.5.percents() }}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('genres')}</label>
-											<Input
-												name={'genres'}
-												size={'large'}
-												placeholder={localizer.f('genres')}
-												value={this.state.gameData.genres}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-									<Grid.Column width={2}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('rating')}</label>
-											<NumberPicker
-												min={1}
-												max={100}
-												name={'rating'}
-												placeholder={localizer.f('rating')}
-												value={this.state.gameData.rating}
-												onChange={this.ratingChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('summary')}</label>
-											<TextArea
-												name={'summary'}
-												className={css(styles.formTextArea)}
-												placeholder={localizer.f('summary')}
-												value={this.state.gameData.summary}
-												onChange={this.inputChangeHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<hr className={css(styles.formHr)}/>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('executable')}</label>
-											<Input
-												label={
-													<Button
-														secondary={true}
-														onClick={this.executableButton.bind(this)}
-													>
-														<FontAwesomeIcon icon={faFolderOpen}/>
-													</Button>
-												}
-												labelPosition={'right'}
-												name={'executable'}
-												size={'large'}
-												placeholder={localizer.f('executable')}
-												value={this.state.gameData.executable}
-												onClick={this.executableButton}
-												readOnly={true}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
-											<div className={'ui large input'}>
-												<input
-													name={'arguments'}
-													className={css(styles.lineArgumentsInput)}
-													placeholder={localizer.f('lineArguments')}
-													value={this.state.gameData.arguments}
+								</div>
+							</Grid.Column>
+							<Grid.Column width={1}/>
+							<Grid.Column width={12}>
+								<Form>
+									<Form.Field>
+										<label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
+										<Input
+											name={'name'}
+											size={'large'}
+											placeholder={localizer.f('gameName')}
+											value={this.state.gameData.name}
+											onChange={this.inputChangeHandler}
+										/>
+									</Form.Field>
+									<Grid>
+										<Grid.Column width={11}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('gamesSeries')}</label>
+												<Input
+													name={'series'}
+													size={'large'}
+													placeholder={localizer.f('gamesSeries')}
+													value={this.state.gameData.series}
 													onChange={this.inputChangeHandler}
 												/>
-											</div>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<hr className={css(styles.formHr)}/>
-								<Grid>
-									<Grid.Column width={16}>
-										<Form.Field>
-											<label className={css(styles.formLabel)}>{localizer.f('backgroundImage')}</label>
-											<ImagesCollection
-												images={this.state.gameData.potentialBackgrounds}
-												onChange={this.changeBackgroundHandler}
-											/>
-										</Form.Field>
-									</Grid.Column>
-								</Grid>
-								<input
-									name={'cover'}
-									value={this.state.gameData.cover}
-									onChange={this.inputChangeHandler}
-									hidden={true}
-								/>
-								<input
-									name={'background'}
-									value={this.state.gameData.backgroundScreen}
-									onChange={this.inputChangeHandler}
-									hidden={true}
-								/>
-								<input
-									name={'source'}
-									value={this.state.gameData.source}
-									onChange={this.inputChangeHandler}
-									hidden={true}
-								/>
-							</Form>
-						</Grid.Column>
-					</Grid>
-				</Modal.Content>
-				<Modal.Actions>
-					<Button
-						secondary={true}
-						disabled={!this.state.gameData.name}
-						loading={this.state.igdbButtonLoading}
-						onClick={this.searchIgdbButton}
-					>
-						{localizer.f('fillWithIgdb')}
-					</Button>
-					<Button
-						primary={true}
-						disabled={!this.state.gameData.name || !this.state.gameData.executable}
-						loading={this.state.submitButtonLoading}
-						onClick={this.submitButton}
-					>
-						{(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
-					</Button>
-				</Modal.Actions>
-				<IgdbResearchModal/>
-				{this.checkErrors()}
-			</Modal>
+											</Form.Field>
+										</Grid.Column>
+										<Grid.Column width={5}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('releaseDate')}</label>
+												<DatePicker
+													value={this.state.gameData.date}
+													dateFormat={'DD/MM/YYYY'}
+													onChange={this.dateChangeHandler}
+													inputProps={{
+														size: 'large',
+														placeholder: localizer.f('releaseDate'),
+														readOnly: true
+													}}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={8}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('developer')}</label>
+												<Input
+													name={'developer'}
+													size={'large'}
+													placeholder={localizer.f('developer')}
+													value={this.state.gameData.developer}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+										<Grid.Column width={8}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('publisher')}</label>
+												<Input
+													name={'publisher'}
+													size={'large'}
+													placeholder={localizer.f('publisher')}
+													value={this.state.gameData.publisher}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column style={{ width: 84.5.percents() }}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('genres')}</label>
+												<Input
+													name={'genres'}
+													size={'large'}
+													placeholder={localizer.f('genres')}
+													value={this.state.gameData.genres}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+										<Grid.Column width={2}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('rating')}</label>
+												<NumberPicker
+													min={1}
+													max={100}
+													name={'rating'}
+													placeholder={localizer.f('rating')}
+													value={this.state.gameData.rating}
+													onChange={this.ratingChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('summary')}</label>
+												<TextArea
+													name={'summary'}
+													className={css(styles.formTextArea)}
+													placeholder={localizer.f('summary')}
+													value={this.state.gameData.summary}
+													onChange={this.inputChangeHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<hr className={css(styles.formHr)}/>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('executable')}</label>
+												<Input
+													label={
+														<Button
+															secondary={true}
+															onClick={this.executableButton.bind(this)}
+														>
+															<FontAwesomeIcon icon={faFolderOpen}/>
+														</Button>
+													}
+													labelPosition={'right'}
+													name={'executable'}
+													size={'large'}
+													placeholder={localizer.f('executable')}
+													value={this.state.gameData.executable}
+													onClick={this.executableButton}
+													readOnly={true}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
+												<div className={'ui large input'}>
+													<input
+														name={'arguments'}
+														className={css(styles.lineArgumentsInput)}
+														placeholder={localizer.f('lineArguments')}
+														value={this.state.gameData.arguments}
+														onChange={this.inputChangeHandler}
+													/>
+												</div>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<hr className={css(styles.formHr)}/>
+									<Grid>
+										<Grid.Column width={16}>
+											<Form.Field>
+												<label className={css(styles.formLabel)}>{localizer.f('backgroundImage')}</label>
+												<ImagesCollection
+													images={this.state.gameData.potentialBackgrounds}
+													onChange={this.changeBackgroundHandler}
+												/>
+											</Form.Field>
+										</Grid.Column>
+									</Grid>
+									<input
+										name={'cover'}
+										value={this.state.gameData.cover}
+										onChange={this.inputChangeHandler}
+										hidden={true}
+									/>
+									<input
+										name={'background'}
+										value={this.state.gameData.backgroundScreen}
+										onChange={this.inputChangeHandler}
+										hidden={true}
+									/>
+									<input
+										name={'source'}
+										value={this.state.gameData.source}
+										onChange={this.inputChangeHandler}
+										hidden={true}
+									/>
+								</Form>
+							</Grid.Column>
+						</Grid>
+					</Modal.Content>
+					<Modal.Actions>
+						<Button
+							secondary={true}
+							disabled={!this.state.gameData.name}
+							loading={this.state.igdbButtonLoading}
+							onClick={this.searchIgdbButton}
+						>
+							{localizer.f('fillWithIgdb')}
+						</Button>
+						<Button
+							primary={true}
+							disabled={!this.state.gameData.name || !this.state.gameData.executable}
+							loading={this.state.submitButtonLoading}
+							onClick={this.submitButton}
+						>
+							{(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
+						</Button>
+					</Modal.Actions>
+					<IgdbResearchModal/>
+					{this.checkErrors()}
+				</Modal>
+			</Transition>
 		);
 	}
 }
