@@ -3,7 +3,7 @@ const HtmlPlugin = require('html-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
-let clientConfig = {
+const clientConfig = {
 	node: {
 		__dirname: false,
 		__filename: false
@@ -39,7 +39,7 @@ let clientConfig = {
 	devtool: (production) ? ('source-map') : (false)
 };
 
-module.exports = [
+const moduleExports = [
 	{
 		...clientConfig,
 		entry: './sources/client/main.tsx',
@@ -69,3 +69,5 @@ module.exports = [
 		]
 	},
 ];
+
+module.exports = (!process.env.NO_LOADER) ? (moduleExports) : (moduleExports[0]);
