@@ -10,7 +10,6 @@ class PlayableGamesCrawler {
 	private readonly playableGames: PlayableGame[];
 	private readonly gamesDirectory: string;
 	private readonly configFileName: string;
-	private callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void;
 
 	public constructor() {
 		this.playableGames = [];
@@ -18,18 +17,14 @@ class PlayableGamesCrawler {
 		this.configFileName = 'config.json';
 	}
 
-	public search(callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void) {
-		this.callback = callback;
-		fs.readdir(this.gamesDirectory, (error: Error, files: string[]) => {
-			if (error) {
-				this.callback(error, null);
-				return;
-			}
+	public async search(callback: (error: Error, playableGames: GamesCollection<PlayableGame>) => void) {
+		try {
+			const files: string[] = await fs.readdir(this.gamesDirectory);
 			if (!files.length) {
-				this.callback(null, new GamesCollection());
+				callback(null, new GamesCollection());
 				return;
 			}
-			files.forEachEnd(async (gameUuid: string, done: () => void) => {
+			await files.forEachEnd(async (gameUuid: string, done: () => void) => {
 				const configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, this.configFileName);
 				if (await fs.pathExists(configFilePath)) {
 					const rawGame = await fs.readJson(configFilePath);
@@ -43,13 +38,14 @@ class PlayableGamesCrawler {
 					this.playableGames.push(playableGame);
 				}
 				done();
-			}, () => {
-				const playableGames: GamesCollection<PlayableGame> = new GamesCollection();
-				playableGames.setGames(this.playableGames);
-				this.callback(null, playableGames);
-				delete this.callback;
 			});
-		});
+			const playableGames: GamesCollection<PlayableGame> = new GamesCollection();
+			playableGames.setGames(this.playableGames);
+			callback(null, playableGames);
+		}
+		catch (error) {
+			callback(error, null);
+		}
 	}
 }
 

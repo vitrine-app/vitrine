@@ -373,7 +373,7 @@ export class Server {
 		this.sendRegisteredGame(game, configFilePath, editing);
 	}
 
-	private async downloadGamePictures(game: PlayableGame, {backgroundUrl, backgroundPath, coverUrl, coverPath}: any): Promise<any> {
+	private async downloadGamePictures(game: PlayableGame, { backgroundUrl, backgroundPath, coverUrl, coverPath }: any): Promise<any> {
 		try {
 			const stored: boolean = await downloadImage(backgroundUrl, backgroundPath);
 			game.details.backgroundScreen = (stored) ? (backgroundPath) : (game.details.backgroundScreen);

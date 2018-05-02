@@ -46,7 +46,7 @@ class EmulatedCrawler extends PotentialGamesCrawler {
 	}
 
 	private async analyzeFolders() {
-		this.folderDatas.forEachEnd(async ({ folder: romFolder, emulator: romEmulator }: any, done: () => void) => {
+		await this.folderDatas.forEachEnd(async ({ folder: romFolder, emulator: romEmulator }: any, done: () => void) => {
 			logger.info('EmulatedCrawler', `Parsing roms in ${romFolder} with ${romEmulator.name} glob (${romEmulator.glob}).`);
 			const roms: string[] = await glob(`${romFolder}/${romEmulator.glob}`);
 			const romInfos: any[] = roms.map((romPath: string) => {
@@ -54,7 +54,7 @@ class EmulatedCrawler extends PotentialGamesCrawler {
 				const romName: string = parsedPath[parsedPath.length - romEmulator.glob.split('/').length]
 					.replace(/(\w+)\.(\w+)/g, '$1');
 				return { romName, romPath };
-			}).filter(({romName}: any) => {
+			}).filter(({ romName }: any) => {
 				const found: boolean = this.playableGames.filter((playableGame: any) =>
 					spatStr(romName) === spatStr(playableGame.name)
 				).length > 0;
@@ -62,7 +62,7 @@ class EmulatedCrawler extends PotentialGamesCrawler {
 					logger.info('EmulatedCrawler', `Emulated game ${romName} is already a playable game.`);
 				return !found;
 			});
-			romInfos.forEachEnd(async ({ romName, romPath }: any, secondDone: () => void) => {
+			await romInfos.forEachEnd(async ({ romName, romPath }: any, secondDone: () => void) => {
 				const potentialGame: PotentialGame = new PotentialGame(romName);
 				potentialGame.source = GameSource.EMULATED;
 				potentialGame.commandLine = [
@@ -72,12 +72,10 @@ class EmulatedCrawler extends PotentialGamesCrawler {
 				this.potentialGames.push(potentialGame);
 				logger.info('EmulatedCrawler', `Adding ${romName} to potential emulated games.`);
 				secondDone();
-			}, () => {
-				done();
 			});
-		}, () => {
-			this.sendResults();
+			done();
 		});
+		this.sendResults();
 	}
 }
 
