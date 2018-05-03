@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { Grid } from 'semantic-ui-react';
 
+import { padding, rgba } from 'css-verbose';
 import { GamesCollection } from '../../../models/GamesCollection';
 import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
@@ -147,7 +148,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
 				<TimePlayedEditionModal/>
 				<PotentialGamesAddModal/>
 				<SettingsModal firstLaunch={this.state.firstLaunch}/>
-				<ToastContainer/>
+				<ToastContainer toastClassName={styles.toastNotification}/>
 				{this.checkErrors()}
 			</div>
 		);
@@ -163,5 +164,10 @@ const styles: React.CSSProperties & any = StyleSheet.create({
 	mainContainer: {
 		height: `calc(${100..percents()} - ${22..px()})`,
 		margin: 0
+	},
+	toastNotification: {
+		color: rgba(255, 255, 255, 0.72),
+		padding: padding(5, 9, 7, 16),
+		borderRadius: 2
 	}
 });

@@ -1,4 +1,5 @@
-import { padding, rgba } from 'css-verbose';
+import { css, StyleSheet } from 'aphrodite';
+import { rgba } from 'css-verbose';
 import { remote } from 'electron';
 import * as React from 'react';
 import { toast } from 'react-toastify';
@@ -80,18 +81,17 @@ export function urlify(imgPath: string): string {
 }
 
 export function notify(content: string, minor?: boolean) {
-	const toastStyle: React.CSSProperties = {
-		color: rgba(255, 255, 255, 0.72),
-		background: (!minor) ? rgba(216, 147, 98, 0.85) : (rgba(90, 85, 81, 0.60)),
-		padding: padding(5, 9, 7, 16),
-		borderRadius: 2,
-		fontFamily: fontName.replace(/'/g, '')
-	};
+	const toastStyle: React.CSSProperties & any = StyleSheet.create({
+		notification: {
+			background: (!minor) ? rgba(216, 147, 98, 0.85) : (rgba(90, 85, 81, 0.60)),
+			fontFamily: fontName.replace(/'/g, '')
+		}
+	});
 
 	toast(<span dangerouslySetInnerHTML={{ __html: content }}/>, {
 		type: 'default',
 		position: 'bottom-right',
-		className: toastStyle,
+		className: css(toastStyle.notification),
 		hideProgressBar: true,
 		autoClose: (!minor) ? (5000) : (3500)
 	});
