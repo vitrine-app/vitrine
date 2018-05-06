@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
   "author": "Paul Roman",

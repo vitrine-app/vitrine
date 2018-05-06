@@ -1,12 +1,29 @@
 # Changelog
 
-## v0.8.0 (04/04/2018)
+## v0.9.0 (06/05/2018)
+- [**bug**] Controls are still active on gamepad when Vitrine is not focused [#61](https://github.com/paul-roman/vitrine/issues/61)
+- [**idea**] Upgrade to Electron 2.0.0 [#60](https://github.com/paul-roman/vitrine/issues/60)
+- [**enhancement**] Allow user to sort his games [#55](https://github.com/paul-roman/vitrine/issues/55)
+- [**enhancement**] Improve the pipeline of potential games [#54](https://github.com/paul-roman/vitrine/issues/54)
+- [**bug**] Vitrine crashes when launching game asking for admin rights [#51](https://github.com/paul-roman/vitrine/issues/51)
+- [**enhancement**] Add the possibility to use controller on Vitrine [#50](https://github.com/paul-roman/vitrine/issues/50)
+- [**bug**] Deleted game is still selected [#49](https://github.com/paul-roman/vitrine/issues/49)
+- [**bug**] Crash upon finding Steam playtime for the first time [#48](https://github.com/paul-roman/vitrine/issues/48)
+- [**bug**] Steam game renamed is still marked as potential [#47](https://github.com/paul-roman/vitrine/issues/47)
+- [**enhancement**] Replace all Promises with async/await [#45](https://github.com/paul-roman/vitrine/issues/45)
+- [**enhancement**] Make data for potential games crawlers static [#40](https://github.com/paul-roman/vitrine/issues/40)
+- [**bug**][**enhancement**] Handle offline clients [#38](https://github.com/paul-roman/vitrine/issues/38)
+- [**bug**][**enhancement**] Need to handle IGDB API timeouts [#37](https://github.com/paul-roman/vitrine/issues/37)
+
+---
+
+## 0.8.0 (04/04/2018)
 - [**enhancement**][**idea**] Make native addons built cross-platform [#41](https://github.com/paul-roman/vitrine/issues/41)
 - [**enhancement**] Update to React 16.3 [#39](https://github.com/paul-roman/vitrine/issues/39)
 
 ---
 
-## v0.7.1 (02/04/2018)
+## 0.7.1 (02/04/2018)
 - [**enhancement**] Considering release notes generator [#35](https://github.com/paul-roman/vitrine/issues/35)
 
 ---
