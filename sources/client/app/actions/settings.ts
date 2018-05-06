@@ -17,3 +17,12 @@ export function updateModulesConfig(modulesConfig: any): Action {
 		}
 	};
 }
+
+export function setInternetConnection(internetConnection: boolean): Action {
+	return {
+		type: ActionType.SET_INTERNET_CONNECTION,
+		payload: {
+			internetConnection
+		}
+	};
+}

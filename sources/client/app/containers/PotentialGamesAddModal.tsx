@@ -5,7 +5,7 @@ import { Action } from '../actions/actionsTypes';
 import { setPotentialGameToAdd } from '../actions/games';
 import { closePotentialGamesAddModal, openGameAddModal } from '../actions/modals';
 import { AppState } from '../AppState';
-import { PotentialGamesAddModal as VisualPotentialGamesAddModal } from '../components/PotentialGamesAddModal';
+import { PotentialGamesAddModal as PotentialGamesAddModalComponent } from '../components/PotentialGamesAddModal';
 
 const mapStateToProps = (state: AppState) => ({
 	potentialGames: state.potentialGames,
@@ -13,15 +13,15 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	setPotentialGameToAdd: (potentialGame: PotentialGame) => {
+	setPotentialGameToAdd(potentialGame: PotentialGame) {
 		dispatch(setPotentialGameToAdd(potentialGame));
 	},
-	openGameAddModal: () => {
+	openGameAddModal() {
 		dispatch(openGameAddModal());
 	},
-	closePotentialGamesAddModal: () => {
+	closePotentialGamesAddModal() {
 		dispatch(closePotentialGamesAddModal());
 	}
 });
 
-export const PotentialGamesAddModal = connect(mapStateToProps, mapDispatchToProps)(VisualPotentialGamesAddModal);
+export const PotentialGamesAddModal = connect(mapStateToProps, mapDispatchToProps)(PotentialGamesAddModalComponent);

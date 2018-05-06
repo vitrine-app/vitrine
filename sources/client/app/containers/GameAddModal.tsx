@@ -4,11 +4,12 @@ import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { Action } from '../actions/actionsTypes';
 import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit, setPotentialGameToAdd } from '../actions/games';
-import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal, openIgdbResearchModal } from '../actions/modals';
+import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal } from '../actions/modals';
 import { AppState } from '../AppState';
-import { GameAddModal as VisualGameAddModal } from '../components/GameAddModal';
+import { GameAddModal as GameAddModalComponent } from '../components/GameAddModal';
 
 const mapStateToProps = (state: AppState) => ({
+	internetConnection: state.internetConnection,
 	selectedGame: state.selectedGame,
 	potentialGameToAdd: state.potentialGameToAdd,
 	gameToEdit: state.gameToEdit,
@@ -17,30 +18,30 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	addPlayableGames: (playableGames: PlayableGame[]) => {
+	addPlayableGames(playableGames: PlayableGame[]) {
 		dispatch(addPlayableGames(playableGames));
 	},
-	editPlayableGame: (playableGame: PlayableGame) => {
+	editPlayableGame(playableGame: PlayableGame) {
 		dispatch(editPlayableGame(playableGame));
 	},
-	setPotentialGameToAdd: (potentialGame: PotentialGame) => {
+	setPotentialGameToAdd(potentialGame: PotentialGame) {
 		dispatch(setPotentialGameToAdd(potentialGame));
 	},
-	setGameToEdit: (playableGame: PlayableGame) => {
+	setGameToEdit(playableGame: PlayableGame) {
 		dispatch(setGameToEdit(playableGame));
 	},
-	selectGame: (selectedGame: PlayableGame) => {
+	selectGame(selectedGame: PlayableGame) {
 		dispatch(selectGame(selectedGame));
 	},
-	closeGameAddModal: () => {
+	closeGameAddModal() {
 		dispatch(closeGameAddModal());
 	},
-	closeIgdbResearchModal: () => {
+	closeIgdbResearchModal() {
 		dispatch(closeIgdbResearchModal());
 	},
-	closeTimePlayedEditionModal: () => {
+	closeTimePlayedEditionModal() {
 		dispatch(closeTimePlayedEditionModal());
 	}
 });
 
-export const GameAddModal = connect(mapStateToProps, mapDispatchToProps)(VisualGameAddModal);
+export const GameAddModal = connect(mapStateToProps, mapDispatchToProps)(GameAddModalComponent);

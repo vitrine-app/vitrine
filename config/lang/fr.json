@@ -97,6 +97,7 @@
   "sortByGenres": "Par genres",
   "sortByDeveloper": "Par développeur",
   "sortByPublisher": "Par éditeur",
+  "noInternet": "La connexion internet a été perdue. Certains fonctionnalités, dont la récupération de données sur IGDB, seront désactivées.",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Combat",

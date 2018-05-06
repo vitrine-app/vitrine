@@ -4,7 +4,7 @@ import { Action } from '../actions/actionsTypes';
 import { closeSettingsModal } from '../actions/modals';
 import { updateSettings } from '../actions/settings';
 import { AppState } from '../AppState';
-import { SettingsModal as VisualSettingsModal } from '../components/SettingsModal';
+import { SettingsModal as SettingsModalComponent } from '../components/SettingsModal';
 
 const mapStateToProps = (state: AppState) => ({
 	settings: state.settings,
@@ -13,12 +13,12 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	updateSettings: (settings: any) => {
+	updateSettings(settings: any) {
 		dispatch(updateSettings(settings));
 	},
-	closeSettingsModal: () => {
+	closeSettingsModal() {
 		dispatch(closeSettingsModal());
 	}
 });
 
-export const SettingsModal = connect(mapStateToProps, mapDispatchToProps)(VisualSettingsModal);
+export const SettingsModal = connect(mapStateToProps, mapDispatchToProps)(SettingsModalComponent);

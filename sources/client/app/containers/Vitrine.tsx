@@ -7,7 +7,7 @@ import { addPlayableGames, addPotentialGames, launchGame, removePlayableGame, se
 import { closeSettingsModal, openSettingsModal } from '../actions/modals';
 import { updateSettings } from '../actions/settings';
 import { AppState } from '../AppState';
-import { Vitrine as VisualVitrine } from '../components/Vitrine';
+import { Vitrine as VitrineComponent } from '../components/Vitrine';
 
 const mapStateToProps = (state: AppState) => ({
 	settings: state.settings,
@@ -22,33 +22,33 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	updateSettings: (settings: any) => {
+	updateSettings(settings: any) {
 		dispatch(updateSettings(settings));
 	},
-	addPotentialGames: (potentialGames: PotentialGame[]) => {
+	addPotentialGames(potentialGames: PotentialGame[]) {
 		dispatch(addPotentialGames(potentialGames));
 	},
-	addPlayableGames: (playableGames: PlayableGame[]) => {
+	addPlayableGames(playableGames: PlayableGame[]) {
 		dispatch(addPlayableGames(playableGames));
 	},
-	removePlayableGame: (gameUuid: string) => {
+	removePlayableGame(gameUuid: string) {
 		dispatch(removePlayableGame(gameUuid));
 	},
-	launchGame: (launchedGame: PlayableGame) => {
+	launchGame(launchedGame: PlayableGame) {
 		dispatch(launchGame(launchedGame));
 	},
-	stopGame: (playedGame: PlayableGame) => {
+	stopGame(playedGame: PlayableGame) {
 		dispatch(stopGame(playedGame));
 	},
-	selectGame: (selectedGame: PlayableGame) => {
+	selectGame(selectedGame: PlayableGame) {
 		dispatch(selectGame(selectedGame));
 	},
-	openSettingsModal: () => {
+	openSettingsModal() {
 		dispatch(openSettingsModal());
 	},
-	closeSettingsModal: () => {
+	closeSettingsModal() {
 		dispatch(closeSettingsModal());
 	}
 });
 
-export const Vitrine = connect(mapStateToProps, mapDispatchToProps)(VisualVitrine);
+export const Vitrine = connect(mapStateToProps, mapDispatchToProps)(VitrineComponent);

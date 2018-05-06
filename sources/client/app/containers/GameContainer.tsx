@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import { AppState } from '../AppState';
-import { GameContainer as VisualGameContainer } from '../components/GameContainer';
+import { GameContainer as GameContainerComponent } from '../components/GameContainer';
 
 const mapStateToProps = (state: AppState) => ({
 	selectedGame: state.selectedGame
@@ -9,4 +9,4 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = () => ({});
 
-export const GameContainer = connect(mapStateToProps, mapDispatchToProps)(VisualGameContainer);
+export const GameContainer = connect(mapStateToProps, mapDispatchToProps)(GameContainerComponent);

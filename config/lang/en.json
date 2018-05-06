@@ -97,6 +97,7 @@
   "sortByGenres": "By genres",
   "sortByDeveloper": "By developer",
   "sortByPublisher": "By publisher",
+  "noInternet": "Internet connection has been lost. Some features, including fetching games data on IGDB, will be disabled.",
   "genresNames": {
     "Point-and-click": "Point-and-click",
     "Fighting": "Fighting",

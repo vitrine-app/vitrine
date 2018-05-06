@@ -80,7 +80,7 @@ export function urlify(imgPath: string): string {
 	return (imgPath) ? ('url(' + imgPath.replace(/\\/g, '\\\\') + ')') : ('');
 }
 
-export function notify(content: string, minor?: boolean) {
+export function notify(content: string, minor?: boolean, noAutoClose?: boolean) {
 	const toastStyle: React.CSSProperties & any = StyleSheet.create({
 		notification: {
 			background: (!minor) ? rgba(216, 147, 98, 0.85) : (rgba(90, 85, 81, 0.60)),
@@ -93,7 +93,7 @@ export function notify(content: string, minor?: boolean) {
 		position: 'bottom-right',
 		className: css(toastStyle.notification),
 		hideProgressBar: true,
-		autoClose: (!minor) ? (5000) : (3500)
+		autoClose: (noAutoClose) ? (false) : ((!minor) ? (5000) : (3500))
 	});
 }
 
