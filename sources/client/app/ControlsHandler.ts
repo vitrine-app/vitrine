@@ -1,3 +1,4 @@
+import { BrowserWindow, remote } from 'electron';
 import { GamepadListener, ListenerEvent } from 'gamepad-listener';
 
 interface ActionCallbacks {
@@ -5,10 +6,12 @@ interface ActionCallbacks {
 }
 
 class ControlsHandler {
+	private currentWindow: BrowserWindow;
 	private actionCallbacks: ActionCallbacks;
 	private gamepadListener: GamepadListener;
 
 	public constructor() {
+		this.currentWindow = remote.getCurrentWindow();
 		this.gamepadListener = new GamepadListener();
 		this.actionCallbacks = {};
 		window.addEventListener('keydown', this.registerKeyboardActions.bind(this));
@@ -58,6 +61,8 @@ class ControlsHandler {
 
 	private registerGamepadActions() {
 		this.gamepadListener.on('gamepad:axis', (event: ListenerEvent) => {
+			if (!this.currentWindow.isFocused())
+				return;
 			if (event.axis === 1) {
 				if (event.value < -0.98 && this.actionCallbacks.up)
 					this.actionCallbacks.up();
@@ -66,6 +71,8 @@ class ControlsHandler {
 			}
 		});
 		this.gamepadListener.on('gamepad:button:0', (event: ListenerEvent) => {
+			if (!this.currentWindow.isFocused())
+				return;
 			if (event.button.pressed && this.actionCallbacks.enter)
 				this.actionCallbacks.enter();
 		});
