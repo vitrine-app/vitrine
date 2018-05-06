@@ -5,25 +5,25 @@ import { Action } from '../actions/actionsTypes';
 import { launchGame, setGameToEdit } from '../actions/games';
 import { openGameAddModal, openTimePlayedEditionModal } from '../actions/modals';
 import { AppState } from '../AppState';
-import { ContextMenu as VisualContextMenu } from '../components/ContextMenu';
+import { ContextMenu as ContextMenuComponent } from '../components/ContextMenu';
 
 const mapStateToProps = (state: AppState) => ({
 	playableGames: state.playableGames
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	launchGame: (launchedGame: PlayableGame) => {
+	launchGame(launchedGame: PlayableGame) {
 		dispatch(launchGame(launchedGame));
 	},
-	setGameToEdit: (gameToEdit: PlayableGame) => {
+	setGameToEdit(gameToEdit: PlayableGame) {
 		dispatch(setGameToEdit(gameToEdit));
 	},
-	openGameAddModal: () => {
+	openGameAddModal() {
 		dispatch(openGameAddModal());
 	},
-	openTimePlayedEditionModal: () => {
+	openTimePlayedEditionModal() {
 		dispatch(openTimePlayedEditionModal());
 	}
 });
 
-export const ContextMenu = connect(mapStateToProps, mapDispatchToProps)(VisualContextMenu);
+export const ContextMenu = connect(mapStateToProps, mapDispatchToProps)(ContextMenuComponent);

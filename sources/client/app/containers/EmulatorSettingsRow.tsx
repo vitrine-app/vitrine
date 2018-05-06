@@ -1,7 +1,7 @@
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
 
 import { AppState } from '../AppState';
-import { EmulatorSettingsRow as VisualEmulatorSettingsRow } from '../components/EmulatorSettingsRow';
+import { EmulatorSettingsRow as EmulatorSettingsRowComponent } from '../components/EmulatorSettingsRow';
 
 const mapStateToProps = (state: AppState) => ({
 	platforms: state.modulesConfig.emulated.platforms,
@@ -9,4 +9,4 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = () => ({});
 
-export const EmulatorSettingsRow = connect(mapStateToProps, mapDispatchToProps)(VisualEmulatorSettingsRow);
+export const EmulatorSettingsRow = connect(mapStateToProps, mapDispatchToProps)(EmulatorSettingsRowComponent);

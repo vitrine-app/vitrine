@@ -5,7 +5,7 @@ import { Action } from '../actions/actionsTypes';
 import { refreshGames, selectGame, sortGames } from '../actions/games';
 import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../actions/modals';
 import { AppState } from '../AppState';
-import { SideBar as VisualSideBar } from '../components/SideBar';
+import { SideBar as SideBarComponent } from '../components/SideBar';
 
 const mapStateToProps = (state: AppState) => ({
 	potentialGames: state.potentialGames,
@@ -16,24 +16,24 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	selectGame: (selectedGame: PlayableGame) => {
+	selectGame(selectedGame: PlayableGame) {
 		dispatch(selectGame(selectedGame));
 	},
-	refreshGames: () => {
+	refreshGames() {
 		dispatch(refreshGames());
 	},
-	sortGames: (gamesSortParameter: SortParameter) => {
+	sortGames(gamesSortParameter: SortParameter) {
 		dispatch(sortGames(gamesSortParameter));
 	},
-	openGameAddModal: () => {
+	openGameAddModal() {
 		dispatch(openGameAddModal());
 	},
-	openPotentialGamesAddModal: () => {
+	openPotentialGamesAddModal() {
 		dispatch(openPotentialGamesAddModal());
 	},
-	openSettingsModal: () => {
+	openSettingsModal() {
 		dispatch(openSettingsModal());
 	}
 });
 
-export const SideBar = connect(mapStateToProps, mapDispatchToProps)(VisualSideBar);
+export const SideBar = connect(mapStateToProps, mapDispatchToProps)(SideBarComponent);
