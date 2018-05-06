@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import { getEnvFolder } from '../../../models/env';
 import { Vitrine } from '../containers/Vitrine';
+import { notify } from '../helpers';
 import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { ErrorsWrapper } from './ErrorsWrapper';
@@ -14,6 +15,7 @@ interface Props {
 	settings: any;
 	updateSettings: (settings: any) => void;
 	updateModulesConfig: (modulesConfig: any) => void;
+	setInternetConnection: (internetConnection: boolean) => void;
 }
 
 interface State {
@@ -50,6 +52,14 @@ export class App extends React.Component<Props, State> {
 		});
 	}
 
+	private handleInternetConnection() {
+		this.props.setInternetConnection(window.navigator.onLine);
+
+		if (!window.navigator.onLine) {
+			notify(localizer.f('noInternet'), true, true);
+		}
+	}
+
 	public componentDidMount() {
 		serverListener.listen('init-settings', (settings: any, modulesConfig: any) => {
 			this.props.updateSettings(settings);
@@ -60,7 +70,16 @@ export class App extends React.Component<Props, State> {
 				serverListener.send('ready');
 			});
 		});
+		serverListener.listen('set-internet-connection', this.handleInternetConnection.bind(this));
+		window.addEventListener('online', this.handleInternetConnection.bind(this));
+		window.addEventListener('offline', this.handleInternetConnection.bind(this));
+
 		serverListener.send('settings-asked');
+	}
+
+	public componentWillUnmount() {
+		window.removeEventListener('online', this.handleInternetConnection.bind(this));
+		window.removeEventListener('offline', this.handleInternetConnection.bind(this));
 	}
 
 	public render(): JSX.Element {

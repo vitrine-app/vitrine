@@ -1,7 +1,7 @@
 import { connect, Dispatch } from 'react-redux';
 
 import { Action } from '../actions/actionsTypes';
-import { updateModulesConfig, updateSettings } from '../actions/settings';
+import { setInternetConnection, updateModulesConfig, updateSettings } from '../actions/settings';
 import { AppState } from '../AppState';
 import { App as VisualApp } from '../components/App';
 
@@ -15,7 +15,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	updateModulesConfig: (modulesConfig: any) => {
 		dispatch(updateModulesConfig(modulesConfig));
-	}
+	},
+	setInternetConnection: (internetConnection: boolean) => {
+		dispatch(setInternetConnection(internetConnection));
+	},
 });
 
 export const App = connect(mapStateToProps, mapDispatchToProps)(VisualApp);

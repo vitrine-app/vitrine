@@ -4,11 +4,12 @@ import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { Action } from '../actions/actionsTypes';
 import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit, setPotentialGameToAdd } from '../actions/games';
-import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal, openIgdbResearchModal } from '../actions/modals';
+import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal } from '../actions/modals';
 import { AppState } from '../AppState';
 import { GameAddModal as VisualGameAddModal } from '../components/GameAddModal';
 
 const mapStateToProps = (state: AppState) => ({
+	internetConnection: state.internetConnection,
 	selectedGame: state.selectedGame,
 	potentialGameToAdd: state.potentialGameToAdd,
 	gameToEdit: state.gameToEdit,

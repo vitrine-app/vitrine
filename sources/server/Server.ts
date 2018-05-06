@@ -82,7 +82,8 @@ export class Server {
 			}
 		}
 		catch (error) {
-			this.throwServerError(error);
+			logger.info('Server', 'Internet is offline, aborting updates checking.');
+			this.windowsHandler.sendToLoader('no-update-found');
 		}
 	}
 

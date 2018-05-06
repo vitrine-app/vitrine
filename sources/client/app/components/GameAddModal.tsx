@@ -20,6 +20,7 @@ import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import { PlayableGame } from '../../../models/PlayableGame';
 
 interface Props {
+	internetConnection: boolean;
 	selectedGame: PlayableGame;
 	potentialGameToAdd: PotentialGame;
 	gameToEdit: PlayableGame;
@@ -515,7 +516,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 					<Modal.Actions>
 						<Button
 							secondary={true}
-							disabled={!this.state.gameData.name}
+							disabled={!this.state.gameData.name || !this.props.internetConnection}
 							loading={this.state.igdbButtonLoading}
 							onClick={this.searchIgdbButton}
 						>
