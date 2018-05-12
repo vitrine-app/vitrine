@@ -171,7 +171,10 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
 					{this.state.researches.map((research: any, index: number) =>
 						<div
 							key={index}
-							className={css(styles.igdbResearch) + ' ' + ((this.state.selectedResearchId === research.id) ? (css(styles.selectedIgdbResearch)) : (''))}
+							className={
+								css(styles.igdbResearch) + ' ' +
+                                ((this.state.selectedResearchId === research.id) ? (css(styles.selectedIgdbResearch)) : (''))
+							}
 							onClick={this.researchClick.bind(this, research.id)}
 							onDoubleClick={this.gameDoubleClick.bind(this, research.id)}
 						>

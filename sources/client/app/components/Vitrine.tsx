@@ -100,13 +100,25 @@ export class Vitrine extends VitrineComponent<Props, State> {
 	private registerActions() {
 		controlsHandler.registerDownAction(() => {
 			const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
-			if (index < this.props.playableGames.size() - 1)
-				this.props.selectGame(this.props.playableGames.getGame(index + 1));
+			if (index < this.props.playableGames.size() - 1) {
+				const selectedGame: PlayableGame = this.props.playableGames.getGame(index + 1);
+				this.props.selectGame(selectedGame);
+				document.getElementById(`sidebar-game:${selectedGame.uuid}`).scrollIntoView({
+					block: 'nearest',
+					behavior: 'smooth'
+				});
+			}
 		});
 		controlsHandler.registerUpAction(() => {
 			const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
-			if (index)
-				this.props.selectGame(this.props.playableGames.getGame(index - 1));
+			if (index) {
+				const selectedGame: PlayableGame = this.props.playableGames.getGame(index - 1);
+				this.props.selectGame(selectedGame);
+				document.getElementById(`sidebar-game:${selectedGame.uuid}`).scrollIntoView({
+					block: 'nearest',
+					behavior: 'smooth'
+				});
+			}
 		});
 		controlsHandler.registerEnterAction(() => {
 			if (!this.props.gameAddModalVisible && !this.props.potentialGamesAddModalVisible
