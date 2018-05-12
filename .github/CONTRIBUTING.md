@@ -12,12 +12,13 @@ We're also using TypeScript instead of pure JavaScript in order to have a more s
 
 The first step to get Vitrine running is to install its dependencies. We're using Yarn as a packages manager, so you just need to clone the repository and run `yarn install`.
 
-Vitrine is using custom Node.js native addons, written in C++, which need to be compiled. For the moment, Vitrine is only running on Windows, which means that the C++ addons can only be compiled with Visual C++ Build Tools. 
+Vitrine is using custom Node.js native addons, written in C++, which need to be compiled. For the moment, Vitrine is only running on Windows, which means that the C++ addons can only be compiled using Visual C++ Build Tools. 
 You need to download and install [Windows-Build-Tools](https://github.com/felixrieseberg/windows-build-tools).
 
 ## Writing code
 
 Few things on how we code here:
-* We are using TSLint to format the code, so when you are writting make sure to run `yarn run lint-app` to see if your code is compliant to the styleguide.
+* We are using [TSLint](https://palantir.github.io/tslint) to format the code, so when you are writting make sure to run `yarn run lint-app` to see if your code is compliant to the styleguide.
 * If you don't manually format your code, TSLint will automatically fix it at `precommit`.
-* We use Mocha along with Chai to write tests. For the moment, tests are not fully provided, so feel free to write some for existing pieces of code.
+* We use [Mocha](https://mochajs.org) along with [Chai](http://www.chaijs.com) to write tests. For the moment, tests are not fully provided, so feel free to write some for existing pieces of code.
+* We are using [WebStorm](https://www.jetbrains.com/webstorm) as IDE. You're free to use any editor you want, we're are using it because it has extensions for Mocha and TSLint.
