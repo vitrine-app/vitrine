@@ -3,12 +3,12 @@
 	background-color: rgba(80, 71, 62, 0.54) !important;
 }
 
-.ui.vertical.right.tabular.menu .item {
+.ui.vertical.tabular.menu .item {
 	border-radius: 3px !important;
 	margin: 3px 0 !important;
 }
 
-.ui.vertical.right.tabular.menu .active.item {
+.ui.vertical.tabular.menu .active.item {
 	border-radius: 3px !important;
 	background-color: #50473E !important;
 }
