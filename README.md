@@ -39,7 +39,7 @@ As it is in beta, Vitrine only currently supports Steam, Origin and Battle.net b
 The UI is also in an early stage of development and will change within future updates.
 Feel free to test the application yourself and seek for a bug! If you can find one, don't hesitate to [open an issue](https://github.com/paul-roman/vitrine/issues/new).
 
-### Contributing
+## Contributing
 See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## License
