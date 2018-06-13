@@ -13,7 +13,7 @@ class SteamPlayTimeWrapper {
 		});
 	}
 
-	public getOwnedGames(steamUserId: number, steamId: number, callback: (error: Error, timePlayed: number) => void) {
+	public getOwnedGames(steamUserId: string, steamId: number, callback: (error: Error, timePlayed: number) => void) {
 		logger.info('SteamPlayTimeWrapper', `Looking for played time for Steam game ${steamId}.`);
 		this.client.getOwnedGames({
 			steamid: steamUserId,
@@ -44,7 +44,7 @@ class SteamPlayTimeWrapper {
 
 const steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
 
-export function getGamePlayTime(steamUserId: number, steamId: number): Promise<any> {
+export function getGamePlayTime(steamUserId: string, steamId: number): Promise<any> {
 	return new Promise((resolve, reject) => {
 		steamPlayTimeWrapper.getOwnedGames(steamUserId, steamId, (error: Error, timePlayed: number) => {
 			if (error)

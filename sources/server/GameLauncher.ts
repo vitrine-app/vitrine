@@ -1,18 +1,33 @@
+import * as discordRichPresence from 'discord-rich-presence';
 import * as path from 'path';
 
 import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../modules/gameLauncher.node';
 import { watchRegKey } from '../../modules/regWatcher.node';
 import { PlayableGame } from '../models/PlayableGame';
 import { GameSource } from '../models/PotentialGame';
+import { RICH_PRESENCE_KEY } from './keys';
 import { logger } from './Logger';
 
 class GameLauncher {
 	private game: PlayableGame;
 	private callback: (error: Error, minutesPlayed: number) => void;
+	private discordClient: any;
+
+	public constructor() {
+		this.discordClient = discordRichPresence(RICH_PRESENCE_KEY);
+	}
 
 	public launch(game: PlayableGame, callback: (error: Error, minutesPlayed: number) => void) {
 		this.callback = callback;
 		this.game = game;
+
+		this.discordClient.updatePresence({
+			state: game.name,
+			largeImageKey: 'default',
+			largeImageText: game.name,
+			startTimestamp: Math.round(Date.now() / 1000),
+			instance: true,
+		});
 		if (this.game.source === GameSource.STEAM)
 			this.launchSteamGame();
 		else
@@ -36,7 +51,7 @@ class GameLauncher {
 				this.callback(new Error(error), null);
 			else {
 				logger.info('GameLauncher', `Game terminated (played during ${secondsPlayed} seconds).`);
-				this.callback(null, secondsPlayed);
+				this.quitGame(secondsPlayed);
 			}
 		});
 	}
@@ -64,7 +79,7 @@ class GameLauncher {
 					this.callback(new Error(error), null);
 				else {
 					logger.info('GameLauncher', `Game terminated (played during ${secondsPlayed} seconds).`);
-					this.callback(null, secondsPlayed);
+					this.quitGame(secondsPlayed);
 				}
 			});
 		});
@@ -72,6 +87,11 @@ class GameLauncher {
 		const [ program, args ]: string[] = this.game.commandLine;
 		logger.info('GameLauncher', `Launching Steam game (${this.game.details.steamId}) with native module.`);
 		nativeLaunchGame({ program, args });
+	}
+
+	private quitGame(secondsPlayed: number) {
+		this.discordClient.disconnect();
+		this.callback(null, secondsPlayed);
 	}
 }
 

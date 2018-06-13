@@ -104,7 +104,7 @@ export class Server {
 					const steamUser: any = await findSteamUser(this.vitrineConfig.steam);
 					Object.assign(this.vitrineConfig.steam, { ...steamUser });
 				}
-				this.playableGames = await getPlayableGames();
+				this.playableGames = await getPlayableGames(this.vitrineConfig.steam);
 				logger.info('Server', 'Sending playable games to client.');
 				this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
 				this.findPotentialGames();

@@ -15,6 +15,7 @@
     "@fortawesome/react-fontawesome": "0.0.17",
     "aphrodite": "2.2.0",
     "css-verbose": "^0.3.0",
+    "discord-rich-presence": "^0.0.6",
     "download-file": "^0.1.5",
     "electron-updater": "^2.21.3",
     "foreach-end": "1.1.0",
@@ -25,6 +26,7 @@
     "google-translate-api": "^2.3.0",
     "igdb-api-node": "3.1.4",
     "moment": "^2.22.0",
+    "node-windows": "^0.1.14",
     "react": "16.3.2",
     "react-contextmenu": "^2.9.2",
     "react-datetime": "^2.14.0",
@@ -87,7 +89,7 @@
     "build-server": "parallel-webpack --progress --config=webpack.server.config.js",
     "build-client": "parallel-webpack --progress --config=webpack.client.config.js",
     "build-client-no-loader": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack.client.config.js",
-    "build-scripts": "node scripts/run.js build_modules.sh",
+    "build-modules": "node scripts/run.js build_modules.sh",
     "run-app": "yarn lint-app && yarn build-app && electron .",
     "run-server": "yarn lint-server && yarn build-server && yarn start",
     "run-client": "yarn build-client && yarn start",
@@ -99,8 +101,8 @@
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "generate-authors": "node scripts/run.js authors.sh",
-    "pack": "yarn build-scripts && yarn build-prod && build --dir",
-    "dist": "yarn build-scripts && yarn test && yarn build-prod && build",
+    "pack": "yarn build-modules && yarn build-prod && build --dir",
+    "dist": "yarn build-modules && yarn test && yarn build-prod && build",
     "precommit": "tslint --fix sources/**/*.ts*"
   }
 }

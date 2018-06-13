@@ -473,7 +473,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							menu={{
 								fluid: true,
 								vertical: true,
-								tabular: 'right'
+								tabular: true
 							}}
 							panes={[
 								{
