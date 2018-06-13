@@ -4,6 +4,8 @@ import * as path from 'path';
 import { getEnvFolder } from '../../models/env';
 import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
+import { GameSource } from '../../models/PotentialGame';
+import { getGamePlayTime } from '../api/SteamPlayTimeWrapper';
 import { logger } from '../Logger';
 
 class PlayableGamesCrawler {
@@ -11,7 +13,7 @@ class PlayableGamesCrawler {
 	private readonly gamesDirectory: string;
 	private readonly configFileName: string;
 
-	public constructor() {
+	public constructor(private steamUserId: string | undefined) {
 		this.playableGames = [];
 		this.gamesDirectory = getEnvFolder('games');
 		this.configFileName = 'config.json';
@@ -31,8 +33,11 @@ class PlayableGamesCrawler {
 					const playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
 					playableGame.uuid = rawGame.uuid;
 					playableGame.commandLine = rawGame.commandLine;
-					playableGame.timePlayed = parseInt(rawGame.timePlayed);
 					playableGame.source = rawGame.source;
+					if (playableGame.source === GameSource.STEAM)
+						playableGame.timePlayed = await getGamePlayTime(this.steamUserId, playableGame.details.steamId);
+					else
+						playableGame.timePlayed = parseInt(rawGame.timePlayed);
 
 					logger.info('PlayableGamesCrawler', `Playable game ${playableGame.name} (${playableGame.uuid}) found.`);
 					this.playableGames.push(playableGame);
@@ -49,9 +54,11 @@ class PlayableGamesCrawler {
 	}
 }
 
-export function getPlayableGames(): Promise<any> {
+export function getPlayableGames(steamConfig?: any): Promise<any> {
 	return new Promise((resolve, reject) => {
-		new PlayableGamesCrawler().search((error: Error, playableGames: GamesCollection<PlayableGame>) => {
+		const steamUserId: string = (steamConfig && steamConfig.userId) ? (steamConfig.userId) : (undefined);
+		console.log(steamUserId);
+		new PlayableGamesCrawler(steamUserId).search((error: Error, playableGames: GamesCollection<PlayableGame>) => {
 			if (error)
 				reject(error);
 			else
