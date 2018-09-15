@@ -46,7 +46,7 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 	});
 }
 
-export async function downloadImage(src: string, dest: string): Promise<any> {
+export async function downloadImage(src: string, dest: string) {
 	if (!src || (src.startsWith('file://') && !await fs.pathExists(src.substring(7)))) {
 		logger.info('downloadImage', `Local source image (${src}) not found.`);
 		return false;

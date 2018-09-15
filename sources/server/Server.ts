@@ -243,7 +243,7 @@ export class Server {
 		}
 	}
 
-	private async searchSteamGames(): Promise<any> {
+	private async searchSteamGames() {
 		if (!this.vitrineConfig.steam)
 			return;
 		try {
@@ -262,7 +262,7 @@ export class Server {
 		}
 	}
 
-	private async searchOriginGames(): Promise<any> {
+	private async searchOriginGames() {
 		if (!this.vitrineConfig.origin)
 			return;
 		try {
@@ -281,7 +281,7 @@ export class Server {
 		}
 	}
 
-	private async searchBattleNetGames(): Promise<any> {
+	private async searchBattleNetGames() {
 		if (!this.vitrineConfig.battleNet)
 			return;
 		try {
@@ -300,7 +300,7 @@ export class Server {
 		}
 	}
 
-	private async searchEmulatedGames(): Promise<any> {
+	private async searchEmulatedGames() {
 		if (!this.vitrineConfig.emulated)
 			return;
 		try {
@@ -375,7 +375,7 @@ export class Server {
 		this.sendRegisteredGame(game, configFilePath, editing);
 	}
 
-	private async downloadGamePictures(game: PlayableGame, { backgroundUrl, backgroundPath, coverUrl, coverPath }: any): Promise<any> {
+	private async downloadGamePictures(game: PlayableGame, { backgroundUrl, backgroundPath, coverUrl, coverPath }: any) {
 		try {
 			const stored: boolean = await downloadImage(backgroundUrl, backgroundPath);
 			game.details.backgroundScreen = (stored) ? (backgroundPath) : (game.details.backgroundScreen);
