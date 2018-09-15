@@ -1,13 +1,13 @@
 dist: xenial
 language: node_js
-node_js: '8'
+node_js: '8.9'
 env:
   global:
   - ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 script:
-  - yarn test
+  - yarn dist
 cache:
   yarn: true
   directories:
