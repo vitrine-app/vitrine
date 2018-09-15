@@ -1,4 +1,4 @@
-image: Visual Studio 2017
+version: 0.1.{build}
 
 platform:
   - x64
@@ -6,12 +6,13 @@ platform:
 cache:
   - node_modules
   - '%USERPROFILE%\.electron'
+  - '%USERPROFILE%\.cache'
 
 init:
   - git config --global core.autocrlf input
 
 install:
-  - ps: Install-Product node 8 x64
+  - ps: Install-Product node 8.9 x64
   - yarn
 
 build_script:
