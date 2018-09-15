@@ -1,6 +1,9 @@
+import axios, { AxiosResponse } from 'axios';
 import * as glob from 'glob';
 import * as path from 'path';
+import * as SteamWeb from 'steam-web';
 
+import { steamKey } from '../../../modules/keysProvider.node';
 import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
@@ -9,11 +12,18 @@ import { logger } from '../Logger';
 import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
 class SteamCrawler extends PotentialGamesCrawler {
+	private client: SteamWeb;
 	private manifestRegEx: string;
+	private apiEndPoint: string;
 
 	public setPlayableGames(playableGames?: PlayableGame[]): this {
 		super.setPlayableGames(playableGames);
+		this.client = new SteamWeb({
+			apiKey: steamKey(),
+			format: 'json'
+		});
 		this.manifestRegEx = 'appmanifest_*.acf';
+		this.apiEndPoint = 'https://store.steampowered.com/api/appdetails/';
 		return this;
 	}
 
@@ -70,7 +80,46 @@ class SteamCrawler extends PotentialGamesCrawler {
 				this.callback(error, null);
 			}
 		});
-		this.sendResults();
+		this.searchUninstalledGames();
+	}
+
+	private searchUninstalledGames() {
+		this.client.getOwnedGames({
+			steamid: this.moduleConfig.userId,
+			callback: async (error: string, { response }: any) => {
+				if (error) {
+					logger.info('SteamCrawler', `Request to Steam API failed.`);
+					this.callback(new Error(error), null);
+					return;
+				}
+				await response.games.forEachEnd(({ appid: appId }: any, done: () => void) => {
+					axios.get(`${this.apiEndPoint}?appids=${appId}`)
+						.then(({ data }: AxiosResponse<any>) => {
+							const gameData: any = data[Object.keys(data)[0]].data;
+							if (gameData !== undefined && gameData.type === 'game') {
+								const found: boolean = this.playableGames.filter((playableGame: any) =>
+									parseInt(appId) === playableGame.details.steamId
+								).length > 0 || this.potentialGames.filter((potentialGame: PotentialGame) =>
+									parseInt(appId) === potentialGame.details.steamId
+								).length > 0;
+								if (!found) {
+									logger.info('SteamCrawler', `Steam game ${gameData.name} (Steam ID ${appId}) found but non-installed.`);
+									const potentialGame: PotentialGame = new PotentialGame(gameData.name.replace(/[^\x00-\x7F]/g, ''));
+									potentialGame.source = GameSource.STEAM;
+									potentialGame.commandLine = [
+										path.resolve(this.moduleConfig.installFolder, 'steam.exe'),
+										this.moduleConfig.launchCommand.replace('%id', appId)
+									];
+									potentialGame.details.steamId = parseInt(appId);
+									this.potentialGames.push(potentialGame);
+								}
+							}
+							done();
+						});
+				});
+				this.sendResults();
+			}
+		});
 	}
 }
 

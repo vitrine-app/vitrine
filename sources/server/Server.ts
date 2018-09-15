@@ -214,6 +214,7 @@ export class Server {
 			this.searchBattleNetGames(),
 			this.searchEmulatedGames()
 		]);
+		this.potentialGames.alphaSort();
 		logger.info('Server', `Potential games are about to be cached.`);
 		this.potentialGames.setGames(await potentialGamesCacher.cache(this.potentialGames.getGames()));
 		logger.info('Server', `${this.potentialGames.size()} potential games sent to client.`);

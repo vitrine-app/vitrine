@@ -70,6 +70,12 @@ export class GamesCollection<T extends object> {
 		return this.games.filter((game: T) => game[this.sourceKey] === source);
 	}
 
+	public alphaSort() {
+		this.games.sort((gameA: T, gameB: T): number => {
+			return ((gameA as any).name > (gameB as any).name) ? (1) : (-1);
+		});
+	}
+
 	private removeDuplicates(array: T[]) {
 		return array.filter((value: T, index: number, array: T[]) => array.indexOf(value) === index);
 	}
