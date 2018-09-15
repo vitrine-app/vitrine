@@ -101,7 +101,7 @@
     "build-server": "parallel-webpack --progress --config=webpack.server.config.js",
     "build-client": "parallel-webpack --progress --config=webpack.client.config.js",
     "build-client-no-loader": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack.client.config.js",
-    "build-modules": "node scripts/run.js build_modules.sh",
+    "build-modules": "node scripts/build_modules.js",
     "run-app": "yarn lint-app && yarn build-app && electron .",
     "run-server": "yarn lint-server && yarn build-server && yarn start",
     "run-client": "yarn lint-client && yarn build-client && yarn start",
