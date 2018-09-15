@@ -81,7 +81,7 @@
     "node-gyp": "^3.6.2",
     "parallel-webpack": "^2.3.0",
     "semantic-ui-less": "^2.2.14",
-    "shelljs": "^0.8.1",
+    "shelljs": "0.8.2",
     "style-loader": "0.21.0",
     "ts-loader": "^4.2.0",
     "ts-node": "6.0.2",
