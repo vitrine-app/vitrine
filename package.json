@@ -68,7 +68,7 @@
     "chai": "^4.1.2",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
-    "electron": "2.0.0",
+    "electron": "2.0.9",
     "electron-builder": "^20.6.2",
     "electron-node-loader": "^1.1.1",
     "github-release-notes": "^0.15.0",
