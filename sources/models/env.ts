@@ -7,7 +7,7 @@ export function isProduction(): boolean {
 }
 
 export function getAppDataFolder() {
-	return (process.platform === 'win32') ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.vitrine`;
+	return (process.platform === 'win32') ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.local/share/vitrine`;
 }
 
 export function getEnvFolder(folder: string, nonProd?: boolean): string {

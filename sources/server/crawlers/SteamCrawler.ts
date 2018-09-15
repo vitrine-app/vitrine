@@ -15,6 +15,7 @@ class SteamCrawler extends PotentialGamesCrawler {
 	private client: SteamWeb;
 	private manifestRegEx: string;
 	private apiEndPoint: string;
+	private steamBinary: string;
 
 	public setPlayableGames(playableGames?: PlayableGame[]): this {
 		super.setPlayableGames(playableGames);
@@ -24,6 +25,7 @@ class SteamCrawler extends PotentialGamesCrawler {
 		});
 		this.manifestRegEx = 'appmanifest_*.acf';
 		this.apiEndPoint = 'https://store.steampowered.com/api/appdetails/';
+		this.steamBinary = (process.platform === 'win32') ? ('steam.exe') : ('steam.sh');
 		return this;
 	}
 
@@ -68,7 +70,7 @@ class SteamCrawler extends PotentialGamesCrawler {
 				const potentialGame: PotentialGame = new PotentialGame(gameManifest.name);
 				potentialGame.source = GameSource.STEAM;
 				potentialGame.commandLine = [
-					path.resolve(this.moduleConfig.installFolder, 'steam.exe'),
+					path.resolve(this.moduleConfig.installFolder, this.steamBinary),
 					this.moduleConfig.launchCommand.replace('%id', gameManifest.appid)
 				];
 				potentialGame.details.steamId = parseInt(gameManifest.appid);
@@ -113,7 +115,7 @@ class SteamCrawler extends PotentialGamesCrawler {
 								const potentialGame: PotentialGame = new PotentialGame(gameData.name.replace(/[^\x00-\x7F]/g, ''));
 								potentialGame.source = GameSource.STEAM;
 								potentialGame.commandLine = [
-									path.resolve(this.moduleConfig.installFolder, 'steam.exe'),
+									path.resolve(this.moduleConfig.installFolder, this.steamBinary),
 									this.moduleConfig.launchCommand.replace('%id', appId)
 								];
 								potentialGame.details.steamId = parseInt(appId);
