@@ -17,7 +17,7 @@ readdir(resolve()).then((modules) => {
 		exec(`../../../node_modules/.bin/node-gyp rebuild --target=${electronVersion} --arch=x64 --dist-url=${electronUrl}`);
 		mv(`build/Release/${module}.node`, '../../../modules');
 		rm('-r', 'build');
-		cd('..');
+		cd('-');
 		console.log(`${module} build completed.`);
 	}
 });
