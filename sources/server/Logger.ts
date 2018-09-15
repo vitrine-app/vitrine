@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as moment from 'moment';
 import * as path from 'path';
 
-import { isProduction } from '../models/env';
+import { getAppDataFolder, isProduction } from '../models/env';
 
 class Logger {
 	private readonly filePath: string;
@@ -10,7 +10,7 @@ class Logger {
 
 	public constructor() {
 		if (isProduction()) {
-			this.filePath = path.resolve(process.env.APPDATA, 'vitrine', 'data', 'vitrine.log.html');
+			this.filePath = path.resolve(getAppDataFolder(), 'data', 'vitrine.log.html');
 			fs.ensureFileSync(this.filePath);
 		}
 		else

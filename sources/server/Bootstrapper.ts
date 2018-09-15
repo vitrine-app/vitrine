@@ -31,6 +31,7 @@ export class Bootstrapper {
 		await Promise.all([
 			fs.ensureDir(this.configFolderPath),
 			fs.ensureDir(this.gamesFolderPath),
+			fs.ensureDir(`${this.configFolderPath}/cache`),
 			fs.ensureFile(this.vitrineConfigFilePath)
 		]);
 		const [ modulesConfig, vitrineConfig ] = await Promise.all([

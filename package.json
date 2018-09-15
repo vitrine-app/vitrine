@@ -1,19 +1,29 @@
 {
   "name": "vitrine",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
-  "author": "Paul Roman",
+  "productName": "Vitrine",
+  "author": "Paul Roman <paul.roman@epitech.eu>",
   "license": "MIT",
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/paul-roman/vitrine.git"
+  },
+  "engines": {
+    "node": ">=8.9"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "@fortawesome/fontawesome-free-solid": "^5.0.8",
     "@fortawesome/react-fontawesome": "0.0.17",
     "aphrodite": "2.2.0",
+    "axios": "^0.18.0",
     "css-verbose": "^0.3.0",
     "discord-rich-presence": "^0.0.6",
     "download-file": "^0.1.5",
@@ -26,7 +36,6 @@
     "google-translate-api": "^2.3.0",
     "igdb-api-node": "3.1.4",
     "moment": "^2.22.0",
-    "node-windows": "^0.1.14",
     "react": "16.3.2",
     "react-contextmenu": "^2.9.2",
     "react-datetime": "^2.14.0",
@@ -83,6 +92,9 @@
     "webpack": "^4.4.0",
     "webpack-cli": "^2.0.13"
   },
+  "optionalDependencies": {
+    "node-windows": "^0.1.14"
+  },
   "scripts": {
     "build-app": "parallel-webpack --progress",
     "build-prod": "cross-env NODE_ENV=production parallel-webpack --progress",
@@ -92,8 +104,8 @@
     "build-modules": "node scripts/run.js build_modules.sh",
     "run-app": "yarn lint-app && yarn build-app && electron .",
     "run-server": "yarn lint-server && yarn build-server && yarn start",
-    "run-client": "yarn build-client && yarn start",
-    "run-client-no-loader": "yarn build-client-no-loader && yarn start",
+    "run-client": "yarn lint-client && yarn build-client && yarn start",
+    "run-client-no-loader": "yarn lint-client && yarn build-client-no-loader && yarn start",
     "lint-app": "tslint sources/**/*.ts*",
     "lint-server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
     "lint-client": "tslint sources/client/**/*.ts*",
@@ -101,8 +113,8 @@
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "generate-authors": "node scripts/run.js authors.sh",
-    "pack": "yarn build-modules && yarn build-prod && build --dir",
-    "dist": "yarn build-modules && yarn test && yarn build-prod && build",
+    "pack": "yarn build-modules && yarn build-prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build --dir",
+    "dist": "yarn build-modules && yarn test && yarn build-prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
     "precommit": "tslint --fix sources/**/*.ts*"
   }
 }

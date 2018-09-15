@@ -57,7 +57,6 @@ class PlayableGamesCrawler {
 export function getPlayableGames(steamConfig?: any): Promise<any> {
 	return new Promise((resolve, reject) => {
 		const steamUserId: string = (steamConfig && steamConfig.userId) ? (steamConfig.userId) : (undefined);
-		console.log(steamUserId);
 		new PlayableGamesCrawler(steamUserId).search((error: Error, playableGames: GamesCollection<PlayableGame>) => {
 			if (error)
 				reject(error);

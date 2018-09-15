@@ -2,7 +2,7 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
-import { Button, Form, Grid, Input, Modal, Tab, Table, Transition } from 'semantic-ui-react';
+import { Button, Checkbox, Form, Grid, Input, Modal, Tab, Table, Transition } from 'semantic-ui-react';
 
 import { EmulatorSettingsRow } from '../containers/EmulatorSettingsRow';
 import { openDirectory } from '../helpers';
@@ -34,6 +34,7 @@ interface State {
 	battleNetEnabled: boolean;
 	emulatedEnabled: boolean;
 	steamPath: string;
+	steamSearchCloud: boolean;
 	originPath: string;
 	emulatedPath: string;
 	steamError: boolean;
@@ -58,6 +59,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 			battleNetEnabled: (this.props.settings && this.props.settings.battleNet) ? (true) : (false),
 			emulatedEnabled: (this.props.settings && this.props.settings.emulated) ? (true) : (false),
 			steamPath: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
+			steamSearchCloud: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.searchCloud) : (true),
 			originPath: (this.props.settings && this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
 			emulatedPath: (this.props.settings.emulated) ? (this.props.settings.emulated.romsFolder) : (''),
 			steamError: false,
@@ -75,6 +77,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		this.battleNetIconClick = this.battleNetIconClick.bind(this);
 		this.emulatedIconClick = this.emulatedIconClick.bind(this);
 		this.steamPathButton = this.steamPathButton.bind(this);
+		this.steamSearchCloudCheckbox = this.steamSearchCloudCheckbox.bind(this);
 		this.originPathButton = this.originPathButton.bind(this);
 		this.emulatedPathButton = this.emulatedPathButton.bind(this);
 		this.langSelect = this.langSelect.bind(this);
@@ -134,6 +137,12 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		}
 	}
 
+	private steamSearchCloudCheckbox(event: any, { checked: steamSearchCloud }: any) {
+		this.setState({
+			steamSearchCloud
+		});
+	}
+
 	private originPathButton() {
 		const originPath: string = openDirectory();
 		if (originPath) {
@@ -184,7 +193,8 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 		if (this.state.steamEnabled) {
 			if (this.state.steamPath) {
 				settingsForm.steam = {
-					installFolder: this.state.steamPath
+					installFolder: this.state.steamPath,
+					searchCloud: this.state.steamSearchCloud
 				};
 				this.setState({
 					steamError: false
@@ -321,6 +331,14 @@ export class SettingsModal extends VitrineComponent<Props, State> {
 							>
 								{localizer.f('pathError')}
 							</span>
+						</Form.Field>
+						<Form.Field>
+							<Checkbox
+								checked={this.state.steamSearchCloud}
+								onChange={this.steamSearchCloudCheckbox}
+								label={localizer.f('steamSearchCloud')}
+								toggle={true}
+							/>
 						</Form.Field>
 					</div>
 					<div style={{ display: (this.state.originEnabled) ? ('block') : ('none') }}>

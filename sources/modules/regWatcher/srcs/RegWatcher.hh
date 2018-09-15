@@ -3,6 +3,7 @@
 #include <node.h>
 #include <uv.h>
 
+#ifdef _WIN32
 struct Worker {
 	uv_work_t request;
 	v8::Persistent<v8::Function> callback;
@@ -13,5 +14,6 @@ struct Worker {
 
 static void workAsync(uv_work_t *request);
 static void workAsyncComplete(uv_work_t *request, int status);
+#endif
 void watchRegKey(const v8::FunctionCallbackInfo<v8::Value>& args);
 void init(v8::Local<v8::Object> exports);

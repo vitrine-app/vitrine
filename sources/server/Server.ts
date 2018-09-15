@@ -207,14 +207,14 @@ export class Server {
 	public async findPotentialGames() {
 		logger.info('Server', 'Beginning to search potential games.');
 		this.windowsHandler.sendToClient('potential-games-search-begin');
-		this.potentialGames.clean();
+		this.potentialGames.clear();
 		await Promise.all([
 			this.searchSteamGames(),
 			this.searchOriginGames(),
 			this.searchBattleNetGames(),
 			this.searchEmulatedGames()
 		]);
-		logger.info('Server', `Potential games are about to be cached.`);
+		this.potentialGames.alphaSort();
 		this.potentialGames.setGames(await potentialGamesCacher.cache(this.potentialGames.getGames()));
 		logger.info('Server', `${this.potentialGames.size()} potential games sent to client.`);
 		this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());
@@ -242,7 +242,7 @@ export class Server {
 		}
 	}
 
-	private async searchSteamGames(): Promise<any> {
+	private async searchSteamGames() {
 		if (!this.vitrineConfig.steam)
 			return;
 		try {
@@ -261,7 +261,7 @@ export class Server {
 		}
 	}
 
-	private async searchOriginGames(): Promise<any> {
+	private async searchOriginGames() {
 		if (!this.vitrineConfig.origin)
 			return;
 		try {
@@ -280,7 +280,7 @@ export class Server {
 		}
 	}
 
-	private async searchBattleNetGames(): Promise<any> {
+	private async searchBattleNetGames() {
 		if (!this.vitrineConfig.battleNet)
 			return;
 		try {
@@ -299,7 +299,7 @@ export class Server {
 		}
 	}
 
-	private async searchEmulatedGames(): Promise<any> {
+	private async searchEmulatedGames() {
 		if (!this.vitrineConfig.emulated)
 			return;
 		try {
@@ -374,7 +374,7 @@ export class Server {
 		this.sendRegisteredGame(game, configFilePath, editing);
 	}
 
-	private async downloadGamePictures(game: PlayableGame, { backgroundUrl, backgroundPath, coverUrl, coverPath }: any): Promise<any> {
+	private async downloadGamePictures(game: PlayableGame, { backgroundUrl, backgroundPath, coverUrl, coverPath }: any) {
 		try {
 			const stored: boolean = await downloadImage(backgroundUrl, backgroundPath);
 			game.details.backgroundScreen = (stored) ? (backgroundPath) : (game.details.backgroundScreen);

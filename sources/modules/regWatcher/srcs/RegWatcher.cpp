@@ -2,6 +2,7 @@
 
 using namespace v8;
 
+#ifdef _WIN32
 static void workAsync(uv_work_t *request) {
 	Worker* worker = static_cast<Worker*>(request->data);
 
@@ -71,6 +72,12 @@ void watchRegKey(const FunctionCallbackInfo<Value>& args) {
 	uv_queue_work(uv_default_loop(), &worker->request, workAsync, workAsyncComplete);
 	args.GetReturnValue().Set(Undefined(isolate));
 }
+#else
+void watchRegKey(const FunctionCallbackInfo<Value>& args) {
+	Isolate* isolate = args.GetIsolate();
+	args.GetReturnValue().Set(Undefined(isolate));
+}
+#endif
 
 void init(Local<Object> exports) {
 	NODE_SET_METHOD(exports, "watchRegKey", watchRegKey);

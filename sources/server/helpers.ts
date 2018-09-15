@@ -1,6 +1,7 @@
 import * as downloadFileCb from 'download-file';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
+import * as path from 'path';
 
 import { logger } from './Logger';
 
@@ -45,7 +46,7 @@ function deleteFiles(path: string, except?: string): Promise<any> {
 	});
 }
 
-export async function downloadImage(src: string, dest: string): Promise<any> {
+export async function downloadImage(src: string, dest: string) {
 	if (!src || (src.startsWith('file://') && !await fs.pathExists(src.substring(7)))) {
 		logger.info('downloadImage', `Local source image (${src}) not found.`);
 		return false;
@@ -71,14 +72,12 @@ export async function downloadImage(src: string, dest: string): Promise<any> {
 		}
 	}
 	else {
-		const filename: string = dest.split('\\').pop();
-		dest = dest.substring(0, dest.indexOf(filename));
 		try {
-			logger.info('downloadImage', `Downloading distant source image (${src}) to ${dest}${filename}.`);
+			logger.info('downloadImage', `Downloading distant source image (${src}) to ${dest}.`);
 			const succeeded: boolean = await Promise.race([
 				downloadFile(src, {
-					directory: dest,
-					filename
+					directory: path.dirname(dest),
+					filename: path.basename(dest)
 				}),
 				setTimeOut(10000)
 			]);

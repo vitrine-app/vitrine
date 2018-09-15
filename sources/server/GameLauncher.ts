@@ -2,10 +2,10 @@ import * as discordRichPresence from 'discord-rich-presence';
 import * as path from 'path';
 
 import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../modules/gameLauncher.node';
+import { discordRpcKey } from '../../modules/keysProvider.node';
 import { watchRegKey } from '../../modules/regWatcher.node';
 import { PlayableGame } from '../models/PlayableGame';
 import { GameSource } from '../models/PotentialGame';
-import { RICH_PRESENCE_KEY } from './keys';
 import { logger } from './Logger';
 
 class GameLauncher {
@@ -14,7 +14,7 @@ class GameLauncher {
 	private discordClient: any;
 
 	public constructor() {
-		this.discordClient = discordRichPresence(RICH_PRESENCE_KEY);
+		this.discordClient = discordRichPresence(discordRpcKey());
 	}
 
 	public launch(game: PlayableGame, callback: (error: Error, minutesPlayed: number) => void) {

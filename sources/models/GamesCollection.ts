@@ -23,7 +23,7 @@ export class GamesCollection<T extends object> {
 		return this.games.length;
 	}
 
-	public clean() {
+	public clear() {
 		this.games = [];
 	}
 
@@ -68,6 +68,12 @@ export class GamesCollection<T extends object> {
 
 	public getGamesFromSource(source: GameSource): T[] {
 		return this.games.filter((game: T) => game[this.sourceKey] === source);
+	}
+
+	public alphaSort() {
+		this.games.sort((gameA: T, gameB: T): number => {
+			return ((gameA as any).name > (gameB as any).name) ? (1) : (-1);
+		});
 	}
 
 	private removeDuplicates(array: T[]) {
