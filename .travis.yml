@@ -1,0 +1,16 @@
+dist: xenial
+language: node_js
+node_js: '8'
+env:
+  global:
+  - ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true
+  - ELECTRON_CACHE=$HOME/.cache/electron
+  - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+script:
+  - yarn test
+cache:
+  yarn: true
+  directories:
+  - node_modules
+  - '$HOME/.electron'
+  - '$HOME/.cache'
