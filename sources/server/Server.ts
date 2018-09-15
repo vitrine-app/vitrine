@@ -207,7 +207,7 @@ export class Server {
 	public async findPotentialGames() {
 		logger.info('Server', 'Beginning to search potential games.');
 		this.windowsHandler.sendToClient('potential-games-search-begin');
-		this.potentialGames.clean();
+		this.potentialGames.clear();
 		await Promise.all([
 			this.searchSteamGames(),
 			this.searchOriginGames(),
@@ -215,7 +215,6 @@ export class Server {
 			this.searchEmulatedGames()
 		]);
 		this.potentialGames.alphaSort();
-		logger.info('Server', `Potential games are about to be cached.`);
 		this.potentialGames.setGames(await potentialGamesCacher.cache(this.potentialGames.getGames()));
 		logger.info('Server', `${this.potentialGames.size()} potential games sent to client.`);
 		this.windowsHandler.sendToClient('add-potential-games', this.potentialGames.getGames());

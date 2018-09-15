@@ -23,7 +23,7 @@ export class GamesCollection<T extends object> {
 		return this.games.length;
 	}
 
-	public clean() {
+	public clear() {
 		this.games = [];
 	}
 
