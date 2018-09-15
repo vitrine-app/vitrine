@@ -65,6 +65,7 @@
   "wizardText": "Comme c'est la première fois que vous utilisez Vitrine, nous sommes là pour vous aider à configurer les modules que vous souhaitez utiliser.",
   "steamConfig": "Paramètres de Steam :",
   "steamPath": "Dossier d'emplacement de Steam",
+  "steamSearchCloud": "Chercher les jeux Steam non-installés",
   "originConfig": "Paramètres d'Origin :",
   "originGamesPath": "Dossier d'emplacement des jeux Origin",
   "emulatedConfig": "Paramètres d'émulation :",

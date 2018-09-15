@@ -65,6 +65,7 @@
   "wizardText": "As it's the first time you're using Vitrine, we are here to help you to configure which modules would you like to use.",
   "steamConfig": "Steam settings:",
   "steamPath": "Steam path",
+  "steamSearchCloud": "Search uninstalled Steam games",
   "originConfig": "Origin settings:",
   "originGamesPath": "Origin games path",
   "emulatedConfig": "Emulation settings:",
