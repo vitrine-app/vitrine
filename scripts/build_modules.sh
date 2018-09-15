@@ -2,10 +2,10 @@
 # Get Electron current version from package.json and build every Node native module based on the directories name.
 
 ELECTRON_URL=https://atom.io/download/electron
-ELECTRON_VERSION=$(grep '"electron":' ../package.json | sed -E 's/[ ]+"electron": "[\^]?(.*)"[,]?/\1/')
+ELECTRON_VERSION=$(grep '"electron":' package.json | sed -E 's/[ ]+"electron": "[\^]?(.*)"[,]?/\1/')
 
-mkdir -p ../modules
-cd ../sources/modules || exit
+mkdir -p modules
+cd sources/modules || exit
 
 dirs=( $(find . -maxdepth 1 -type d -printf '%P\n') )
 echo "${#dirs[@]} Node native module(s) are about to be built."
