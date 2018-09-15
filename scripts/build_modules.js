@@ -14,7 +14,7 @@ cd('sources/modules');
 readdir(resolve()).then((modules) => {
 	for (const module of modules) {
 		cd(module);
-		exec(`../../../node_modules/.bin/node-gyp rebuild --target=${electronVersion} --arch=x64 --dist-url=${electronUrl}`);
+		exec(`${resolve('../../../node_modules/.bin/node-gyp')} rebuild --target=${electronVersion} --arch=x64 --dist-url=${electronUrl}`);
 		mv(`build/Release/${module}.node`, '../../../modules');
 		rm('-r', 'build');
 		cd('-');
