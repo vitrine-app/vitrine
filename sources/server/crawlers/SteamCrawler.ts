@@ -96,7 +96,6 @@ class SteamCrawler extends PotentialGamesCrawler {
 				}
 				const appIds: number[] = response.games.map(({ appid: appId }: any) => appId);
 				const appDatas: any[] = (await steamAppIdsCacher.cache(appIds)).filter((appData: any) => {
-					console.log(appData);
 					const found: boolean = this.playableGames.filter((playableGame: any) =>
 						parseInt(appData.appId) === playableGame.details.steamId
 					).length > 0 || this.potentialGames.filter((potentialGame: PotentialGame) =>
@@ -104,7 +103,6 @@ class SteamCrawler extends PotentialGamesCrawler {
 					).length > 0;
 					return !found;
 				});
-				console.log(appDatas);
 				await appDatas.forEachEnd((appData: any, done: () => void) => {
 					const potentialGame: PotentialGame = new PotentialGame(appData.name);
 					potentialGame.source = GameSource.STEAM;
