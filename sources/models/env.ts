@@ -6,8 +6,12 @@ export function isProduction(): boolean {
 	return process.env.NODE_ENV === 'production';
 }
 
+export function getAppDataFolder() {
+	return (process.platform === 'win32') ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.vitrine`;
+}
+
 export function getEnvFolder(folder: string, nonProd?: boolean): string {
-	const appDataPath: string = path.resolve(process.env.APPDATA, 'vitrine', 'data', folder);
+	const appDataPath: string = path.resolve(getAppDataFolder(), 'data', folder);
 	const computedPath: string = (isProduction()) ?
 		(((folder === 'games' || folder === 'config') && !nonProd) ? (appDataPath) : (`../../${folder}`)) : (`../${folder}`);
 	return path.resolve(__dirname, computedPath);

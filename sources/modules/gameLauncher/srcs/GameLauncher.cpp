@@ -1,7 +1,7 @@
 #include "GameLauncher.hh"
 
 using namespace v8;
-
+#ifdef _WIN32
 static void workAsync(uv_work_t *request) {
 	Worker* worker = static_cast<Worker*>(request->data);
 	SHELLEXECUTEINFO shellInfo = {0};
@@ -15,7 +15,7 @@ static void workAsync(uv_work_t *request) {
 	shellInfo.nShow = SW_SHOW;
 	shellInfo.hInstApp = nullptr;
 
-	worker->startingTimeStamp = GetTickCount();
+	worker->startingTimeStamp = getTickTime();
 	ShellExecuteEx(&shellInfo);
 	WaitForSingleObject(shellInfo.hProcess, INFINITE);
 	CloseHandle(shellInfo.hProcess);
@@ -26,7 +26,7 @@ static void workAsyncComplete(uv_work_t *request, int status) {
 	HandleScope handleScope(isolate);
 	Worker* worker = static_cast<Worker*>(request->data);
 
-	DWORD timePlayed = (GetTickCount() - worker->startingTimeStamp) / 1000;
+	unsigned int timePlayed = (getTickTime() - worker->startingTimeStamp) / 1000;
 	Local<Value> av[2] = { Null(isolate), Number::New(isolate, timePlayed) };
 
 	if (worker->callbackUsed) {
@@ -91,6 +91,12 @@ void launchGame(const FunctionCallbackInfo<Value>& args) {
 	uv_queue_work(uv_default_loop(), &worker->request, workAsync, workAsyncComplete);
 	args.GetReturnValue().Set(Undefined(isolate));
 }
+#else
+void launchGame(const FunctionCallbackInfo<Value>& args) {
+	Isolate* isolate = args.GetIsolate();
+	args.GetReturnValue().Set(Undefined(isolate));
+}
+#endif
 
 void init(Local<Object> exports) {
 	NODE_SET_METHOD(exports, "launchGame", launchGame);

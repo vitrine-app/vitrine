@@ -1,10 +1,16 @@
 {
   "name": "vitrine",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
-  "author": "Paul Roman",
+  "productName": "Vitrine",
+  "author": "Paul Roman <paul.roman@epitech.eu>",
   "license": "MIT",
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/paul-roman/vitrine.git"
@@ -14,6 +20,7 @@
     "@fortawesome/fontawesome-free-solid": "^5.0.8",
     "@fortawesome/react-fontawesome": "0.0.17",
     "aphrodite": "2.2.0",
+    "axios": "^0.18.0",
     "css-verbose": "^0.3.0",
     "discord-rich-presence": "^0.0.6",
     "download-file": "^0.1.5",
@@ -26,7 +33,6 @@
     "google-translate-api": "^2.3.0",
     "igdb-api-node": "3.1.4",
     "moment": "^2.22.0",
-    "node-windows": "^0.1.14",
     "react": "16.3.2",
     "react-contextmenu": "^2.9.2",
     "react-datetime": "^2.14.0",
@@ -82,6 +88,9 @@
     "typescript": "^2.7.2",
     "webpack": "^4.4.0",
     "webpack-cli": "^2.0.13"
+  },
+  "optionalDependencies": {
+    "node-windows": "^0.1.14"
   },
   "scripts": {
     "build-app": "parallel-webpack --progress",

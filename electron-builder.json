@@ -5,10 +5,22 @@
     "target": "nsis",
     "icon": "sources/client/resources/images/vitrine.ico"
   },
+  "linux": {
+    "target": "AppImage",
+    "icon": "sources/client/resources/images/vitrine.png",
+    "category": "Utility"
+  },
   "nsis": {
     "oneClick": false,
-    "artifactName": "${productName}_${version}_Setup.${ext}",
     "multiLanguageInstaller": true,
+    "artifactName": "${productName}_${version}_Setup.${ext}",
+    "publish": {
+      "provider": "github",
+      "vPrefixedTagName": true
+    }
+  },
+  "appImage": {
+    "artifactName": "${productName}_${version}_Setup.${ext}",
     "publish": {
       "provider": "github",
       "vPrefixedTagName": true

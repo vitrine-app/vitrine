@@ -1,5 +1,4 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
-import { EventEmitter } from 'events';
 import * as path from 'path';
 
 import { isProduction } from '../models/env';
@@ -15,10 +14,24 @@ export class WindowsHandler {
 	private appQuit: boolean;
 
 	public constructor() {
-		this.clientEntryPoint = path.resolve('file://', __dirname, 'client.html');
-		this.loaderEntryPoint = path.resolve('file://', __dirname, 'loader.html');
-		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.ico');
+		this.clientEntryPoint = `file://${path.resolve(__dirname, 'client.html')}`;
+		this.loaderEntryPoint = `file://${path.resolve(__dirname, 'loader.html')}`;
+		this.iconPath = path.resolve(__dirname, 'img', 'vitrine.png');
 		this.appQuit = false;
+	}
+
+	private createLoaderWindow() {
+		logger.info('WindowsHandler', 'Creating loader window.');
+		this.loaderWindow = new BrowserWindow({
+			title: 'Vitrine',
+			height: 300,
+			width: 500,
+			icon: this.iconPath,
+			frame: false,
+			resizable: false
+		});
+		this.loaderWindow.loadURL(this.loaderEntryPoint);
+		logger.info('WindowsHandler', 'Loader window created.');
 	}
 
 	public run() {
@@ -48,22 +61,10 @@ export class WindowsHandler {
 		this.clientWindow.show();
 	}
 
-	public createLoaderWindow() {
-		logger.info('WindowsHandler', 'Creating loader window.');
-		this.loaderWindow = new BrowserWindow({
-			height: 300,
-			width: 500,
-			icon: this.iconPath,
-			frame: false,
-			resizable: false
-		});
-		this.loaderWindow.loadURL(this.loaderEntryPoint);
-		logger.info('WindowsHandler', 'Loader window created.');
-	}
-
 	public createClientWindow() {
 		logger.info('WindowsHandler', 'Creating main client window.');
 		this.clientWindow = new BrowserWindow({
+			title: 'Vitrine',
 			minWidth: 1450,
 			minHeight: 700,
 			icon: this.iconPath,
