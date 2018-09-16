@@ -3,8 +3,6 @@
 #include <node.h>
 #include <uv.h>
 
-#define EVENT_SIZE (sizeof(struct inotify_event))
-#define BUFFER_LENGTH (1024 * (EVENT_SIZE + 16))
 #define STEAM_REGISTRY_KEY "Software\\Valve\\Steam\\Apps\\"
 
 struct AppWorker {

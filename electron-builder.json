@@ -3,45 +3,40 @@
   "productName": "Vitrine",
   "win": {
     "target": "nsis",
-    "icon": "sources/client/resources/images/vitrine.ico"
+    "icon": "sources/client/resources/images/vitrine.ico",
+    "publish": [ "github" ]
   },
   "linux": {
-    "target": "AppImage",
+    "target": "tar.gz",
     "icon": "sources/client/resources/images/vitrine.png",
-    "category": "Utility"
+    "category": "Utility",
+    "artifactName": "${productName}_${version}_Setup.${ext}",
+    "publish": [ "github" ]
   },
   "nsis": {
     "oneClick": false,
     "multiLanguageInstaller": true,
-    "artifactName": "${productName}_${version}_Setup.${ext}",
-    "publish": {
-      "provider": "github",
-      "vPrefixedTagName": true
-    }
-  },
-  "appImage": {
-    "artifactName": "${productName}_${version}_Setup.${ext}",
-    "publish": {
-      "provider": "github",
-      "vPrefixedTagName": true
-    }
+    "artifactName": "${productName}_${version}_Setup.${ext}"
   },
   "files": [
     "!.circleci",
+    "!.github",
     "!.idea",
-    "!sources",
     "!games",
     "!node_modules",
-    "!tests",
     "!scripts",
+    "!sources",
+    "!tests",
+    "!webpack",
     "!.gitignore",
+    "!.grenrc.json",
     "!AUTHORS.md",
     "!CHANGELOG.md",
     "!LICENSE.md",
     "!README.md",
     "!tsconfig.json",
+    "!tslint.json",
     "!vitrine.log.html",
-    "!webpack.*.js",
     "!yarn.lock"
   ],
   "extraResources": [

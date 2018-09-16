@@ -2,8 +2,17 @@
   "targets": [
     {
       "target_name": "gameLauncher",
-      "sources": [
-        "srcs/GameLauncher.cpp"
+      "conditions": [
+        ["OS==\"windows\"", {
+          "sources": [
+            "windows/GameLauncher.cpp"
+          ]
+        }],
+        ["OS==\"linux\"", {
+          "sources": [
+            "linux/GameLauncher.cpp"
+          ]
+        }]
       ]
     }
   ]

@@ -24,6 +24,7 @@
     "@fortawesome/react-fontawesome": "0.0.17",
     "aphrodite": "2.2.0",
     "axios": "^0.18.0",
+    "compare-versions": "^3.4.0",
     "css-verbose": "^0.3.0",
     "discord-rich-presence": "^0.0.6",
     "download-file": "^0.1.5",

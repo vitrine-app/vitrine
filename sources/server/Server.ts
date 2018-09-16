@@ -1,4 +1,5 @@
 import { ProgressInfo } from 'builder-util-runtime';
+import * as compareVersion from 'compare-versions';
 import { autoUpdater, UpdateCheckResult } from 'electron-updater';
 import * as fs from 'fs-extra';
 import * as moment from 'moment';
@@ -76,7 +77,7 @@ export class Server {
 		});
 		try {
 			const lastUpdate: UpdateCheckResult = await autoUpdater.checkForUpdates();
-			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion) {
+			if (compareVersion(lastUpdate.updateInfo.version, autoUpdater.currentVersion) === 1) {
 				logger.info('Server', `Update ${lastUpdate.updateInfo.version} found.`);
 				this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
 			}
