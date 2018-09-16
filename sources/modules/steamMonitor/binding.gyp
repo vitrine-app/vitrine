@@ -2,11 +2,20 @@
   "targets": [
     {
       "target_name": "steamMonitor",
-      "sources": [
-        "srcs/SteamMonitor.cpp"
-      ],
-      "librairies": [
-        "Advapi32.lib"
+      "conditions": [
+        ["OS==\"windows\"", {
+          "sources": [
+            "windows/SteamMonitor.cpp"
+          ],
+          "librairies": [
+            "Advapi32.lib"
+          ]
+        }],
+        ["OS==\"linux\"", {
+          "sources": [
+            "linux/SteamMonitor.cpp"
+          ]
+        }]
       ]
     }
   ]
