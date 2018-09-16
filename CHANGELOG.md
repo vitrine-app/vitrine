@@ -1,6 +1,16 @@
-# Changelog
+# Vitrine Changelog
 
-## v0.9.0 (06/05/2018)
+## 0.9.2 (16/09/2018)
+- [**bug**][**enhancement**] Steam games are not synced up [#63](https://github.com/paul-roman/vitrine/issues/63)
+
+---
+
+## 0.9.1 (13/06/2018)
+*No changelog for this release.*
+
+---
+
+## 0.9.0 (06/05/2018)
 - [**bug**] Controls are still active on gamepad when Vitrine is not focused [#61](https://github.com/paul-roman/vitrine/issues/61)
 - [**idea**] Upgrade to Electron 2.0.0 [#60](https://github.com/paul-roman/vitrine/issues/60)
 - [**enhancement**] Allow user to sort his games [#55](https://github.com/paul-roman/vitrine/issues/55)
@@ -76,7 +86,7 @@
 
 ## 0.5.0 (06/10/2017)
 - Sources folder structure fully reorganized
-- UI now powered by ReactJS, for a more solid and fluid application
+- UI now powered by React.js, for a more solid and fluid application
 ---
 
 ## 0.4.2 (02/09/2017)

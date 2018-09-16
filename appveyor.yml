@@ -3,10 +3,15 @@ version: 0.1.{build}
 platform:
   - x64
 
+environment:
+  ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
+  ELECTRON_CACHE: '%USERPROFILE%\cache\electron'
+  ELECTRON_BUILDER_CACHE: '%USERPROFILE%\cache\electron-builder'
+
 cache:
   - node_modules
   - '%USERPROFILE%\.electron'
-  - '%USERPROFILE%\.cache'
+  - '%USERPROFILE%\cache'
 
 init:
   - git config --global core.autocrlf input

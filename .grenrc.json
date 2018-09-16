@@ -1,0 +1,18 @@
+{
+  "dataSource": "issues",
+  "prefix": "",
+  "ignoreLabels": [],
+  "onlyMilestones": false,
+  "groupBy": false,
+  "template": {
+    "commit": "- [{{message}}]({{url}}) - @{{author}}",
+    "issue": "- {{labels}} {{name}} [{{text}}]({{url}})",
+    "label": "[**{{label}}**]",
+    "noLabel": "closed",
+    "group": "\n#### {{heading}}\n",
+    "changelogTitle": "# Vitrine Changelog\n\n",
+    "release": "## {{release}} ({{date}})\n{{body}}",
+    "releaseSeparator": "\n---\n\n"
+  },
+  "milestoneMatch": "Release {{tag_name}}"
+}

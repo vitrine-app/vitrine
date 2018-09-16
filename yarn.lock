@@ -3306,9 +3306,9 @@ github-api@^3.0.0:
     js-base64 "^2.1.9"
     utf8 "^2.1.1"
 
-github-release-notes@^0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/github-release-notes/-/github-release-notes-0.15.0.tgz#60c94074772c3c7794126258aa438e6774a1658b"
+github-release-notes@0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/github-release-notes/-/github-release-notes-0.16.0.tgz#37f72be331385317304c5ba06f8affe7e8cda5c1"
   dependencies:
     babel-runtime "^6.26.0"
     base-64 "^0.1.0"
