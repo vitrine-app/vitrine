@@ -5,25 +5,28 @@
 <h3 align="center">Centralize all of your games within a simple interface.</h3>
 
 <p align="center">
-  <a href="https://github.com/paul-roman/vitrine/blob/master/LICENSE.md">
+  <a href="https://github.com/paul-roman/vitrine/blob/master/LICENSE.md" target="_blank">
     <img alt="license" src="https://img.shields.io/github/license/paul-roman/vitrine.svg?style=flat-square">
   </a>
-  <a href="https://github.com/paul-roman/vitrine/releases">
+  <a href="https://github.com/paul-roman/vitrine/releases" target="_blank">
     <img alt="GitHub (pre-)release" src="https://img.shields.io/github/release/paul-roman/vitrine/all.svg?style=flat-square">
   </a>
-  <a href="https://circleci.com/gh/paul-roman/vitrine">
+  <a href="https://circleci.com/gh/paul-roman/vitrine" target="_blank">
     <img alt="CircleCI" src="https://img.shields.io/circleci/project/github/paul-roman/vitrine.svg?style=flat-square">
   </a>
-  <a href="https://david-dm.org/paul-roman/vitrine">
+  <a href="https://david-dm.org/paul-roman/vitrine" target="_blank">
     <img alt="dependencies" src="https://david-dm.org/paul-roman/vitrine/status.svg?style=flat-square">
   </a>
-  <a href="https://david-dm.org/paul-roman/vitrine?type=dev">
+  <a href="https://david-dm.org/paul-roman/vitrine?type=dev" target="_blank">
     <img alt="devDependencies" src="https://david-dm.org/paul-roman/vitrine/dev-status.svg?style=flat-square">
   </a>
-  <a href="https://palantir.github.io/tslint">
+  <a href="https://palantir.github.io/tslint" target="_blank">
     <img alt="code style: TSLint" src="https://img.shields.io/badge/code%20style-tslint-ff69b4.svg?style=flat-square">
   </a>
-  <a href="https://stackshare.io/paul-roman/vitrine">
+  <a href="https://github-tools.github.io/github-release-notes" target="_blank">
+    <img alt="Automated Release Notes by gren" src="https://img.shields.io/badge/%F0%9F%A4%96-release%20notes-00B2EE.svg?style=flat-square">
+  </a>
+  <a href="https://stackshare.io/paul-roman/vitrine" target="_blank">
     <img alt="StackShare" src="https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square">
   </a>
 </p>
