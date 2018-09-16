@@ -26,7 +26,7 @@ void monitorGameStart(uv_work_t *request, int status) {
 	Isolate* isolate = Isolate::GetCurrent();
 	HandleScope handleScope(isolate);
 	AppWorker* worker = static_cast<AppWorker*>(request->data);
-	worker->startingTimestamp = GetTickCount()
+	worker->startingTimestamp = GetTickCount();
 	uv_queue_work(uv_default_loop(), &worker->request, monitorGameChange, monitorGameEnd);
 }
 

@@ -3,7 +3,7 @@
     {
       "target_name": "steamMonitor",
       "conditions": [
-        ["OS==\"windows\"", {
+        ["OS==\"win\"", {
           "sources": [
             "windows/SteamMonitor.cpp"
           ],

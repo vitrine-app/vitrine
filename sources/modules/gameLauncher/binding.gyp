@@ -3,7 +3,7 @@
     {
       "target_name": "gameLauncher",
       "conditions": [
-        ["OS==\"windows\"", {
+        ["OS==\"win\"", {
           "sources": [
             "windows/GameLauncher.cpp"
           ]
