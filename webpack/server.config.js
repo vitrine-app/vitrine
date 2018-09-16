@@ -5,7 +5,7 @@ const production = process.env.NODE_ENV === 'production';
 module.exports = {
 	entry: './sources/server/main.ts',
 	output: {
-		path: path.resolve(__dirname, 'public'),
+		path: path.resolve(__dirname, '../public'),
 		filename: 'server.js'
 	},
 	node: {
