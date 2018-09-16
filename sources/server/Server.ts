@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 
-import { getEnvFolder, randomHashedString } from '../models/env';
+import { getEnvFolder, isProduction, randomHashedString } from '../models/env';
 import { GamesCollection } from '../models/GamesCollection';
 import { PlayableGame} from '../models/PlayableGame';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
@@ -62,6 +62,10 @@ export class Server {
 	}
 
 	public async loaderReady() {
+		if (!isProduction()) {
+			this.windowsHandler.sendToLoader('no-update-found');
+			return;
+		}
 		logger.info('Server', 'Checking for updates.');
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {

@@ -4,6 +4,7 @@ import * as path from 'path';
 import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../modules/gameLauncher.node';
 import { discordRpcKey } from '../../modules/keysProvider.node';
 import { watchRegKey } from '../../modules/regWatcher.node';
+import { monitorSteamApp } from '../../modules/steamMonitor.node';
 import { PlayableGame } from '../models/PlayableGame';
 import { GameSource } from '../models/PotentialGame';
 import { logger } from './Logger';
@@ -64,7 +65,7 @@ class GameLauncher {
 
 		logger.info('GameLauncher', 'Launching Steam game.');
 
-		const regNest: string = 'HKEY_CURRENT_USER';
+		/*const regNest: string = 'HKEY_CURRENT_USER';
 		const regKey: string = `Software\\Valve\\Steam\\Apps\\${this.game.details.steamId}`;
 		logger.info('GameLauncher', `Watching Steam registry key for game begin (${this.game.details.steamId}).`);
 		watchRegKey(regNest, regKey, (error: string) => {
@@ -82,6 +83,14 @@ class GameLauncher {
 					this.quitGame(secondsPlayed);
 				}
 			});
+		});*/
+		monitorSteamApp(this.game.details.steamId.toString(), (error: string, secondsPlayed: number) => {
+			if (error)
+				this.callback(new Error(error), null);
+			else {
+				logger.info('GameLauncher', `Game ended (played during ${secondsPlayed} seconds).`);
+				this.quitGame(secondsPlayed);
+			}
 		});
 
 		const [ program, args ]: string[] = this.game.commandLine;
