@@ -1,11 +1,12 @@
 import { ProgressInfo } from 'builder-util-runtime';
+import * as compareVersion from 'compare-versions';
 import { autoUpdater, UpdateCheckResult } from 'electron-updater';
 import * as fs from 'fs-extra';
 import * as moment from 'moment';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 
-import { getEnvFolder, randomHashedString } from '../models/env';
+import { getEnvFolder, isProduction, randomHashedString } from '../models/env';
 import { GamesCollection } from '../models/GamesCollection';
 import { PlayableGame} from '../models/PlayableGame';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
@@ -62,6 +63,10 @@ export class Server {
 	}
 
 	public async loaderReady() {
+		if (!isProduction()) {
+			this.windowsHandler.sendToLoader('no-update-found');
+			return;
+		}
 		logger.info('Server', 'Checking for updates.');
 		autoUpdater.allowPrerelease = true;
 		autoUpdater.signals.progress((progress: ProgressInfo) => {
@@ -72,7 +77,7 @@ export class Server {
 		});
 		try {
 			const lastUpdate: UpdateCheckResult = await autoUpdater.checkForUpdates();
-			if (lastUpdate.updateInfo.version !== autoUpdater.currentVersion) {
+			if (compareVersion(lastUpdate.updateInfo.version, autoUpdater.currentVersion) === 1) {
 				logger.info('Server', `Update ${lastUpdate.updateInfo.version} found.`);
 				this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
 			}

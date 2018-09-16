@@ -1,16 +1,19 @@
 {
   "targets": [
     {
-      "target_name": "gameLauncher",
+      "target_name": "steamMonitor",
       "conditions": [
         ["OS==\"windows\"", {
           "sources": [
-            "windows/GameLauncher.cpp"
+            "windows/SteamMonitor.cpp"
+          ],
+          "librairies": [
+            "Advapi32.lib"
           ]
         }],
         ["OS==\"linux\"", {
           "sources": [
-            "linux/GameLauncher.cpp"
+            "linux/SteamMonitor.cpp"
           ]
         }]
       ]
