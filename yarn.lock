@@ -2612,9 +2612,9 @@ electron-is-dev@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.3.0.tgz#14e6fda5c68e9e4ecbeff9ccf037cbd7c05c5afe"
 
-electron-node-loader@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/electron-node-loader/-/electron-node-loader-1.1.1.tgz#c53029956c5e3d1e62d0cb3d25bcb180086adb7a"
+electron-node-loader@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/electron-node-loader/-/electron-node-loader-1.1.2.tgz#558a4a47c14034d97a24851395c87ea4af37693a"
   dependencies:
     loader-utils "^1.1.0"
 
