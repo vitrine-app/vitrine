@@ -113,6 +113,7 @@
     "start": "electron .",
     "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 20000",
     "generate-authors": "node scripts/run.js authors.sh",
+    "changelog": "gren changelog -o && gren release -o",
     "pack": "yarn build-modules && yarn build-prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build --dir",
     "dist": "yarn build-modules && yarn test && yarn build-prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
     "precommit": "tslint --fix sources/**/*.ts*"
