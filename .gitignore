@@ -1,6 +1,8 @@
 /.idea
+/.nyc_output
 /config/cache/*
 /config/vitrine_config.json
+/coverage
 /dist
 /games/*
 /node_modules
