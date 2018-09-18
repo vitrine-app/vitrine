@@ -37,5 +37,5 @@ module.exports = {
 		]
 	},
 	mode: (production) ? ('production') : ('development'),
-	devtool: (production) ? ('source-map') : (false)
+	devtool: (production) ? ('source-map') : ('cheap-source-map')
 };
