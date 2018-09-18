@@ -67,6 +67,7 @@
     "asar": "^0.14.3",
     "base64-inline-loader": "^1.1.1",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.2",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
     "electron": "2.0.9",
@@ -115,7 +116,7 @@
     "watch-client": "parallel-webpack --progress --config=webpack/client.config.js --watch",
     "start": "electron .",
     "test": "nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "generate-authors": "node scripts/run.js authors.sh",
     "changelog": "gren changelog -o && gren release -o",
     "pack": "yarn build-modules && yarn build-prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build --dir",
@@ -126,9 +127,15 @@
     "include": [
       "sources/server/**/*.ts"
     ],
-    "extension": [ ".ts" ],
-    "require": [ "ts-node/register" ],
-    "reporter": [ "lcov" ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "lcov"
+    ],
     "sourceMap": true,
     "instrument": true
   }

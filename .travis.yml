@@ -19,3 +19,5 @@ cache:
   - node_modules
   - '$HOME/.electron'
   - '$HOME/.cache'
+
+after_success: yarn coverage
