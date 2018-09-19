@@ -5,7 +5,7 @@ import * as path from 'path';
 import { getEnvFolder } from '../models/env';
 import { logger } from './Logger';
 
-class SteamAppIdsCacher {
+export class SteamAppIdsCacher {
 	private readonly cacheFilePath: string;
 	private readonly apiEndPoint: string;
 
