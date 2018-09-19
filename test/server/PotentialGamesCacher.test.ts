@@ -1,3 +1,4 @@
+import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { getEnvFolder } from '../../sources/models/env';
@@ -13,6 +14,7 @@ function testPotentialGamesCacher(prod?: boolean) {
 		before(async () => {
 			process.env.NODE_ENV = (prod) ? ('prod') : ('dev');
 			process.env.TEST_PROD = (prod) ? ('true') : ('false');
+			await fs.ensureDir(path.resolve(getEnvFolder('config'), 'cache'));
 			potentialGamesCacher = new PotentialGamesCacher();
 			cacheFilePath = path.resolve(getEnvFolder('config'), 'cache', 'potential_games.json');
 		});
