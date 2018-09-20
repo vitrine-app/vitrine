@@ -4,8 +4,6 @@ describe('IgdbWrapper searcher', () => {
 	let gamesArray: any[];
 
 	before(async () => {
-		console.log('=====', process.cwd(), '=====');
-		console.log('=====', __dirname, '=====');
 		gamesArray = await searchIgdbGame('Super Mario Galaxy', 2);
 	});
 
