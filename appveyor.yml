@@ -20,9 +20,6 @@ install:
   - ps: Install-Product node 8.9 x64
   - yarn
 
-before_build:
-  - yarn test:run
-
 build_script:
   - yarn dist
 
