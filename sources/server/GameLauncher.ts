@@ -3,7 +3,6 @@ import * as path from 'path';
 
 import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../modules/gameLauncher.node';
 import { discordRpcKey } from '../../modules/keysProvider.node';
-import { watchRegKey } from '../../modules/regWatcher.node';
 import { monitorSteamApp } from '../../modules/steamMonitor.node';
 import { PlayableGame } from '../models/PlayableGame';
 import { GameSource } from '../models/PotentialGame';
@@ -62,28 +61,7 @@ class GameLauncher {
 			this.callback(new Error('The game Steam id is not provided. Make sure your game is correctly installed.'), null);
 			return;
 		}
-
 		logger.info('GameLauncher', 'Launching Steam game.');
-
-		/*const regNest: string = 'HKEY_CURRENT_USER';
-		const regKey: string = `Software\\Valve\\Steam\\Apps\\${this.game.details.steamId}`;
-		logger.info('GameLauncher', `Watching Steam registry key for game begin (${this.game.details.steamId}).`);
-		watchRegKey(regNest, regKey, (error: string) => {
-			if (error) {
-				this.callback(new Error(error), null);
-				return;
-			}
-
-			logger.info('GameLauncher', `Watching Steam registry key for game end (${this.game.details.steamId}).`);
-			watchRegKey(regNest, regKey, (error: string, secondsPlayed: number) => {
-				if (error)
-					this.callback(new Error(error), null);
-				else {
-					logger.info('GameLauncher', `Game terminated (played during ${secondsPlayed} seconds).`);
-					this.quitGame(secondsPlayed);
-				}
-			});
-		});*/
 		monitorSteamApp(this.game.details.steamId.toString(), (error: string, secondsPlayed: number) => {
 			if (error)
 				this.callback(new Error(error), null);
