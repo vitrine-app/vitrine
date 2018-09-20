@@ -10,12 +10,16 @@ export function isFakeProd(): boolean {
 	return process.env.TEST_PROD === 'true';
 }
 
+export function isTesting(): boolean {
+	return process.env.TESTING === 'true';
+}
+
 export function getAppDataFolder() {
 	return (process.platform === 'win32') ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.local/share/vitrine`;
 }
 
 export function getEnvFolder(folder: string, nonProd?: boolean): string {
-	if (process.env.TESTING && !isProduction())
+	if (isTesting() && !isProduction())
 		return path.resolve(folder);
 	const appDataPath: string = path.resolve(getAppDataFolder(), 'data', folder);
 	const computedPath: string = (isProduction()) ?

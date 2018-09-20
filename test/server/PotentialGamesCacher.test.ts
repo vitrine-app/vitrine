@@ -37,7 +37,7 @@ function testPotentialGamesCacher(prod?: boolean) {
 	};
 }
 
-describe('PotentialGamesCacher.ts', () => {
+describe('PotentialGamesCacher', () => {
 	describe('Dev env', testPotentialGamesCacher());
 	describe('Prod env', testPotentialGamesCacher(true));
 });

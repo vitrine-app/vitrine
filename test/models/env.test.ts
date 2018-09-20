@@ -1,6 +1,6 @@
 import { randomHashedString, uuidV5 } from '../../sources/models/env';
 
-describe('helpers.ts', () => {
+describe('helpers functions', () => {
 	describe('uuidV5()', () => {
 		let uuid: string;
 		before(() => {

@@ -3,5 +3,5 @@
 --require ./test/bootstrapTests
 --full-trace
 --bail
---timeout 5000
+--timeout 50000
 test/**/*.test.ts

@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getEnvFolder, isProduction } from '../models/env';
+import { getEnvFolder, isProduction, isTesting } from '../models/env';
 import { logger } from './Logger';
 import { Server } from './Server';
 
@@ -54,10 +54,12 @@ export class Bootstrapper {
 
 	private registerDebugPromiseHandler() {
 		process.on('unhandledRejection', (reason: Error) => {
-			console.error('[PROCESS] Unhandled Promise Rejection');
-			console.error('=====================================');
-			console.error(reason);
-			console.error('=====================================');
+			if (!isProduction() && !isTesting()) {
+				console.error('[PROCESS] Unhandled Promise Rejection');
+				console.error('=====================================');
+				console.error(reason);
+				console.error('=====================================');
+			}
 		});
 	}
 }

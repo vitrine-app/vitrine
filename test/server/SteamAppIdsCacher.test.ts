@@ -35,7 +35,7 @@ function testSteamAppIdsCacher(prod?: boolean) {
 	};
 }
 
-describe('SteamAppIdsCacher.ts', () => {
+describe('SteamAppIdsCacher', () => {
 	describe('Dev env', testSteamAppIdsCacher());
 	describe('Prod env', testSteamAppIdsCacher(true));
 });

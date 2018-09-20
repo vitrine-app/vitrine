@@ -127,7 +127,10 @@
     "precommit": "tslint --fix sources/**/*.ts*"
   },
   "nyc": {
-    "include": [ "sources/server/**/*.ts", "sources/models/**/*.ts" ],
+    "include": [
+      "sources/server/**/*.ts",
+      "sources/models/**/*.ts"
+    ],
     "extension": ".ts",
     "require": "ts-node/register",
     "exclude": "**/*.d.ts",
