@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ReactNode } from 'react';
 
 interface State {
 	error?: Error;
@@ -26,7 +25,7 @@ export abstract class VitrineComponent<P, S> extends React.Component<P, S & Stat
 			throw this.state.error;
 	}
 
-	public render(): ReactNode {
+	public render(): React.ReactNode {
 		return super.render();
 	}
 }

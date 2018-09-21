@@ -1,7 +1,7 @@
 /// <reference types="react-datetime"/>
 
 import { Component } from 'react';
-import { DatetimepickerProps, DatetimepickerState } from '../../node_modules/react-datetime/DateTime';
+import { DatetimepickerProps, DatetimepickerState } from '../../../node_modules/react-datetime/DateTime';
 
 export = ReactDatetimeClass;
 

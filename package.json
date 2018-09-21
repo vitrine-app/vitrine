@@ -116,7 +116,7 @@
     "lint:app": "tslint sources/**/*.ts*",
     "lint:server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
     "lint:client": "tslint sources/client/**/*.ts*",
-    "watch:client": "parallel-webpack --progress --config=webpack/client.config.js --watch",
+    "watch:client": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js --watch",
     "test": "nyc mocha",
     "test:run": "mocha",
     "test:coverage": "",
