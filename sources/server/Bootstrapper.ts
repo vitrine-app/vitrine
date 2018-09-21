@@ -34,7 +34,7 @@ export class Bootstrapper {
 			fs.ensureDir(`${this.configFolderPath}/cache`),
 			fs.ensureFile(this.vitrineConfigFilePath)
 		]);
-		const [ modulesConfig, vitrineConfig ] = await Promise.all([
+		const [ modulesConfig, vitrineConfig ]: any[] = await Promise.all([
 			fs.readJson(path.resolve(this.configFolderPath, this.modulesConfigFileName)),
 			fs.readJson(this.vitrineConfigFilePath, { throws: false })
 		]);

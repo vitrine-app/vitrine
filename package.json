@@ -129,7 +129,8 @@
   },
   "nyc": {
     "include": [
-      "sources/server/**/*.ts",
+      "sources/server/*.ts",
+      "sources/server/api/**/*.ts",
       "sources/models/**/*.ts"
     ],
     "extension": ".ts",

@@ -55,7 +55,7 @@ class IgdbWrapper {
 			};
 		}
 		catch (error) {
-			return error;
+			throw error;
 		}
 	}
 
@@ -90,7 +90,7 @@ class IgdbWrapper {
 			return foundGames;
 		}
 		catch (error) {
-			return error;
+			throw error;
 		}
 	}
 

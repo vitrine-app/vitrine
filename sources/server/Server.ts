@@ -11,7 +11,7 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PlayableGame} from '../models/PlayableGame';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
-import { getGamePlayTime } from './api/SteamPlayTimeWrapper';
+import { getSteamGamePlayTime } from './api/SteamPlayTimeWrapper';
 import { findSteamUser } from './api/SteamUserFinder';
 import { searchBattleNetGames } from './crawlers/BattleNetCrawler';
 import { searchEmulatedGames } from './crawlers/EmulatedCrawler';
@@ -340,7 +340,7 @@ export class Server {
 
 		if (!editing && game.source === GameSource.STEAM) {
 			try {
-				game.timePlayed = await getGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
+				game.timePlayed = await getSteamGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
 			}
 			catch (error) {
 				this.throwServerError(error);
