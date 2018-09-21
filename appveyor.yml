@@ -18,9 +18,12 @@ init:
 
 install:
   - ps: Install-Product node 8.9 x64
-  - yarn
+  - yarn install
+
+before_build:
+  - yarn build:modules
 
 build_script:
-  - yarn dist
+  - yarn dist:ci
 
 test: off

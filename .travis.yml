@@ -10,8 +10,12 @@ env:
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
+before_script:
+  - yarn build:modules
+  - yarn test
+
 script:
-  - yarn dist
+  - yarn dist:ci
 
 cache:
   yarn: true
@@ -20,4 +24,5 @@ cache:
   - '$HOME/.electron'
   - '$HOME/.cache'
 
-after_success: yarn test:coverage
+after_success:
+  - yarn test:coverage
