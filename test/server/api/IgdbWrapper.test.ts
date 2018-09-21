@@ -22,7 +22,7 @@ describe('IgdbWrapper searcher', () => {
 
 describe('IgdbWrapper filler', () => {
 	it('Return a game object', async () => {
-		const game = await fillIgdbGame(340, 'en');
+		const game = await fillIgdbGame(340);
 		game.should.be.a('object');
 		game.should.have.property('name');
 		game.should.have.property('summary');

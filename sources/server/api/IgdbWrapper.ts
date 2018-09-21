@@ -161,7 +161,7 @@ class IgdbWrapper {
 
 const igdbWrapper: IgdbWrapper = new IgdbWrapper();
 
-export function fillIgdbGame(gameId: number, lang: string): Promise<any> {
+export function fillIgdbGame(gameId: number, lang?: string): Promise<any> {
 	return new Promise((resolve, reject) => {
 		igdbWrapper.setLang(lang).findGameById(gameId).then((game: any) => {
 			if (game instanceof Error)

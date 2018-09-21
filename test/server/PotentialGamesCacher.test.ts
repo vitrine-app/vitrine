@@ -38,8 +38,6 @@ function testPotentialGamesCacher(prod?: boolean) {
 }
 
 describe('PotentialGamesCacher', () => {
-	console.log('=====', process.cwd(), '=====');
-	console.log('=====', __dirname, '=====');
 	describe('Dev env', testPotentialGamesCacher());
 	describe('Prod env', testPotentialGamesCacher(true));
 });
