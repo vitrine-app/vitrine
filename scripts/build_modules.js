@@ -1,4 +1,4 @@
-const { readdir } = require('fs-extra');
+const { readdir, statSync } = require('fs-extra');
 const { resolve } = require('path');
 const { cd, exec, grep, mkdir, mv, rm } = require('shelljs');
 
@@ -12,7 +12,7 @@ mkdir('-p', 'modules');
 cd('sources/modules');
 
 readdir(resolve()).then((modules) => {
-	for (const module of modules) {
+	for (const module of modules.filter((module) => statSync(module).isDirectory())) {
 		cd(module);
 		exec(`${resolve('../../../node_modules/.bin/node-gyp')} rebuild --target=${electronVersion} --arch=x64 --dist-url=${electronUrl}`);
 		mv(`build/Release/${module}.node`, '../../../modules');
