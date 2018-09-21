@@ -2,10 +2,10 @@ import * as glob from 'glob';
 import * as path from 'path';
 import * as SteamWeb from 'steam-web';
 
-import { steamKey } from '../../../modules/keysProvider.node';
 import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
+import { steamKey } from '../../modules/keysProvider';
 import { AcfParser } from '../api/AcfParser';
 import { logger } from '../Logger';
 import { steamAppIdsCacher } from '../SteamAppIdsCacher';

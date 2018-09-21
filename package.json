@@ -117,7 +117,7 @@
     "lint-client": "tslint sources/client/**/*.ts*",
     "watch-client": "parallel-webpack --progress --config=webpack/client.config.js --watch",
     "start": "electron .",
-    "test": "mocha",
+    "test": "nyc mocha",
     "test:run": "mocha",
     "test:coverage": "",
     "generate-authors": "node scripts/run.js authors.sh",

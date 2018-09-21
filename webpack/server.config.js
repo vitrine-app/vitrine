@@ -13,7 +13,7 @@ module.exports = {
 		__filename: false
 	},
 	resolve: {
-		extensions: [ '.ts', '.js', '.json' ]
+		extensions: [ '.ts', '.js', '.json', '.node' ]
 	},
 	target: 'electron-main',
 	module: {

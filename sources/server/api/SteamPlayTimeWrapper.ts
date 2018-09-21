@@ -1,6 +1,6 @@
 import * as SteamWeb from 'steam-web';
 
-import { steamKey } from '../../../modules/keysProvider.node';
+import { steamKey } from '../../modules/keysProvider';
 import { logger } from '../Logger';
 
 class SteamPlayTimeWrapper {

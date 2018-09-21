@@ -1,11 +1,11 @@
 import * as discordRichPresence from 'discord-rich-presence';
 import * as path from 'path';
 
-import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../../modules/gameLauncher.node';
-import { discordRpcKey } from '../../modules/keysProvider.node';
-import { monitorSteamApp } from '../../modules/steamMonitor.node';
 import { PlayableGame } from '../models/PlayableGame';
 import { GameSource } from '../models/PotentialGame';
+import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../modules/gameLauncher';
+import { discordRpcKey } from '../modules/keysProvider';
+import { monitorSteamApp } from '../modules/steamMonitor';
 import { logger } from './Logger';
 
 class GameLauncher {
