@@ -31,7 +31,7 @@
     "!webpack",
     "!.gitignore",
     "!.grenrc.json",
-    ".travis.yml",
+    "!.travis.yml",
     "!appveyor.yml",
     "!AUTHORS.md",
     "!CHANGELOG.md",
