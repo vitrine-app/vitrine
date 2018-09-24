@@ -11,8 +11,8 @@ import { GamesCollection } from '../models/GamesCollection';
 import { PlayableGame} from '../models/PlayableGame';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
+import { findSteamData } from './api/SteamDataFinder';
 import { getSteamGamePlayTime } from './api/SteamPlayTimeWrapper';
-import { findSteamUser } from './api/SteamUserFinder';
 import { searchBattleNetGames } from './crawlers/BattleNetCrawler';
 import { searchEmulatedGames } from './crawlers/EmulatedCrawler';
 import { searchOriginGames } from './crawlers/OriginCrawler';
@@ -106,8 +106,8 @@ export class Server {
 		if (!this.vitrineConfig.firstLaunch) {
 			try {
 				if (this.vitrineConfig.steam) {
-					const steamUser: any = await findSteamUser(this.vitrineConfig.steam);
-					Object.assign(this.vitrineConfig.steam, { ...steamUser });
+					const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
+					Object.assign(this.vitrineConfig.steam, { ...steamConfig });
 				}
 				this.playableGames = await getPlayableGames(this.vitrineConfig.steam);
 				logger.info('Server', 'Sending playable games to client.');
@@ -236,8 +236,8 @@ export class Server {
 			logger.info('Server', 'Settings outputted to vitrine_config.json.');
 			this.vitrineConfig = config;
 			if (firstTimeSteam) {
-				const steamUser: any = await findSteamUser(this.vitrineConfig.steam);
-				Object.assign(this.vitrineConfig.steam, { ...steamUser });
+				const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
+				Object.assign(this.vitrineConfig.steam, { ...steamConfig });
 			}
 			this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
 			this.findPotentialGames();
