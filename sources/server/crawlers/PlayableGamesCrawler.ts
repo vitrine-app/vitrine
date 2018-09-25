@@ -5,7 +5,7 @@ import { getEnvFolder } from '../../models/env';
 import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource } from '../../models/PotentialGame';
-import { getGamePlayTime } from '../api/SteamPlayTimeWrapper';
+import { getSteamGamePlayTime } from '../api/SteamPlayTimeWrapper';
 import { logger } from '../Logger';
 
 class PlayableGamesCrawler {
@@ -35,7 +35,7 @@ class PlayableGamesCrawler {
 					playableGame.commandLine = rawGame.commandLine;
 					playableGame.source = rawGame.source;
 					if (playableGame.source === GameSource.STEAM)
-						playableGame.timePlayed = await getGamePlayTime(this.steamUserId, playableGame.details.steamId);
+						playableGame.timePlayed = await getSteamGamePlayTime(this.steamUserId, playableGame.details.steamId);
 					else
 						playableGame.timePlayed = parseInt(rawGame.timePlayed);
 

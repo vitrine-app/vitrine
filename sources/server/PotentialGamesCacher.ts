@@ -6,7 +6,7 @@ import { PotentialGame } from '../models/PotentialGame';
 import { searchIgdbGame } from './api/IgdbWrapper';
 import { logger } from './Logger';
 
-class PotentialGamesCacher {
+export class PotentialGamesCacher {
 	private readonly cacheFilePath: string;
 
 	public constructor() {
@@ -14,7 +14,7 @@ class PotentialGamesCacher {
 	}
 
 	public async cache(potentialGames: PotentialGame[]) {
-		logger.info('PotentialGamesCacher', `Potential games are about to be cached.`);
+		logger.info('PotentialGamesCacher', 'Potential games are about to be cached.');
 		const potentialGamesCache: any = (await fs.pathExists(this.cacheFilePath)) ?
 			(await fs.readJson(this.cacheFilePath, { throws: false }) || {}) : ({});
 
@@ -37,12 +37,18 @@ class PotentialGamesCacher {
 		}));
 		if (addedGamesNb)
 			await fs.writeJson(this.cacheFilePath, potentialGamesCache, { spaces: 2 });
-		logger.info('PotentialGamesCacher', `Potential games have been cached.`);
+		logger.info('PotentialGamesCacher', 'Potential games are about to be cached.');
 		return populatedPotentialGames;
 	}
 
-	public async invalidCache() {
-		await fs.writeJson(this.cacheFilePath, {});
+	public async invalidCache(potentialGame?: PotentialGame) {
+		if (potentialGame) {
+			const potentialGamesCache: any = (await fs.readJson(this.cacheFilePath, { throws: false }) || {});
+			delete potentialGamesCache[ potentialGame.uuid ];
+			await fs.writeJson(this.cacheFilePath, potentialGamesCache, { spaces: 2 });
+		}
+		else
+			await fs.writeJson(this.cacheFilePath, {});
 	}
 }
 

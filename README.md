@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/paul-roman/vitrine-site/master/vitrine-banner.png" alt="Vitrine"/>
+  <img src="https://paul-roman.github.io/vitrine/img/vitrine-banner.png" alt="Vitrine"/>
 </p>
 
 <h3 align="center">Centralize all of your games within a simple interface.</h3>

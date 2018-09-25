@@ -10,7 +10,7 @@
     "target": "tar.gz",
     "icon": "sources/client/resources/images/vitrine.png",
     "category": "Utility",
-    "artifactName": "${productName}_${version}_Setup.${ext}",
+    "artifactName": "${productName}_${version}.${ext}",
     "publish": [ "github" ]
   },
   "nsis": {
@@ -19,17 +19,20 @@
     "artifactName": "${productName}_${version}_Setup.${ext}"
   },
   "files": [
-    "!.circleci",
     "!.github",
     "!.idea",
+    "!.nyc_output",
+    "!coverage",
     "!games",
     "!node_modules",
     "!scripts",
     "!sources",
-    "!tests",
+    "!test",
     "!webpack",
     "!.gitignore",
     "!.grenrc.json",
+    "!.travis.yml",
+    "!appveyor.yml",
     "!AUTHORS.md",
     "!CHANGELOG.md",
     "!LICENSE.md",
@@ -37,7 +40,8 @@
     "!tsconfig.json",
     "!tslint.json",
     "!vitrine.log.html",
-    "!yarn.lock"
+    "!yarn.lock",
+    "!yarn-error.log"
   ],
   "extraResources": [
     "config/lang",

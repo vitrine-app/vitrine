@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/fs-extra": "5.0.2",
     "@types/glob": "^5.0.35",
     "@types/mocha": "^5.0.0",
@@ -67,6 +68,7 @@
     "asar": "^0.14.3",
     "base64-inline-loader": "^1.1.1",
     "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.2",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
@@ -100,43 +102,44 @@
     "node-windows": "^0.1.14"
   },
   "scripts": {
-    "build-app": "parallel-webpack --progress --config=webpack/base.config.js",
-    "build-prod": "cross-env NODE_ENV=production parallel-webpack --progress --config=webpack/base.config.js",
-    "build-server": "parallel-webpack --progress --config=webpack/server.config.js",
-    "build-client": "parallel-webpack --progress --config=webpack/client.config.js",
-    "build-client-no-loader": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js",
-    "build-modules": "node scripts/build_modules.js",
-    "run-app": "yarn lint-app && yarn build-app && electron .",
-    "run-server": "yarn lint-server && yarn build-server && yarn start",
-    "run-client": "yarn lint-client && yarn build-client && yarn start",
-    "run-client-no-loader": "yarn lint-client && yarn build-client-no-loader && yarn start",
-    "lint-app": "tslint sources/**/*.ts*",
-    "lint-server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
-    "lint-client": "tslint sources/client/**/*.ts*",
-    "watch-client": "parallel-webpack --progress --config=webpack/client.config.js --watch",
     "start": "electron .",
+    "build:app": "parallel-webpack --progress --config=webpack/base.config.js",
+    "build:prod": "cross-env NODE_ENV=prod parallel-webpack --progress --config=webpack/base.config.js",
+    "build:server": "parallel-webpack --progress --config=webpack/server.config.js",
+    "build:client": "parallel-webpack --progress --config=webpack/client.config.js",
+    "build:client-no-loader": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js",
+    "build:modules": "node scripts/build_modules.js",
+    "run:app": "yarn lint:app && yarn build:app && electron .",
+    "run:server": "yarn lint:server && yarn build:server && yarn start",
+    "run:client": "yarn lint:client && yarn build:client && yarn start",
+    "run:client-no-loader": "yarn lint:client && yarn build:client-no-loader && yarn start",
+    "lint:app": "tslint sources/**/*.ts*",
+    "lint:server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
+    "lint:client": "tslint sources/client/**/*.ts*",
+    "watch:client": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js --watch",
     "test": "nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "generate-authors": "node scripts/run.js authors.sh",
+    "test:run": "mocha",
+    "test:coverage": "",
+    "pack": "yarn build:modules && yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build --dir",
+    "dist": "yarn build:modules && yarn test && yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
+    "dist:ci": "yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
+    "authors": "node scripts/run.js authors.sh",
     "changelog": "gren changelog -o && gren release -o",
-    "pack": "yarn build-modules && yarn build-prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build --dir",
-    "dist": "yarn build-modules && yarn test && yarn build-prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
     "precommit": "tslint --fix sources/**/*.ts*"
   },
   "nyc": {
     "include": [
-      "sources/server/**/*.ts"
+      "sources/server/*.ts",
+      "sources/server/api/**/*.ts",
+      "sources/models/**/*.ts"
     ],
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "lcov"
-    ],
+    "extension": ".ts",
+    "require": "ts-node/register",
+    "exclude": "**/*.d.ts",
+    "reporter": "lcov",
     "sourceMap": true,
-    "instrument": true
+    "instrument": true,
+    "all": true,
+    "cache": true
   }
 }

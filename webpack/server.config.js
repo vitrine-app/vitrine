@@ -1,6 +1,6 @@
 const path = require('path');
 
-const production = process.env.NODE_ENV === 'production';
+const production = process.env.NODE_ENV === 'prod';
 
 module.exports = {
 	entry: './sources/server/main.ts',
@@ -13,7 +13,7 @@ module.exports = {
 		__filename: false
 	},
 	resolve: {
-		extensions: [ '.ts', '.js', '.json' ]
+		extensions: [ '.ts', '.js', '.json', '.node' ]
 	},
 	target: 'electron-main',
 	module: {

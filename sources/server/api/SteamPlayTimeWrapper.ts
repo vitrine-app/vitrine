@@ -1,6 +1,6 @@
 import * as SteamWeb from 'steam-web';
 
-import { steamKey } from '../../../modules/keysProvider.node';
+import { steamKey } from '../../modules/keysProvider';
 import { logger } from '../Logger';
 
 class SteamPlayTimeWrapper {
@@ -44,7 +44,7 @@ class SteamPlayTimeWrapper {
 
 const steamPlayTimeWrapper: SteamPlayTimeWrapper = new SteamPlayTimeWrapper();
 
-export function getGamePlayTime(steamUserId: string, steamId: number): Promise<any> {
+export function getSteamGamePlayTime(steamUserId: string, steamId: number): Promise<any> {
 	return new Promise((resolve, reject) => {
 		steamPlayTimeWrapper.getOwnedGames(steamUserId, steamId, (error: Error, timePlayed: number) => {
 			if (error)

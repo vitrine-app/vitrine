@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlPlugin = require('html-webpack-plugin');
 
-const production = process.env.NODE_ENV === 'production';
+const production = process.env.NODE_ENV === 'prod';
 
 const clientConfig = {
 	node: {

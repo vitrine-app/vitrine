@@ -18,7 +18,7 @@ export abstract class PotentialGamesCrawler {
 		this.playableGames = playableGames || [];
 	}
 
-	public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
+	public search(moduleConfig: any, callback?: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
 		this.moduleConfig = moduleConfig;
 		this.callback = callback;
 	}

@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getEnvFolder, isProduction } from '../models/env';
+import { getEnvFolder, isProduction, isTesting } from '../models/env';
 import { logger } from './Logger';
 import { Server } from './Server';
 
@@ -34,7 +34,7 @@ export class Bootstrapper {
 			fs.ensureDir(`${this.configFolderPath}/cache`),
 			fs.ensureFile(this.vitrineConfigFilePath)
 		]);
-		const [ modulesConfig, vitrineConfig ] = await Promise.all([
+		const [ modulesConfig, vitrineConfig ]: any[] = await Promise.all([
 			fs.readJson(path.resolve(this.configFolderPath, this.modulesConfigFileName)),
 			fs.readJson(this.vitrineConfigFilePath, { throws: false })
 		]);
@@ -54,10 +54,12 @@ export class Bootstrapper {
 
 	private registerDebugPromiseHandler() {
 		process.on('unhandledRejection', (reason: Error) => {
-			console.error('[PROCESS] Unhandled Promise Rejection');
-			console.error('=====================================');
-			console.error(reason);
-			console.error('=====================================');
+			if (!isProduction() && !isTesting()) {
+				console.error('[PROCESS] Unhandled Promise Rejection');
+				console.error('=====================================');
+				console.error(reason);
+				console.error('=====================================');
+			}
 		});
 	}
 }
