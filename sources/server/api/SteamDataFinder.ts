@@ -22,7 +22,7 @@ class SteamDataFinder {
 	public getActiveUser(callback: (error: Error, user: any) => void) {
 		const gamesFolders: string[] = [
 			...Object.keys(this.gamesLocationFile).filter((key) => /BaseInstallFolder_[0-9]+/.test(key))
-				.map((key) => this.gamesLocationFile[key]),
+				.map((key) => `${this.gamesLocationFile[key]}/steamapps`),
 			path.resolve(this.steamConfig.installFolder, 'steamapps')
 		];
 
