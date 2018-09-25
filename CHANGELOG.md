@@ -1,5 +1,11 @@
 # Vitrine Changelog
 
+## 0.9.3 (25/09/2018)
+- [**bug**][**help wanted**] Error: Module did not register [#68](https://github.com/paul-roman/vitrine/issues/68)
+- [**enhancement**] Steam games cannot be monitored on Linux [#66](https://github.com/paul-roman/vitrine/issues/66)
+
+---
+
 ## 0.9.2 (16/09/2018)
 - [**bug**][**enhancement**] Steam games are not synced up [#63](https://github.com/paul-roman/vitrine/issues/63)
 
