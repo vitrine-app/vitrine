@@ -96,8 +96,7 @@ class SteamCrawler extends PotentialGamesCrawler {
             ).length > 0;
             return !found;
           });
-          const uninstalledGames: PotentialGame[] = [];
-          await appDatas.forEachEnd((appData: any, done: () => void) => {
+          const uninstalledGames: PotentialGame[] = appDatas.map((appData: any) => {
             const potentialGame: PotentialGame = new PotentialGame(appData.name);
             potentialGame.source = GameSource.STEAM;
             potentialGame.commandLine = [
@@ -105,9 +104,8 @@ class SteamCrawler extends PotentialGamesCrawler {
               this.moduleConfig.launchCommand.replace('%id', appData.appId)
             ];
             potentialGame.details.steamId = parseInt(appData.appId);
-            uninstalledGames.push(potentialGame);
             logger.info('SteamCrawler', `Adding ${appData.name} to potential Steam games as non-installed.`);
-            done();
+            return potentialGame;
           });
           resolve(uninstalledGames);
         }
