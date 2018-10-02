@@ -12,93 +12,93 @@ import { faPlusCircle } from '@fortawesome/fontawesome-free-solid';
 import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-	potentialGames: GamesCollection<PotentialGame>;
-	visible: boolean;
-	setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
-	openGameAddModal: () => void;
-	closePotentialGamesAddModal: () => void;
+  potentialGames: GamesCollection<PotentialGame>;
+  visible: boolean;
+  setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
+  openGameAddModal: () => void;
+  closePotentialGamesAddModal: () => void;
 }
 
 interface State {
-	transitionVisible: boolean;
+  transitionVisible: boolean;
 }
 
 export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
-	public constructor(props: Props) {
-		super(props);
+  public constructor(props: Props) {
+    super(props);
 
-		this.state = {
-			transitionVisible: true
-		};
+    this.state = {
+      transitionVisible: true
+    };
 
-		this.gameCoverClick = this.gameCoverClick.bind(this);
-		this.animateModal = this.animateModal.bind(this);
-	}
+    this.gameCoverClick = this.gameCoverClick.bind(this);
+    this.animateModal = this.animateModal.bind(this);
+  }
 
-	private gameCoverClick(potentialGame: PotentialGame) {
-		this.props.setPotentialGameToAdd(potentialGame);
-		this.props.closePotentialGamesAddModal();
-		this.props.openGameAddModal();
-	}
+  private gameCoverClick(potentialGame: PotentialGame) {
+    this.props.setPotentialGameToAdd(potentialGame);
+    this.props.closePotentialGamesAddModal();
+    this.props.openGameAddModal();
+  }
 
-	private animateModal(startingAnimation: boolean) {
-		if (startingAnimation === this.props.visible)
-			this.setState({
-				transitionVisible: this.props.visible
-			});
-	}
+  private animateModal(startingAnimation: boolean) {
+    if (startingAnimation === this.props.visible)
+      this.setState({
+        transitionVisible: this.props.visible
+      });
+  }
 
-	public render(): JSX.Element {
-		return (
-			<Transition
-				animation={'fade down'}
-				duration={this.modalsTransitionDuration}
-				onStart={this.animateModal.bind(this, true)}
-				onComplete={this.animateModal.bind(this, false)}
-				visible={this.props.visible}
-			>
-				<Modal
-					open={this.state.transitionVisible}
-					onClose={this.props.closePotentialGamesAddModal}
-					className={css(styles.modal)}
-				>
-					<Modal.Header>{localizer.f('addGames')}</Modal.Header>
-					<Modal.Content>
-						<Grid>
-							{this.props.potentialGames.map((potentialGame: PotentialGame, index: number) =>
-								<Grid.Column width={3} key={index}>
-									<div className={css(styles.coverWrapper)}>
-										<BlurPicture
-											faIcon={faPlusCircle}
-											fontSize={55}
-											background={potentialGame.details.cover}
-											clickHandler={this.gameCoverClick.bind(null, potentialGame)}
-										/>
-									</div>
-									<p className={css(styles.potentialGameName)}>
-										{potentialGame.name}
-									</p>
-								</Grid.Column>
-							)}
-						</Grid>
-					</Modal.Content>
-				</Modal>
-			</Transition>
-		);
-	}
+  public render(): JSX.Element {
+    return (
+      <Transition
+        animation={'fade down'}
+        duration={this.modalsTransitionDuration}
+        onStart={this.animateModal.bind(this, true)}
+        onComplete={this.animateModal.bind(this, false)}
+        visible={this.props.visible}
+      >
+        <Modal
+          open={this.state.transitionVisible}
+          onClose={this.props.closePotentialGamesAddModal}
+          className={css(styles.modal)}
+        >
+          <Modal.Header>{localizer.f('addGames')}</Modal.Header>
+          <Modal.Content>
+            <Grid>
+              {this.props.potentialGames.map((potentialGame: PotentialGame, index: number) =>
+                <Grid.Column width={3} key={index}>
+                  <div className={css(styles.coverWrapper)}>
+                    <BlurPicture
+                      faIcon={faPlusCircle}
+                      fontSize={55}
+                      background={potentialGame.details.cover}
+                      clickHandler={this.gameCoverClick.bind(null, potentialGame)}
+                    />
+                  </div>
+                  <p className={css(styles.potentialGameName)}>
+                    {potentialGame.name}
+                  </p>
+                </Grid.Column>
+              )}
+            </Grid>
+          </Modal.Content>
+        </Modal>
+      </Transition>
+    );
+  }
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-	modal: {
-		margin: margin(3..rem(), 'auto'),
-		cursor: 'default',
-		userSelect: 'none'
-	},
-	coverWrapper: {
-		height: 200
-	},
-	potentialGameName: {
-		fontSize: 17,
-		marginTop: 6
-	}
+  modal: {
+    margin: margin(3..rem(), 'auto'),
+    cursor: 'default',
+    userSelect: 'none'
+  },
+  coverWrapper: {
+    height: 200
+  },
+  potentialGameName: {
+    fontSize: 17,
+    marginTop: 6
+  }
 });

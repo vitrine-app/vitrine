@@ -11,6 +11,6 @@ const appRoot: HTMLElement = document.createElement('div');
 document.body.appendChild(appRoot);
 
 render(
-	<VitrineLoader/>,
-	appRoot
+  <VitrineLoader/>,
+  appRoot
 );

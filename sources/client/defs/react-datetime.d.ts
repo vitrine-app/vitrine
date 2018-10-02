@@ -8,7 +8,7 @@ export = ReactDatetimeClass;
 declare namespace ReactDatetimeClass {}
 
 interface CustomProps {
-	renderInput?: (props: any, openCalendar: () => void, closeCalendar: () => void) => void;
+  renderInput?: (props: any, openCalendar: () => void, closeCalendar: () => void) => void;
 }
 
 declare class ReactDatetimeClass extends Component<DatetimepickerProps & CustomProps, DatetimepickerState> {}

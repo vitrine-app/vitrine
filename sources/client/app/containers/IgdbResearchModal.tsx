@@ -6,16 +6,16 @@ import { AppState } from '../AppState';
 import { IgdbResearchModal as IgdbResearchModalComponent } from '../components/IgdbResearchModal';
 
 const mapStateToProps = (state: AppState) => ({
-	visible: state.igdbResearchModalVisible
+  visible: state.igdbResearchModalVisible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	openIgdbResearchModal() {
-		dispatch(openIgdbResearchModal());
-	},
-	closeIgdbResearchModal() {
-		dispatch(closeIgdbResearchModal());
-	}
+  openIgdbResearchModal() {
+    dispatch(openIgdbResearchModal());
+  },
+  closeIgdbResearchModal() {
+    dispatch(closeIgdbResearchModal());
+  }
 });
 
 export const IgdbResearchModal = connect(mapStateToProps, mapDispatchToProps)(IgdbResearchModalComponent);

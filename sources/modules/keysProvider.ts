@@ -2,13 +2,13 @@
 const keysProvider = require('../../modules/keysProvider');
 
 export function igdbKey(): string {
-	return keysProvider.igdbKey();
+  return keysProvider.igdbKey();
 }
 
 export function steamKey(): string {
-	return keysProvider.steamKey();
+  return keysProvider.steamKey();
 }
 
 export function discordRpcKey(): string {
-	return keysProvider.discordRpcKey();
+  return keysProvider.discordRpcKey();
 }
