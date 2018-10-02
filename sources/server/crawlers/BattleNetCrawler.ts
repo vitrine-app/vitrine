@@ -32,10 +32,10 @@ class BattleNetCrawler extends PotentialGamesCrawler {
     const configFilePath: string = path.resolve(moduleConfig.configFilePath.replace('%appdata%', process.env.APPDATA));
     logger.info('BattleNetCrawler', `Reading Battle.net config file ${configFilePath}.`);
     try {
-      this.parseConfigFile(await fs.readJson(configFilePath));
+      await this.parseConfigFile(await fs.readJson(configFilePath));
     }
     catch (error) {
-      this.callback(error, null);
+      this.sendResults();
     }
   }
 
