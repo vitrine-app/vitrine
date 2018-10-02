@@ -1,6 +1,6 @@
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
-import * as SteamWeb from 'steam-web';
+import * as SteamWeb from 'steam-web-promise';
 
 import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
@@ -77,40 +77,34 @@ class SteamCrawler extends PotentialGamesCrawler {
     }
   }
 
-  private searchUninstalledGames(potentialGames: PotentialGame[]): Promise<PotentialGame[]> {
-    return new Promise((resolve, reject) => {
-      this.client.getOwnedGames({
-        steamid: this.moduleConfig.userId,
-        callback: async (error: string, { response }: any) => {
-          if (error) {
-            logger.info('SteamCrawler', 'Request to Steam API failed.');
-            reject(new Error(error));
-            return;
-          }
-          const appIds: number[] = response.games.map(({ appid: appId }: any) => appId);
-          const appDatas: any[] = (await steamAppIdsCacher.cache(appIds)).filter((appData: any) => {
-            const found: boolean = this.playableGames.filter((playableGame: any) =>
-              parseInt(appData.appId) === playableGame.details.steamId
-            ).length > 0 || potentialGames.filter((potentialGame: PotentialGame) =>
-              parseInt(appData.appId) === potentialGame.details.steamId
-            ).length > 0;
-            return !found;
-          });
-          const uninstalledGames: PotentialGame[] = appDatas.map((appData: any) => {
-            const potentialGame: PotentialGame = new PotentialGame(appData.name);
-            potentialGame.source = GameSource.STEAM;
-            potentialGame.commandLine = [
-              path.resolve(this.moduleConfig.installFolder, this.steamBinary),
-              this.moduleConfig.launchCommand.replace('%id', appData.appId)
-            ];
-            potentialGame.details.steamId = parseInt(appData.appId);
-            logger.info('SteamCrawler', `Adding ${appData.name} to potential Steam games as non-installed.`);
-            return potentialGame;
-          });
-          resolve(uninstalledGames);
-        }
+  private async searchUninstalledGames(potentialGames: PotentialGame[]) {
+    try {
+      const { response }: any = await this.client.getOwnedGames({ steamid: this.moduleConfig.userId });
+      const appIds: number[] = response.games.map(({ appid: appId }: any) => appId);
+      const appDatas: any[] = (await steamAppIdsCacher.cache(appIds)).filter((appData: any) => {
+        const found: boolean = this.playableGames.filter((playableGame: any) =>
+          parseInt(appData.appId) === playableGame.details.steamId
+        ).length > 0 || potentialGames.filter((potentialGame: PotentialGame) =>
+          parseInt(appData.appId) === potentialGame.details.steamId
+        ).length > 0;
+        return !found;
       });
-    });
+      return appDatas.map((appData: any) => {
+        const potentialGame: PotentialGame = new PotentialGame(appData.name);
+        potentialGame.source = GameSource.STEAM;
+        potentialGame.commandLine = [
+          path.resolve(this.moduleConfig.installFolder, this.steamBinary),
+          this.moduleConfig.launchCommand.replace('%id', appData.appId)
+        ];
+        potentialGame.details.steamId = parseInt(appData.appId);
+        logger.info('SteamCrawler', `Adding ${appData.name} to potential Steam games as non-installed.`);
+        return potentialGame;
+      });
+    }
+    catch (error) {
+      logger.info('SteamCrawler', 'Request to Steam API failed.');
+      throw error;
+    }
   }
 }
 

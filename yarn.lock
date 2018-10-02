@@ -7926,6 +7926,12 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
+steam-web-promise@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/steam-web-promise/-/steam-web-promise-0.8.0.tgz#943e37f465f486332acbe75fb855f2c4d5416120"
+  dependencies:
+    qs "^6.1.0"
+
 steam-web@0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/steam-web/-/steam-web-0.7.0.tgz#b0424fb522ecf831184e7874320f1b3819e9442d"
