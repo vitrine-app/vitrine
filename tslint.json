@@ -21,7 +21,7 @@
     "jsx-equals-spacing": "never",
     "jsx-no-multiline-js": false,
     "quotemark": [ true, "single", "jsx-single" ],
-    "indent": [ "tabs" ],
+    "indent": [ true, "spaces", 2 ],
     "max-line-length": [ true, 150 ],
     "semicolon": [ true ],
     "curly": false,

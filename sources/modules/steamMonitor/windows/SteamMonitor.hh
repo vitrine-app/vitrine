@@ -6,10 +6,10 @@
 #define STEAM_REGISTRY_KEY "Software\\Valve\\Steam\\Apps\\"
 
 struct AppWorker {
-	uv_work_t request;
-	v8::Persistent<v8::Function> callback;
-	std::string steamRegistryKey;
-	DWORD startingTimestamp;
+  uv_work_t request;
+  v8::Persistent<v8::Function> callback;
+  std::string steamRegistryKey;
+  DWORD startingTimestamp;
 };
 
 void monitorGameChange(uv_work_t *request);

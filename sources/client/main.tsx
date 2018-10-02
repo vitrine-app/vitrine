@@ -15,8 +15,8 @@ appRoot.style.setProperty('height', 100..percents());
 document.body.appendChild(appRoot);
 
 render(
-	<Provider store={vitrineStore}>
-		<App/>
-	</Provider>,
-	appRoot
+  <Provider store={vitrineStore}>
+    <App/>
+  </Provider>,
+  appRoot
 );

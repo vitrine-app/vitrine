@@ -7,18 +7,18 @@ import { AppState } from '../AppState';
 import { SettingsModal as SettingsModalComponent } from '../components/SettingsModal';
 
 const mapStateToProps = (state: AppState) => ({
-	settings: state.settings,
-	emulators: state.modulesConfig.emulated.emulators,
-	visible: state.settingsModalVisible
+  settings: state.settings,
+  emulators: state.modulesConfig.emulated.emulators,
+  visible: state.settingsModalVisible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	updateSettings(settings: any) {
-		dispatch(updateSettings(settings));
-	},
-	closeSettingsModal() {
-		dispatch(closeSettingsModal());
-	}
+  updateSettings(settings: any) {
+    dispatch(updateSettings(settings));
+  },
+  closeSettingsModal() {
+    dispatch(closeSettingsModal());
+  }
 });
 
 export const SettingsModal = connect(mapStateToProps, mapDispatchToProps)(SettingsModalComponent);
