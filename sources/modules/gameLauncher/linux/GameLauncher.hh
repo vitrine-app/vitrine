@@ -5,13 +5,13 @@
 #include <uv.h>
 
 struct Worker {
-	uv_work_t request;
-	v8::Persistent<v8::Function> callback;
-	bool callbackUsed;
-	std::string commandLine;
-	std::string args;
-	std::string workingDirectory;
-	unsigned int startingTimeStamp;
+  uv_work_t request;
+  v8::Persistent<v8::Function> callback;
+  bool callbackUsed;
+  std::string commandLine;
+  std::string args;
+  std::string workingDirectory;
+  unsigned int startingTimeStamp;
 };
 
 static void monitorGameStart(uv_work_t *request);
