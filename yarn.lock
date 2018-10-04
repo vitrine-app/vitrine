@@ -3271,10 +3271,6 @@ for-own@^0.1.4:
   dependencies:
     for-in "^1.0.1"
 
-foreach-end@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/foreach-end/-/foreach-end-1.1.0.tgz#7797bc9b05a485bc794ef2c889909e0ec3db81de"
-
 foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
