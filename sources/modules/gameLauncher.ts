@@ -7,6 +7,13 @@ export interface GameLauncherOptions {
   cwd?: string;
 }
 
-export function launchGame(file: GameLauncherOptions, callback?: (error: string, timePlayed: number) => void) {
-  return steamMonitor.monitorSteamApp(file, callback);
+export function launchGame(file: GameLauncherOptions): Promise<number> {
+  return new Promise((resolve, reject) => {
+    steamMonitor.launchGame(file, (error: string, secondsPlayed: number) => {
+      if (error)
+        reject(new Error(error));
+      else
+        resolve(secondsPlayed);
+    });
+  });
 }
