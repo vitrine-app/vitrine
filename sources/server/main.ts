@@ -4,5 +4,10 @@ import { Bootstrapper } from './Bootstrapper';
 import { logger } from './Logger';
 
 install();
-logger.createLogger();
-new Bootstrapper().launch();
+try {
+	logger.createLogger();
+	new Bootstrapper().launch();
+}
+catch (error) {
+	console.error('An uncaught error happened: ', error);
+}

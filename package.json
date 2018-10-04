@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
   "productName": "Vitrine",
@@ -102,7 +102,7 @@
     "node-windows": "^0.1.14"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "cross-env ELECTRON_ENV=dev electron .",
     "build:app": "parallel-webpack --progress --config=webpack/base.config.js",
     "build:prod": "cross-env NODE_ENV=prod parallel-webpack --progress --config=webpack/base.config.js",
     "build:server": "parallel-webpack --progress --config=webpack/server.config.js",
