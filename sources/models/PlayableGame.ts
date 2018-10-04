@@ -22,13 +22,9 @@ export class PlayableGame extends PotentialGame {
     this.timePlayed = 0;
   }
 
-  public addPlayTime(timePlayed: number, errorCallback?: (error: Error) => void) {
+  public async addPlayTime(timePlayed: number) {
     this.timePlayed += timePlayed;
-
     const configFilePath: string = path.resolve(getEnvFolder('games'), this.uuid, 'config.json');
-    fs.writeFile(configFilePath, JSON.stringify(this, null, 2), (error: Error) => {
-      if (error && errorCallback)
-        errorCallback(error);
-    });
+    await fs.writeFile(configFilePath, JSON.stringify(this, null, 2));
   }
 }

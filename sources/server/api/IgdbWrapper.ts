@@ -72,9 +72,8 @@ class IgdbWrapper {
       ]));
       if (rawResponse === false)
         throw new Error('IGDB API timed out.');
-      const { body: response } = rawResponse;
-      const foundGames: any[] = [];
-      await response.forEachEnd((game: any, done: () => void) => {
+      const { body: games } = rawResponse;
+      return games.map((game: any) => {
         logger.info('IgdbWrapper', `${game.name} found in IGDB.`);
         const foundGame: any = { ...game };
         if (foundGame.cover) {
@@ -84,10 +83,8 @@ class IgdbWrapper {
         }
         else // TODO: Change default image
           foundGame.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_small_2x/nocover_qhhlj6.jpg';
-        done();
-        foundGames.push(foundGame);
+        return foundGame;
       });
-      return foundGames;
     }
     catch (error) {
       throw error;

@@ -46,13 +46,11 @@ class GameLauncher {
       launcherOptions.args = args;
 
     logger.info('GameLauncher', `Launching game ${executable} with native module.`);
-    nativeLaunchGame(launcherOptions, (error: string, secondsPlayed: number) => {
-      if (error)
-        this.callback(new Error(error), null);
-      else {
-        logger.info('GameLauncher', `Game terminated (played during ${secondsPlayed} seconds).`);
-        this.quitGame(secondsPlayed);
-      }
+    nativeLaunchGame(launcherOptions).then((secondsPlayed: number) => {
+      logger.info('GameLauncher', `Game terminated (played during ${secondsPlayed} seconds).`);
+      this.quitGame(secondsPlayed);
+    }).catch((error: Error) => {
+      this.callback(error, null);
     });
   }
 

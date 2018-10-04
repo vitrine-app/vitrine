@@ -1,4 +1,3 @@
-import 'foreach-end';
 import { install } from 'source-map-support';
 
 import { Bootstrapper } from './Bootstrapper';
