@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as uuid from 'uuid/v5';
 
 export function isProduction(): boolean {
-	return process.env.NODE_ENV === 'prod';
+	return process.env.ELECTRON_DEV !== 'dev';
 }
 
 export function isFakeProd(): boolean {
@@ -18,7 +18,7 @@ export function getAppDataFolder() {
 	return (process.platform === 'win32') ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.local/share/vitrine`;
 }
 
-export function getEnvFolder(folder: string, nonProd?: boolean): string {
+export function getEnvFolder(folder: string, nonProd: boolean = false): string {
 	if (isTesting() && !isProduction())
 		return path.resolve(folder);
 	const appDataPath: string = path.resolve(getAppDataFolder(), 'data', folder);
