@@ -14,6 +14,7 @@ import { ErrorsWrapper } from './ErrorsWrapper';
 interface Props {
   settings: any;
   updateSettings: (settings: any) => void;
+  setLocales: (locales: any) => void;
   updateModulesConfig: (modulesConfig: any) => void;
   setInternetConnection: (internetConnection: boolean) => void;
 }
@@ -61,9 +62,10 @@ export class App extends React.Component<Props, State> {
 
   public async componentDidMount() {
     await this.initLanguages();
-    serverListener.listen('init-settings', (settings: any, modulesConfig: any) => {
+    serverListener.listen('init-settings', (settings: any, modulesConfig: any, locales: any[]) => {
       this.props.updateSettings(settings);
       this.props.updateModulesConfig(modulesConfig);
+      this.props.setLocales(locales);
       this.setState({
         settingsReceived: true
       }, () => {

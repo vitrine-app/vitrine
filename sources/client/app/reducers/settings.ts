@@ -9,6 +9,15 @@ export function settings(state: any = {}, action: Action): any {
   }
 }
 
+export function locales(state: any = {}, action: Action): any {
+  switch (action.type) {
+    case ActionType.SET_LOCALES:
+      return action.payload.locales;
+    default:
+      return state;
+  }
+}
+
 export function modulesConfig(state: any = {}, action: Action): any {
   switch (action.type) {
     case ActionType.UPDATE_MODULES_CONFIG:
