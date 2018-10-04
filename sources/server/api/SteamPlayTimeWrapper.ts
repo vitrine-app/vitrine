@@ -8,7 +8,6 @@ export async function getSteamGamePlayTime(steamUserId: string, steamId: number)
     apiKey: steamKey(),
     format: 'json'
   });
-
   logger.info('SteamPlayTimeWrapper', `Looking for played time for Steam game ${steamId}.`);
   try {
     const { response: { games } }: any = await client.getOwnedGames({ steamid: steamUserId });
@@ -18,6 +17,6 @@ export async function getSteamGamePlayTime(steamUserId: string, steamId: number)
     return timedGame[0].playtime_forever * 60;
   }
   catch (error) {
-    throw error;
+    throw new Error(error);
   }
 }

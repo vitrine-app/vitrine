@@ -32,7 +32,7 @@ class PlayableGamesCrawler {
         playableGame.uuid = rawGame.uuid;
         playableGame.commandLine = rawGame.commandLine;
         playableGame.source = rawGame.source;
-        if (playableGame.source === GameSource.STEAM)
+        if (playableGame.source === GameSource.STEAM && this.steamUserId)
           playableGame.timePlayed = await getSteamGamePlayTime(this.steamUserId, playableGame.details.steamId);
         else
           playableGame.timePlayed = parseInt(rawGame.timePlayed);

@@ -262,7 +262,6 @@ export class Server {
     }
     catch (error) {
       this.throwServerError(error);
-      return;
     }
   }
 
@@ -281,7 +280,6 @@ export class Server {
     }
     catch (error) {
       this.throwServerError(error);
-      return;
     }
   }
 
