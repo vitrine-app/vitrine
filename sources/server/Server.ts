@@ -107,7 +107,7 @@ export class Server {
       try {
         if (this.vitrineConfig.steam) {
           const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
-          Object.assign(this.vitrineConfig.steam, { ...steamConfig });
+          this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
         }
         this.playableGames = await getPlayableGames(this.vitrineConfig.steam);
         logger.info('Server', 'Sending playable games to client.');
@@ -187,10 +187,8 @@ export class Server {
     try {
       const secondsPlayed: number = await launchGame(launchingGame);
       this.gameLaunched = false;
-      launchingGame.addPlayTime(secondsPlayed, (error: Error) => {
-        logger.info('Server', `Adding time played ${secondsPlayed} to ${launchingGame.name} (${launchingGame.uuid}).`);
-        this.throwServerError(error);
-      });
+      await launchingGame.addPlayTime(secondsPlayed);
+      logger.info('Server', `Adding time played ${secondsPlayed} to ${launchingGame.name} (${launchingGame.uuid}).`);
       this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
     }
     catch (error) {
@@ -237,7 +235,7 @@ export class Server {
       this.vitrineConfig = config;
       if (firstTimeSteam) {
         const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
-        Object.assign(this.vitrineConfig.steam, { ...steamConfig });
+        this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
       }
       this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
       this.findPotentialGames();
