@@ -1,4 +1,4 @@
-import * as glob from 'glob';
+import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 import * as Registry from 'winreg';
 
@@ -8,6 +8,28 @@ import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
 import { PotentialGamesCrawler } from './PotentialGamesCrawler';
+
+function getRegistryKeys(regKey: any): Promise<Winreg.Registry[]> {
+  return new Promise((resolve, reject) => {
+    regKey.keys((error: Error, items: Winreg.Registry[]) => {
+      if (error)
+        reject(error);
+      else
+        resolve(items);
+    });
+  });
+}
+
+function getKeyValue(key: Winreg.Registry): Promise<Winreg.RegistryItem[]> {
+  return new Promise((resolve, reject) => {
+    key.values((error: Error, values: Winreg.RegistryItem[]) => {
+      if (error)
+        reject(error);
+      else
+        resolve(values);
+    });
+  });
+}
 
 class OriginCrawler extends PotentialGamesCrawler {
   private regDetails: any[];
@@ -19,8 +41,8 @@ class OriginCrawler extends PotentialGamesCrawler {
     return this;
   }
 
-  public search(moduleConfig: any, callback: (error: Error, potentialGames: GamesCollection<PotentialGame>) => void) {
-    super.search(moduleConfig, callback);
+  public async search(moduleConfig: any) {
+    super.search(moduleConfig);
 
     this.gamesFolder = path.resolve(this.moduleConfig.installFolder);
     const regKey = new Registry({
@@ -28,39 +50,25 @@ class OriginCrawler extends PotentialGamesCrawler {
       key: this.moduleConfig.regKey
     });
     logger.info('OriginCrawler', `Parsing registry key ${this.moduleConfig.regKey}.`);
-    regKey.keys(this.parseRegistry.bind(this));
-  }
+    const items: Winreg.Registry[] = await getRegistryKeys(regKey);
+    this.regDetails = await Promise.all(items.map(async (key: Winreg.Registry) => {
+      const values: Winreg.RegistryItem[] = await getKeyValue(key);
+      logger.info('OriginCrawler', `Installed game found in registry (${values[5].value}).`);
+      return {
+        path: values[1].value,
+        exe: values[5].value
+      };
+    }));
 
-  private async parseRegistry(error: Error, items: Winreg.Registry[]) {
-    if (error)
-      this.callback(error, null);
-
-    await items.forEachEnd((key: Winreg.Registry, done: () => void) => {
-      key.values((error: Error, values: Winreg.RegistryItem[]) => {
-        if (error)
-          this.callback(error, null);
-
-        logger.info('OriginCrawler', `Installed game found in registry (${values[5].value}).`);
-        this.regDetails.push({
-          path: values[1].value,
-          exe: values[5].value
-        });
-        done();
-      });
-    });
-    logger.info('OriginCrawler', `Looking for games folders in (${this.gamesFolder}).`);
-    glob(`${this.gamesFolder}/*`, this.parseFolder.bind(this));
-  }
-
-  private async parseFolder(error: Error, files: string[]) {
-    if (error)
-      this.callback(error, null);
+    const files: string[] = await glob(`${this.gamesFolder}/*`);
     if (!files.length) {
       logger.info('OriginCrawler', 'Not Origin games found in this directory.');
-      const potentialGames: GamesCollection<PotentialGame> = new GamesCollection();
-      this.callback(null, potentialGames);
-      return;
+      return new GamesCollection<PotentialGame>();
     }
+    return new GamesCollection(await this.parseFolders(files));
+  }
+
+  private async parseFolders(files: string[]) {
     const gameInfos: any[] = files.map((gameFolder: string) => ({
       gameName: gameFolder.split('/').pop(),
       gameFolder
@@ -73,48 +81,31 @@ class OriginCrawler extends PotentialGamesCrawler {
       return !found;
     });
 
-    await gameInfos.forEachEnd(async ({ gameName, gameFolder }: any, done: () => void) => {
-      try {
-        const gamePath: string = await this.getRegGamePath(gameFolder);
-        const potentialGame: PotentialGame = new PotentialGame(gameName);
-        potentialGame.source = GameSource.ORIGIN;
-        potentialGame.commandLine = [ path.resolve(gamePath) ];
-        this.potentialGames.push(potentialGame);
-        logger.info('OriginCrawler', `Adding ${gameName} to potential Origin games.`);
-        done();
-      }
-      catch (error) {
-        this.callback(error, null);
-      }
+    return gameInfos.map (({ gameName, gameFolder }: any) => {
+      const gamePath: string = this.getRegGamePath(gameFolder);
+      const potentialGame: PotentialGame = new PotentialGame(gameName);
+      potentialGame.source = GameSource.ORIGIN;
+      potentialGame.commandLine = [ path.resolve(gamePath) ];
+      logger.info('OriginCrawler', `Adding ${gameName} to potential Origin games.`);
+      return potentialGame;
     });
-    this.sendResults();
   }
 
-  private async getRegGamePath(gamePath: string) {
-    let regGamePath: string;
-    await this.regDetails.forEachEnd((regDetail: any, done: () => void) => {
-      if (path.resolve(gamePath) === path.resolve(regDetail.path)) {
-        logger.info('OriginCrawler', `Origin game found (${gamePath}).`);
-        regGamePath = regDetail.exe;
-      }
-      done();
-    });
-    if (regGamePath)
-      return regGamePath;
-    throw new Error('Registry not matching.');
+  private getRegGamePath(gamePath: string): string {
+    const regGamePath = this.regDetails.filter((regDetail: any) => path.resolve(gamePath) === path.resolve(regDetail.path));
+    if (!regGamePath.length)
+      throw new Error('Registry not matching.');
+    return regGamePath[0].exe;
   }
 }
 
 const originCrawler: OriginCrawler = new OriginCrawler();
 
-export function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]): Promise<any> {
-  return new Promise((resolve, reject) => {
-    originCrawler.setPlayableGames(playableGames)
-      .search(originConfig, (error: Error, potentialGames: GamesCollection<PotentialGame>) => {
-        if (error)
-          reject(error);
-        else
-          resolve(potentialGames);
-      });
-  });
+export async function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]) {
+  try {
+    return await originCrawler.setPlayableGames(playableGames).search(originConfig);
+  }
+  catch (error) {
+    throw error;
+  }
 }
