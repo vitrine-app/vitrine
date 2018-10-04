@@ -8,20 +8,20 @@ import { AppState } from '../AppState';
 import { PotentialGamesAddModal as PotentialGamesAddModalComponent } from '../components/PotentialGamesAddModal';
 
 const mapStateToProps = (state: AppState) => ({
-	potentialGames: state.potentialGames,
-	visible: state.potentialGamesAddModalVisible
+  potentialGames: state.potentialGames,
+  visible: state.potentialGamesAddModalVisible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	setPotentialGameToAdd(potentialGame: PotentialGame) {
-		dispatch(setPotentialGameToAdd(potentialGame));
-	},
-	openGameAddModal() {
-		dispatch(openGameAddModal());
-	},
-	closePotentialGamesAddModal() {
-		dispatch(closePotentialGamesAddModal());
-	}
+  setPotentialGameToAdd(potentialGame: PotentialGame) {
+    dispatch(setPotentialGameToAdd(potentialGame));
+  },
+  openGameAddModal() {
+    dispatch(openGameAddModal());
+  },
+  closePotentialGamesAddModal() {
+    dispatch(closePotentialGamesAddModal());
+  }
 });
 
 export const PotentialGamesAddModal = connect(mapStateToProps, mapDispatchToProps)(PotentialGamesAddModalComponent);

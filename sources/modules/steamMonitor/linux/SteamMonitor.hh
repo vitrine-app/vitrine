@@ -11,10 +11,10 @@
 #define STEAM_REGISTRY_PATH "/.steam/registry.vdf"
 
 struct AppWorker {
-	uv_work_t request;
-	v8::Persistent<v8::Function> callback;
-	std::string steamRegistryPath;
-	unsigned int startingTimestamp;
+  uv_work_t request;
+  v8::Persistent<v8::Function> callback;
+  std::string steamRegistryPath;
+  unsigned int startingTimestamp;
 };
 
 void monitorGameChange(uv_work_t *request);

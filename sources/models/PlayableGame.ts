@@ -5,30 +5,26 @@ import { getEnvFolder } from './env';
 import { PotentialGame } from './PotentialGame';
 
 export enum SortParameter {
-	NAME = 'name',
-	TIME_PLAYED = 'timePlayed',
-	RELEASE_DATE = 'releaseDate',
-	RATING = 'rating',
-	SERIES = 'series',
-	DEVELOPER = 'developer',
-	PUBLISHER = 'publisher',
+  NAME = 'name',
+  TIME_PLAYED = 'timePlayed',
+  RELEASE_DATE = 'releaseDate',
+  RATING = 'rating',
+  SERIES = 'series',
+  DEVELOPER = 'developer',
+  PUBLISHER = 'publisher',
 }
 
 export class PlayableGame extends PotentialGame {
-	public timePlayed: number;
+  public timePlayed: number;
 
-	public constructor(name: string, details?: any) {
-		super(name, details);
-		this.timePlayed = 0;
-	}
+  public constructor(name: string, details?: any) {
+    super(name, details);
+    this.timePlayed = 0;
+  }
 
-	public addPlayTime(timePlayed: number, errorCallback?: (error: Error) => void) {
-		this.timePlayed += timePlayed;
-
-		const configFilePath: string = path.resolve(getEnvFolder('games'), this.uuid, 'config.json');
-		fs.writeFile(configFilePath, JSON.stringify(this, null, 2), (error: Error) => {
-			if (error && errorCallback)
-				errorCallback(error);
-		});
-	}
+  public async addPlayTime(timePlayed: number) {
+    this.timePlayed += timePlayed;
+    const configFilePath: string = path.resolve(getEnvFolder('games'), this.uuid, 'config.json');
+    await fs.writeFile(configFilePath, JSON.stringify(this, null, 2));
+  }
 }

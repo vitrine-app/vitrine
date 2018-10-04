@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
   "productName": "Vitrine",
@@ -29,7 +29,6 @@
     "discord-rich-presence": "^0.0.6",
     "download-file": "^0.1.5",
     "electron-updater": "^2.21.3",
-    "foreach-end": "1.1.0",
     "fs-extra": "6.0.0",
     "gamepad-listener": "0.4.0",
     "glob": "^7.1.2",
@@ -48,6 +47,7 @@
     "rimraf": "^2.6.2",
     "semantic-ui-react": "0.80.0",
     "steam-web": "0.7.0",
+    "steam-web-promise": "^0.8.0",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
   },
@@ -102,7 +102,7 @@
     "node-windows": "^0.1.14"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "cross-env ELECTRON_ENV=dev electron .",
     "build:app": "parallel-webpack --progress --config=webpack/base.config.js",
     "build:prod": "cross-env NODE_ENV=prod parallel-webpack --progress --config=webpack/base.config.js",
     "build:server": "parallel-webpack --progress --config=webpack/server.config.js",
