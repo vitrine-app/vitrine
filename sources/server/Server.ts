@@ -19,7 +19,7 @@ import { searchOriginGames } from './crawlers/OriginCrawler';
 import { getPlayableGames } from './crawlers/PlayableGamesCrawler';
 import { searchSteamGames } from './crawlers/SteamCrawler';
 import { launchGame } from './GameLauncher';
-import { downloadImage, isAlreadyStored } from './helpers';
+import { downloadGamePictures, isAlreadyStored } from './helpers';
 import { logger } from './Logger';
 import { potentialGamesCacher } from './PotentialGamesCacher';
 import { WindowsHandler } from './WindowsHandler';
@@ -250,75 +250,49 @@ export class Server {
   private async searchSteamGames() {
     if (!this.vitrineConfig.steam)
       return;
-    try {
-      const games: GamesCollection<PotentialGame> = await searchSteamGames({
-          ...this.modulesConfig.steam,
-          ...this.vitrineConfig.steam
-        },
-        this.playableGames.getGamesFromSource(GameSource.STEAM));
-      logger.info('Server', 'Adding potential Steam games to potential games list.');
-      this.potentialGames.addGames(games.getGames());
-      return;
-    }
-    catch (error) {
-      this.throwServerError(error);
-    }
+    const games: GamesCollection<PotentialGame> = await searchSteamGames({
+        ...this.modulesConfig.steam,
+        ...this.vitrineConfig.steam
+      },
+      this.playableGames.getGamesFromSource(GameSource.STEAM));
+    logger.info('Server', 'Adding potential Steam games to potential games list.');
+    this.potentialGames.addGames(games.getGames());
   }
 
   private async searchOriginGames() {
     if (!this.vitrineConfig.origin)
       return;
-    try {
-      const games: GamesCollection<PotentialGame> = await searchOriginGames({
-          ...this.modulesConfig.origin,
-          ...this.vitrineConfig.origin
-        },
-        this.playableGames.getGamesFromSource(GameSource.ORIGIN));
-      logger.info('Server', 'Adding potential Origin games to potential games list.');
-      this.potentialGames.addGames(games.getGames());
-      return;
-    }
-    catch (error) {
-      this.throwServerError(error);
-    }
+    const games: GamesCollection<PotentialGame> = await searchOriginGames({
+        ...this.modulesConfig.origin,
+        ...this.vitrineConfig.origin
+      },
+      this.playableGames.getGamesFromSource(GameSource.ORIGIN));
+    logger.info('Server', 'Adding potential Origin games to potential games list.');
+    this.potentialGames.addGames(games.getGames());
   }
 
   private async searchBattleNetGames() {
     if (!this.vitrineConfig.battleNet)
       return;
-    try {
-      const games: GamesCollection<PotentialGame> = await searchBattleNetGames({
-          ...this.modulesConfig.battleNet,
-          ...this.vitrineConfig.battleNet
-        },
-        this.playableGames.getGamesFromSource(GameSource.BATTLE_NET));
-      logger.info('Server', 'Adding potential Battle.net games to potential games list.');
-      this.potentialGames.addGames(games.getGames());
-      return;
-    }
-    catch (error) {
-      this.throwServerError(error);
-      return;
-    }
+    const games: GamesCollection<PotentialGame> = await searchBattleNetGames({
+        ...this.modulesConfig.battleNet,
+        ...this.vitrineConfig.battleNet
+      },
+      this.playableGames.getGamesFromSource(GameSource.BATTLE_NET));
+    logger.info('Server', 'Adding potential Battle.net games to potential games list.');
+    this.potentialGames.addGames(games.getGames());
   }
 
   private async searchEmulatedGames() {
     if (!this.vitrineConfig.emulated)
       return;
-    try {
-      const games: GamesCollection<PotentialGame> = await searchEmulatedGames({
-          ...this.modulesConfig.emulated,
-          ...this.vitrineConfig.emulated
-        },
-        this.playableGames.getGamesFromSource(GameSource.EMULATED));
-      logger.info('Server', 'Adding potential emulated games to potential games list.');
-      this.potentialGames.addGames(games.getGames());
-      return;
-    }
-    catch (error) {
-      this.throwServerError(error);
-      return;
-    }
+    const games: GamesCollection<PotentialGame> = await searchEmulatedGames({
+        ...this.modulesConfig.emulated,
+        ...this.vitrineConfig.emulated
+      },
+      this.playableGames.getGamesFromSource(GameSource.EMULATED));
+    logger.info('Server', 'Adding potential emulated games to potential games list.');
+    this.potentialGames.addGames(games.getGames());
   }
 
   private async registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
@@ -337,15 +311,9 @@ export class Server {
     logger.info('Server', `Game form data for ${game.name} being formatted.`);
 
     if (!editing && game.source === GameSource.STEAM) {
-      try {
-        game.timePlayed = await getSteamGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
-      }
-      catch (error) {
-        this.throwServerError(error);
-        return;
-      }
+      game.timePlayed = await getSteamGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
+      this.ensureRegisteredGame(game, gameForm, editing);
     }
-    this.ensureRegisteredGame(game, gameForm, editing);
   }
 
   private async ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
@@ -364,64 +332,31 @@ export class Server {
       const backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
         : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
       const coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
-      try {
-        await this.downloadGamePictures(game, {backgroundUrl, backgroundPath, coverUrl, coverPath});
-      }
-      catch (error) {
-        this.throwServerError(error);
-        return;
-      }
+      const images: any = await downloadGamePictures(game.details, { backgroundUrl, backgroundPath, coverUrl, coverPath });
+      delete game.details.screenshots;
+      delete game.details.background;
+      game.details = { ...game.details, ...images };
     }
     else
       logger.info('Server', `Background picture and cover for ${game.name} already stored.`);
     this.sendRegisteredGame(game, configFilePath, editing);
   }
 
-  private async downloadGamePictures(game: PlayableGame, { backgroundUrl, backgroundPath, coverUrl, coverPath }: any) {
-    try {
-      const stored: boolean = await downloadImage(backgroundUrl, backgroundPath);
-      game.details.backgroundScreen = (stored) ? (backgroundPath) : (game.details.backgroundScreen);
-      if (game.details.steamId)
-        delete game.details.screenshots;
-      else
-        delete game.details.background;
-      try {
-        const stored: boolean = await downloadImage(coverUrl, coverPath);
-        game.details.cover = (stored) ? (coverPath) : (game.details.cover);
-        if (stored) {
-          game.details.cover = coverPath;
-          return;
-        }
-      }
-      catch (error) {
-        return error;
-      }
-    }
-    catch (error) {
-      return error;
-    }
-  }
-
   private async sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
     logger.info('Server', `Outputting game config file for ${game.name}.`);
-    try {
-      await fs.outputJson(configFilePath, game , { spaces: 2 });
-      if (!editing) {
-        logger.info('Server', `Added game ${game.name} sent to client.`);
-        this.playableGames.addGame(game);
-        this.windowsHandler.sendToClient('add-playable-game', game);
-      }
-      else {
-        logger.info('Server', `Edited game ${game.name} sent to client.`);
-        this.playableGames.editGame(game);
-        this.windowsHandler.sendToClient('edit-playable-game', game);
-      }
-      if (!editing && game.source !== GameSource.LOCAL)
-        this.findPotentialGames();
+    await fs.outputJson(configFilePath, game , { spaces: 2 });
+    if (!editing) {
+      logger.info('Server', `Added game ${game.name} sent to client.`);
+      this.playableGames.addGame(game);
+      this.windowsHandler.sendToClient('add-playable-game', game);
     }
-    catch (error) {
-      this.throwServerError(error);
+    else {
+      logger.info('Server', `Edited game ${game.name} sent to client.`);
+      this.playableGames.editGame(game);
+      this.windowsHandler.sendToClient('edit-playable-game', game);
     }
+    if (!editing && game.source !== GameSource.LOCAL)
+      this.findPotentialGames();
   }
 
   private throwServerError(error: Error) {

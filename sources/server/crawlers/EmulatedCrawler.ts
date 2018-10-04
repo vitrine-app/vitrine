@@ -24,27 +24,22 @@ class EmulatedCrawler extends PotentialGamesCrawler {
       ...this.moduleConfig.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0],
       ...aliveEmulator
     }));
-    try {
-      const folders: string[] = await glob(`${this.moduleConfig.romsFolder}/*`);
-      this.folderDatas = folders.map((folder: string) => ({
-        ...this.moduleConfig.platforms.filter((platform: any) => platform.folder.toUpperCase() === path.basename(folder).toUpperCase())[0],
-        folder
-      })).filter((platform: any) => platform.id).map((platform: any) => {
-        return ({
-          emulator: aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.platforms.includes(platform.id))[0],
-          folder: platform.folder
-        });
-      }).filter((folderData: any) => {
-        if (!folderData.emulator)
-          return false;
-        logger.info('EmulatedCrawler', `Roms folder ${folderData.folder} found and binded to ${folderData.emulator.name}.`);
-        return true;
+    const folders: string[] = await glob(`${this.moduleConfig.romsFolder}/*`);
+    this.folderDatas = folders.map((folder: string) => ({
+      ...this.moduleConfig.platforms.filter((platform: any) => platform.folder.toUpperCase() === path.basename(folder).toUpperCase())[0],
+      folder
+    })).filter((platform: any) => platform.id).map((platform: any) => {
+      return ({
+        emulator: aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.platforms.includes(platform.id))[0],
+        folder: platform.folder
       });
-      return new GamesCollection(await this.analyzeFolders());
-    }
-    catch (error) {
-      throw error;
-    }
+    }).filter((folderData: any) => {
+      if (!folderData.emulator)
+        return false;
+      logger.info('EmulatedCrawler', `Roms folder ${folderData.folder} found and binded to ${folderData.emulator.name}.`);
+      return true;
+    });
+    return new GamesCollection(await this.analyzeFolders());
   }
 
   private async analyzeFolders() {
