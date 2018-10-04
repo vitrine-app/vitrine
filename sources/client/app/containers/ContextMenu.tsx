@@ -8,22 +8,22 @@ import { AppState } from '../AppState';
 import { ContextMenu as ContextMenuComponent } from '../components/ContextMenu';
 
 const mapStateToProps = (state: AppState) => ({
-	playableGames: state.playableGames
+  playableGames: state.playableGames
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	launchGame(launchedGame: PlayableGame) {
-		dispatch(launchGame(launchedGame));
-	},
-	setGameToEdit(gameToEdit: PlayableGame) {
-		dispatch(setGameToEdit(gameToEdit));
-	},
-	openGameAddModal() {
-		dispatch(openGameAddModal());
-	},
-	openTimePlayedEditionModal() {
-		dispatch(openTimePlayedEditionModal());
-	}
+  launchGame(launchedGame: PlayableGame) {
+    dispatch(launchGame(launchedGame));
+  },
+  setGameToEdit(gameToEdit: PlayableGame) {
+    dispatch(setGameToEdit(gameToEdit));
+  },
+  openGameAddModal() {
+    dispatch(openGameAddModal());
+  },
+  openTimePlayedEditionModal() {
+    dispatch(openTimePlayedEditionModal());
+  }
 });
 
 export const ContextMenu = connect(mapStateToProps, mapDispatchToProps)(ContextMenuComponent);
