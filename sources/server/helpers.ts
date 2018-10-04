@@ -1,6 +1,6 @@
 import * as downloadFileCb from 'download-file';
 import * as fs from 'fs-extra';
-import * as glob from 'glob';
+import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 
 import { logger } from './Logger';
@@ -24,25 +24,12 @@ function setTimeOut(ms: number): Promise<any> {
   });
 }
 
-function deleteFiles(path: string, except?: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    glob(path, (error: Error, files: string[]) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      if (!files.length) {
-        resolve();
-        return;
-      }
-      files.forEachEnd(async (file: string, done: () => void) => {
-        if (file !== except.replace(/\\/g, '/'))
-          await fs.remove(file);
-        done();
-      }, () => {
-        resolve();
-      });
-    });
+async function deleteOldImages(path: string, except: string) {
+  const files: string[] = await glob(path);
+  if (!files.length)
+    return;
+  files.filter((file: string) => file !== except.replace(/\\/g, '/')).forEach(async (file: string) => {
+    await fs.remove(file);
   });
 }
 
@@ -58,7 +45,7 @@ async function downloadImage(src: string, dest: string) {
     logger.info('downloadImage', `Copying local source image (${src}) to ${dest}.`);
     await fs.copy(src, dest);
     const fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
-    await deleteFiles(fileGlob, dest);
+    await deleteOldImages(fileGlob, dest);
     return true;
   }
   else {

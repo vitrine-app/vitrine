@@ -308,10 +308,9 @@ export class Server {
     delete game.details.arguments;
     logger.info('Server', `Game form data for ${game.name} being formatted.`);
 
-    if (!editing && game.source === GameSource.STEAM) {
+    if (!editing && game.source === GameSource.STEAM)
       game.timePlayed = await getSteamGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
-      this.ensureRegisteredGame(game, gameForm, editing);
-    }
+    this.ensureRegisteredGame(game, gameForm, editing);
   }
 
   private async ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
