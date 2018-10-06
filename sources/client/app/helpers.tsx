@@ -5,8 +5,6 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 import { Middleware } from 'redux';
 
-import { localizer } from './Localizer';
-
 import { fontName } from 'less-vars-loader?camelCase&resolveVariables!../resources/less/theme/globals/site.variables';
 
 function openDialog(options: any): string {
@@ -16,26 +14,26 @@ function openDialog(options: any): string {
   return dialogRet[0];
 }
 
-export function formatTimePlayed(timePlayed: number): string {
+export function formatTimePlayed(timePlayed: number, formatMessage: (messageDescriptor: any, values?: any) => string): string {
   const hours: number = Math.floor(timePlayed / 3600);
   const minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
   const seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
 
   if (hours && minutes) {
-    const hoursStr: string = localizer.f((hours !== 1) ? ('hoursPlur') : ('hoursSing'));
-    const minutesStr: string = localizer.f((minutes) ? ((minutes !== 1) ? ('minutesPlur') : ('minutesSing')) : (''));
+    const hoursStr: string = formatMessage({ id: (hours !== 1) ? ('time.hoursPlur') : ('time.hoursSing') });
+    const minutesStr: string = formatMessage({ id: (minutes) ? ((minutes !== 1) ? ('time.minutesPlur') : ('time.minutesSing')) : ('') });
     return `${hours}  ${hoursStr}${((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''))}`;
   }
   else if (hours) {
-    const hoursStr: string = localizer.f((hours !== 1) ? ('hoursPlur') : ('hoursSing'));
+    const hoursStr: string = formatMessage({ id: (hours !== 1) ? ('time.hoursPlur') : ('time.hoursSing') });
     return `${hours} ${hoursStr}`;
   }
   else if (minutes) {
-    const minutesStr: string = localizer.f((minutes !== 1) ? ('minutesPlur') : ('minutesSing'));
+    const minutesStr: string = formatMessage({ id: (minutes !== 1) ? ('time.minutesPlur') : ('time.minutesSing') });
     return `${minutes} ${minutesStr}`;
   }
   else if (seconds) {
-    const secondsStr: string = localizer.f((seconds !== 1) ? ('secondsPlur') : ('secondsSing'));
+    const secondsStr: string = formatMessage({ id: (seconds !== 1) ? ('time.secondsPlur') : ('time.secondsSing') });
     return `${timePlayed} ${secondsStr}`;
   }
   else
@@ -48,28 +46,28 @@ export function openDirectory(): string {
   });
 }
 
-export function openExecutableDialog(): string {
+export function openExecutableDialog(formatMessage: (messageDescriptor: any, values?: any) => string): string {
   return openDialog({
     properties: [ 'openFile' ],
     filters: [
       {
-        name: localizer.f('executables'),
+        name: formatMessage({ id: 'executables' }),
         extensions: [ 'exe' ]
       },
       {
-        name: localizer.f('allFiles'),
+        name: formatMessage({ id: 'allFiles' }),
         extensions: [ '*' ]
       }
     ]
   });
 }
 
-export function openImageDialog(): string {
+export function openImageDialog(formatMessage: (messageDescriptor: any, values?: any) => string): string {
   return openDialog({
     properties: [ 'openFile' ],
     filters: [
       {
-        name: localizer.f('images'),
+        name: formatMessage({ id: 'images' }),
         extensions: [ 'jpg', 'jpeg', 'png', 'gif', 'bmp' ]
       }
     ]

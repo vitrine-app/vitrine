@@ -1,10 +1,10 @@
 import { css, StyleSheet } from 'aphrodite';
 import { margin } from 'css-verbose';
 import * as React from 'react';
+import { FormattedMessage, InjectedIntl } from 'react-intl';
 import { Button, Form, Grid, Modal, Transition } from 'semantic-ui-react';
 
 import { PlayableGame } from '../../../models/PlayableGame';
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { NumberPicker } from './NumberPicker';
 import { VitrineComponent } from './VitrineComponent';
@@ -13,6 +13,7 @@ interface Props {
   gameToEdit: PlayableGame;
   visible: boolean;
   closeTimePlayedEditionModal: () => void;
+  intl: InjectedIntl;
 }
 
 interface State {
@@ -120,39 +121,39 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
               <Grid>
                 <Grid.Column width={5}>
                   <Form.Field>
-                    <label>{localizer.f('hours')}</label>
+                    <label><FormattedMessage id={'time.hoursPlur'}/></label>
                     <NumberPicker
                       min={0}
                       max={Infinity}
                       value={this.state.hours}
                       name={'hours'}
-                      placeholder={localizer.f('hours')}
+                      placeholder={this.props.intl.formatMessage({ id: 'time.hoursPlur' })}
                       onChange={this.setHours}
                     />
                   </Form.Field>
                 </Grid.Column>
                 <Grid.Column width={5}>
                   <Form.Field>
-                    <label>{localizer.f('minutes')}</label>
+                    <label><FormattedMessage id={'time.minutesPlur'}/></label>
                     <NumberPicker
                       min={0}
                       max={60}
                       value={this.state.minutes}
                       name={'minutes'}
-                      placeholder={localizer.f('minutes')}
+                      placeholder={this.props.intl.formatMessage({ id: 'time.minutesPlur' })}
                       onChange={this.setMinutes}
                     />
                   </Form.Field>
                 </Grid.Column>
                 <Grid.Column width={5}>
                   <Form.Field>
-                    <label>{localizer.f('seconds')}</label>
+                    <label><FormattedMessage id={'time.secondsPlur'}/></label>
                     <NumberPicker
                       min={0}
                       max={60}
                       value={this.state.seconds}
                       name={'seconds'}
-                      placeholder={localizer.f('seconds')}
+                      placeholder={this.props.intl.formatMessage({ id: 'time.secondsPlur' })}
                       onChange={this.setSeconds}
                     />
                   </Form.Field>
@@ -165,7 +166,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
               primary={true}
               onClick={this.submitButton}
             >
-              {localizer.f('confirm')}
+              <FormattedMessage id={'confirm'}/>
             </Button>
           </Modal.Actions>
           {this.checkErrors()}

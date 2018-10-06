@@ -3,9 +3,9 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import { shell } from 'electron';
 import * as React from 'react';
+import { FormattedMessage, InjectedIntl } from 'react-intl';
 import { Button, Form, Grid, Input, Modal, Transition } from 'semantic-ui-react';
 
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { NumberPicker } from './NumberPicker';
 import { VitrineComponent } from './VitrineComponent';
@@ -16,6 +16,7 @@ interface Props {
   visible: boolean;
   openIgdbResearchModal: () => void;
   closeIgdbResearchModal: () => void;
+  intl: InjectedIntl;
 }
 
 interface State {
@@ -133,11 +134,11 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
           <Grid>
             <Grid.Column width={10}>
               <Form.Field>
-                <label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
+                <label className={css(styles.formLabel)}><FormattedMessage id={'gameName'}/></label>
                 <Input
                   name={'name'}
                   size={'large'}
-                  placeholder={localizer.f('gameName')}
+                  placeholder={this.props.intl.formatMessage({ id: 'gameName' })}
                   value={this.state.research}
                   onChange={this.researchChange}
                 />
@@ -145,13 +146,13 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
             </Grid.Column>
             <Grid.Column width={3}>
               <Form.Field>
-                <label>{localizer.f('resultsNumber')}</label>
+                <label className={(css(styles.resultsNbLabel))}><FormattedMessage id={'resultsNumber'}/></label>
                 <NumberPicker
                   min={1}
                   max={20}
                   name={'rating'}
                   value={this.state.resultsNb}
-                  placeholder={localizer.f('resultsNumber')}
+                  placeholder={this.props.intl.formatMessage({ id: 'resultsNumber' })}
                   onChange={this.resultsNbChange}
                 />
               </Form.Field>
@@ -193,7 +194,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
           )}
         </div>
         <span className={css(styles.igdbDisclaimer)}>
-          {localizer.f('igdbDisclaimer')}
+          <FormattedMessage id={'igdbDisclaimer'}/>
           <a
             className={css(styles.igdbLink)}
             onClick={this.igdbLinkClick}
@@ -228,7 +229,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
           size={'tiny'}
           className={css(styles.modal)}
         >
-          <Modal.Header>{localizer.f('fillWithIgdb')}</Modal.Header>
+          <Modal.Header><FormattedMessage id={'fillWithIgdb'}/></Modal.Header>
           {modalContent}
           <Modal.Actions style={{ opacity: (!this.state.loading) ? (1) : (0) }}>
             <Button
@@ -236,7 +237,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
               disabled={!this.state.selectedResearchId}
               onClick={this.igdbFillButton}
             >
-              {localizer.f('submitNewGame')}
+              <FormattedMessage id={'submitNewGame'}/>
             </Button>
           </Modal.Actions>
         </Modal>
@@ -302,6 +303,9 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   formLabel: {
     fontWeight: 'normal',
     fontSize: 1..em()
+  },
+  resultsNbLabel: {
+    width: 99
   },
   searchBtn: {
     marginTop: 22,

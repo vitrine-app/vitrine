@@ -1,3 +1,4 @@
+import { injectIntl } from 'react-intl';
 import { connect, Dispatch } from 'react-redux';
 
 import { Action } from '../actions/actionsTypes';
@@ -18,4 +19,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-export const IgdbResearchModal = connect(mapStateToProps, mapDispatchToProps)(IgdbResearchModalComponent);
+export const IgdbResearchModal = injectIntl(connect(mapStateToProps, mapDispatchToProps)(IgdbResearchModalComponent));

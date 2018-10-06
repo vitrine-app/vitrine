@@ -2,11 +2,11 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
+import { FormattedMessage, InjectedIntl } from 'react-intl';
 import { Button, Checkbox, Form, Grid, Input, Modal, Tab, Table, Transition } from 'semantic-ui-react';
 
 import { EmulatorSettingsRow } from '../containers/EmulatorSettingsRow';
 import { openDirectory } from '../helpers';
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { GamesModule } from './GamesModule';
 import { VitrineComponent } from './VitrineComponent';
@@ -19,11 +19,14 @@ import * as steamIcon from '../../resources/images/steam_icon.png';
 
 interface Props {
   settings: any;
+  locales: any[];
+  currentLocale: string;
   emulators: any[];
   visible: boolean;
   firstLaunch: boolean;
   updateSettings: (settings: any) => void;
   closeSettingsModal: () => void;
+  intl: InjectedIntl;
 }
 
 interface State {
@@ -52,8 +55,8 @@ export class SettingsModal extends VitrineComponent<Props, State> {
     super(props);
 
     this.emptyState = {
-      langs: localizer.getLanguages(),
-      lang: localizer.getSelectedLanguage(),
+      langs: this.props.locales,
+      lang: this.props.currentLocale,
       steamEnabled: (this.props.settings && this.props.settings.steam) ? (true) : (false),
       originEnabled: (this.props.settings && this.props.settings.origin) ? (true) : (false),
       battleNetEnabled: (this.props.settings && this.props.settings.battleNet) ? (true) : (false),
@@ -246,7 +249,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
       if (!aliveEmulator.path || (aliveEmulator.command !== undefined && !aliveEmulator.command)) {
         sendable = false;
         const emulatorName: string = this.props.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0].name;
-        return `${emulatorName} ${localizer.f('emulatorConfigError')}`;
+        return `${emulatorName} ${this.props.intl.formatMessage({ id: 'emulatorConfigError' })}`;
       }
       return;
     }).filter((error: string) => error).join(' ');
@@ -305,9 +308,9 @@ export class SettingsModal extends VitrineComponent<Props, State> {
         <Form>
           <div style={{ display: (this.state.steamEnabled) ? ('block') : ('none') }}>
             <hr className={css(styles.formHr)}/>
-            <h3>{localizer.f('steamConfig')}</h3>
+            <h3><FormattedMessage id={'steamConfig'}/></h3>
             <Form.Field error={this.state.steamError}>
-              <label>{localizer.f('steamPath')}</label>
+              <label><FormattedMessage id={'steamPath'}/></label>
               <Input
                 label={
                   <Button
@@ -320,7 +323,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 labelPosition={'right'}
                 name={'steam'}
                 size={'large'}
-                placeholder={localizer.f('steamPath')}
+                placeholder={this.props.intl.formatMessage({ id: 'steamPath' })}
                 value={this.state.steamPath}
                 onClick={this.steamPathButton}
                 readOnly={true}
@@ -329,23 +332,23 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 className={css(styles.modulesError)}
                 style={{ display: (this.state.steamError) ? ('inline') : ('none') }}
               >
-                {localizer.f('pathError')}
+                <FormattedMessage id={'pathError'}/>
               </span>
             </Form.Field>
             <Form.Field>
               <Checkbox
                 checked={this.state.steamSearchCloud}
                 onChange={this.steamSearchCloudCheckbox}
-                label={localizer.f('steamSearchCloud')}
+                label={<FormattedMessage id={'steamSearchCloud'}/>}
                 toggle={true}
               />
             </Form.Field>
           </div>
           <div style={{ display: (this.state.originEnabled) ? ('block') : ('none') }}>
             <hr className={css(styles.formHr)}/>
-            <h3>{localizer.f('originConfig')}</h3>
+            <h3><FormattedMessage id={'originConfig'}/></h3>
             <Form.Field error={this.state.originError}>
-              <label>{localizer.f('originGamesPath')}</label>
+              <label><FormattedMessage id={'originGamesPath'}/></label>
               <Input
                 label={
                   <Button
@@ -358,7 +361,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 labelPosition={'right'}
                 name={'origin'}
                 size={'large'}
-                placeholder={localizer.f('originGamesPath')}
+                placeholder={this.props.intl.formatMessage({ id: 'originGamesPath' })}
                 value={this.state.originPath}
                 onClick={this.originPathButton}
                 readOnly={true}
@@ -367,15 +370,15 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 className={css(styles.modulesError)}
                 style={{ display: (this.state.originError) ? ('inline-block') : ('none') }}
               >
-                {localizer.f('pathError')}
+                {<FormattedMessage id={'pathError'}/>}
               </span>
             </Form.Field>
           </div>
           <div style={{ display: (this.state.emulatedEnabled) ? ('block') : ('none') }}>
             <hr className={css(styles.formHr)}/>
-            <h3>{localizer.f('emulatedConfig')}</h3>
+            <h3><FormattedMessage id={'emulatedConfig'}/></h3>
             <Form.Field error={this.state.emulatedError}>
-              <label>{localizer.f('emulatedGamesPath')}</label>
+              <label><FormattedMessage id={'emulatedGamesPath'}/></label>
               <Input
                 label={
                   <Button
@@ -388,7 +391,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 labelPosition={'right'}
                 name={'emulated'}
                 size={'large'}
-                placeholder={localizer.f('emulatedGamesPath')}
+                placeholder={this.props.intl.formatMessage({ id: 'emulatedGamesPath' })}
                 value={this.state.emulatedPath}
                 onClick={this.emulatedPathButton}
                 readOnly={true}
@@ -397,7 +400,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 className={css(styles.modulesError)}
                 style={{ display: (this.state.emulatedError) ? ('inline-block') : ('none') }}
               >
-                {localizer.f('pathError')}
+                {<FormattedMessage id={'pathError'}/>}
               </span>
             </Form.Field>
           </div>
@@ -411,21 +414,11 @@ export class SettingsModal extends VitrineComponent<Props, State> {
         <Table celled={true}>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width={3}>
-                {localizer.f('emulatorName')}
-              </Table.HeaderCell>
-              <Table.HeaderCell width={3}>
-                {localizer.f('emulatorPlatforms')}
-              </Table.HeaderCell>
-              <Table.HeaderCell width={2}>
-                {localizer.f('emulatorActive')}
-              </Table.HeaderCell>
-              <Table.HeaderCell width={4}>
-                {localizer.f('emulatorPath')}
-              </Table.HeaderCell>
-              <Table.HeaderCell width={4}>
-                {localizer.f('emulatorCommand')}
-              </Table.HeaderCell>
+              <Table.HeaderCell width={3}><FormattedMessage id={'emulatorName'}/></Table.HeaderCell>
+              <Table.HeaderCell width={3}><FormattedMessage id={'emulatorPlatforms'}/></Table.HeaderCell>
+              <Table.HeaderCell width={2}><FormattedMessage id={'emulatorActive'}/></Table.HeaderCell>
+              <Table.HeaderCell width={4}><FormattedMessage id={'emulatorPath'}/></Table.HeaderCell>
+              <Table.HeaderCell width={4}><FormattedMessage id={'emulatorConfig'}/></Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -441,7 +434,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
             )}
           </Table.Body>
         </Table>
-        <p className={css(styles.emulatorsCommandLineInstruction)}>{localizer.f('emulatorCommandLineInstruction')}</p>
+        <p className={css(styles.emulatorsCommandLineInstruction)}><FormattedMessage id={'emulatorCommandLineInstruction'}/></p>
       </Tab.Pane>
     );
 
@@ -453,10 +446,10 @@ export class SettingsModal extends VitrineComponent<Props, State> {
           value={this.state.lang}
           onChange={this.langSelect}
           className={css(styles.langSelect)}
-          options={Object.keys(this.state.langs).map((langName: string, index: number) => ({
+          options={this.state.langs.map((locale: any, index: number) => ({
             key: index,
-            value: langName,
-            text: this.state.langs[langName].language
+            value: locale.locale,
+            text: locale.messages.language
           }))}
         />
       </Tab.Pane>
@@ -480,12 +473,12 @@ export class SettingsModal extends VitrineComponent<Props, State> {
             className={css(styles.modalHeader)}
             style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
           >
-            {localizer.f('settings')}
+            <FormattedMessage id={'settings'}/>
           </Modal.Header>
           <Modal.Content>
             <div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
-              <h1>{localizer.f('welcomeMessage')}</h1>
-              <p>{localizer.f('wizardText')}</p>
+              <h1><FormattedMessage id={'welcomeMessage'}/></h1>
+              <p><FormattedMessage id={'wizardText'}/></p>
             </div>
             <Tab
               menu={{
@@ -495,15 +488,15 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               }}
               panes={[
                 {
-                  menuItem: localizer.f('modules'),
+                  menuItem: this.props.intl.formatMessage({ id: 'modules' }),
                   render: () => modulesSettings
                 },
                 {
-                  menuItem: localizer.f('emulators'),
+                  menuItem: this.props.intl.formatMessage({ id: 'emulators' }),
                   render: () => emulatorsSettings
                 },
                 {
-                  menuItem: localizer.f('lang'),
+                  menuItem: this.props.intl.formatMessage({ id: 'lang' }),
                   render: () => langsSettings
                 }
               ]}
@@ -515,13 +508,13 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
               onClick={this.closeModal}
             >
-              {localizer.f('cancel')}
+              <FormattedMessage id={'cancel'}/>
             </Button>
             <Button
               primary={true}
               onClick={this.submitButton}
             >
-              {localizer.f('confirm')}
+              <FormattedMessage id={'confirm'}/>
             </Button>
           </Modal.Actions>
           {this.checkErrors()}

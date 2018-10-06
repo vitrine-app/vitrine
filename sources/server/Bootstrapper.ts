@@ -1,3 +1,4 @@
+import { flatten } from 'flat';
 import * as fs from 'fs-extra';
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
@@ -52,7 +53,10 @@ export class Bootstrapper {
   private async loadLocales() {
     const langFilesFolder: string = getEnvFolder('config/lang');
     const langFilesPaths = await glob(`${langFilesFolder}/*`);
-    return await Promise.all(langFilesPaths.map(async (langFilePath: string) => await fs.readJson(langFilePath)));
+    return await Promise.all(langFilesPaths.map(async (langFilePath: string) => ({
+      locale: path.basename(langFilePath, '.json'),
+      messages: flatten(await fs.readJson(langFilePath))
+    })));
   }
 
   private async runServer() {

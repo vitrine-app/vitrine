@@ -3,11 +3,11 @@ import { css, StyleSheet } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as moment from 'moment';
 import * as React from 'react';
+import { FormattedMessage, InjectedIntl } from 'react-intl';
 import { Button, Grid } from 'semantic-ui-react';
 
 import { PlayableGame } from '../../../models/PlayableGame';
 import { formatTimePlayed, urlify } from '../helpers';
-import { localizer } from '../Localizer';
 import { BlurPicture } from './BlurPicture';
 import { CirclePercentage } from './CirclePercentage';
 import { VitrineComponent } from './VitrineComponent';
@@ -18,6 +18,7 @@ import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../res
 interface Props {
   selectedGame: PlayableGame;
   launchGame: (gameUuid: string) => void;
+  intl: InjectedIntl;
 }
 
 interface State {
@@ -58,10 +59,10 @@ export class GameContainer extends VitrineComponent<Props, State> {
                 onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
                 primary={true}
               >
-                <FontAwesomeIcon icon={faPlay} size={'sm'}/> {localizer.f('play')}
+                <FontAwesomeIcon icon={faPlay} size={'sm'}/> <FormattedMessage id={'play'}/>
               </Button>
               <span className={css(styles.gameTimePlayed)}>
-                {(this.props.selectedGame.timePlayed) ? (formatTimePlayed(this.props.selectedGame.timePlayed)) : ('')}
+                {(this.props.selectedGame.timePlayed) ? (formatTimePlayed(this.props.selectedGame.timePlayed, this.props.intl.formatMessage)) : ('')}
               </span>
             </div>
             <div className={css(styles.gameInfosRegion)}>
@@ -69,7 +70,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                 <Grid.Column width={11}>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.developerGridColumn)}>
-                      <strong>{localizer.f('developerLabel')}</strong>
+                      <strong><FormattedMessage id={'developerLabel'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.developerGridColumn)}>
                       {this.props.selectedGame.details.developer}
@@ -77,7 +78,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                   </Grid>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.publisherGridColumn)}>
-                      <strong>{localizer.f('publisherLabel')}</strong>
+                      <strong><FormattedMessage id={'publisherLabel'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.publisherGridColumn)}>
                       {this.props.selectedGame.details.publisher}
@@ -85,7 +86,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                   </Grid>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.developerGridColumn)}>
-                      <strong>{localizer.f('releaseDateLabel')}</strong>
+                      <strong><FormattedMessage id={'releaseDateLabel'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.developerGridColumn)}>
                       {moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')}
@@ -93,10 +94,12 @@ export class GameContainer extends VitrineComponent<Props, State> {
                   </Grid>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.publisherGridColumn)}>
-                      <strong>{localizer.f('genresLabel')}</strong>
+                      <strong><FormattedMessage id={'genresLabel'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.publisherGridColumn)}>
-                      {this.props.selectedGame.details.genres.map((genre: string) => localizer.genre(genre)).join(', ')}
+                      {this.props.selectedGame.details.genres.map((genre: string) =>
+                        this.props.intl.formatMessage({ id: `genresNames.${genre}`} )
+                      ).join(', ')}
                     </Grid.Column>
                   </Grid>
                 </Grid.Column>
@@ -132,13 +135,14 @@ export class GameContainer extends VitrineComponent<Props, State> {
       gameContainer = (
         <div className={css(styles.noSelectedGame)}>
           <span className={css(styles.noSelectedGameTitle)}>
-            {localizer.f('welcomeMessage')}
+            <FormattedMessage id={'welcomeMessage'}/>
           </span>
           <hr className={css(styles.noSelectedGameHr)}/>
           <p
-            dangerouslySetInnerHTML={{ __html: localizer.f('desc') }}
             className={css(styles.noSelectedGameText)}
-          />
+          >
+            <FormattedMessage id={'desc'}/>
+          </p>
         </div>
       );
 

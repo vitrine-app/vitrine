@@ -9,6 +9,15 @@ export function updateSettings(settings: any): Action {
   };
 }
 
+export function updateModulesConfig(modulesConfig: any): Action {
+  return {
+    type: ActionType.UPDATE_MODULES_CONFIG,
+    payload: {
+      modulesConfig
+    }
+  };
+}
+
 export function setLocales(locales: any[]): Action {
   return {
     type: ActionType.SET_LOCALES,
@@ -18,11 +27,11 @@ export function setLocales(locales: any[]): Action {
   };
 }
 
-export function updateModulesConfig(modulesConfig: any): Action {
+export function setLocale(locale: string): Action {
   return {
-    type: ActionType.UPDATE_MODULES_CONFIG,
+    type: ActionType.SET_LOCALE,
     payload: {
-      modulesConfig
+      locale
     }
   };
 }

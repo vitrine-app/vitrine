@@ -21,9 +21,10 @@ import {
   settingsModalVisible,
   timePlayedEditionModalVisible
 } from './reducers/modals';
-import { internetConnection, locales, modulesConfig, settings } from './reducers/settings';
+import { internetConnection, locale, locales, modulesConfig, settings } from './reducers/settings';
 
 export interface AppState {
+  locale: string;
   settings: any;
   modulesConfig: any;
   locales: any[];
@@ -43,10 +44,11 @@ export interface AppState {
   settingsModalVisible: boolean;
 }
 
-export const vitrineStore: Store<AppState> = createStore(combineReducers({
+export const vitrineStore: Store<any> = createStore(combineReducers({
   settings,
   modulesConfig,
   locales,
+  locale,
   internetConnection,
   potentialGames,
   playableGames,
@@ -64,7 +66,8 @@ export const vitrineStore: Store<AppState> = createStore(combineReducers({
 }), {
   settings: null,
   modulesConfig: null,
-  locales: null,
+  locales: [],
+  locale: 'en',
   internetConnection: true,
   potentialGames: new GamesCollection<PotentialGame>(),
   playableGames: new GamesCollection<PlayableGame>(),

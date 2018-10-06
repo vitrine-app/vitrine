@@ -9,7 +9,16 @@ export function settings(state: any = {}, action: Action): any {
   }
 }
 
-export function locales(state: any = {}, action: Action): any {
+export function modulesConfig(state: any = {}, action: Action): any {
+  switch (action.type) {
+    case ActionType.UPDATE_MODULES_CONFIG:
+      return action.payload.modulesConfig;
+    default:
+      return state;
+  }
+}
+
+export function locales(state: any[] = [], action: Action): any[] {
   switch (action.type) {
     case ActionType.SET_LOCALES:
       return action.payload.locales;
@@ -18,10 +27,10 @@ export function locales(state: any = {}, action: Action): any {
   }
 }
 
-export function modulesConfig(state: any = {}, action: Action): any {
+export function locale(state: string = '', action: Action): string {
   switch (action.type) {
-    case ActionType.UPDATE_MODULES_CONFIG:
-      return action.payload.modulesConfig;
+    case ActionType.SET_LOCALE:
+      return action.payload.locale;
     default:
       return state;
   }

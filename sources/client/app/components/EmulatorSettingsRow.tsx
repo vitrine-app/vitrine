@@ -2,6 +2,7 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as React from 'react';
+import { InjectedIntl } from 'react-intl';
 import { Button, Checkbox, Input, Table } from 'semantic-ui-react';
 
 import { openExecutableDialog } from '../helpers';
@@ -13,6 +14,7 @@ interface Props {
   platforms: any[];
   emulatorData: any;
   emulator: any;
+  intl: InjectedIntl;
   onChange: (emulatorConfig: any) => void;
 }
 
@@ -46,7 +48,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
   }
 
   private programButton() {
-    const path: string = openExecutableDialog();
+    const path: string = openExecutableDialog(this.props.intl.formatMessage);
     if (!path)
       return;
     this.setState({

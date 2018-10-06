@@ -1,10 +1,10 @@
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import * as React from 'react';
+import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
 import { Button } from 'semantic-ui-react';
 
 import { openImageDialog } from '../helpers';
-import { localizer } from '../Localizer';
 import { VitrineComponent } from './VitrineComponent';
 
 import { faPlus } from '@fortawesome/fontawesome-free-solid';
@@ -12,6 +12,7 @@ import { faPlus } from '@fortawesome/fontawesome-free-solid';
 interface Props {
   images?: string[];
   onChange: (backgroundScreen: string) => void;
+  intl: InjectedIntl;
 }
 
 interface State {
@@ -20,7 +21,7 @@ interface State {
   customImage: boolean;
 }
 
-export class ImagesCollection extends VitrineComponent<Props, State> {
+export const ImagesCollection = injectIntl(class extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -35,7 +36,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
   }
 
   private addImageButton() {
-    const newImage: string = openImageDialog();
+    const newImage: string = openImageDialog(this.props.intl.formatMessage);
     if (!newImage)
       return;
 
@@ -81,7 +82,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
           primary={true}
           onClick={this.addImageButton}
         >
-          <FontAwesomeIcon icon={faPlus}/> {localizer.f('addCustomBgImage')}
+          <FontAwesomeIcon icon={faPlus}/> <FormattedMessage id={'addCustomBgImage'}/>
         </Button>
         <div className={css(styles.imagesContainer)}>
           {this.state.images.map((image: string, index: number) =>
@@ -97,7 +98,7 @@ export class ImagesCollection extends VitrineComponent<Props, State> {
       </div>
     );
   }
-}
+});
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   imagesContainer: {

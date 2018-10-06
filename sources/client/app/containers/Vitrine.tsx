@@ -1,3 +1,4 @@
+import { injectIntl } from 'react-intl';
 import { connect, Dispatch } from 'react-redux';
 
 import { PlayableGame } from '../../../models/PlayableGame';
@@ -5,7 +6,7 @@ import { PotentialGame } from '../../../models/PotentialGame';
 import { Action } from '../actions/actionsTypes';
 import { addPlayableGames, addPotentialGames, launchGame, removePlayableGame, selectGame, stopGame } from '../actions/games';
 import { closeSettingsModal, openSettingsModal } from '../actions/modals';
-import { updateSettings } from '../actions/settings';
+import { setInternetConnection, setLocale, updateSettings } from '../actions/settings';
 import { AppState } from '../AppState';
 import { Vitrine as VitrineComponent } from '../components/Vitrine';
 
@@ -24,6 +25,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   updateSettings(settings: any) {
     dispatch(updateSettings(settings));
+    dispatch(setLocale(settings.lang));
   },
   addPotentialGames(potentialGames: PotentialGame[]) {
     dispatch(addPotentialGames(potentialGames));
@@ -48,7 +50,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   },
   closeSettingsModal() {
     dispatch(closeSettingsModal());
+  },
+  setInternetConnection(internetConnection: boolean) {
+    dispatch(setInternetConnection(internetConnection));
   }
 });
 
-export const Vitrine = connect(mapStateToProps, mapDispatchToProps)(VitrineComponent);
+// @ts-ignore
+export const Vitrine = injectIntl(connect(mapStateToProps, mapDispatchToProps)(VitrineComponent));
