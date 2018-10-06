@@ -1,3 +1,4 @@
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import { AppState } from '../AppState';
@@ -9,4 +10,4 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = () => ({});
 
-export const GameContainer = connect(mapStateToProps, mapDispatchToProps)(GameContainerComponent);
+export const GameContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(GameContainerComponent));

@@ -2,11 +2,11 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin } from 'css-verbose';
 import * as React from 'react';
 import { ContextMenu as ContextMenuDiv, MenuItem } from 'react-contextmenu';
+import { FormattedMessage } from 'react-intl';
 import { Button, Modal, Transition } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../models/GamesCollection';
 import { PlayableGame } from '../../../models/PlayableGame';
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { VitrineComponent } from './VitrineComponent';
 
@@ -118,17 +118,17 @@ export class ContextMenu extends VitrineComponent<Props, State> {
       <div>
         <ContextMenuDiv id={'sidebar-games-context-menu'}>
           <MenuItem onClick={this.launchClick}>
-            {localizer.f('play')}
+            <FormattedMessage id={'actions.playGame'}/>
           </MenuItem>
           <MenuItem onClick={this.editClick}>
-            {localizer.f('edit')}
+            <FormattedMessage id={'actions.editGame'}/>
           </MenuItem>
           <MenuItem onClick={this.editTimeClick}>
-            {localizer.f('editTimePlayed')}
+            <FormattedMessage id={'actions.editTimePlayed'}/>
           </MenuItem>
           <MenuItem divider={true}/>
           <MenuItem onClick={this.deleteClick}>
-            {localizer.f('delete')}
+            <FormattedMessage id={'actions.deleteGame'}/>
           </MenuItem>
         </ContextMenuDiv>
         <Transition
@@ -143,25 +143,27 @@ export class ContextMenu extends VitrineComponent<Props, State> {
             onClose={this.resetModalData}
             className={css(styles.modal)}
           >
-            <Modal.Header>{localizer.f('removeGame')}</Modal.Header>
+            <Modal.Header><FormattedMessage id={'actions.removeGame'}/></Modal.Header>
             <Modal.Content
-              dangerouslySetInnerHTML={{
-                __html: localizer.f('removeGameText', (this.state.toDeleteGame) ? (this.state.toDeleteGame.name) : (''))
-              }}
               className={css(styles.modalContent)}
-            />
+            >
+              <FormattedMessage
+                id={'removeGameText'}
+                values={{ name: <strong>{(this.state.toDeleteGame) ? (this.state.toDeleteGame.name) : ('')}</strong>, br: <br/> }}
+              />
+            </Modal.Content>
             <Modal.Actions>
               <Button
                 secondary={true}
                 onClick={this.resetModalData}
               >
-                {localizer.f('cancel')}
+                <FormattedMessage id={'actions.cancel'}/>
               </Button>
               <Button
                 primary={true}
                 onClick={this.removeGame}
               >
-                {localizer.f('confirm')}
+                <FormattedMessage id={'actions.confirm'}/>
               </Button>
             </Modal.Actions>
           </Modal>

@@ -1,3 +1,4 @@
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import { AppState } from '../AppState';
@@ -9,4 +10,4 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = () => ({});
 
-export const EmulatorSettingsRow = connect(mapStateToProps, mapDispatchToProps)(EmulatorSettingsRowComponent);
+export const EmulatorSettingsRow = injectIntl(connect(mapStateToProps, mapDispatchToProps)(EmulatorSettingsRowComponent));

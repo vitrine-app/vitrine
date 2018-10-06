@@ -32,7 +32,7 @@ export class Server {
   private playableGames: GamesCollection<PlayableGame>;
   private gameLaunched: boolean;
 
-  public constructor(config: any, private vitrineConfigFilePath: string) {
+  public constructor(config: any, private locales: any[], private vitrineConfigFilePath: string) {
     ({ vitrineConfig: this.vitrineConfig, modulesConfig: this.modulesConfig } = config);
     this.windowsHandler = new WindowsHandler();
     this.gameLaunched = false;
@@ -102,7 +102,7 @@ export class Server {
     this.playableGames = new GamesCollection();
 
     logger.info('Server', 'Sending configuration to client.');
-    this.windowsHandler.sendToClient('init-settings', this.vitrineConfig, this.modulesConfig);
+    this.windowsHandler.sendToClient('init-settings', this.vitrineConfig, this.modulesConfig, this.locales);
     if (!this.vitrineConfig.firstLaunch) {
       try {
         if (this.vitrineConfig.steam) {

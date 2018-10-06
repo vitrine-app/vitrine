@@ -1,5 +1,6 @@
 import { css, StyleSheet } from 'aphrodite';
 import * as React from 'react';
+import { InjectedIntl } from 'react-intl';
 import { ToastContainer } from 'react-toastify';
 import { Grid } from 'semantic-ui-react';
 
@@ -15,7 +16,6 @@ import { SideBar } from '../containers/SideBar';
 import { TimePlayedEditionModal } from '../containers/TimePlayedEditionModal';
 import { controlsHandler } from '../ControlsHandler';
 import { formatTimePlayed, notify } from '../helpers';
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { TaskBar } from './TaskBar';
 import { VitrineComponent } from './VitrineComponent';
@@ -30,6 +30,7 @@ interface Props {
   timePlayedEditionModalVisible: boolean;
   potentialGamesAddModalVisible: boolean;
   settingsModalVisible: boolean;
+  intl: InjectedIntl;
   updateSettings: (settings: any) => void;
   addPotentialGames: (potentialGames: PotentialGame[]) => void;
   addPlayableGames: (playableGames: PlayableGame[]) => void;
@@ -39,6 +40,7 @@ interface Props {
   selectGame: (selectedGame: PlayableGame) => void;
   openSettingsModal: () => void;
   closeSettingsModal: () => void;
+  setInternetConnection: (internetConnection: boolean) => void;
 }
 
 interface State {
@@ -62,12 +64,12 @@ export class Vitrine extends VitrineComponent<Props, State> {
     const playedGameName: string = this.props.playableGames.getGame(gameUuid).name;
     this.props.removePlayableGame(gameUuid);
     this.props.selectGame((this.props.playableGames.size()) ? (this.props.playableGames.getGame(0)) : (null));
-    notify(`<b>${playedGameName}</b> ${localizer.f('removingGameToast')}.`, true);
+    notify(this.props.intl.formatMessage({ id: 'toasts.removingGame' }, { name: playedGameName }), true);
   }
 
   private launchGame(gameUuid: string) {
     const playedGame: PlayableGame = this.props.playableGames.getGame(gameUuid);
-    notify(`${localizer.f('launchingGameToast')} <b>${playedGame.name}</b>...`, true);
+    notify(this.props.intl.formatMessage({ id: 'toasts.launchingGame' }, { name: playedGame.name }), true);
     serverListener.send('launch-game', gameUuid);
     this.props.launchGame(this.props.playableGames.getGame(gameUuid));
   }
@@ -77,7 +79,10 @@ export class Vitrine extends VitrineComponent<Props, State> {
     const timeJustPlayed: number = totalTimePlayed - playedGame.timePlayed;
     playedGame.timePlayed = totalTimePlayed;
     this.props.stopGame(playedGame);
-    notify(`<b>${playedGame.name}</b> ${localizer.f('stoppingGameToast')} ${formatTimePlayed(timeJustPlayed)}.`, true);
+    notify(this.props.intl.formatMessage({ id: 'toasts.stoppingGame' }, {
+      name: playedGame.name,
+      time: formatTimePlayed(timeJustPlayed, this.props.intl.formatMessage)
+    }), true);
   }
 
   private settingsUpdated(settings: any) {
@@ -127,6 +132,14 @@ export class Vitrine extends VitrineComponent<Props, State> {
     });
   }
 
+  private handleInternetConnection() {
+    this.props.setInternetConnection(window.navigator.onLine);
+
+    if (!window.navigator.onLine) {
+      notify(this.props.intl.formatMessage({ id: 'toasts.noInternet' }), true, true);
+    }
+  }
+
   public componentDidMount() {
     if (this.props.settings.firstLaunch) {
       this.setState({
@@ -142,10 +155,15 @@ export class Vitrine extends VitrineComponent<Props, State> {
       .listen('error', this.serverError.bind(this));
 
     this.registerActions();
+    serverListener.listen('set-internet-connection', this.handleInternetConnection.bind(this));
+    window.addEventListener('online', this.handleInternetConnection.bind(this));
+    window.addEventListener('offline', this.handleInternetConnection.bind(this));
   }
 
   public componentWillUnmount() {
     controlsHandler.unregister();
+    window.removeEventListener('online', this.handleInternetConnection.bind(this));
+    window.removeEventListener('offline', this.handleInternetConnection.bind(this));
   }
 
   public render(): JSX.Element {

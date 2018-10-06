@@ -1,11 +1,11 @@
 import { css, StyleSheet } from 'aphrodite';
 import { margin } from 'css-verbose';
 import * as React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Grid, Modal, Transition } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../models/GamesCollection';
 import { PotentialGame } from '../../../models/PotentialGame';
-import { localizer } from '../Localizer';
 import { BlurPicture } from './BlurPicture';
 
 import { faPlusCircle } from '@fortawesome/fontawesome-free-solid';
@@ -62,7 +62,7 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
           onClose={this.props.closePotentialGamesAddModal}
           className={css(styles.modal)}
         >
-          <Modal.Header>{localizer.f('addGames')}</Modal.Header>
+          <Modal.Header><FormattedMessage id={'actions.addGames'}/></Modal.Header>
           <Modal.Content>
             <Grid>
               {this.props.potentialGames.map((potentialGame: PotentialGame, index: number) =>
