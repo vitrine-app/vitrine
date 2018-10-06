@@ -101,14 +101,14 @@ export function getSortedGamesFromStore(dispatchedData: any): PlayableGame[] {
   const sortParameter = gamesSortParameter || vitrineStore.getState().gamesSortParameter;
   switch (sortParameter) {
     case (SortParameter.NAME): {
-      return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
+      return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
         return (gameA.name > gameB.name) ? (1) : (-1);
-      });
+      }));
     }
     case (SortParameter.TIME_PLAYED): {
-      return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
+      return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
         return (gameA.timePlayed < gameB.timePlayed) ? (1) : (-1);
-      });
+      }));
     }
     default:
       return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {

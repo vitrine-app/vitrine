@@ -59,7 +59,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                 onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
                 primary={true}
               >
-                <FontAwesomeIcon icon={faPlay} size={'sm'}/> <FormattedMessage id={'play'}/>
+                <FontAwesomeIcon icon={faPlay} size={'sm'}/> <FormattedMessage id={'actions.playGame'}/>
               </Button>
               <span className={css(styles.gameTimePlayed)}>
                 {(this.props.selectedGame.timePlayed) ? (formatTimePlayed(this.props.selectedGame.timePlayed, this.props.intl.formatMessage)) : ('')}
@@ -70,7 +70,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                 <Grid.Column width={11}>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.developerGridColumn)}>
-                      <strong><FormattedMessage id={'developerLabel'}/></strong>
+                      <strong><FormattedMessage id={'game.developer'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.developerGridColumn)}>
                       {this.props.selectedGame.details.developer}
@@ -78,7 +78,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                   </Grid>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.publisherGridColumn)}>
-                      <strong><FormattedMessage id={'publisherLabel'}/></strong>
+                      <strong><FormattedMessage id={'game.publisher'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.publisherGridColumn)}>
                       {this.props.selectedGame.details.publisher}
@@ -86,7 +86,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                   </Grid>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.developerGridColumn)}>
-                      <strong><FormattedMessage id={'releaseDateLabel'}/></strong>
+                      <strong><FormattedMessage id={'game.releaseDate'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.developerGridColumn)}>
                       {moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')}
@@ -94,7 +94,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                   </Grid>
                   <Grid>
                     <Grid.Column width={5} className={css(styles.publisherGridColumn)}>
-                      <strong><FormattedMessage id={'genresLabel'}/></strong>
+                      <strong><FormattedMessage id={'game.genres'}/></strong>
                     </Grid.Column>
                     <Grid.Column width={11} className={css(styles.publisherGridColumn)}>
                       {this.props.selectedGame.details.genres.map((genre: string) =>
@@ -141,7 +141,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
           <p
             className={css(styles.noSelectedGameText)}
           >
-            <FormattedMessage id={'desc'}/>
+            <FormattedMessage id={'description'}/>
           </p>
         </div>
       );

@@ -134,11 +134,11 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
           <Grid>
             <Grid.Column width={10}>
               <Form.Field>
-                <label className={css(styles.formLabel)}><FormattedMessage id={'gameName'}/></label>
+                <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
                 <Input
                   name={'name'}
                   size={'large'}
-                  placeholder={this.props.intl.formatMessage({ id: 'gameName' })}
+                  placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
                   value={this.state.research}
                   onChange={this.researchChange}
                 />
@@ -146,13 +146,13 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
             </Grid.Column>
             <Grid.Column width={3}>
               <Form.Field>
-                <label className={(css(styles.resultsNbLabel))}><FormattedMessage id={'resultsNumber'}/></label>
+                <label className={(css(styles.resultsNbLabel))}><FormattedMessage id={'resultsNb'}/></label>
                 <NumberPicker
                   min={1}
                   max={20}
-                  name={'rating'}
+                  name={'resultsNb'}
                   value={this.state.resultsNb}
-                  placeholder={this.props.intl.formatMessage({ id: 'resultsNumber' })}
+                  placeholder={this.props.intl.formatMessage({ id: 'resultsNb' })}
                   onChange={this.resultsNbChange}
                 />
               </Form.Field>
@@ -229,7 +229,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
           size={'tiny'}
           className={css(styles.modal)}
         >
-          <Modal.Header><FormattedMessage id={'fillWithIgdb'}/></Modal.Header>
+          <Modal.Header><FormattedMessage id={'actions.fillWithIgdb'}/></Modal.Header>
           {modalContent}
           <Modal.Actions style={{ opacity: (!this.state.loading) ? (1) : (0) }}>
             <Button
@@ -237,7 +237,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
               disabled={!this.state.selectedResearchId}
               onClick={this.igdbFillButton}
             >
-              <FormattedMessage id={'submitNewGame'}/>
+              <FormattedMessage id={'actions.submitNewGame'}/>
             </Button>
           </Modal.Actions>
         </Modal>

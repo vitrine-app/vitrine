@@ -56,13 +56,13 @@ export class ErrorsWrapper extends React.Component<{}, State> {
               secondary={true}
               onClick={this.quitApplication}
             >
-              <FormattedMessage id={'quit'}/>
+              <FormattedMessage id={'actions.quit'}/>
             </Button>
             <Button
               secondary={true}
               onClick={this.relaunchApplication}
             >
-              <FormattedMessage id={'relaunch'}/>
+              <FormattedMessage id={'actions.relaunch'}/>
             </Button>
           </Modal.Actions>
         </Modal>

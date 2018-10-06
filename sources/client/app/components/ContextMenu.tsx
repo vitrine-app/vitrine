@@ -118,17 +118,17 @@ export class ContextMenu extends VitrineComponent<Props, State> {
       <div>
         <ContextMenuDiv id={'sidebar-games-context-menu'}>
           <MenuItem onClick={this.launchClick}>
-            <FormattedMessage id={'play'}/>
+            <FormattedMessage id={'actions.playGame'}/>
           </MenuItem>
           <MenuItem onClick={this.editClick}>
-            <FormattedMessage id={'edit'}/>
+            <FormattedMessage id={'actions.editGame'}/>
           </MenuItem>
           <MenuItem onClick={this.editTimeClick}>
-            <FormattedMessage id={'editTimePlayed'}/>
+            <FormattedMessage id={'actions.editTimePlayed'}/>
           </MenuItem>
           <MenuItem divider={true}/>
           <MenuItem onClick={this.deleteClick}>
-            <FormattedMessage id={'delete'}/>
+            <FormattedMessage id={'actions.deleteGame'}/>
           </MenuItem>
         </ContextMenuDiv>
         <Transition
@@ -143,7 +143,7 @@ export class ContextMenu extends VitrineComponent<Props, State> {
             onClose={this.resetModalData}
             className={css(styles.modal)}
           >
-            <Modal.Header><FormattedMessage id={'removeGame'}/></Modal.Header>
+            <Modal.Header><FormattedMessage id={'actions.removeGame'}/></Modal.Header>
             <Modal.Content
               className={css(styles.modalContent)}
             >
@@ -157,13 +157,13 @@ export class ContextMenu extends VitrineComponent<Props, State> {
                 secondary={true}
                 onClick={this.resetModalData}
               >
-                <FormattedMessage id={'cancel'}/>
+                <FormattedMessage id={'actions.cancel'}/>
               </Button>
               <Button
                 primary={true}
                 onClick={this.removeGame}
               >
-                <FormattedMessage id={'confirm'}/>
+                <FormattedMessage id={'actions.confirm'}/>
               </Button>
             </Modal.Actions>
           </Modal>

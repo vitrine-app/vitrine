@@ -62,7 +62,7 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
           onClose={this.props.closePotentialGamesAddModal}
           className={css(styles.modal)}
         >
-          <Modal.Header><FormattedMessage id={'addGames'}/></Modal.Header>
+          <Modal.Header><FormattedMessage id={'actions.addGames'}/></Modal.Header>
           <Modal.Content>
             <Grid>
               {this.props.potentialGames.map((potentialGame: PotentialGame, index: number) =>

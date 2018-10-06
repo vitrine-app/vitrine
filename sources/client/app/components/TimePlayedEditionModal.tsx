@@ -166,7 +166,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
               primary={true}
               onClick={this.submitButton}
             >
-              <FormattedMessage id={'confirm'}/>
+              <FormattedMessage id={'actions.confirm'}/>
             </Button>
           </Modal.Actions>
           {this.checkErrors()}

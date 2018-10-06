@@ -317,12 +317,12 @@ export class GameAddModal extends VitrineComponent<Props, State> {
           className={css(styles.modal)}
         >
           <Modal.Header>
-            {<FormattedMessage id={(this.state.editing) ? ('editGameLabel') : ('addGameLabel')}/>}
+            {<FormattedMessage id={(this.state.editing) ? ('actions.editGameTitle') : ('actions.addGame')}/>}
           </Modal.Header>
           <Modal.Content className={css(styles.modalBody)}>
             <Grid>
               <Grid.Column width={3}>
-                <label className={css(styles.formLabel)}><FormattedMessage id={'coverLabel'}/></label>
+                <label className={css(styles.formLabel)}><FormattedMessage id={'game.cover'}/></label>
                 <div className={css(styles.coverWrapper)}>
                   <BlurPicture
                     faIcon={faFolderOpen}
@@ -336,11 +336,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
               <Grid.Column width={12}>
                 <Form>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'gameName'}/></label>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
                     <Input
                       name={'name'}
                       size={'large'}
-                      placeholder={this.props.intl.formatMessage({ id: 'gameName' })}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
                       value={this.state.gameData.name}
                       onChange={this.inputChangeHandler}
                     />
@@ -348,11 +348,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={11}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'gamesSeries'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
                         <Input
                           name={'series'}
                           size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'gamesSeries' })}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
                           value={this.state.gameData.series}
                           onChange={this.inputChangeHandler}
                         />
@@ -360,14 +360,14 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                     </Grid.Column>
                     <Grid.Column width={5}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'releaseDate'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.releaseDate'}/></label>
                         <DatePicker
                           value={this.state.gameData.date}
                           dateFormat={'DD/MM/YYYY'}
                           onChange={this.dateChangeHandler}
                           inputProps={{
                             size: 'large',
-                            placeholder: this.props.intl.formatMessage({ id: 'releaseDate' }),
+                            placeholder: this.props.intl.formatMessage({ id: 'game.releaseDate' }),
                             readOnly: true
                           }}
                         />
@@ -377,11 +377,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={8}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'developer'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.developer'}/></label>
                         <Input
                           name={'developer'}
                           size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id:  'developer' })}
+                          placeholder={this.props.intl.formatMessage({ id:  'game.developer' })}
                           value={this.state.gameData.developer}
                           onChange={this.inputChangeHandler}
                         />
@@ -389,11 +389,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                     </Grid.Column>
                     <Grid.Column width={8}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'publisher'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.publisher'}/></label>
                         <Input
                           name={'publisher'}
                           size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'publisher' })}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.publisher' })}
                           value={this.state.gameData.publisher}
                           onChange={this.inputChangeHandler}
                         />
@@ -403,11 +403,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column style={{ width: 84.5.percents() }}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'genres'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.genres'}/></label>
                         <Input
                           name={'genres'}
                           size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'genres' })}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.genres' })}
                           value={this.state.gameData.genres}
                           onChange={this.inputChangeHandler}
                         />
@@ -415,12 +415,12 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                     </Grid.Column>
                     <Grid.Column width={2}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'rating'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.rating'}/></label>
                         <NumberPicker
                           min={1}
                           max={100}
                           name={'rating'}
-                          placeholder={this.props.intl.formatMessage({ id: 'rating' })}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.rating' })}
                           value={this.state.gameData.rating}
                           onChange={this.ratingChangeHandler}
                         />
@@ -430,11 +430,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'summary'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.summary'}/></label>
                         <TextArea
                           name={'summary'}
                           className={css(styles.formTextArea)}
-                          placeholder={this.props.intl.formatMessage({ id: 'summary' })}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.summary' })}
                           value={this.state.gameData.summary}
                           onChange={this.inputChangeHandler}
                         />
@@ -445,7 +445,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'executable'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.executable'}/></label>
                         <Input
                           label={
                             <Button
@@ -458,7 +458,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                           labelPosition={'right'}
                           name={'executable'}
                           size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'executable' })}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.executable' })}
                           value={this.state.gameData.executable}
                           onClick={this.executableButton}
                           readOnly={true}
@@ -469,12 +469,12 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'lineArguments'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.lineArguments'}/></label>
                         <div className={'ui large input'}>
                           <input
                             name={'arguments'}
                             className={css(styles.lineArgumentsInput)}
-                            placeholder={this.props.intl.formatMessage({ id: 'lineArguments' })}
+                            placeholder={this.props.intl.formatMessage({ id: 'game.lineArguments' })}
                             value={this.state.gameData.arguments}
                             onChange={this.inputChangeHandler}
                           />
@@ -486,7 +486,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'backgroundImage'}/></label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.backgroundImage'}/></label>
                         <ImagesCollection
                           images={this.state.gameData.potentialBackgrounds}
                           onChange={this.changeBackgroundHandler}
@@ -523,7 +523,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
               loading={this.state.igdbButtonLoading}
               onClick={this.searchIgdbButton}
             >
-              <FormattedMessage id={'fillWithIgdb'}/>
+              <FormattedMessage id={'actions.fillWithIgdb'}/>
             </Button>
             <Button
               primary={true}
@@ -531,7 +531,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
               loading={this.state.submitButtonLoading}
               onClick={this.submitButton}
             >
-              <FormattedMessage id={(this.state.editing) ? ('editGame') : ('submitNewGame')}/>
+              <FormattedMessage id={(this.state.editing) ? ('actions.editGame') : ('actions.submitNewGame')}/>
             </Button>
           </Modal.Actions>
           <IgdbResearchModal/>

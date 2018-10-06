@@ -82,7 +82,7 @@ export const ImagesCollection = injectIntl(class extends VitrineComponent<Props,
           primary={true}
           onClick={this.addImageButton}
         >
-          <FontAwesomeIcon icon={faPlus}/> <FormattedMessage id={'addCustomBgImage'}/>
+          <FontAwesomeIcon icon={faPlus}/> <FormattedMessage id={'game.customBgImage'}/>
         </Button>
         <div className={css(styles.imagesContainer)}>
           {this.state.images.map((image: string, index: number) =>

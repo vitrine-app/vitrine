@@ -39,31 +39,31 @@ export class SideBar extends VitrineComponent<Props, {}> {
     this.gamesSortParameters = [
       {
         parameter: SortParameter.NAME,
-        text: 'sortByName'
+        text: 'sort.byName'
       },
       {
         parameter: SortParameter.TIME_PLAYED,
-        text: 'sortByTimePlayed'
+        text: 'sort.byTimePlayed'
       },
       {
         parameter: SortParameter.RELEASE_DATE,
-        text: 'sortByReleaseDate'
+        text: 'sort.byReleaseDate'
       },
       {
         parameter: SortParameter.RATING,
-        text: 'sortByRating'
+        text: 'sort.byRating'
       },
       {
         parameter: SortParameter.SERIES,
-        text: 'sortBySeries'
+        text: 'sort.bySeries'
       },
       {
         parameter: SortParameter.DEVELOPER,
-        text: 'sortByDeveloper'
+        text: 'sort.byDeveloper'
       },
       {
         parameter: SortParameter.PUBLISHER,
-        text: 'sortByPublisher'
+        text: 'sort.byPublisher'
       }
     ];
 
@@ -99,7 +99,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
             <Grid.Column className={css(styles.actionButton)}>
               <ActionButton
                 icon={faPlus}
-                tooltip={this.props.intl.formatMessage({ id: 'addGameLabel' })}
+                tooltip={this.props.intl.formatMessage({ id: 'actions.addGame' })}
                 onClick={this.props.openGameAddModal}
               />
             </Grid.Column>
@@ -107,14 +107,14 @@ export class SideBar extends VitrineComponent<Props, {}> {
               <ActionButton
                 icon={faSyncAlt}
                 spin={this.props.refreshingGames}
-                tooltip={this.props.intl.formatMessage({ id: 'refreshLabel' })}
+                tooltip={this.props.intl.formatMessage({ id: 'actions.refresh' })}
                 onClick={this.taskBarRefreshBtnClickHandler}
               />
             </Grid.Column>
             <Grid.Column className={css(styles.actionButton)}>
               <ActionButton
                 icon={faCogs}
-                tooltip={this.props.intl.formatMessage({ id: 'settings' })}
+                tooltip={this.props.intl.formatMessage({ id: 'settings.settings' })}
                 onClick={this.props.openSettingsModal}
               />
             </Grid.Column>
@@ -138,7 +138,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
                 style={{ display: (this.props.playableGames.size()) ? ('block') : ('none') }}
               >
                 <Dropdown.Menu>
-                  <Dropdown.Header icon='sort numeric ascending' content={this.props.intl.formatMessage({ id: 'sortGames' })}/>
+                  <Dropdown.Header icon='sort numeric ascending' content={this.props.intl.formatMessage({ id: 'sort.sortGames' })}/>
                   {this.gamesSortParameters.map((gamesSortParameter: any, index: number) => (
                     <Dropdown.Item
                       key={index}
