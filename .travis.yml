@@ -19,7 +19,7 @@ before_script:
   - yarn test
 
 script:
-  - yarn dist:ci
+  - if [[ "$TRAVIS_BRANCH" == "stable" ]]; then yarn dist:ci; else yarn build:prod; fi
 
 cache:
   yarn: true
