@@ -28,6 +28,6 @@ before_build:
   - yarn build:modules
 
 build_script:
-  - yarn dist:ci
+  - if %APPVEYOR_REPO_BRANCH%==stable (yarn dist:ci) else (yarn build:prod)
 
 test: off
