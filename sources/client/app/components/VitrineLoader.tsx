@@ -15,7 +15,7 @@ interface State {
   updateDownloadProgress: number;
 }
 
-export class VitrineLoader extends React.Component<null, State> {
+export class VitrineLoader extends React.Component<{}, State> {
   private lastUpdateVersion: string;
 
   public constructor() {

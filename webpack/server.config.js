@@ -33,9 +33,14 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        type: 'javascript/auto',
+        test: /\.mjs$/,
+        use: []
       }
     ]
   },
   mode: (production) ? ('production') : ('development'),
-  devtool: (production) ? ('source-map') : ('cheap-source-map')
+  devtool: (production) ? ('source-map') : ('cheap-module-source-map')
 };

@@ -1,4 +1,5 @@
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 import { Action } from '../actions/actionsTypes';
 import { setLocale, setLocales, updateModulesConfig, updateSettings } from '../actions/settings';

@@ -1,5 +1,6 @@
 import { injectIntl } from 'react-intl';
-import { connect, Dispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { Action } from '../actions/actionsTypes';

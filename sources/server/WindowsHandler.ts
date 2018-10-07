@@ -35,9 +35,12 @@ export class WindowsHandler {
   }
 
   public run() {
-    if (app.makeSingleInstance(this.restoreAndFocus.bind(this))) {
+    if (!app.requestSingleInstanceLock()) {
       this.quitApplication();
       return;
+    }
+    else {
+      app.on('second-instance', this.restoreAndFocus.bind(this));
     }
     if (app.isReady())
       this.createLoaderWindow();
