@@ -1,12 +1,12 @@
 {
-  "dataSource": "issues",
+  "dataSource": "prs",
   "prefix": "",
   "ignoreLabels": [],
   "onlyMilestones": false,
   "groupBy": false,
   "template": {
     "commit": "- [{{message}}]({{url}}) - @{{author}}",
-    "issue": "- {{labels}} {{name}} [{{text}}]({{url}})",
+    "issue": "- {{name}} [{{text}}]({{url}})",
     "label": "[**{{label}}**]",
     "noLabel": "closed",
     "group": "\n#### {{heading}}\n",
