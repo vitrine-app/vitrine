@@ -126,7 +126,7 @@
     "watch:client": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js --watch",
     "test": "nyc mocha",
     "test:run": "mocha",
-    "test:coverage": "",
+    "test:coverage": "nyc report --reporter=text-lcov | coveralls",
     "pack": "yarn build:modules && yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build --dir",
     "dist": "yarn build:modules && yarn test && yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
     "dist:ci": "yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
