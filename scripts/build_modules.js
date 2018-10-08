@@ -1,12 +1,6 @@
 const { readdir, statSync } = require('fs-extra');
 const { resolve } = require('path');
-const { cd, exec, grep, mkdir, mv, rm } = require('shelljs');
-
-
-const electronUrl = 'https://atom.io/download/electron';
-const electronVersion = grep('"electron":', 'package.json')
-  .sed(/[ ]+"electron": "[\^]?(.*)"[,]?/, '$1')
-  .replace(/\n/, '');
+const { cd, exec, mkdir, mv, rm } = require('shelljs');
 
 mkdir('-p', 'modules');
 cd('sources/modules');
@@ -14,7 +8,7 @@ cd('sources/modules');
 readdir(resolve()).then((modules) => {
   for (const module of modules.filter((module) => statSync(module).isDirectory())) {
     cd(module);
-    exec(`${resolve('../../../node_modules/.bin/node-gyp')} rebuild --target=${electronVersion} --arch=x64 --dist-url=${electronUrl}`);
+    exec(`${resolve('../../../node_modules/.bin/node-gyp')} rebuild --arch=x64`);
     mv(`build/Release/${module}.node`, '../../../modules');
     rm('-r', 'build');
     cd('-');
