@@ -25,6 +25,7 @@ install:
   - yarn install
 
 before_build:
+  - yarn keys:decipher
   - yarn build:modules
   - yarn test
 
