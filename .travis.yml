@@ -16,10 +16,11 @@ branches:
 
 before_script:
   - yarn keys:decipher
-  - yarn build:modules
+  - yarn build:modules-no-electron
   - yarn test
 
 script:
+  - if [[ "$TRAVIS_BRANCH" == "stable" ]]; then yarn build:modules; fi
   - if [[ "$TRAVIS_BRANCH" == "stable" ]]; then yarn dist:ci; else yarn build:prod; fi
 
 cache:
