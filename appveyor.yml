@@ -27,7 +27,6 @@ install:
 before_build:
   - yarn keys:decipher
   - yarn build:modules
-  - yarn test
 
 build_script:
   - if %APPVEYOR_REPO_BRANCH%==stable (yarn dist:ci) else (yarn build:prod)
