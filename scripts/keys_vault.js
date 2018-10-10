@@ -13,7 +13,6 @@ function generateCipheredKeys() {
   };
 
   const keysFile = Object.keys(keys).reduce((acc, key) => acc + `${key}=${aes.encrypt(privateKey, keys[key])}\n`, '');
-  console.log(keysFile);
   fs.writeFileSync('keys/apis_private_enc.keys', keysFile);
   console.log('apis_private_enc.keys has been written.');
 }
