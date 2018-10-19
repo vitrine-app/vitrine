@@ -17,6 +17,7 @@
 - fix: crash after selecting Battle.net module without Battle.net installed [#81](https://github.com/paul-roman/vitrine/pull/81)
 - refactor: use spaces as indentation [#80](https://github.com/paul-roman/vitrine/pull/80)
 - hotfix: change version number [#75](https://github.com/paul-roman/vitrine/pull/75)
+
 ---
 
 ## 0.9.3 (25/09/2018)

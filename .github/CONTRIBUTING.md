@@ -12,8 +12,9 @@ We're also using TypeScript instead of pure JavaScript in order to have a more s
 
 The first step to get Vitrine running is to install its dependencies. We're using Yarn as a packages manager, so you just need to clone the repository and run `yarn install`.
 
-Vitrine is using custom Node.js native addons, written in C++, which need to be compiled. For the moment, Vitrine is only running on Windows, which means that the C++ addons can only be compiled using Visual C++ Build Tools. 
-You need to download and install [Windows-Build-Tools](https://github.com/felixrieseberg/windows-build-tools).
+Vitrine is using custom Node.js native addons, written in C++, which need to be compiled using `node-gyp`. For the moment, Vitrine is only running on Windows and Linux, which means that the C++ addons can be compiled using different ways :
+- Visual C++ Build Tools on Windows : you need to download and install [Windows-Build-Tools](https://github.com/felixrieseberg/windows-build-tools)
+- Python 2.7 on Linux
 
 ## Writing code
 
@@ -26,11 +27,10 @@ Few things on how we code here:
 ## Project file structure
 
 Vitrine wasn't build using any boilerplate, so the the file structure is pretty free and tweakable:
-- `/.circleci`: contains a `config.yml` file used for CircleCI configuration
 - `/config`: used to store config used by Vitrine, copied within build
+  - `/cache`: used to store different chaches used by the application to optimize queries (IGDB data from potential games and Steam app IDs). Shouldn't be edited
   - `/lang`: here are the files for i18n, just regular JSON files with a key value system
   - `/modules_config.json`: static information that aren't supposed to change, like emulators list or Origin registry keys
-  - `/potential_games.json`: list of cached information from IGDB API to optimize queries, shouldn't be edited
   - `/vitrine_config.json`: configuration edited directly from the software by the used, persistently stored here
 - `/dist`: the built software is stored here
 - `/games`: here lies what everything is about! Every game is stored in a folder using a UUID and containing a `config.json`, and potentially a `cover.XXXXXXXX.jpg` and a `background.XXXXXXXX.jpg` (`XXXXXXXX` is a unique tag used for caching)
@@ -42,11 +42,12 @@ Vitrine wasn't build using any boilerplate, so the the file structure is pretty 
 - `/sources`: that's pretty much what you're looking for, so let's begin, shall we?
   - `/client`: sources executed in the `rendered` process of Electron are located here
     - `/app`: the React app of Vitrine client is stored here. It has a simple React/Redux app structure (`actions`, `components`, `containers`, `reducers` folders)
+    - `/defs`: here are located special TypeScript definitions (like the ones used to import custom files in TypeScript) as `.d.ts` files
     - `/resources`: every asset used by the client that is not source code is located here. They will by directly loaded into `client.js` and `loader.js` when transpiling. The `less` folder (hosting the stylesheets used by the client) is structured using `Semantic UI Less`
-  - `/defs`: here are located special TypeScript definitions (like the ones used to import custom files in TypeScript) as `.d.ts` files
   - `/models`: pieces of code used both on the client and the server-side
-  - `/modules`: C++ source code for native Node.js modules. Each module folder contains a `build` and a `srcs` folder, a `binding.gyp` (containing informations about module build) and a TypeScript definitions file (`.d.ts`)
+  - `/modules`: C++ source code for native Node.js modules. Each module folder contains a `build` and a `srcs` folder, a `binding.gyp` (containing informations about module build) and a TypeScript file which should be used to import the module into server source code
   - `/server`: sources executed in the `main` process of Electron are located here
     - `/api`: the source code here depends on a certain support to work (platform or file format) and should be only used as an interface by the other files (specific implementation hidden)
     - `/crawlers`: the list of the games crawlers is located here. The `PlayableGamesCrawler` class search for already playable games and `PotentialGamesCrawler` class is extended to build games crawlers depending on the platform
-- `/tests`: pretty self-explanatory
+- `/test`: pretty self-explanatory
+- `/webpack`: here are the different configs used byWebpack to build Vitrine
