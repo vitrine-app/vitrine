@@ -3,12 +3,12 @@ import { css, StyleSheet } from 'aphrodite';
 import { border, margin, rgba } from 'css-verbose';
 import * as moment from 'moment';
 import * as React from 'react';
+import { FormattedMessage, InjectedIntl } from 'react-intl';
 import { Button, Form, Grid, Input, Modal, TextArea, Transition } from 'semantic-ui-react';
 
 import { GameSource, PotentialGame } from '../../../models/PotentialGame';
 import { IgdbResearchModal } from '../containers/IgdbResearchModal';
 import { notify, openExecutableDialog, openImageDialog } from '../helpers';
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { BlurPicture } from './BlurPicture';
 import { DatePicker } from './DatePicker';
@@ -26,6 +26,7 @@ interface Props {
   gameToEdit: PlayableGame;
   visible: boolean;
   igdbResearchModalVisible: boolean;
+  intl: InjectedIntl;
   addPlayableGames: (playableGames: PlayableGame[]) => void;
   editPlayableGame: (playableGame: PlayableGame) => void;
   setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
@@ -130,7 +131,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
   private addPlayableGame(game: PlayableGame) {
     this.props.addPlayableGames([game]);
     this.closeModal();
-    notify(`<b>${game.name}</b> ${localizer.f('addingGameToast')}.`, true);
+    notify(this.props.intl.formatMessage({ id: 'toasts.addingGame' }, { name: game.name }), true);
     this.setState({
       submitButtonLoading: false
     });
@@ -144,7 +145,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
       this.props.closeTimePlayedEditionModal();
     if (this.props.visible)
       this.closeModal();
-    notify(`<b>${game.name}</b> ${localizer.f('editingGameToast')}.`, true);
+    notify(this.props.intl.formatMessage({ id: 'toasts.editingGame' }, { name: game.name }), true);
     this.setState({
       submitButtonLoading: false
     });
@@ -163,7 +164,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
   }
 
   private gameCoverClickHandler() {
-    const cover: string = openImageDialog();
+    const cover: string = openImageDialog(this.props.intl.formatMessage);
     if (cover)
       this.setState({
         gameData: {
@@ -204,7 +205,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
   }
 
   private executableButton() {
-    const executable: string = openExecutableDialog();
+    const executable: string = openExecutableDialog(this.props.intl.formatMessage);
     if (!executable)
       return;
     this.setState({
@@ -315,11 +316,13 @@ export class GameAddModal extends VitrineComponent<Props, State> {
           size={'large'}
           className={css(styles.modal)}
         >
-          <Modal.Header>{(this.state.editing) ? (localizer.f('editGameLabel')) : (localizer.f('addGameLabel'))}</Modal.Header>
+          <Modal.Header>
+            {<FormattedMessage id={(this.state.editing) ? ('actions.editGameTitle') : ('actions.addGame')}/>}
+          </Modal.Header>
           <Modal.Content className={css(styles.modalBody)}>
             <Grid>
               <Grid.Column width={3}>
-                <label className={css(styles.formLabel)}>{localizer.f('coverLabel')}</label>
+                <label className={css(styles.formLabel)}><FormattedMessage id={'game.cover'}/></label>
                 <div className={css(styles.coverWrapper)}>
                   <BlurPicture
                     faIcon={faFolderOpen}
@@ -333,11 +336,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
               <Grid.Column width={12}>
                 <Form>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}>{localizer.f('gameName')}</label>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
                     <Input
                       name={'name'}
                       size={'large'}
-                      placeholder={localizer.f('gameName')}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
                       value={this.state.gameData.name}
                       onChange={this.inputChangeHandler}
                     />
@@ -345,11 +348,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={11}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('gamesSeries')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
                         <Input
                           name={'series'}
                           size={'large'}
-                          placeholder={localizer.f('gamesSeries')}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
                           value={this.state.gameData.series}
                           onChange={this.inputChangeHandler}
                         />
@@ -357,14 +360,14 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                     </Grid.Column>
                     <Grid.Column width={5}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('releaseDate')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.releaseDate'}/></label>
                         <DatePicker
                           value={this.state.gameData.date}
                           dateFormat={'DD/MM/YYYY'}
                           onChange={this.dateChangeHandler}
                           inputProps={{
                             size: 'large',
-                            placeholder: localizer.f('releaseDate'),
+                            placeholder: this.props.intl.formatMessage({ id: 'game.releaseDate' }),
                             readOnly: true
                           }}
                         />
@@ -374,11 +377,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={8}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('developer')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.developer'}/></label>
                         <Input
                           name={'developer'}
                           size={'large'}
-                          placeholder={localizer.f('developer')}
+                          placeholder={this.props.intl.formatMessage({ id:  'game.developer' })}
                           value={this.state.gameData.developer}
                           onChange={this.inputChangeHandler}
                         />
@@ -386,11 +389,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                     </Grid.Column>
                     <Grid.Column width={8}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('publisher')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.publisher'}/></label>
                         <Input
                           name={'publisher'}
                           size={'large'}
-                          placeholder={localizer.f('publisher')}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.publisher' })}
                           value={this.state.gameData.publisher}
                           onChange={this.inputChangeHandler}
                         />
@@ -400,11 +403,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column style={{ width: 84.5.percents() }}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('genres')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.genres'}/></label>
                         <Input
                           name={'genres'}
                           size={'large'}
-                          placeholder={localizer.f('genres')}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.genres' })}
                           value={this.state.gameData.genres}
                           onChange={this.inputChangeHandler}
                         />
@@ -412,12 +415,12 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                     </Grid.Column>
                     <Grid.Column width={2}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('rating')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.rating'}/></label>
                         <NumberPicker
                           min={1}
                           max={100}
                           name={'rating'}
-                          placeholder={localizer.f('rating')}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.rating' })}
                           value={this.state.gameData.rating}
                           onChange={this.ratingChangeHandler}
                         />
@@ -427,11 +430,11 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('summary')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.summary'}/></label>
                         <TextArea
                           name={'summary'}
                           className={css(styles.formTextArea)}
-                          placeholder={localizer.f('summary')}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.summary' })}
                           value={this.state.gameData.summary}
                           onChange={this.inputChangeHandler}
                         />
@@ -442,7 +445,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('executable')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.executable'}/></label>
                         <Input
                           label={
                             <Button
@@ -455,7 +458,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                           labelPosition={'right'}
                           name={'executable'}
                           size={'large'}
-                          placeholder={localizer.f('executable')}
+                          placeholder={this.props.intl.formatMessage({ id: 'game.executable' })}
                           value={this.state.gameData.executable}
                           onClick={this.executableButton}
                           readOnly={true}
@@ -466,12 +469,12 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('lineArguments')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.lineArguments'}/></label>
                         <div className={'ui large input'}>
                           <input
                             name={'arguments'}
                             className={css(styles.lineArgumentsInput)}
-                            placeholder={localizer.f('lineArguments')}
+                            placeholder={this.props.intl.formatMessage({ id: 'game.lineArguments' })}
                             value={this.state.gameData.arguments}
                             onChange={this.inputChangeHandler}
                           />
@@ -483,7 +486,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
                   <Grid>
                     <Grid.Column width={16}>
                       <Form.Field>
-                        <label className={css(styles.formLabel)}>{localizer.f('backgroundImage')}</label>
+                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.backgroundImage'}/></label>
                         <ImagesCollection
                           images={this.state.gameData.potentialBackgrounds}
                           onChange={this.changeBackgroundHandler}
@@ -520,7 +523,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
               loading={this.state.igdbButtonLoading}
               onClick={this.searchIgdbButton}
             >
-              {localizer.f('fillWithIgdb')}
+              <FormattedMessage id={'actions.fillWithIgdb'}/>
             </Button>
             <Button
               primary={true}
@@ -528,7 +531,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
               loading={this.state.submitButtonLoading}
               onClick={this.submitButton}
             >
-              {(this.state.editing) ? (localizer.f('editGame')) : (localizer.f('submitNewGame'))}
+              <FormattedMessage id={(this.state.editing) ? ('actions.editGame') : ('actions.submitNewGame')}/>
             </Button>
           </Modal.Actions>
           <IgdbResearchModal/>

@@ -2,7 +2,7 @@ dist: xenial
 
 language: node_js
 
-node_js: '8.9'
+node_js: '10.2'
 
 env:
   global:
@@ -15,11 +15,13 @@ branches:
   - gh-pages-src
 
 before_script:
-  - yarn build:modules
+  - yarn keys:decipher
+  - yarn build:modules-no-electron
   - yarn test
 
 script:
-  - yarn dist:ci
+  - if [[ "$TRAVIS_BRANCH" == "stable" ]]; then yarn build:modules; fi
+  - if [[ "$TRAVIS_BRANCH" == "stable" ]]; then yarn dist:ci; else yarn build:prod; fi
 
 cache:
   yarn: true

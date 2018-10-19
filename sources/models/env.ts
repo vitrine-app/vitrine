@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as uuid from 'uuid/v5';
 
 export function isProduction(): boolean {
-  return process.env.ELECTRON_DEV !== 'dev';
+  return !!process.env.ELECTRON_DEV;
 }
 
 export function isFakeProd(): boolean {

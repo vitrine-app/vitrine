@@ -1,5 +1,16 @@
 # Vitrine Changelog
 
+## v0.9.5 (19/10/2018)
+- fix: Windows native addons build for Electron environnement [#93](https://github.com/paul-roman/vitrine/pull/93)
+- fix: store ciphered keys only [#92](https://github.com/paul-roman/vitrine/pull/92)
+- fix: retablish Windows tests and code coverage [#90](https://github.com/paul-roman/vitrine/pull/90)
+- feat: update dependencies [#88](https://github.com/paul-roman/vitrine/pull/88)
+- fix(ci): build artifacts only on stable branch [#87](https://github.com/paul-roman/vitrine/pull/87)
+- feat(i18n): full support for language change [#86](https://github.com/paul-roman/vitrine/pull/86)
+- hotfix: isProduction helper now use ELECTRON_ENV variable [#85](https://github.com/paul-roman/vitrine/pull/85)
+
+---
+
 ## 0.9.4 (04/10/2018)
 - hotfix: folders creation first launch [#84](https://github.com/paul-roman/vitrine/pull/84)
 - refactor: potential games crawlers [#83](https://github.com/paul-roman/vitrine/pull/83)

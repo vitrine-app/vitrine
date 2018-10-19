@@ -1,4 +1,6 @@
-import { connect, Dispatch } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 import { Action } from '../actions/actionsTypes';
 import { closeTimePlayedEditionModal } from '../actions/modals';
@@ -16,4 +18,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-export const TimePlayedEditionModal = connect(mapStateToProps, mapDispatchToProps)(TimePlayedEditionModalComponent);
+export const TimePlayedEditionModal = injectIntl(connect(mapStateToProps, mapDispatchToProps)(TimePlayedEditionModalComponent));

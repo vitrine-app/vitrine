@@ -1,4 +1,6 @@
-import { connect, Dispatch } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { Action } from '../actions/actionsTypes';
@@ -36,4 +38,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-export const SideBar = connect(mapStateToProps, mapDispatchToProps)(SideBarComponent);
+export const SideBar = injectIntl(connect(mapStateToProps, mapDispatchToProps)(SideBarComponent));

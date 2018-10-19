@@ -18,6 +18,24 @@ export function modulesConfig(state: any = {}, action: Action): any {
   }
 }
 
+export function locales(state: any[] = [], action: Action): any[] {
+  switch (action.type) {
+    case ActionType.SET_LOCALES:
+      return action.payload.locales;
+    default:
+      return state;
+  }
+}
+
+export function locale(state: string = '', action: Action): string {
+  switch (action.type) {
+    case ActionType.SET_LOCALE:
+      return action.payload.locale;
+    default:
+      return state;
+  }
+}
+
 export function internetConnection(state: boolean = true, action: Action): boolean {
   switch (action.type) {
     case ActionType.SET_INTERNET_CONNECTION:

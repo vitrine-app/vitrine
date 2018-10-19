@@ -17,7 +17,7 @@ export abstract class VitrineComponent<P, S> extends React.Component<P, S & Stat
   protected throwError(error: Error) {
     this.setState({
       error
-    });
+    } as any);
   }
 
   protected checkErrors() {

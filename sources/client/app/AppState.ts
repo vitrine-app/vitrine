@@ -21,11 +21,13 @@ import {
   settingsModalVisible,
   timePlayedEditionModalVisible
 } from './reducers/modals';
-import { internetConnection, modulesConfig, settings } from './reducers/settings';
+import { internetConnection, locale, locales, modulesConfig, settings } from './reducers/settings';
 
 export interface AppState {
+  locale: string;
   settings: any;
   modulesConfig: any;
+  locales: any[];
   internetConnection: boolean;
   potentialGames: GamesCollection<PotentialGame>;
   playableGames: GamesCollection<PlayableGame>;
@@ -42,9 +44,11 @@ export interface AppState {
   settingsModalVisible: boolean;
 }
 
-export const vitrineStore: Store<AppState> = createStore(combineReducers({
+export const vitrineStore: Store<any> = createStore(combineReducers({
   settings,
   modulesConfig,
+  locales,
+  locale,
   internetConnection,
   potentialGames,
   playableGames,
@@ -62,6 +66,8 @@ export const vitrineStore: Store<AppState> = createStore(combineReducers({
 }), {
   settings: null,
   modulesConfig: null,
+  locales: [],
+  locale: 'en',
   internetConnection: true,
   potentialGames: new GamesCollection<PotentialGame>(),
   playableGames: new GamesCollection<PlayableGame>(),
@@ -95,14 +101,14 @@ export function getSortedGamesFromStore(dispatchedData: any): PlayableGame[] {
   const sortParameter = gamesSortParameter || vitrineStore.getState().gamesSortParameter;
   switch (sortParameter) {
     case (SortParameter.NAME): {
-      return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
+      return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
         return (gameA.name > gameB.name) ? (1) : (-1);
-      });
+      }));
     }
     case (SortParameter.TIME_PLAYED): {
-      return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
+      return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
         return (gameA.timePlayed < gameB.timePlayed) ? (1) : (-1);
-      });
+      }));
     }
     default:
       return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {

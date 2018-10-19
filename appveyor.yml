@@ -21,13 +21,16 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - ps: Install-Product node 8.9 x64
+  - ps: Install-Product node 10.2 x64
   - yarn install
 
 before_build:
-  - yarn build:modules
+  - yarn keys:decipher
+  - yarn build:modules-no-electron
+  - yarn test
 
 build_script:
-  - yarn dist:ci
+  - if %APPVEYOR_REPO_BRANCH%==stable (yarn build:modules)
+  - if %APPVEYOR_REPO_BRANCH%==stable (yarn dist:ci) else (yarn build:prod)
 
 test: off

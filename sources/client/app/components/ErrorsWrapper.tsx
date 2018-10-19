@@ -1,9 +1,9 @@
 import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Button, Modal } from 'semantic-ui-react';
 
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 
 interface State {
@@ -43,7 +43,7 @@ export class ErrorsWrapper extends React.Component<{}, State> {
           className={css(styles.modal)}
         >
           <Modal.Header>
-            {localizer.f('crash')}
+            <FormattedMessage id={'crash'}/>
           </Modal.Header>
           <Modal.Content>
             <span className={css(styles.errorIcon)}>:(</span>
@@ -56,13 +56,13 @@ export class ErrorsWrapper extends React.Component<{}, State> {
               secondary={true}
               onClick={this.quitApplication}
             >
-              {localizer.f('quit')}
+              <FormattedMessage id={'actions.quit'}/>
             </Button>
             <Button
               secondary={true}
               onClick={this.relaunchApplication}
             >
-              {localizer.f('relaunch')}
+              <FormattedMessage id={'actions.relaunch'}/>
             </Button>
           </Modal.Actions>
         </Modal>

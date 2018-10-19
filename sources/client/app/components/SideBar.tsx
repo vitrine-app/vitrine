@@ -2,6 +2,7 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { ContextMenuTrigger } from 'react-contextmenu';
+import { InjectedIntl } from 'react-intl';
 import { Button, Dropdown, Grid } from 'semantic-ui-react';
 
 import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
@@ -9,7 +10,6 @@ import { GamesCollection } from '../../../models/GamesCollection';
 import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { ContextMenu } from '../containers/ContextMenu';
-import { localizer } from '../Localizer';
 import { serverListener } from '../ServerListener';
 import { ActionButton } from './ActionButton';
 import { VitrineComponent } from './VitrineComponent';
@@ -20,6 +20,7 @@ interface Props {
   selectedGame: PlayableGame;
   refreshingGames: boolean;
   gamesSortParameter: SortParameter;
+  intl: InjectedIntl;
   selectGame: (selectedGame: PlayableGame) => void;
   sortGames: (gamesSortParameter: SortParameter) => void;
   refreshGames: () => void;
@@ -38,31 +39,31 @@ export class SideBar extends VitrineComponent<Props, {}> {
     this.gamesSortParameters = [
       {
         parameter: SortParameter.NAME,
-        text: 'sortByName'
+        text: 'sort.byName'
       },
       {
         parameter: SortParameter.TIME_PLAYED,
-        text: 'sortByTimePlayed'
+        text: 'sort.byTimePlayed'
       },
       {
         parameter: SortParameter.RELEASE_DATE,
-        text: 'sortByReleaseDate'
+        text: 'sort.byReleaseDate'
       },
       {
         parameter: SortParameter.RATING,
-        text: 'sortByRating'
+        text: 'sort.byRating'
       },
       {
         parameter: SortParameter.SERIES,
-        text: 'sortBySeries'
+        text: 'sort.bySeries'
       },
       {
         parameter: SortParameter.DEVELOPER,
-        text: 'sortByDeveloper'
+        text: 'sort.byDeveloper'
       },
       {
         parameter: SortParameter.PUBLISHER,
-        text: 'sortByPublisher'
+        text: 'sort.byPublisher'
       }
     ];
 
@@ -98,7 +99,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
             <Grid.Column className={css(styles.actionButton)}>
               <ActionButton
                 icon={faPlus}
-                tooltip={localizer.f('addGameLabel')}
+                tooltip={this.props.intl.formatMessage({ id: 'actions.addGame' })}
                 onClick={this.props.openGameAddModal}
               />
             </Grid.Column>
@@ -106,14 +107,14 @@ export class SideBar extends VitrineComponent<Props, {}> {
               <ActionButton
                 icon={faSyncAlt}
                 spin={this.props.refreshingGames}
-                tooltip={localizer.f('refreshLabel')}
+                tooltip={this.props.intl.formatMessage({ id: 'actions.refresh' })}
                 onClick={this.taskBarRefreshBtnClickHandler}
               />
             </Grid.Column>
             <Grid.Column className={css(styles.actionButton)}>
               <ActionButton
                 icon={faCogs}
-                tooltip={localizer.f('settings')}
+                tooltip={this.props.intl.formatMessage({ id: 'settings.settings' })}
                 onClick={this.props.openSettingsModal}
               />
             </Grid.Column>
@@ -137,11 +138,11 @@ export class SideBar extends VitrineComponent<Props, {}> {
                 style={{ display: (this.props.playableGames.size()) ? ('block') : ('none') }}
               >
                 <Dropdown.Menu>
-                  <Dropdown.Header icon='sort numeric ascending' content={localizer.f('sortGames')}/>
+                  <Dropdown.Header icon='sort numeric ascending' content={this.props.intl.formatMessage({ id: 'sort.sortGames' })}/>
                   {this.gamesSortParameters.map((gamesSortParameter: any, index: number) => (
                     <Dropdown.Item
                       key={index}
-                      text={localizer.f(gamesSortParameter.text)}
+                      text={this.props.intl.formatMessage({ id: gamesSortParameter.text })}
                       icon={(gamesSortParameter.parameter === this.props.gamesSortParameter) ? ('check') : ('')}
                       onClick={this.props.sortGames.bind(null, gamesSortParameter.parameter)}
                     />

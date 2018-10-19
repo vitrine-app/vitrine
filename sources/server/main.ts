@@ -5,9 +5,9 @@ import { logger } from './Logger';
 
 install();
 try {
-	logger.createLogger();
-	new Bootstrapper().launch();
+  logger.createLogger();
+  new Bootstrapper().launch();
 }
 catch (error) {
-	console.error('An uncaught error happened: ', error);
+  console.error('An uncaught error happened: ', error);
 }
