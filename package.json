@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
   "productName": "Vitrine",
