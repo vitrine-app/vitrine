@@ -1,6 +1,6 @@
 # Vitrine Changelog
 
-## v0.9.5 (19/10/2018)
+## 0.9.5 (19/10/2018)
 - fix: Windows native addons build for Electron environnement [#93](https://github.com/paul-roman/vitrine/pull/93)
 - fix: store ciphered keys only [#92](https://github.com/paul-roman/vitrine/pull/92)
 - fix: retablish Windows tests and code coverage [#90](https://github.com/paul-roman/vitrine/pull/90)
