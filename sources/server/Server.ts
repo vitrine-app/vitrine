@@ -25,9 +25,9 @@ import { potentialGamesCacher } from './PotentialGamesCacher';
 import { WindowsHandler } from './WindowsHandler';
 
 export class Server {
+  private readonly windowsHandler: WindowsHandler;
   private vitrineConfig: any;
   private modulesConfig: any;
-  private windowsHandler: WindowsHandler;
   private potentialGames: GamesCollection<PotentialGame>;
   private playableGames: GamesCollection<PlayableGame>;
   private gameLaunched: boolean;
@@ -45,8 +45,7 @@ export class Server {
 
   public registerEvents() {
     this.windowsHandler.listenToLoader('ready', this.loaderReady.bind(this))
-      .listenToLoader('launch-client', this.windowsHandler.createClientWindow.bind(this.windowsHandler))
-      .listenToLoader('update-and-restart', this.updateApp.bind(this));
+      .listenToLoader('launch-client', this.windowsHandler.createClientWindow.bind(this.windowsHandler));
 
     this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
       .listenToClient('ready', this.windowsHandler.clientReady.bind(this.windowsHandler))
@@ -70,7 +69,7 @@ export class Server {
     logger.info('Server', 'Checking for updates.');
     autoUpdater.allowPrerelease = true;
     autoUpdater.signals.progress((progress: ProgressInfo) => {
-      this.windowsHandler.sendToLoader('update-progress', progress);
+      this.windowsHandler.sendToLoader('update-progress', Math.round(progress.percent));
     });
     autoUpdater.signals.updateDownloaded(() => {
       autoUpdater.quitAndInstall(true, true);
@@ -90,11 +89,6 @@ export class Server {
       logger.info('Server', 'Internet is offline, aborting updates checking.');
       this.windowsHandler.sendToLoader('no-update-found');
     }
-  }
-
-  public updateApp() {
-    logger.info('Server', 'Quitting Vitrine and installing new version.');
-    autoUpdater.quitAndInstall(true, true);
   }
 
   public async clientSettingsAsked() {
