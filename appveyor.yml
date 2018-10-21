@@ -30,7 +30,9 @@ before_build:
   - yarn test
 
 build_script:
-  - if %APPVEYOR_REPO_BRANCH%==stable (yarn build:modules)
-  - if %APPVEYOR_REPO_BRANCH%==stable (yarn dist:ci) else (yarn build:prod)
+  - if %APPVEYOR_REPO_BRANCH%==stable (set prod=true)
+  - if %APPVEYOR_REPO_BRANCH:~0,8%==release/ (set prod=true)
+  - if %prod%==true (yarn build:modules)
+  - if %prod%==true (yarn dist:ci) else (yarn build:prod)
 
 test: off

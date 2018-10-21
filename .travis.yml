@@ -20,8 +20,8 @@ before_script:
   - yarn test
 
 script:
-  - if [[ "$TRAVIS_BRANCH" == "stable" ]]; then yarn build:modules; fi
-  - if [[ "$TRAVIS_BRANCH" == "stable" ]]; then yarn dist:ci; else yarn build:prod; fi
+  - if [[ "$TRAVIS_BRANCH" == "stable" ]] || [[ "$TRAVIS_BRANCH" == release/* ]]; then yarn build:modules; fi
+  - if [[ "$TRAVIS_BRANCH" == "stable" ]] || [[ "$TRAVIS_BRANCH" == release/* ]]; then yarn dist:ci; else yarn build:prod; fi
 
 cache:
   yarn: true
