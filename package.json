@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
   "productName": "Vitrine",
@@ -16,7 +16,7 @@
     "url": "git://github.com/paul-roman/vitrine.git"
   },
   "engines": {
-    "node": ">=8.9"
+    "node": ">=10.2"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
@@ -132,8 +132,8 @@
     "test:run": "mocha",
     "test:coverage": "nyc report --reporter=text-lcov | coveralls",
     "pack": "yarn build:modules && yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build --dir",
-    "dist": "yarn build:modules && yarn test && yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
-    "dist:ci": "yarn build:prod && cross-env ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true build",
+    "dist": "yarn build:modules && yarn test && yarn build:prod && build",
+    "dist:ci": "yarn build:prod && build --publish=always",
     "authors": "node scripts/run.js authors.sh",
     "changelog": "gren changelog -o && gren release -o"
   },
