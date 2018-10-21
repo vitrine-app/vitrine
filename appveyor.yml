@@ -30,7 +30,6 @@ before_build:
   - yarn test
 
 build_script:
-  - if %APPVEYOR_REPO_BRANCH%==stable (yarn build:modules)
-  - if %APPVEYOR_REPO_BRANCH%==stable (yarn dist:ci) else (yarn build:prod)
+  - node scripts/ci_build.js
 
 test: off

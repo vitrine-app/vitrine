@@ -6,7 +6,7 @@ import { GamesCollection } from '../../models/GamesCollection';
 import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { steamKey } from '../../modules/keysProvider';
-import { AcfParser } from '../api/AcfParser';
+import { parseAcf } from '../api/AcfParser';
 import { logger } from '../Logger';
 import { steamAppIdsCacher } from '../SteamAppIdsCacher';
 import { PotentialGamesCrawler } from './PotentialGamesCrawler';
@@ -49,7 +49,7 @@ class SteamCrawler extends PotentialGamesCrawler {
         logger.info('SteamCrawler', `No Steam games found in this directory.`);
         return [];
       }
-      const gameManifests: any[] = files.map((appManifest: any) => new AcfParser(appManifest).toObject().AppState)
+      const gameManifests: any[] = (await Promise.all(files.map(async (appManifest: any) => (await parseAcf(appManifest)).appState)))
         .filter((appManifest: any) => {
           const found: boolean = this.playableGames.filter((playableGame: any) =>
             parseInt(appManifest.appid) === playableGame.details.steamId
