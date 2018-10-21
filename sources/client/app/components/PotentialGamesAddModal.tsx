@@ -1,22 +1,25 @@
 import { css, StyleSheet } from 'aphrodite';
+import * as chunk from 'chunk';
 import { margin } from 'css-verbose';
 import * as React from 'react';
-import { FormattedMessage } from 'react-intl';
-import { Grid, Modal, Transition } from 'semantic-ui-react';
+import { InjectedIntl } from 'react-intl';
+import { Grid } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../models/GamesCollection';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { BlurPicture } from './BlurPicture';
+import { FadingModal } from './FadingModal';
 
 import { faPlusCircle } from '@fortawesome/fontawesome-free-solid';
 import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-  potentialGames: GamesCollection<PotentialGame>;
-  visible: boolean;
-  setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
-  openGameAddModal: () => void;
   closePotentialGamesAddModal: () => void;
+  intl: InjectedIntl;
+  openGameAddModal: () => void;
+  potentialGames: GamesCollection<PotentialGame>;
+  setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
+  visible: boolean;
 }
 
 interface State {
@@ -49,30 +52,26 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
   }
 
   public render(): JSX.Element {
+    const potentialGamesRows: PotentialGame[][] = chunk(this.props.potentialGames.getGames(), 6);
     return (
-      <Transition
-        animation={'fade down'}
-        duration={this.modalsTransitionDuration}
-        onStart={this.animateModal.bind(this, true)}
-        onComplete={this.animateModal.bind(this, false)}
+      <FadingModal
+        onClose={this.props.closePotentialGamesAddModal}
+        size={'large'}
+        style={{ margin: margin(1..rem(), 'auto') }}
+        title={this.props.intl.formatMessage({ id: 'actions.addGames' })}
         visible={this.props.visible}
       >
-        <Modal
-          open={this.state.transitionVisible}
-          onClose={this.props.closePotentialGamesAddModal}
-          className={css(styles.modal)}
-        >
-          <Modal.Header><FormattedMessage id={'actions.addGames'}/></Modal.Header>
-          <Modal.Content>
-            <Grid>
-              {this.props.potentialGames.map((potentialGame: PotentialGame, index: number) =>
-                <Grid.Column width={3} key={index}>
+        <Grid columns={6}>
+          {potentialGamesRows.map((potentialGamesRow: PotentialGame[], index: number) =>
+            <Grid.Row className={css(styles.gamesRow)} key={index}>
+              {potentialGamesRow.map((potentialGame: PotentialGame, index: number) =>
+                <Grid.Column key={index}>
                   <div className={css(styles.coverWrapper)}>
                     <BlurPicture
-                      faIcon={faPlusCircle}
-                      fontSize={55}
                       background={potentialGame.details.cover}
                       clickHandler={this.gameCoverClick.bind(null, potentialGame)}
+                      faIcon={faPlusCircle}
+                      fontSize={55}
                     />
                   </div>
                   <p className={css(styles.potentialGameName)}>
@@ -80,10 +79,10 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
                   </p>
                 </Grid.Column>
               )}
-            </Grid>
-          </Modal.Content>
-        </Modal>
-      </Transition>
+            </Grid.Row>
+          )}
+        </Grid>
+      </FadingModal>
     );
   }
 }
@@ -96,6 +95,11 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   },
   coverWrapper: {
     height: 200
+  },
+  gamesRow: {
+    textAlign: 'center',
+    paddingTop: 20,
+    paddingBottom: 20
   },
   potentialGameName: {
     fontSize: 17,

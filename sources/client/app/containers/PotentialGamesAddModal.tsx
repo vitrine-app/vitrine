@@ -1,3 +1,4 @@
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -25,4 +26,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-export const PotentialGamesAddModal = connect(mapStateToProps, mapDispatchToProps)(PotentialGamesAddModalComponent);
+export const PotentialGamesAddModal = injectIntl(connect(mapStateToProps, mapDispatchToProps)(PotentialGamesAddModalComponent));

@@ -4,7 +4,7 @@ import { border, margin, rgba } from 'css-verbose';
 import * as moment from 'moment';
 import * as React from 'react';
 import { FormattedMessage, InjectedIntl } from 'react-intl';
-import { Button, Form, Grid, Input, Modal, TextArea, Transition } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, TextArea } from 'semantic-ui-react';
 
 import { GameSource, PotentialGame } from '../../../models/PotentialGame';
 import { IgdbResearchModal } from '../containers/IgdbResearchModal';
@@ -18,6 +18,7 @@ import { VitrineComponent } from './VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import { PlayableGame } from '../../../models/PlayableGame';
+import { FadingModal } from './FadingModal';
 
 interface Props {
   internetConnection: boolean;
@@ -59,7 +60,6 @@ interface State {
   igdbFilled: boolean;
   submitButtonLoading: boolean;
   igdbButtonLoading: boolean;
-  transitionVisible: boolean;
 }
 
 export class GameAddModal extends VitrineComponent<Props, State> {
@@ -89,8 +89,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
       modalVisible: this.props.visible,
       igdbFilled: false,
       submitButtonLoading: false,
-      igdbButtonLoading: false,
-      transitionVisible: true
+      igdbButtonLoading: false
     };
     this.state = { ...this.emptyState };
 
@@ -103,7 +102,6 @@ export class GameAddModal extends VitrineComponent<Props, State> {
     this.executableButton = this.executableButton.bind(this);
     this.searchIgdbButton = this.searchIgdbButton.bind(this);
     this.submitButton = this.submitButton.bind(this);
-    this.animateModal = this.animateModal.bind(this);
   }
 
   private fillIgdbGame(gameInfos: any) {
@@ -156,10 +154,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
     setTimeout( () => {
       this.props.setPotentialGameToAdd(null);
       this.props.setGameToEdit(null);
-      this.setState({
-        ...this.emptyState,
-        transitionVisible: false
-      });
+      this.setState({ ...this.emptyState });
     }, this.modalsTransitionDuration);
   }
 
@@ -249,13 +244,6 @@ export class GameAddModal extends VitrineComponent<Props, State> {
       serverListener.send('add-game', gameInfos);
   }
 
-  private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.props.visible)
-      this.setState({
-        transitionVisible: this.props.visible
-      });
-  }
-
   public componentDidMount() {
     serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this))
       .listen('add-playable-game', this.addPlayableGame.bind(this))
@@ -303,220 +291,9 @@ export class GameAddModal extends VitrineComponent<Props, State> {
 
   public render(): JSX.Element {
     return (
-      <Transition
-        animation={'fade down'}
-        duration={this.modalsTransitionDuration}
-        onStart={this.animateModal.bind(this, true)}
-        onComplete={this.animateModal.bind(this, false)}
-        visible={this.props.visible}
-      >
-        <Modal
-          open={this.state.transitionVisible}
-          onClose={this.closeModal}
-          size={'large'}
-          className={css(styles.modal)}
-        >
-          <Modal.Header>
-            {<FormattedMessage id={(this.state.editing) ? ('actions.editGameTitle') : ('actions.addGame')}/>}
-          </Modal.Header>
-          <Modal.Content className={css(styles.modalBody)}>
-            <Grid>
-              <Grid.Column width={3}>
-                <label className={css(styles.formLabel)}><FormattedMessage id={'game.cover'}/></label>
-                <div className={css(styles.coverWrapper)}>
-                  <BlurPicture
-                    faIcon={faFolderOpen}
-                    fontSize={55}
-                    background={this.state.gameData.cover}
-                    clickHandler={this.gameCoverClickHandler}
-                  />
-                </div>
-              </Grid.Column>
-              <Grid.Column width={1}/>
-              <Grid.Column width={12}>
-                <Form>
-                  <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
-                    <Input
-                      name={'name'}
-                      size={'large'}
-                      placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
-                      value={this.state.gameData.name}
-                      onChange={this.inputChangeHandler}
-                    />
-                  </Form.Field>
-                  <Grid>
-                    <Grid.Column width={11}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
-                        <Input
-                          name={'series'}
-                          size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
-                          value={this.state.gameData.series}
-                          onChange={this.inputChangeHandler}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                    <Grid.Column width={5}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.releaseDate'}/></label>
-                        <DatePicker
-                          value={this.state.gameData.date}
-                          dateFormat={'DD/MM/YYYY'}
-                          onChange={this.dateChangeHandler}
-                          inputProps={{
-                            size: 'large',
-                            placeholder: this.props.intl.formatMessage({ id: 'game.releaseDate' }),
-                            readOnly: true
-                          }}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                  <Grid>
-                    <Grid.Column width={8}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.developer'}/></label>
-                        <Input
-                          name={'developer'}
-                          size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id:  'game.developer' })}
-                          value={this.state.gameData.developer}
-                          onChange={this.inputChangeHandler}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                    <Grid.Column width={8}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.publisher'}/></label>
-                        <Input
-                          name={'publisher'}
-                          size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'game.publisher' })}
-                          value={this.state.gameData.publisher}
-                          onChange={this.inputChangeHandler}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                  <Grid>
-                    <Grid.Column style={{ width: 84.5.percents() }}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.genres'}/></label>
-                        <Input
-                          name={'genres'}
-                          size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'game.genres' })}
-                          value={this.state.gameData.genres}
-                          onChange={this.inputChangeHandler}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                    <Grid.Column width={2}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.rating'}/></label>
-                        <NumberPicker
-                          min={1}
-                          max={100}
-                          name={'rating'}
-                          placeholder={this.props.intl.formatMessage({ id: 'game.rating' })}
-                          value={this.state.gameData.rating}
-                          onChange={this.ratingChangeHandler}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                  <Grid>
-                    <Grid.Column width={16}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.summary'}/></label>
-                        <TextArea
-                          name={'summary'}
-                          className={css(styles.formTextArea)}
-                          placeholder={this.props.intl.formatMessage({ id: 'game.summary' })}
-                          value={this.state.gameData.summary}
-                          onChange={this.inputChangeHandler}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                  <hr className={css(styles.formHr)}/>
-                  <Grid>
-                    <Grid.Column width={16}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.executable'}/></label>
-                        <Input
-                          label={
-                            <Button
-                              secondary={true}
-                              onClick={this.executableButton.bind(this)}
-                            >
-                              <FontAwesomeIcon icon={faFolderOpen}/>
-                            </Button>
-                          }
-                          labelPosition={'right'}
-                          name={'executable'}
-                          size={'large'}
-                          placeholder={this.props.intl.formatMessage({ id: 'game.executable' })}
-                          value={this.state.gameData.executable}
-                          onClick={this.executableButton}
-                          readOnly={true}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                  <Grid>
-                    <Grid.Column width={16}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.lineArguments'}/></label>
-                        <div className={'ui large input'}>
-                          <input
-                            name={'arguments'}
-                            className={css(styles.lineArgumentsInput)}
-                            placeholder={this.props.intl.formatMessage({ id: 'game.lineArguments' })}
-                            value={this.state.gameData.arguments}
-                            onChange={this.inputChangeHandler}
-                          />
-                        </div>
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                  <hr className={css(styles.formHr)}/>
-                  <Grid>
-                    <Grid.Column width={16}>
-                      <Form.Field>
-                        <label className={css(styles.formLabel)}><FormattedMessage id={'game.backgroundImage'}/></label>
-                        <ImagesCollection
-                          images={this.state.gameData.potentialBackgrounds}
-                          onChange={this.changeBackgroundHandler}
-                        />
-                      </Form.Field>
-                    </Grid.Column>
-                  </Grid>
-                  <input
-                    name={'cover'}
-                    value={this.state.gameData.cover}
-                    onChange={this.inputChangeHandler}
-                    hidden={true}
-                  />
-                  <input
-                    name={'background'}
-                    value={this.state.gameData.backgroundScreen}
-                    onChange={this.inputChangeHandler}
-                    hidden={true}
-                  />
-                  <input
-                    name={'source'}
-                    value={this.state.gameData.source}
-                    onChange={this.inputChangeHandler}
-                    hidden={true}
-                  />
-                </Form>
-              </Grid.Column>
-            </Grid>
-          </Modal.Content>
-          <Modal.Actions>
+      <FadingModal
+        actions={
+          <React.Fragment>
             <Button
               secondary={true}
               disabled={!this.state.gameData.name || !this.props.internetConnection}
@@ -533,11 +310,211 @@ export class GameAddModal extends VitrineComponent<Props, State> {
             >
               <FormattedMessage id={(this.state.editing) ? ('actions.editGame') : ('actions.submitNewGame')}/>
             </Button>
-          </Modal.Actions>
-          <IgdbResearchModal/>
-          {this.checkErrors()}
-        </Modal>
-      </Transition>
+          </React.Fragment>
+        }
+        onClose={this.closeModal}
+        size={'large'}
+        title={this.props.intl.formatMessage({ id: (this.state.editing) ? ('actions.editGameTitle') : ('actions.addGame') })}
+        visible={this.props.visible}
+      >
+        <Grid>
+          <Grid.Column width={3}>
+            <label className={css(styles.formLabel)}><FormattedMessage id={'game.cover'}/></label>
+            <div className={css(styles.coverWrapper)}>
+              <BlurPicture
+                faIcon={faFolderOpen}
+                fontSize={55}
+                background={this.state.gameData.cover}
+                clickHandler={this.gameCoverClickHandler}
+              />
+            </div>
+          </Grid.Column>
+          <Grid.Column width={1}/>
+          <Grid.Column width={12}>
+            <Form>
+              <Form.Field>
+                <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
+                <Input
+                  name={'name'}
+                  size={'large'}
+                  placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
+                  value={this.state.gameData.name}
+                  onChange={this.inputChangeHandler}
+                />
+              </Form.Field>
+              <Grid>
+                <Grid.Column width={11}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
+                    <Input
+                      name={'series'}
+                      size={'large'}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
+                      value={this.state.gameData.series}
+                      onChange={this.inputChangeHandler}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+                <Grid.Column width={5}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.releaseDate'}/></label>
+                    <DatePicker
+                      value={this.state.gameData.date}
+                      dateFormat={'DD/MM/YYYY'}
+                      onChange={this.dateChangeHandler}
+                      inputProps={{
+                        size: 'large',
+                        placeholder: this.props.intl.formatMessage({ id: 'game.releaseDate' }),
+                        readOnly: true
+                      }}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+              </Grid>
+              <Grid>
+                <Grid.Column width={8}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.developer'}/></label>
+                    <Input
+                      name={'developer'}
+                      size={'large'}
+                      placeholder={this.props.intl.formatMessage({ id:  'game.developer' })}
+                      value={this.state.gameData.developer}
+                      onChange={this.inputChangeHandler}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+                <Grid.Column width={8}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.publisher'}/></label>
+                    <Input
+                      name={'publisher'}
+                      size={'large'}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.publisher' })}
+                      value={this.state.gameData.publisher}
+                      onChange={this.inputChangeHandler}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+              </Grid>
+              <Grid>
+                <Grid.Column style={{ width: 84.5.percents() }}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.genres'}/></label>
+                    <Input
+                      name={'genres'}
+                      size={'large'}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.genres' })}
+                      value={this.state.gameData.genres}
+                      onChange={this.inputChangeHandler}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+                <Grid.Column width={2}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.rating'}/></label>
+                    <NumberPicker
+                      min={1}
+                      max={100}
+                      name={'rating'}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.rating' })}
+                      value={this.state.gameData.rating}
+                      onChange={this.ratingChangeHandler}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+              </Grid>
+              <Grid>
+                <Grid.Column width={16}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.summary'}/></label>
+                    <TextArea
+                      name={'summary'}
+                      className={css(styles.formTextArea)}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.summary' })}
+                      value={this.state.gameData.summary}
+                      onChange={this.inputChangeHandler}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+              </Grid>
+              <hr className={css(styles.formHr)}/>
+              <Grid>
+                <Grid.Column width={16}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.executable'}/></label>
+                    <Input
+                      label={
+                        <Button
+                          secondary={true}
+                          onClick={this.executableButton.bind(this)}
+                        >
+                          <FontAwesomeIcon icon={faFolderOpen}/>
+                        </Button>
+                      }
+                      labelPosition={'right'}
+                      name={'executable'}
+                      size={'large'}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.executable' })}
+                      value={this.state.gameData.executable}
+                      onClick={this.executableButton}
+                      readOnly={true}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+              </Grid>
+              <Grid>
+                <Grid.Column width={16}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.lineArguments'}/></label>
+                    <div className={'ui large input'}>
+                      <input
+                        name={'arguments'}
+                        className={css(styles.lineArgumentsInput)}
+                        placeholder={this.props.intl.formatMessage({ id: 'game.lineArguments' })}
+                        value={this.state.gameData.arguments}
+                        onChange={this.inputChangeHandler}
+                      />
+                    </div>
+                  </Form.Field>
+                </Grid.Column>
+              </Grid>
+              <hr className={css(styles.formHr)}/>
+              <Grid>
+                <Grid.Column width={16}>
+                  <Form.Field>
+                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.backgroundImage'}/></label>
+                    <ImagesCollection
+                      images={this.state.gameData.potentialBackgrounds}
+                      onChange={this.changeBackgroundHandler}
+                    />
+                  </Form.Field>
+                </Grid.Column>
+              </Grid>
+              <input
+                name={'cover'}
+                value={this.state.gameData.cover}
+                onChange={this.inputChangeHandler}
+                hidden={true}
+              />
+              <input
+                name={'background'}
+                value={this.state.gameData.backgroundScreen}
+                onChange={this.inputChangeHandler}
+                hidden={true}
+              />
+              <input
+                name={'source'}
+                value={this.state.gameData.source}
+                onChange={this.inputChangeHandler}
+                hidden={true}
+              />
+            </Form>
+          </Grid.Column>
+        </Grid>
+        <IgdbResearchModal/>
+        {this.checkErrors()}
+      </FadingModal>
     );
   }
 }

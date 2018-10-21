@@ -3,11 +3,12 @@ import { css, StyleSheet } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { FormattedMessage, InjectedIntl } from 'react-intl';
-import { Button, Checkbox, Form, Grid, Input, Modal, Tab, Table, Transition } from 'semantic-ui-react';
+import { Button, Checkbox, Form, Grid, Input, Tab, Table } from 'semantic-ui-react';
 
 import { EmulatorSettingsRow } from '../containers/EmulatorSettingsRow';
 import { openDirectory } from '../helpers';
 import { serverListener } from '../ServerListener';
+import { FadingModal } from './FadingModal';
 import { GamesModule } from './GamesModule';
 import { VitrineComponent } from './VitrineComponent';
 
@@ -45,7 +46,6 @@ interface State {
   emulatedError: boolean;
   aliveEmulators: any[];
   emulatorsError: string;
-  transitionVisible: boolean;
 }
 
 export class SettingsModal extends VitrineComponent<Props, State> {
@@ -69,8 +69,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
       originError: false,
       emulatedError: false,
       aliveEmulators: (this.props.settings.emulated) ? (this.props.settings.emulated.aliveEmulators) : ([]),
-      emulatorsError: '',
-      transitionVisible: true
+      emulatorsError: ''
     };
     this.state = this.emptyState;
 
@@ -86,10 +85,10 @@ export class SettingsModal extends VitrineComponent<Props, State> {
     this.langSelect = this.langSelect.bind(this);
     this.emulatorConfigChange = this.emulatorConfigChange.bind(this);
     this.submitButton = this.submitButton.bind(this);
-    this.animateModal = this.animateModal.bind(this);
   }
 
   private closeModal() {
+    console.log(':c', this.props.firstLaunch);
     if (this.props.firstLaunch)
       return;
     this.props.closeSettingsModal();
@@ -261,13 +260,6 @@ export class SettingsModal extends VitrineComponent<Props, State> {
     }
   }
 
-  private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.props.visible)
-      this.setState({
-        transitionVisible: this.props.visible
-      });
-  }
-
   public render(): JSX.Element {
     const modulesSettings: JSX.Element = (
       <Tab.Pane className={css(styles.settingsPane)}>
@@ -339,7 +331,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               <Checkbox
                 checked={this.state.steamSearchCloud}
                 onChange={this.steamSearchCloudCheckbox}
-                label={<FormattedMessage id={'settings.steamSearchCloud'}/>}
+                label={this.props.intl.formatMessage({ id: 'settings.steamSearchCloud' })}
                 toggle={true}
               />
             </Form.Field>
@@ -370,7 +362,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 className={css(styles.modulesError)}
                 style={{ display: (this.state.originError) ? ('inline-block') : ('none') }}
               >
-                {<FormattedMessage id={'settings.pathError'}/>}
+                <FormattedMessage id={'settings.pathError'}/>
               </span>
             </Form.Field>
           </div>
@@ -400,7 +392,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
                 className={css(styles.modulesError)}
                 style={{ display: (this.state.emulatedError) ? ('inline-block') : ('none') }}
               >
-                {<FormattedMessage id={'settings.pathError'}/>}
+                <FormattedMessage id={'settings.pathError'}/>
               </span>
             </Form.Field>
           </div>
@@ -454,55 +446,10 @@ export class SettingsModal extends VitrineComponent<Props, State> {
         />
       </Tab.Pane>
     );
-
     return (
-      <Transition
-        animation={'fade down'}
-        duration={this.modalsTransitionDuration}
-        onStart={this.animateModal.bind(this, true)}
-        onComplete={this.animateModal.bind(this, false)}
-        visible={this.props.visible}
-      >
-        <Modal
-          size={'large'}
-          open={this.state.transitionVisible}
-          onClose={this.closeModal}
-          className={css(styles.modal)}
-        >
-          <Modal.Header
-            className={css(styles.modalHeader)}
-            style={{ display: (!this.props.firstLaunch) ? ('block') : ('none') }}
-          >
-            <FormattedMessage id={'settings.settings'}/>
-          </Modal.Header>
-          <Modal.Content>
-            <div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
-              <h1><FormattedMessage id={'welcomeMessage'}/></h1>
-              <p><FormattedMessage id={'wizardText'}/></p>
-            </div>
-            <Tab
-              menu={{
-                fluid: true,
-                vertical: true,
-                tabular: true
-              }}
-              panes={[
-                {
-                  menuItem: this.props.intl.formatMessage({ id: 'settings.modules' }),
-                  render: () => modulesSettings
-                },
-                {
-                  menuItem: this.props.intl.formatMessage({ id: 'settings.emulators' }),
-                  render: () => emulatorsSettings
-                },
-                {
-                  menuItem: this.props.intl.formatMessage({ id: 'settings.locale' }),
-                  render: () => langsSettings
-                }
-              ]}
-            />
-          </Modal.Content>
-          <Modal.Actions className={css(styles.modalHeader)}>
+      <FadingModal
+        actions={
+          <React.Fragment>
             <Button
               secondary={true}
               style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
@@ -516,10 +463,41 @@ export class SettingsModal extends VitrineComponent<Props, State> {
             >
               <FormattedMessage id={'actions.confirm'}/>
             </Button>
-          </Modal.Actions>
-          {this.checkErrors()}
-        </Modal>
-      </Transition>
+          </React.Fragment>
+        }
+        onClose={this.closeModal}
+        title={this.props.intl.formatMessage({ id: 'settings.settings' })}
+        size={'large'}
+        style={{ margin: margin(5..rem(), 'auto'), width: 70..vw() }}
+        visible={this.props.visible}
+      >
+        <div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
+          <h1><FormattedMessage id={'welcomeMessage'}/></h1>
+          <p><FormattedMessage id={'wizardText'}/></p>
+        </div>
+        <Tab
+          menu={{
+            fluid: true,
+            vertical: true,
+            tabular: true
+          }}
+          panes={[
+            {
+              menuItem: this.props.intl.formatMessage({ id: 'settings.modules' }),
+              render: () => modulesSettings
+            },
+            {
+              menuItem: this.props.intl.formatMessage({ id: 'settings.emulators' }),
+              render: () => emulatorsSettings
+            },
+            {
+              menuItem: this.props.intl.formatMessage({ id: 'settings.locale' }),
+              render: () => langsSettings
+            }
+          ]}
+        />
+        {this.checkErrors()}
+      </FadingModal>
     );
   }
 }
