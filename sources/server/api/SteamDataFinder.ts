@@ -1,14 +1,14 @@
 import * as path from 'path';
 
 import { logger } from '../Logger';
-import { AcfParser } from './AcfParser';
+import { parseAcf } from './AcfParser';
 
 export async function findSteamData(steamConfig: any) {
   const loginUsersFilePath: string = path.resolve(steamConfig.installFolder, 'config', 'loginusers.vdf');
-  const loginUsersFile: any = new AcfParser(loginUsersFilePath).toObject().users;
+  const loginUsersFile: any = (await parseAcf(loginUsersFilePath)).users;
   logger.info('SteamUserFinder', `Steam users file parsed (${loginUsersFilePath}).`);
   const gamesLocationsFilePath: string = path.resolve(steamConfig.installFolder, 'config', 'config.vdf');
-  const gamesLocationFile: any = new AcfParser(gamesLocationsFilePath).toObject().InstallConfigStore.Software.Valve.Steam;
+  const gamesLocationFile: any = (await parseAcf(gamesLocationsFilePath)).installConfigStore.software.valve.steam;
   logger.info('SteamUserFinder', `Steam config file parsed (${gamesLocationsFilePath}).`);
 
   const gamesFolders: string[] = [
@@ -23,7 +23,7 @@ export async function findSteamData(steamConfig: any) {
     throw new Error('Steam last user has not been found. Please connect to Steam.');
   const lastUserKey: any = potentialUsers[0];
   return {
-    userName: loginUsersFile[lastUserKey].PersonaName,
+    userName: loginUsersFile[lastUserKey].personaName,
     userId: lastUserKey,
     gamesFolders
   };

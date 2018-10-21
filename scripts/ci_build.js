@@ -1,0 +1,15 @@
+const { exec } = require('shelljs');
+
+const branch = process.env.APPVEYOR_REPO_BRANCH || process.env.TRAVIS_BRANCH;
+
+if (!branch)
+  throw new Error('Branch is not defined. Check your CI configuration.');
+
+console.log(`====== Current branch: ${branch} ======`);
+if (branch === 'stable' || branch.startsWith('release/')) {
+  console.log('Deployment path.');
+  exec('yarn build:modules');
+  exec('yarn dist:ci');
+}
+else
+  exec('yarn build:prod');

@@ -1,27 +1,25 @@
 import * as fs from 'fs-extra';
 
-export class AcfParser {
-  private readonly acfFd: string;
+class AcfParser {
   private c: number;
 
-  public constructor(filename: string) {
-    this.acfFd = fs.readFileSync(filename).toString();
+  public constructor(private readonly fileContent: string) {
     this.c = 0;
   }
 
   public toObject(): any {
     const tree: any = {};
 
-    while (this.c < this.acfFd.length) {
+    while (this.c < this.fileContent.length) {
       this.deleteSpaces();
-      if (this.acfFd[this.c] === '}')
+      if (this.fileContent[this.c] === '}')
         return tree;
-      const name: string = this.readField();
+      const name: string = this.readField(true );
       this.deleteSpaces();
 
-      if (this.acfFd[this.c] === '"')
+      if (this.fileContent[this.c] === '"')
         tree[name] = this.readField();
-      else if (this.acfFd[this.c] === '{') {
+      else if (this.fileContent[this.c] === '{') {
         this.c++;
         this.deleteSpaces();
         tree[name] = this.toObject();
@@ -31,22 +29,29 @@ export class AcfParser {
     return tree;
   }
 
-  private readField(): string {
-    if (this.acfFd[this.c] !== '"')
+  private readField(fieldName: boolean = false): string {
+    if (this.fileContent[this.c] !== '"')
       return null;
     this.c++;
     let name: string = '';
-    while (this.acfFd[this.c] !== '"') {
-      name += this.acfFd[this.c];
+    while (this.fileContent[this.c] !== '"') {
+      name += this.fileContent[this.c];
       this.c++;
     }
     this.c++;
+    if (fieldName)
+      return name.charAt(0).toLowerCase() + name.slice(1);
     return name;
   }
 
   private deleteSpaces(): void {
-    while (this.acfFd[this.c] === '\t' || this.acfFd[this.c] === ' '
-    || this.acfFd[this.c] === '\r' || this.acfFd[this.c] === '\n')
+    while (this.fileContent[this.c] === '\t' || this.fileContent[this.c] === ' '
+    || this.fileContent[this.c] === '\r' || this.fileContent[this.c] === '\n')
       this.c++;
   }
+}
+
+export async function parseAcf(filename: string) {
+  const fileContent: any = await fs.readFile(filename);
+  return new AcfParser(fileContent.toString()).toObject();
 }

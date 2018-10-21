@@ -1,5 +1,9 @@
 # Vitrine Changelog
 
+## 0.9.6 (21/10/2018)
+- fix: ACF parser case-sensitivity [#100](https://github.com/paul-roman/vitrine/pull/100)
+- fix: environment deploy [#98](https://github.com/paul-roman/vitrine/pull/98)
+
 ## 0.9.5 (19/10/2018)
 - fix: Windows native addons build for Electron environnement [#93](https://github.com/paul-roman/vitrine/pull/93)
 - fix: store ciphered keys only [#92](https://github.com/paul-roman/vitrine/pull/92)
