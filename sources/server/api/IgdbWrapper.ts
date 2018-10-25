@@ -158,28 +158,10 @@ class IgdbWrapper {
 
 const igdbWrapper: IgdbWrapper = new IgdbWrapper();
 
-export function fillIgdbGame(gameId: number, lang?: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    igdbWrapper.setLang(lang).findGameById(gameId).then((game: any) => {
-      if (game instanceof Error)
-        reject(game);
-      else
-        resolve(game);
-    }).catch((error: Error) => {
-      reject(error);
-    });
-  });
+export async function fillIgdbGame(gameId: number, lang?: string) {
+  return await igdbWrapper.setLang(lang).findGameById(gameId);
 }
 
-export function searchIgdbGame(gameName: string, resultsNb?: number): Promise<any> {
-  return new Promise((resolve, reject) => {
-    igdbWrapper.searchGames(gameName, resultsNb).then((games: any) => {
-      if (games instanceof Error)
-        reject(games);
-      else
-        resolve(games);
-    }).catch((error: Error) => {
-      reject(error);
-    });
-  });
+export async function searchIgdbGame(gameName: string, resultsNb?: number) {
+  return await igdbWrapper.searchGames(gameName, resultsNb);
 }
