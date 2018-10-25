@@ -1,13 +1,13 @@
 import { css, StyleSheet } from 'aphrodite';
 import * as React from 'react';
-import { Modal, Transition } from 'semantic-ui-react';
+import { Grid, Modal, Transition } from 'semantic-ui-react';
 
 import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
   actions?: JSX.Element;
   onClose: () => void;
-  title: string;
+  title: string | { title: string; rightElement: any };
   visible: boolean;
   size?: 'fullscreen' | 'large' | 'mini' | 'small' | 'tiny';
   style?: React.CSSProperties;
@@ -63,7 +63,15 @@ export class FadingModal extends VitrineComponent<Props, State> {
           size={this.props.size || 'small'}
           style={this.props.style}
         >
-          <Modal.Header>{this.props.title}</Modal.Header>
+          <Modal.Header>
+            {typeof this.props.title === 'string' ?
+              this.props.title :
+              <Grid>
+                <Grid.Column width={8}>{this.props.title.title}</Grid.Column>
+                <Grid.Column floated={'right'} width={8}>{this.props.title.rightElement}</Grid.Column>
+              </Grid>
+            }
+          </Modal.Header>
           <Modal.Content className={css(styles.modalContent)}>{this.props.children}</Modal.Content>
           {this.props.actions && <Modal.Actions>{this.props.actions}</Modal.Actions>}
         </Modal>
@@ -75,7 +83,8 @@ export class FadingModal extends VitrineComponent<Props, State> {
 const styles = StyleSheet.create({
   modal: {
     cursor: 'default',
-    userSelect: 'none'
+    userSelect: 'none',
+    transition: 'width 0.3s ease'
   },
   modalContent: {
     maxHeight: 83..vh(),

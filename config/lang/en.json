@@ -23,9 +23,12 @@
     "fillWithIgdb": "Fill details",
     "submitNewGame": "Add game",
     "quit": "Quit",
-    "relaunch": "Relaunch"
+    "relaunch": "Relaunch",
+    "addAllPotentialGames": "Add all games",
+    "gameBeingAdded": "Adding {name}..."
   },
   "loading": "Loading...",
+  "allGamesDisclaimer": "This operation may take a while.",
   "game": {
     "cover": "Game cover",
     "name": "Game name",

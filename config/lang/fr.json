@@ -23,9 +23,12 @@
     "fillWithIgdb": "Remplir les détails",
     "submitNewGame": "Ajouter",
     "quit": "Quitter",
-    "relaunch": "Relancer"
+    "relaunch": "Relancer",
+    "addAllPotentialGames": "Ajouter tous les jeux",
+    "gameBeingAdded": "Ajout de {name}..."
   },
   "loading": "Chargement...",
+  "allGamesDisclaimer": "This operation may take a while.",
   "game": {
     "cover": "Pochette du jeu",
     "name": "Nom du jeu",
