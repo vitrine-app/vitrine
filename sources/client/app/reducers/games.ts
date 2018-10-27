@@ -18,6 +18,8 @@ export function potentialGames(state: GamesCollection<PotentialGame> = null, act
   switch (action.type) {
     case ActionType.ADD_POTENTIAL_GAMES:
       return new GamesCollection<PotentialGame>(action.payload.potentialGames);
+    case ActionType.SET_POTENTIAL_GAMES:
+      return new GamesCollection<PotentialGame>(action.payload.potentialGames);
     default:
       return state;
   }
@@ -31,6 +33,8 @@ export function playableGames(state: GamesCollection<PlayableGame> = null, actio
       return new GamesCollection<PlayableGame>(action.payload.playableGames);
     case ActionType.REMOVE_PLAYABLE_GAME:
       return new GamesCollection<PlayableGame>(state.getGames()).removeGame(action.payload.gameUuid);
+    case ActionType.SET_PLAYABLE_GAMES:
+      return new GamesCollection<PlayableGame>(action.payload.playableGames);
     case ActionType.STOP_GAME:
       return new GamesCollection<PlayableGame>(state.getGames()).editGame(action.payload.playedGame);
     case ActionType.SORT_GAMES:

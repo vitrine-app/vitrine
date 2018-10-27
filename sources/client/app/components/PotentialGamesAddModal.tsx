@@ -6,6 +6,7 @@ import { FormattedMessage, InjectedIntl } from 'react-intl';
 import { Button, Grid, Progress } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../models/GamesCollection';
+import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
 import { serverListener } from '../ServerListener';
 import { BlurPicture } from './BlurPicture';
@@ -20,14 +21,17 @@ interface Props {
   intl: InjectedIntl;
   openGameAddModal: () => void;
   potentialGames: GamesCollection<PotentialGame>;
+  setPotentialGames: (potentialGames: PotentialGame[]) => void;
+  setPlayableGames: (playableGames: PlayableGame[]) => void;
   setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
   visible: boolean;
 }
 
 interface State {
   transitionVisible: boolean;
-  modalSize: 'fullscreen' | 'large' | 'mini' | 'small' | 'tiny';
   addAllGames: boolean;
+  potentialGamesNb?: number;
+  addedGamesNb?: number;
 }
 
 export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
@@ -36,13 +40,31 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
 
     this.state = {
       transitionVisible: true,
-      addAllGames: false,
-      modalSize: 'large'
+      addAllGames: false
     };
 
     this.gameCoverClick = this.gameCoverClick.bind(this);
     this.animateModal = this.animateModal.bind(this);
     this.addAllGamesClick = this.addAllGamesClick.bind(this);
+    this.updateAddAllGamesStatus = this.updateAddAllGamesStatus.bind(this);
+  }
+
+  public componentDidMount() {
+    serverListener.listen('update-add-all-games-status', this.updateAddAllGamesStatus);
+  }
+
+  public updateAddAllGamesStatus(playableGames: PlayableGame[], potentialGames: PotentialGame[]) {
+    this.props.setPotentialGames(potentialGames);
+    this.props.setPlayableGames(playableGames);
+    if (this.state.addedGamesNb + 1 === this.state.potentialGamesNb)
+      this.setState({ addAllGames: false }, () => {
+        this.props.closePotentialGamesAddModal();
+      });
+    else {
+      this.setState((prevState: State) => ({
+        addedGamesNb: prevState.addedGamesNb + 1
+      }));
+    }
   }
 
   private gameCoverClick(potentialGame: PotentialGame) {
@@ -59,7 +81,11 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
   }
 
   private addAllGamesClick() {
-    this.setState({ addAllGames: true });
+    this.setState({
+      addAllGames: true,
+      potentialGamesNb: this.props.potentialGames.size(),
+      addedGamesNb: 0
+    });
     serverListener.send('add-all-games');
   }
 
@@ -92,7 +118,12 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
     const allGamesProgressBar = (
       <React.Fragment>
         <p><FormattedMessage id={'allGamesDisclaimer'}/></p>
-        <Progress color={'orange'} percent={55} active={true}>
+        <Progress
+          active={true}
+          color={'orange'}
+          percent={this.state.addedGamesNb / this.state.potentialGamesNb}
+          size={'small'}
+        >
           <FormattedMessage id={'actions.gameBeingAdded'} values={{ name: firstGameName }}/>
         </Progress>
       </React.Fragment>

@@ -20,5 +20,5 @@ class ServerListener {
   }
 }
 
-export let loaderServerListener: ServerListener = new ServerListener('loader', 'loaderServer');
-export let serverListener: ServerListener = new ServerListener('client', 'server');
+export const loaderServerListener: ServerListener = new ServerListener('loader', 'loaderServer');
+export const serverListener: ServerListener = new ServerListener('client', 'server');
