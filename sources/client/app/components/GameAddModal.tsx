@@ -110,15 +110,15 @@ export class GameAddModal extends VitrineComponent<Props, State> {
         ...this.state.gameData,
         name: gameInfos.name,
         series: gameInfos.series || '',
-        date: (gameInfos.releaseDate) ? (moment(gameInfos.releaseDate).format('DD/MM/YYYY')) : (''),
+        date: gameInfos.releaseDate ? moment(gameInfos.releaseDate).format('DD/MM/YYYY') : '',
         developer: gameInfos.developer || '',
         publisher: gameInfos.publisher || '',
-        genres: (gameInfos.genres.length) ? (gameInfos.genres.join(', ')) : (''),
+        genres: gameInfos.genres.length ? gameInfos.genres.join(', ') : '',
         rating: gameInfos.rating || '',
         summary: gameInfos.summary || '',
         cover: gameInfos.cover,
         potentialBackgrounds: gameInfos.screenshots || [],
-        backgroundScreen: (gameInfos.screenshots.length) ? (gameInfos.screenshots[0]) : ('')
+        backgroundScreen: gameInfos.screenshots.length ? gameInfos.screenshots[0] : ''
       },
       igdbFilled: true,
       igdbButtonLoading: false
@@ -185,7 +185,7 @@ export class GameAddModal extends VitrineComponent<Props, State> {
     this.setState({
       gameData: {
         ...this.state.gameData,
-        date: (typeof date === 'string') ? (date) : (date.format('DD/MM/YYYY'))
+        date: typeof date === 'string' ? date : date.format('DD/MM/YYYY')
       }
     });
   }
@@ -265,8 +265,8 @@ export class GameAddModal extends VitrineComponent<Props, State> {
     else
       return null;
 
-    const [ executable, args ]: string[] = (gameToHandle.commandLine.length > 1) ? (gameToHandle.commandLine) : ([gameToHandle.commandLine[0], '']);
-    return (!prevState.igdbFilled) ? ({
+    const [ executable, args ]: string[] = gameToHandle.commandLine.length > 1 ? gameToHandle.commandLine : [gameToHandle.commandLine[0], ''];
+    return !prevState.igdbFilled ? {
       gameData: {
         name: gameToHandle.name,
         cover: gameToHandle.details.cover,
@@ -274,19 +274,19 @@ export class GameAddModal extends VitrineComponent<Props, State> {
         executable,
         arguments: args,
         series: gameToHandle.details.series || '',
-        date: (gameToHandle.details.releaseDate) ? (moment(gameToHandle.details.releaseDate).format('DD/MM/YYYY')) : (''),
+        date: gameToHandle.details.releaseDate ? moment(gameToHandle.details.releaseDate).format('DD/MM/YYYY') : '',
         developer: gameToHandle.details.developer || '',
         publisher: gameToHandle.details.publisher || '',
-        genres: (gameToHandle.details.genres) ? (gameToHandle.details.genres.join(', ')) : (''),
+        genres: gameToHandle.details.genres ? gameToHandle.details.genres.join(', ') : '',
         rating: gameToHandle.details.rating || '',
         summary: gameToHandle.details.summary || '',
-        potentialBackgrounds: (gameToHandle.details.backgroundScreen) ? ([gameToHandle.details.backgroundScreen]) : ([]),
+        potentialBackgrounds: gameToHandle.details.backgroundScreen ? [gameToHandle.details.backgroundScreen] : [],
         backgroundScreen: gameToHandle.details.backgroundScreen || '',
       },
       editing
-    }) : ({
+    } : {
       igdbFilled: false
-    });
+    };
   }
 
   public render(): JSX.Element {
@@ -308,13 +308,13 @@ export class GameAddModal extends VitrineComponent<Props, State> {
               loading={this.state.submitButtonLoading}
               onClick={this.submitButton}
             >
-              <FormattedMessage id={(this.state.editing) ? ('actions.editGame') : ('actions.submitNewGame')}/>
+              <FormattedMessage id={this.state.editing ? 'actions.editGame' : 'actions.submitNewGame'}/>
             </Button>
           </React.Fragment>
         }
         onClose={this.closeModal}
         size={'large'}
-        title={this.props.intl.formatMessage({ id: (this.state.editing) ? ('actions.editGameTitle') : ('actions.addGame') })}
+        title={this.props.intl.formatMessage({ id: this.state.editing ? 'actions.editGameTitle' : 'actions.addGame' })}
         visible={this.props.visible}
       >
         <Grid>

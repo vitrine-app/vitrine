@@ -20,20 +20,20 @@ export function formatTimePlayed(timePlayed: number, formatMessage: (messageDesc
   const seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
 
   if (hours && minutes) {
-    const hoursStr: string = formatMessage({ id: (hours !== 1) ? ('time.hoursPlur') : ('time.hoursSing') });
-    const minutesStr: string = formatMessage({ id: (minutes) ? ((minutes !== 1) ? ('time.minutesPlur') : ('time.minutesSing')) : ('') });
-    return `${hours}  ${hoursStr}${((minutesStr) ? (' ' + minutes + ' ' + minutesStr) : (''))}`;
+    const hoursStr: string = formatMessage({ id: hours !== 1 ? 'time.hoursPlur' : 'time.hoursSing' });
+    const minutesStr: string = formatMessage({ id: minutes ? (minutes !== 1 ? 'time.minutesPlur' : 'time.minutesSing') : '' });
+    return `${hours}  ${hoursStr}${(minutesStr ? ' ' + minutes + ' ' + minutesStr : '')}`;
   }
   else if (hours) {
-    const hoursStr: string = formatMessage({ id: (hours !== 1) ? ('time.hoursPlur') : ('time.hoursSing') });
+    const hoursStr: string = formatMessage({ id: hours !== 1 ? 'time.hoursPlur' : 'time.hoursSing' });
     return `${hours} ${hoursStr}`;
   }
   else if (minutes) {
-    const minutesStr: string = formatMessage({ id: (minutes !== 1) ? ('time.minutesPlur') : ('time.minutesSing') });
+    const minutesStr: string = formatMessage({ id: minutes !== 1 ? 'time.minutesPlur' : 'time.minutesSing' });
     return `${minutes} ${minutesStr}`;
   }
   else if (seconds) {
-    const secondsStr: string = formatMessage({ id: (seconds !== 1) ? ('time.secondsPlur') : ('time.secondsSing') });
+    const secondsStr: string = formatMessage({ id: seconds !== 1 ? 'time.secondsPlur' : 'time.secondsSing' });
     return `${timePlayed} ${secondsStr}`;
   }
   else
@@ -75,7 +75,7 @@ export function openImageDialog(formatMessage: (messageDescriptor: any, values?:
 }
 
 export function urlify(imgPath: string): string {
-  return (imgPath) ? ('url(' + imgPath.replace(/\\/g, '\\\\') + ')') : ('');
+  return imgPath ? `url(${imgPath.replace(/\\/g, '\\\\')})` : '';
 }
 
 export function notify(content: string, minor?: boolean, noAutoClose?: boolean) {
@@ -91,7 +91,7 @@ export function notify(content: string, minor?: boolean, noAutoClose?: boolean) 
     position: 'bottom-right',
     className: css(toastStyle.notification),
     hideProgressBar: true,
-    autoClose: (noAutoClose) ? (false) : ((!minor) ? (5000) : (3500))
+    autoClose: noAutoClose ? false : (!minor ? 5000 : 3500)
   });
 }
 

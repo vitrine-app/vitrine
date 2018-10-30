@@ -65,8 +65,8 @@ export async function downloadGamePictures(gameDetails: any, { backgroundUrl, ba
   const backGroundStored: boolean = await downloadImage(backgroundUrl, backgroundPath);
   const coverStored: boolean = await downloadImage(coverUrl, coverPath);
   return {
-    backgroundScreen: (backGroundStored) ? (backgroundPath) : (gameDetails.backgroundScreen),
-    cover: (coverStored) ? (coverPath) : (gameDetails.cover)
+    backgroundScreen: backGroundStored ? backgroundPath : gameDetails.backgroundScreen,
+    cover: coverStored ? coverPath : gameDetails.cover
   };
 }
 

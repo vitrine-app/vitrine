@@ -128,7 +128,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
   }
 
   public render(): JSX.Element {
-    const modalContent: JSX.Element = (!this.state.loading) ? (
+    const modalContent: JSX.Element = !this.state.loading ? (
       <Modal.Content className={css(styles.modalBody)}>
         <Form>
           <Grid>
@@ -174,7 +174,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
               key={index}
               className={
                 css(styles.igdbResearch) + ' ' +
-                                ((this.state.selectedResearchId === research.id) ? (css(styles.selectedIgdbResearch)) : (''))
+                                (this.state.selectedResearchId === research.id ? css(styles.selectedIgdbResearch) : '')
               }
               onClick={this.researchClick.bind(this, research.id)}
               onDoubleClick={this.gameDoubleClick.bind(this, research.id)}
@@ -231,7 +231,7 @@ export class IgdbResearchModal extends VitrineComponent<Props, State> {
         >
           <Modal.Header><FormattedMessage id={'actions.fillWithIgdb'}/></Modal.Header>
           {modalContent}
-          <Modal.Actions style={{ opacity: (!this.state.loading) ? (1) : (0) }}>
+          <Modal.Actions style={{ opacity: !this.state.loading ? 1 : 0 }}>
             <Button
               primary={true}
               disabled={!this.state.selectedResearchId}

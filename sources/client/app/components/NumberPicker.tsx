@@ -26,7 +26,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
     super(props);
 
     this.state = {
-      value: (this.props.value !== undefined) ? (this.props.value) : ('')
+      value: this.props.value !== undefined ? this.props.value : ''
     };
 
     this.increaseCounterHandler = this.increaseCounterHandler.bind(this);
@@ -87,7 +87,7 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
     return {
-      value: (nextProps.value !== undefined) ? (nextProps.value) : ('')
+      value: nextProps.value !== undefined ? nextProps.value : ''
     };
   }
 

@@ -45,7 +45,7 @@ export class App extends React.Component<Props, State> {
   public render(): JSX.Element {
     const locale: any = this.props.locales.find((locale: any) => locale.locale === this.props.currentLocale);
 
-    return (this.state.settingsReceived) ? (
+    return this.state.settingsReceived ? (
       <IntlProvider
         locale={this.props.currentLocale}
         messages={locale.messages}
@@ -54,6 +54,6 @@ export class App extends React.Component<Props, State> {
           <Vitrine/>
         </ErrorsWrapper>
       </IntlProvider>
-    ) : (null);
+    ) : null;
   }
 }

@@ -6,7 +6,7 @@ export class GamesCollection<T extends object> {
   private games: T[];
 
   public constructor(games?: T[]) {
-    this.games = (games) ? ([ ...games ]) : ([]);
+    this.games = games ? [ ...games ] : [];
     this.idKey = 'uuid';
     this.sourceKey = 'source';
   }
@@ -72,7 +72,7 @@ export class GamesCollection<T extends object> {
 
   public alphaSort() {
     this.games.sort((gameA: T, gameB: T): number => {
-      return ((gameA as any).name > (gameB as any).name) ? (1) : (-1);
+      return (gameA as any).name > (gameB as any).name ? 1 : -1;
     });
   }
 

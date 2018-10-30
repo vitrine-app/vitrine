@@ -37,7 +37,7 @@ export class DatePicker extends VitrineComponent<Props, {}> {
         secondary={true}
         onClick={this.removeDateButtonClick.bind(this, props, openCalendar)}
       >
-        <FontAwesomeIcon icon={(props.value) ? (faTrash) : (faCalendarAlt)}/>
+        <FontAwesomeIcon icon={props.value ? faTrash : faCalendarAlt}/>
       </Button>
     );
 

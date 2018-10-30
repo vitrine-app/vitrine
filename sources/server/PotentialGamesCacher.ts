@@ -15,8 +15,8 @@ export class PotentialGamesCacher {
 
   public async cache(potentialGames: PotentialGame[]) {
     logger.info('PotentialGamesCacher', 'Potential games are about to be cached.');
-    const potentialGamesCache: any = (await fs.pathExists(this.cacheFilePath)) ?
-      (await fs.readJson(this.cacheFilePath, { throws: false }) || {}) : ({});
+    const potentialGamesCache: any = await fs.pathExists(this.cacheFilePath) ?
+      await fs.readJson(this.cacheFilePath, { throws: false }) || {} : {};
 
     let addedGamesNb: number = 0;
     const populatedPotentialGames: PotentialGame[] = await Promise.all(potentialGames.map(async (potentialGame: PotentialGame) => {

@@ -62,7 +62,7 @@ export class WindowControlIcon extends React.Component<Props, State> {
       <div
         onMouseEnter={this.mouseEnterHandler}
         onMouseLeave={this.mouseLeaveHandler}
-        className={css(styles.icon, (this.props.redBackground) ? (styles.redIcon) : (styles.regularIcon))}
+        className={css(styles.icon, this.props.redBackground ? styles.redIcon : styles.regularIcon)}
         onClick={this.props.onClick}
       >
         {this.iconRender()}

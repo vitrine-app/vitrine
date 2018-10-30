@@ -315,7 +315,7 @@ export class Server {
   }
 
   private async registerGame(game: PlayableGame, gameForm: any, editing: boolean = false) {
-    game.commandLine = (gameForm.arguments) ? [ gameForm.executable, gameForm.arguments ] : [ gameForm.executable ];
+    game.commandLine = gameForm.arguments ? [ gameForm.executable, gameForm.arguments ] : [ gameForm.executable ];
     game.details.rating = parseInt(game.details.rating);
     game.details.genres = game.details.genres.split(', ');
     game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
@@ -342,9 +342,8 @@ export class Server {
       logger.info('Server', `Creating hashed versions for background picture and cover for ${game.name}.`);
 
       const backgroundUrl: string = editing ? gameForm.backgroundScreen
-        : (game.details.backgroundScreen) ? (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'))
-          : (null);
-      const coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
+        : (game.details.backgroundScreen ? game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge') : null);
+      const coverUrl: string = editing ? gameForm.cover : game.details.cover;
       const images: any = await downloadGamePictures(game.details, { backgroundUrl, backgroundPath, coverUrl, coverPath });
       delete game.details.screenshots;
       delete game.details.background;

@@ -43,7 +43,7 @@ class PlayableGamesCrawler {
 }
 
 export async function getPlayableGames(steamConfig?: any) {
-  const steamUserId: string = (steamConfig && steamConfig.userId) ? (steamConfig.userId) : (undefined);
+  const steamUserId: string = steamConfig && steamConfig.userId ? steamConfig.userId : undefined;
   try {
     return await new PlayableGamesCrawler(steamUserId).search();
   }

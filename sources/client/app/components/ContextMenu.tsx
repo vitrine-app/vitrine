@@ -149,7 +149,7 @@ export class ContextMenu extends VitrineComponent<Props, State> {
             >
               <FormattedMessage
                 id={'removeGameText'}
-                values={{ name: <strong>{(this.state.toDeleteGame) ? (this.state.toDeleteGame.name) : ('')}</strong>, br: <br/> }}
+                values={{ name: <strong>{this.state.toDeleteGame ? this.state.toDeleteGame.name : ''}</strong>, br: <br/> }}
               />
             </Modal.Content>
             <Modal.Actions>
