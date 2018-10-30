@@ -58,6 +58,24 @@ export function removePlayableGame(gameUuid: string): Action {
   };
 }
 
+export function setPotentialGames(potentialGames: PotentialGame[]): Action {
+  return {
+    type: ActionType.SET_POTENTIAL_GAMES,
+    payload: {
+      potentialGames
+    }
+  };
+}
+
+export function setPlayableGames(playableGames: PlayableGame[]): Action {
+  return {
+    type: ActionType.SET_PLAYABLE_GAMES,
+    payload: {
+      playableGames
+    }
+  };
+}
+
 export function launchGame(launchedGame: PlayableGame): Action {
   return {
     type: ActionType.LAUNCH_GAME,

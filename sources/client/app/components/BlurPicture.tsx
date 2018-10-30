@@ -1,5 +1,5 @@
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { css, StyleSheet } from 'aphrodite';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import { rgba } from 'css-verbose';
 import * as React from 'react';
 import { Transition } from 'semantic-ui-react';
@@ -8,8 +8,7 @@ import { urlify } from '../helpers';
 import { VitrineComponent } from './VitrineComponent';
 
 interface Props {
-  width?: number;
-  height?: number;
+  width?: string;
   fontSize: number;
   background: string;
   faIcon: FontAwesomeIcon.IconDefinition;
@@ -29,19 +28,17 @@ export class BlurPicture extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
-    const divWidth: number = this.props.width || 3.136;
-    const divHeight: number = this.props.height || 4.48;
     this.pulseDuration = 165;
-
+    const divStyle: any = {
+      fontSize: this.props.fontSize.px(),
+      animationDuration: `${this.pulseDuration}ms`
+    };
+    if (this.props.width)
+      divStyle.width = this.props.width;
     this.state = {
       iconVisible: false,
       pulseVisible: true,
-      divStyle: {
-        width: divWidth.em(),
-        height: divHeight.em(),
-        fontSize: this.props.fontSize.px(),
-        animationDuration: `${this.pulseDuration}ms`
-      },
+      divStyle,
       imageStyle: {
         backgroundImage: urlify(this.props.background)
       }

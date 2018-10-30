@@ -10,9 +10,9 @@ import { getEnvFolder, isProduction, randomHashedString } from '../models/env';
 import { GamesCollection } from '../models/GamesCollection';
 import { PlayableGame} from '../models/PlayableGame';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
-import { fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
+import { fillFirstIgdbResult, fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamData } from './api/SteamDataFinder';
-import { getSteamGamePlayTime } from './api/SteamPlayTimeWrapper';
+import { getSteamGamePlayTime, getSteamGamesPlayTimes } from './api/SteamPlayTimeWrapper';
 import { searchBattleNetGames } from './crawlers/BattleNetCrawler';
 import { searchEmulatedGames } from './crawlers/EmulatedCrawler';
 import { searchOriginGames } from './crawlers/OriginCrawler';
@@ -52,6 +52,7 @@ export class Server {
       .listenToClient('quit-application', this.quitApplication.bind(this))
       .listenToClient('fill-igdb-game', this.fillIgdbGame.bind(this))
       .listenToClient('search-igdb-games', this.searchIgdbGames.bind(this))
+      .listenToClient('add-all-games', this.addAllPotentialGames.bind(this))
       .listenToClient('add-game', this.addGame.bind(this))
       .listenToClient('edit-game', this.editGame.bind(this))
       .listenToClient('edit-game-time-played', this.editGameTimePlayed.bind(this))
@@ -102,6 +103,7 @@ export class Server {
         if (this.vitrineConfig.steam) {
           const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
           this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
+          await getSteamGamesPlayTimes(this.vitrineConfig.steam.userId);
         }
         this.playableGames = await getPlayableGames(this.vitrineConfig.steam);
         logger.info('Server', 'Sending playable games to client.');
@@ -138,16 +140,43 @@ export class Server {
     }
   }
 
-  public addGame(gameForm: any) {
-    logger.info('Server', `Adding ${gameForm.name} to Vitrine.`);
-    const gameName: string = gameForm.name;
-    const addedGame: PlayableGame = new PlayableGame(gameName, gameForm);
-    addedGame.source = gameForm.source;
-    delete gameForm.source;
-    this.registerGame(addedGame, gameForm, false);
+  public async addAllPotentialGames() {
+    try {
+      await Promise.all([ ...this.potentialGames.getGames() ].map(async (potentialGame: PotentialGame) => {
+        const filledGame: any = await fillFirstIgdbResult(potentialGame.name, this.vitrineConfig.lang);
+        const [ executable, ...args ]: string[] = potentialGame.commandLine;
+        filledGame.executable = executable;
+        filledGame.arguments = args.join(' ');
+        const addedGame: PlayableGame = new PlayableGame(filledGame.name, filledGame);
+        addedGame.source = potentialGame.source;
+        delete filledGame.source;
+        delete filledGame.id;
+        const game: PlayableGame = await this.registerGame(addedGame, filledGame);
+        logger.info('Server', `Outputting game config file for ${game.name}.`);
+        const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
+        await fs.outputJson(configFilePath, game, { spaces: 2 });
+        logger.info('Server', `Added game ${game.name} sent to client.`);
+        this.playableGames.addGame(game);
+        this.playableGames.alphaSort();
+        this.potentialGames.removeGame(game.uuid);
+        this.potentialGames.alphaSort();
+        this.windowsHandler.sendToClient('update-add-all-games-status', this.playableGames.getGames(), this.potentialGames.getGames());
+      }));
+    }
+    catch (error) {
+      this.throwServerError(error);
+    }
   }
 
-  public editGame(gameUuid: string, gameForm: any) {
+  public async addGame(gameForm: any) {
+    logger.info('Server', `Adding ${gameForm.name} to Vitrine.`);
+    const addedGame: PlayableGame = new PlayableGame(gameForm.name, gameForm);
+    addedGame.source = gameForm.source;
+    delete gameForm.source;
+    await this.sendRegisteredGame(await this.registerGame(addedGame, gameForm));
+  }
+
+  public async editGame(gameUuid: string, gameForm: any) {
     logger.info('Server', `Editing ${gameForm.name}.`);
     const editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
     editedGame.name = gameForm.name;
@@ -158,17 +187,14 @@ export class Server {
       backgroundScreen,
       cover
     };
-    this.registerGame(editedGame, gameForm, true);
+    await this.sendRegisteredGame(await this.registerGame(editedGame, gameForm, true), true);
   }
 
   public editGameTimePlayed(gameUuid: string, timePlayed: number) {
     const editedGame: PlayableGame = this.playableGames.getGame(gameUuid);
-    const gameDirectory: string = path.resolve(getEnvFolder('games'), editedGame.uuid);
-    const configFilePath: string = path.resolve(gameDirectory, 'config.json');
-
     editedGame.timePlayed = timePlayed;
     logger.info('Server', `Editing time played for ${editedGame.name} (${timePlayed})`);
-    this.sendRegisteredGame(editedGame, configFilePath, true);
+    this.sendRegisteredGame(editedGame, true);
   }
 
   public async launchGame(gameUuid: string) {
@@ -205,7 +231,7 @@ export class Server {
     logger.info('Server', 'Beginning to search potential games.');
     this.windowsHandler.sendToClient('potential-games-search-begin');
     this.potentialGames.clear();
-    await Promise.all([
+    await Promise.all([ // TODO: return PotentialGames[] and refactor crawlers
       this.searchSteamGames(),
       this.searchOriginGames(),
       this.searchBattleNetGames(),
@@ -230,6 +256,7 @@ export class Server {
       if (firstTimeSteam) {
         const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
         this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
+        await getSteamGamesPlayTimes(this.vitrineConfig.steam.userId);
       }
       this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
       this.findPotentialGames();
@@ -287,10 +314,8 @@ export class Server {
     this.potentialGames.addGames(games.getGames());
   }
 
-  private async registerGame(game: PlayableGame, gameForm: any, editing: boolean) {
-    game.commandLine = [ gameForm.executable ];
-    if (gameForm.arguments)
-      game.commandLine.push(gameForm.arguments);
+  private async registerGame(game: PlayableGame, gameForm: any, editing: boolean = false) {
+    game.commandLine = (gameForm.arguments) ? [ gameForm.executable, gameForm.arguments ] : [ gameForm.executable ];
     game.details.rating = parseInt(game.details.rating);
     game.details.genres = game.details.genres.split(', ');
     game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
@@ -300,14 +325,10 @@ export class Server {
     delete game.details.date;
     delete game.details.executable;
     delete game.details.arguments;
-    logger.info('Server', `Game form data for ${game.name} being formatted.`);
-
     if (!editing && game.source === GameSource.STEAM)
-      game.timePlayed = await getSteamGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
-    this.ensureRegisteredGame(game, gameForm, editing);
-  }
+      game.timePlayed = getSteamGamePlayTime(game.details.steamId);
 
-  private async ensureRegisteredGame(game: PlayableGame, gameForm: any, editing: boolean) {
+    logger.info('Server', `Game form data for ${game.name} being formatted.`);
     const gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
     const configFilePath: string = path.resolve(gameDirectory, 'config.json');
     if (!editing && await fs.pathExists(configFilePath))
@@ -320,8 +341,9 @@ export class Server {
       const coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
       logger.info('Server', `Creating hashed versions for background picture and cover for ${game.name}.`);
 
-      const backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
-        : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
+      const backgroundUrl: string = editing ? gameForm.backgroundScreen
+        : (game.details.backgroundScreen) ? (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'))
+          : (null);
       const coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
       const images: any = await downloadGamePictures(game.details, { backgroundUrl, backgroundPath, coverUrl, coverPath });
       delete game.details.screenshots;
@@ -330,11 +352,12 @@ export class Server {
     }
     else
       logger.info('Server', `Background picture and cover for ${game.name} already stored.`);
-    this.sendRegisteredGame(game, configFilePath, editing);
+    return game;
   }
 
-  private async sendRegisteredGame(game: PlayableGame, configFilePath: string, editing: boolean) {
+  private async sendRegisteredGame(game: PlayableGame, editing: boolean = false) {
     logger.info('Server', `Outputting game config file for ${game.name}.`);
+    const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
     await fs.outputJson(configFilePath, game , { spaces: 2 });
     if (!editing) {
       logger.info('Server', `Added game ${game.name} sent to client.`);
