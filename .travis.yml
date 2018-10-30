@@ -29,5 +29,3 @@ cache:
   - '$HOME/.electron'
   - '$HOME/.cache'
 
-after_success:
-  - yarn test:coverage
