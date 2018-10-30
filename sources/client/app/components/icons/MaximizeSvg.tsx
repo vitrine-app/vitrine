@@ -16,7 +16,7 @@ export const MaximizeSvg: React.StatelessComponent<Props> = ({ hovered }: Props)
       x={1.5}
       y={1.5}
       fill={'none'}
-      stroke={(hovered) ? ('#A6A29F') : ('#676360')}
+      stroke={hovered ? '#A6A29F' : '#676360'}
     />
   </svg>
 );

@@ -16,8 +16,8 @@ export class SteamAppIdsCacher {
 
   public async cache(appIds: number[]) {
     logger.info('SteamAppIdsCacher', `Steam apps IDs are about to be cached.`);
-    const appIdsCache: any = (await fs.pathExists(this.cacheFilePath)) ?
-      (await fs.readJson(this.cacheFilePath, { throws: false }) || {}) : ({});
+    const appIdsCache: any = await fs.pathExists(this.cacheFilePath) ?
+      await fs.readJson(this.cacheFilePath, { throws: false }) || {} : {};
 
     let addedAppsNb: number = 0;
     const populatedAppIds: any[] = (await Promise.all(appIds.map(async (appId: number) => {

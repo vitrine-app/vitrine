@@ -30,8 +30,8 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 
     this.state = {
       active: !!this.props.emulator,
-      path: (this.props.emulator) ? (this.props.emulator.path) : (this.props.emulatorData.path),
-      command: (this.props.emulator) ? (this.props.emulator.command || this.props.emulatorData.command) : (this.props.emulatorData.command)
+      path: this.props.emulator ? this.props.emulator.path : this.props.emulatorData.pat,
+      command: this.props.emulator ? this.props.emulator.command || this.props.emulatorData.command : this.props.emulatorData.command
     };
 
     this.activeCheckBox = this.activeCheckBox.bind(this);
@@ -83,7 +83,7 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
     );
     return (
       <Table.Row
-        className={`${css(styles.emulatorTr)} ${(!this.state.active) ? (css(styles.inactiveTr)) : ('')}`}
+        className={`${css(styles.emulatorTr)} ${!this.state.active ? css(styles.inactiveTr) : ''}`}
       >
         <Table.Cell>
           <strong>{this.props.emulatorData.name}</strong>
@@ -110,17 +110,17 @@ export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
             }
             labelPosition={'right'}
             size={'small'}
-            className={(!this.state.active) ? (css(styles.inactiveInput)) : ('')}
+            className={!this.state.active ? css(styles.inactiveInput) : ''}
             readOnly={true}
             value={this.state.path}
-            onClick={(this.state.active) ? (this.programButton) : (null)}
+            onClick={this.state.active ? this.programButton : null}
           />
         </Table.Cell>
         <Table.Cell>
           <div className={'ui small input'}>
             <input
               value={this.state.command}
-              className={`${css(styles.commandInput)} ${(!this.state.active) ? (css(styles.inactiveInput)) : ('')}`}
+              className={`${css(styles.commandInput)} ${!this.state.active ? css(styles.inactiveInput) : ''}`}
               disabled={!this.state.active}
               onChange={this.commandLineChange}
             />

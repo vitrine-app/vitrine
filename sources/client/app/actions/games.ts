@@ -30,7 +30,7 @@ export function addPlayableGames(unsortedGames: PlayableGame[]): Action {
     type: ActionType.ADD_PLAYABLE_GAMES,
     payload: {
       playableGames,
-      selectedGame: (unsortedGames.length) ? ((unsortedGames.length > 1) ? (playableGames[0]) : (unsortedGames[0])) : (null),
+      selectedGame: unsortedGames.length ? (unsortedGames.length > 1 ? playableGames[0] : unsortedGames[0]) : null,
       potentialGameToAdd: null
     }
   };

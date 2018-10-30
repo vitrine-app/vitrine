@@ -63,7 +63,7 @@ export class Vitrine extends VitrineComponent<Props, State> {
   private removePlayableGame(gameUuid: string) {
     const playedGameName: string = this.props.playableGames.getGame(gameUuid).name;
     this.props.removePlayableGame(gameUuid);
-    this.props.selectGame((this.props.playableGames.size()) ? (this.props.playableGames.getGame(0)) : (null));
+    this.props.selectGame(this.props.playableGames.size() ? this.props.playableGames.getGame(0) : null);
     notify(this.props.intl.formatMessage({ id: 'toasts.removingGame' }, { name: playedGameName }), true);
   }
 

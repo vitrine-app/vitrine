@@ -74,7 +74,7 @@ export class ActionButton extends VitrineComponent<Props, State> {
     return (
       <div className={`${css(styles.buttonWrapper)} ${this.props.className || ''}`}>
         {button}
-        {(this.props.tooltip) ? (
+        {this.props.tooltip ? (
           <ReactTooltip
             className={css(styles.tooltip)}
             id={this.id}
@@ -84,7 +84,7 @@ export class ActionButton extends VitrineComponent<Props, State> {
           >
             <span>{this.props.tooltip}</span>
           </ReactTooltip>
-        ) : ('')}
+        ) : ''}
       </div>
     );
   }

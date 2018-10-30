@@ -40,7 +40,7 @@ export class GamesModule extends VitrineComponent<Props, any> {
           src={this.props.iconFile}
           className={
             css(styles.gamesModuleIcon) + ' ' +
-            (((this.state.clicked) ? (css(styles.clickedGamesModuleIcon)) : ('')))
+            ((this.state.clicked ? css(styles.clickedGamesModuleIcon) : ''))
           }
           onClick={this.imageClick}
         />

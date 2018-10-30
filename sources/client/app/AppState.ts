@@ -102,12 +102,12 @@ export function getSortedGamesFromStore(dispatchedData: any): PlayableGame[] {
   switch (sortParameter) {
     case (SortParameter.NAME): {
       return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
-        return (gameA.name > gameB.name) ? (1) : (-1);
+        return gameA.name > gameB.name ? 1 : -1;
       }));
     }
     case (SortParameter.TIME_PLAYED): {
       return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
-        return (gameA.timePlayed < gameB.timePlayed) ? (1) : (-1);
+        return gameA.timePlayed < gameB.timePlayed ? 1 : -1;
       }));
     }
     default:
@@ -116,8 +116,8 @@ export function getSortedGamesFromStore(dispatchedData: any): PlayableGame[] {
           return 1;
         if (!gameB.details[sortParameter])
           return -1;
-        const result: number = (sortParameter !== SortParameter.RATING && sortParameter !== SortParameter.RELEASE_DATE) ? (1) : (-1);
-        return (gameA.details[sortParameter] > gameB.details[sortParameter]) ? (result) : (-result);
+        const result: number = sortParameter !== SortParameter.RATING && sortParameter !== SortParameter.RELEASE_DATE ? 1 : -1;
+        return gameA.details[sortParameter] > gameB.details[sortParameter] ? result : -result;
       });
   }
 }

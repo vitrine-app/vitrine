@@ -57,18 +57,18 @@ export class SettingsModal extends VitrineComponent<Props, State> {
     this.emptyState = {
       langs: this.props.locales,
       lang: this.props.currentLocale,
-      steamEnabled: (this.props.settings && this.props.settings.steam) ? (true) : (false),
-      originEnabled: (this.props.settings && this.props.settings.origin) ? (true) : (false),
-      battleNetEnabled: (this.props.settings && this.props.settings.battleNet) ? (true) : (false),
-      emulatedEnabled: (this.props.settings && this.props.settings.emulated) ? (true) : (false),
-      steamPath: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.installFolder) : (''),
-      steamSearchCloud: (this.props.settings && this.props.settings.steam) ? (this.props.settings.steam.searchCloud) : (true),
-      originPath: (this.props.settings && this.props.settings.origin) ? (this.props.settings.origin.installFolder) : (''),
-      emulatedPath: (this.props.settings.emulated) ? (this.props.settings.emulated.romsFolder) : (''),
+      steamEnabled: !!(this.props.settings && this.props.settings.steam),
+      originEnabled: !!(this.props.settings && this.props.settings.origin),
+      battleNetEnabled: !!(this.props.settings && this.props.settings.battleNet),
+      emulatedEnabled: !!(this.props.settings && this.props.settings.emulated),
+      steamPath: this.props.settings && this.props.settings.steam ? this.props.settings.steam.installFolder : '',
+      steamSearchCloud: this.props.settings && this.props.settings.steam ? this.props.settings.steam.searchCloud : true,
+      originPath: this.props.settings && this.props.settings.origin ? this.props.settings.origin.installFolder : '',
+      emulatedPath: this.props.settings.emulated ? this.props.settings.emulated.romsFolder : '',
       steamError: false,
       originError: false,
       emulatedError: false,
-      aliveEmulators: (this.props.settings.emulated) ? (this.props.settings.emulated.aliveEmulators) : ([]),
+      aliveEmulators: this.props.settings.emulated ? this.props.settings.emulated.aliveEmulators : [],
       emulatorsError: ''
     };
     this.state = this.emptyState;
@@ -177,7 +177,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
         aliveEmulators.push(emulatorConfig);
       else
         aliveEmulators = aliveEmulators.map((aliveEmulator: any) =>
-          (aliveEmulator.id !== emulatorConfig.id) ? (aliveEmulator) : (emulatorConfig)
+          aliveEmulator.id !== emulatorConfig.i ? aliveEmulator : emulatorConfig
         );
     }
     else
@@ -298,7 +298,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
           </Grid.Column>
         </Grid>
         <Form>
-          <div style={{ display: (this.state.steamEnabled) ? ('block') : ('none') }}>
+          <div style={{ display: this.state.steamEnabled ? 'block' : 'none' }}>
             <hr className={css(styles.formHr)}/>
             <h3><FormattedMessage id={'settings.steamConfig'}/></h3>
             <Form.Field error={this.state.steamError}>
@@ -322,7 +322,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               />
               <span
                 className={css(styles.modulesError)}
-                style={{ display: (this.state.steamError) ? ('inline') : ('none') }}
+                style={{ display: this.state.steamError ? 'inline' : 'none' }}
               >
                 <FormattedMessage id={'settings.pathError'}/>
               </span>
@@ -336,7 +336,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               />
             </Form.Field>
           </div>
-          <div style={{ display: (this.state.originEnabled) ? ('block') : ('none') }}>
+          <div style={{ display: this.state.originEnabled ? 'block' : 'none' }}>
             <hr className={css(styles.formHr)}/>
             <h3><FormattedMessage id={'settings.originConfig'}/></h3>
             <Form.Field error={this.state.originError}>
@@ -360,13 +360,13 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               />
               <span
                 className={css(styles.modulesError)}
-                style={{ display: (this.state.originError) ? ('inline-block') : ('none') }}
+                style={{ display: this.state.originError ? 'inline-block' : 'none' }}
               >
                 <FormattedMessage id={'settings.pathError'}/>
               </span>
             </Form.Field>
           </div>
-          <div style={{ display: (this.state.emulatedEnabled) ? ('block') : ('none') }}>
+          <div style={{ display: this.state.emulatedEnabled ? 'block' : 'none' }}>
             <hr className={css(styles.formHr)}/>
             <h3><FormattedMessage id={'settings.emulatedConfig'}/></h3>
             <Form.Field error={this.state.emulatedError}>
@@ -390,7 +390,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               />
               <span
                 className={css(styles.modulesError)}
-                style={{ display: (this.state.emulatedError) ? ('inline-block') : ('none') }}
+                style={{ display: this.state.emulatedError ? 'inline-block' : 'none' }}
               >
                 <FormattedMessage id={'settings.pathError'}/>
               </span>
@@ -418,9 +418,9 @@ export class SettingsModal extends VitrineComponent<Props, State> {
               <EmulatorSettingsRow
                 key={index}
                 emulatorData={emulator}
-                emulator={(this.props.settings.emulated) ? (this.props.settings.emulated.aliveEmulators.filter(
+                emulator={this.props.settings.emulated ? this.props.settings.emulated.aliveEmulators.filter(
                   (aliveEmulator: any) => aliveEmulator.id === emulator.id
-                )[0]) : (null)}
+                )[0] : null}
                 onChange={this.emulatorConfigChange}
               />
             )}
@@ -452,7 +452,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
           <React.Fragment>
             <Button
               secondary={true}
-              style={{ display: (!this.props.firstLaunch) ? ('inline-block') : ('none') }}
+              style={{ display: !this.props.firstLaunch ? 'inline-block' : 'none' }}
               onClick={this.closeModal}
             >
               <FormattedMessage id={'actions.cancel'}/>
@@ -471,7 +471,7 @@ export class SettingsModal extends VitrineComponent<Props, State> {
         style={{ margin: margin(5..rem(), 'auto'), width: 70..vw() }}
         visible={this.props.visible}
       >
-        <div style={{ display: (this.props.firstLaunch) ? ('block') : ('none') }}>
+        <div style={{ display: this.props.firstLaunch ? 'block' : 'none' }}>
           <h1><FormattedMessage id={'welcomeMessage'}/></h1>
           <p><FormattedMessage id={'wizardText'}/></p>
         </div>

@@ -25,7 +25,7 @@ class SteamCrawler extends PotentialGamesCrawler {
     });
     this.manifestRegEx = 'appmanifest_*.acf';
     this.apiEndPoint = 'https://store.steampowered.com/api/appdetails/';
-    this.steamBinary = (process.platform === 'win32') ? ('steam.exe') : ('steam.sh');
+    this.steamBinary = process.platform === 'win32' ? 'steam.exe' : 'steam.sh';
     return this;
   }
 
@@ -36,7 +36,7 @@ class SteamCrawler extends PotentialGamesCrawler {
     const potentialGames: PotentialGame[] = [].concat(...games);
     return new GamesCollection([
       ...potentialGames,
-      ...((this.moduleConfig.searchCloud) ? (await this.searchUninstalledGames(potentialGames)) : ([]))
+      ...(this.moduleConfig.searchCloud ? await this.searchUninstalledGames(potentialGames) : [])
     ]);
   }
 

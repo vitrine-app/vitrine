@@ -53,8 +53,8 @@ export class VitrineLoader extends React.Component<{}, State> {
   }
 
   private updateProgress(downloadProgress: number) {
-    const displayedInfo: string = (downloadProgress < 100)
-      ? (`Updating to ${this.lastUpdateVersion}... | ${downloadProgress.percents()}`) : ('Installing...');
+    const displayedInfo: string = downloadProgress < 100
+      ? `Updating to ${this.lastUpdateVersion}... | ${downloadProgress.percents()}` : 'Installing...';
     this.setState({
       downloadProgress,
       displayedInfo
@@ -81,18 +81,18 @@ export class VitrineLoader extends React.Component<{}, State> {
         </div>
         <span
           className={css(styles.infosSpan)}
-          style={{ display: (this.state.displayedInfo) ? ('inline') : ('none') }}
+          style={{ display: this.state.displayedInfo ? 'inline' : 'none' }}
         >
           {this.state.displayedInfo} <FontAwesomeIcon icon={faCog} spin={true}/>
         </span>
         <div
           className={`progress ${css(styles.downloadBar)}`}
-          style={{ display: (this.state.updateDownload) ? ('block') : ('none') }}
+          style={{ display: this.state.updateDownload ? 'block' : 'none' }}
         >
           <div
             className={`progress-bar active ${css(styles.downloadBarProgress)}`}
             role='progressbar'
-            style={{ width: (this.state.downloadProgress) ? (this.state.downloadProgress.percents()) : (0..percents()) }}
+            style={{ width: this.state.downloadProgress ? this.state.downloadProgress.percents() : 0..percents() }}
           />
         </div>
       </div>
