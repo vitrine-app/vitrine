@@ -11,5 +11,8 @@ if (branch === 'stable' || branch.startsWith('release/')) {
   exec('yarn build:modules');
   exec('yarn dist:ci');
 }
-else
+else {
+  if (process.env.TRAVIS_BRANCH && branch === 'master')
+    exec('yarn test:coverage');
   exec('yarn build:prod');
+}
