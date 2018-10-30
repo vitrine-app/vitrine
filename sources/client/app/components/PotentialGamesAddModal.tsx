@@ -21,8 +21,10 @@ interface Props {
   intl: InjectedIntl;
   openGameAddModal: () => void;
   potentialGames: GamesCollection<PotentialGame>;
+  playableGames: GamesCollection<PlayableGame>;
   setPotentialGames: (potentialGames: PotentialGame[]) => void;
   setPlayableGames: (playableGames: PlayableGame[]) => void;
+  selectGame: (playableGame: PlayableGame) => void;
   setPotentialGameToAdd: (potentialGame: PotentialGame) => void;
   visible: boolean;
 }
@@ -59,6 +61,7 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
     if (this.state.addedGamesNb + 1 === this.state.potentialGamesNb)
       this.setState({ addAllGames: false }, () => {
         this.props.closePotentialGamesAddModal();
+        this.props.selectGame(this.props.playableGames.getGame(0));
       });
     else {
       this.setState((prevState: State) => ({
@@ -121,8 +124,9 @@ export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
         <Progress
           active={true}
           color={'orange'}
-          percent={this.state.addedGamesNb / this.state.potentialGamesNb}
           size={'small'}
+          total={this.state.potentialGamesNb}
+          value={this.state.addedGamesNb}
         >
           <FormattedMessage id={'actions.gameBeingAdded'} values={{ name: firstGameName }}/>
         </Progress>

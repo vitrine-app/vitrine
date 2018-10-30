@@ -128,8 +128,8 @@ class IgdbWrapper {
     }
     else // TODO: Change default image
       foundGame.cover = 'https://images.igdb.com/igdb/image/upload/t_cover_big_2x/nocover_qhhlj6.jpg';
-    const screenshots: string[] = foundGame.screenshots
-      .map(({ url }: any) => `https:${url.replace('t_thumb', 't_screenshot_med')}`);
+    const screenshots: string[] = foundGame.screenshots ? foundGame.screenshots
+      .map(({ url }: any) => `https:${url.replace('t_thumb', 't_screenshot_med')}`) : [];
     if (firstResultFormat) {
       foundGame.backgroundScreen = screenshots.length ? screenshots[0] : null;
       delete foundGame.screenshots;
@@ -158,7 +158,7 @@ class IgdbWrapper {
   }
 
   private async findGenresByIds(ids: number[], firstResultFormat: boolean) {
-    if (!ids.length)
+    if (!ids || !ids.length)
       return '';
     const { body: response }: any = await this.client.genres({ ids }, [ 'name' ]);
     if (!response.length)

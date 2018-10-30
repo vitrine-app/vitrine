@@ -12,7 +12,7 @@ import { PlayableGame} from '../models/PlayableGame';
 import { GameSource, PotentialGame } from '../models/PotentialGame';
 import { fillFirstIgdbResult, fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamData } from './api/SteamDataFinder';
-import { getSteamGamePlayTime } from './api/SteamPlayTimeWrapper';
+import { getSteamGamePlayTime, getSteamGamesPlayTimes } from './api/SteamPlayTimeWrapper';
 import { searchBattleNetGames } from './crawlers/BattleNetCrawler';
 import { searchEmulatedGames } from './crawlers/EmulatedCrawler';
 import { searchOriginGames } from './crawlers/OriginCrawler';
@@ -103,6 +103,7 @@ export class Server {
         if (this.vitrineConfig.steam) {
           const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
           this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
+          await getSteamGamesPlayTimes(this.vitrineConfig.steam.userId);
         }
         this.playableGames = await getPlayableGames(this.vitrineConfig.steam);
         logger.info('Server', 'Sending playable games to client.');
@@ -140,24 +141,31 @@ export class Server {
   }
 
   public async addAllPotentialGames() {
-    await Promise.all([ ...this.potentialGames.getGames() ].map(async (potentialGame: PotentialGame) => {
-      const filledGame: any = await fillFirstIgdbResult(potentialGame.name, this.vitrineConfig.lang);
-      const [ executable, ...args ]: string[] = potentialGame.commandLine;
-      filledGame.executable = executable;
-      filledGame.arguments = args.join(' ');
-      const addedGame: PlayableGame = new PlayableGame(filledGame.name, filledGame);
-      addedGame.source = potentialGame.source;
-      delete filledGame.source;
-      delete filledGame.id;
-      const game: PlayableGame = await this.registerGame(addedGame, filledGame);
-      logger.info('Server', `Outputting game config file for ${game.name}.`);
-      const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
-      await fs.outputJson(configFilePath, game , { spaces: 2 });
-      logger.info('Server', `Added game ${game.name} sent to client.`);
-      this.playableGames.addGame(game);
-      this.potentialGames.removeGame(game.uuid);
-      this.windowsHandler.sendToClient('update-add-all-games-status', this.playableGames.getGames(), this.potentialGames.getGames());
-    }));
+    try {
+      await Promise.all([ ...this.potentialGames.getGames() ].map(async (potentialGame: PotentialGame) => {
+        const filledGame: any = await fillFirstIgdbResult(potentialGame.name, this.vitrineConfig.lang);
+        const [ executable, ...args ]: string[] = potentialGame.commandLine;
+        filledGame.executable = executable;
+        filledGame.arguments = args.join(' ');
+        const addedGame: PlayableGame = new PlayableGame(filledGame.name, filledGame);
+        addedGame.source = potentialGame.source;
+        delete filledGame.source;
+        delete filledGame.id;
+        const game: PlayableGame = await this.registerGame(addedGame, filledGame);
+        logger.info('Server', `Outputting game config file for ${game.name}.`);
+        const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
+        await fs.outputJson(configFilePath, game, { spaces: 2 });
+        logger.info('Server', `Added game ${game.name} sent to client.`);
+        this.playableGames.addGame(game);
+        this.playableGames.alphaSort();
+        this.potentialGames.removeGame(game.uuid);
+        this.potentialGames.alphaSort();
+        this.windowsHandler.sendToClient('update-add-all-games-status', this.playableGames.getGames(), this.potentialGames.getGames());
+      }));
+    }
+    catch (error) {
+      this.throwServerError(error);
+    }
   }
 
   public async addGame(gameForm: any) {
@@ -248,6 +256,7 @@ export class Server {
       if (firstTimeSteam) {
         const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
         this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
+        await getSteamGamesPlayTimes(this.vitrineConfig.steam.userId);
       }
       this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
       this.findPotentialGames();
@@ -317,7 +326,7 @@ export class Server {
     delete game.details.executable;
     delete game.details.arguments;
     if (!editing && game.source === GameSource.STEAM)
-      game.timePlayed = await getSteamGamePlayTime(this.vitrineConfig.steam.userId, game.details.steamId);
+      game.timePlayed = getSteamGamePlayTime(game.details.steamId);
 
     logger.info('Server', `Game form data for ${game.name} being formatted.`);
     const gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
@@ -332,8 +341,9 @@ export class Server {
       const coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
       logger.info('Server', `Creating hashed versions for background picture and cover for ${game.name}.`);
 
-      const backgroundUrl: string = (editing) ? (gameForm.backgroundScreen)
-        : (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'));
+      const backgroundUrl: string = editing ? gameForm.backgroundScreen
+        : (game.details.backgroundScreen) ? (game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge'))
+          : (null);
       const coverUrl: string = (editing) ? (gameForm.cover) : (game.details.cover);
       const images: any = await downloadGamePictures(game.details, { backgroundUrl, backgroundPath, coverUrl, coverPath });
       delete game.details.screenshots;

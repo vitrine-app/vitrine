@@ -71,6 +71,8 @@ export async function downloadGamePictures(gameDetails: any, { backgroundUrl, ba
 }
 
 export function isAlreadyStored(imageSrcPath: string, imageDestPath: string): boolean {
+  if (!imageSrcPath)
+    return false;
   return imageSrcPath === imageDestPath && imageSrcPath.startsWith('file://');
 }
 
