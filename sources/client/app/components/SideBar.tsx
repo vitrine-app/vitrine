@@ -68,7 +68,6 @@ export class SideBar extends VitrineComponent<Props, {}> {
     ];
 
     this.clickGameHandler = this.clickGameHandler.bind(this);
-    this.taskBarRefreshBtnClickHandler = this.taskBarRefreshBtnClickHandler.bind(this);
     this.potentialGamesButton = this.potentialGamesButton.bind(this);
   }
 
@@ -77,7 +76,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
     this.props.selectGame(selectedGame);
   }
 
-  private taskBarRefreshBtnClickHandler() {
+  private static taskBarRefreshBtnClickHandler() {
     serverListener.send('refresh-potential-games');
   }
 
@@ -108,7 +107,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
                 icon={faSyncAlt}
                 spin={this.props.refreshingGames}
                 tooltip={this.props.intl.formatMessage({ id: 'actions.refresh' })}
-                onClick={this.taskBarRefreshBtnClickHandler}
+                onClick={SideBar.taskBarRefreshBtnClickHandler}
               />
             </Grid.Column>
             <Grid.Column className={css(styles.actionButton)}>

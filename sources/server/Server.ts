@@ -151,7 +151,7 @@ export class Server {
         addedGame.source = potentialGame.source;
         delete filledGame.source;
         delete filledGame.id;
-        const game: PlayableGame = await this.registerGame(addedGame, filledGame);
+        const game: PlayableGame = await Server.registerGame(addedGame, filledGame);
         logger.info('Server', `Outputting game config file for ${game.name}.`);
         const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
         await fs.outputJson(configFilePath, game, { spaces: 2 });
@@ -173,7 +173,7 @@ export class Server {
     const addedGame: PlayableGame = new PlayableGame(gameForm.name, gameForm);
     addedGame.source = gameForm.source;
     delete gameForm.source;
-    await this.sendRegisteredGame(await this.registerGame(addedGame, gameForm));
+    await this.sendRegisteredGame(await Server.registerGame(addedGame, gameForm));
   }
 
   public async editGame(gameUuid: string, gameForm: any) {
@@ -187,7 +187,7 @@ export class Server {
       backgroundScreen,
       cover
     };
-    await this.sendRegisteredGame(await this.registerGame(editedGame, gameForm, true), true);
+    await this.sendRegisteredGame(await Server.registerGame(editedGame, gameForm, true), true);
   }
 
   public editGameTimePlayed(gameUuid: string, timePlayed: number) {
@@ -296,8 +296,7 @@ export class Server {
     const games: GamesCollection<PotentialGame> = await searchBattleNetGames({
         ...this.modulesConfig.battleNet,
         ...this.vitrineConfig.battleNet
-      },
-      this.playableGames.getGamesFromSource(GameSource.BATTLE_NET));
+      });
     logger.info('Server', 'Adding potential Battle.net games to potential games list.');
     this.potentialGames.addGames(games.getGames());
   }
@@ -314,7 +313,7 @@ export class Server {
     this.potentialGames.addGames(games.getGames());
   }
 
-  private async registerGame(game: PlayableGame, gameForm: any, editing: boolean = false) {
+  private static async registerGame(game: PlayableGame, gameForm: any, editing: boolean = false) {
     game.commandLine = gameForm.arguments ? [ gameForm.executable, gameForm.arguments ] : [ gameForm.executable ];
     game.details.rating = parseInt(game.details.rating);
     game.details.genres = game.details.genres.split(', ');
