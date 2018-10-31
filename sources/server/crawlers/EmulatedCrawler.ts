@@ -36,7 +36,7 @@ class EmulatedCrawler {
     }).filter((folderData: any) => {
       if (!folderData.emulator)
         return false;
-      logger.info('EmulatedCrawler', `Roms folder ${folderData.folder} found and binded to ${folderData.emulator.name}.`);
+      logger.info('EmulatedCrawler', `Roms folder ${folderData.folder} found and bound to ${folderData.emulator.name}.`);
       return true;
     });
     return new GamesCollection(await this.analyzeFolders());

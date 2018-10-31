@@ -81,7 +81,7 @@ class SteamCrawler {
     try {
       const { response }: any = await this.client.getOwnedGames({ steamid: this.steamConfig.userId });
       const appIds: number[] = response.games.map(({ appid: appId }: any) => appId);
-      const appDatas: any[] = (await steamAppIdsCacher.cache(appIds)).filter((appData: any) => {
+      const appsData: any[] = (await steamAppIdsCacher.cache(appIds)).filter((appData: any) => {
         const found: boolean = this.playableGames.filter((playableGame: any) =>
           parseInt(appData.appId) === playableGame.details.steamId
         ).length > 0 || potentialGames.filter((potentialGame: PotentialGame) =>
@@ -89,7 +89,7 @@ class SteamCrawler {
         ).length > 0;
         return !found;
       });
-      return appDatas.map((appData: any) => {
+      return appsData.map((appData: any) => {
         const potentialGame: PotentialGame = new PotentialGame(appData.name);
         potentialGame.source = GameSource.STEAM;
         potentialGame.commandLine = [
