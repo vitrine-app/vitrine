@@ -5,7 +5,7 @@
       "conditions": [
         ["OS==\"win\"", {
           "sources": [
-            "windows/SteamMonitor.cpp"
+            "srcs/windows/SteamMonitor.cpp"
           ],
           "librairies": [
             "Advapi32.lib"
@@ -13,7 +13,7 @@
         }],
         ["OS==\"linux\"", {
           "sources": [
-            "linux/SteamMonitor.cpp"
+            "srcs/linux/SteamMonitor.cpp"
           ]
         }]
       ]
