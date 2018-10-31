@@ -8,46 +8,29 @@ import { GameSource } from '../../models/PotentialGame';
 import { getSteamGamePlayTime } from '../api/SteamPlayTimeWrapper';
 import { logger } from '../Logger';
 
-class PlayableGamesCrawler {
-  private readonly gamesDirectory: string;
-  private readonly configFileName: string;
-
-  public constructor(private steamUserId: string | undefined) {
-    this.gamesDirectory = getEnvFolder('games');
-    this.configFileName = 'config.json';
-  }
-
-  public async search() {
-    const files: string[] = await fs.readdir(this.gamesDirectory);
-    if (!files.length) {
-      return new GamesCollection<PlayableGame>();
-    }
-    const playableGames: PlayableGame[] = await Promise.all(files.map(async (gameUuid: string) => {
-      const configFilePath: any = path.resolve(this.gamesDirectory, gameUuid, this.configFileName);
-      if (!await fs.pathExists(configFilePath))
-        return null;
-      const rawGame = await fs.readJson(configFilePath);
-      const playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
-      playableGame.uuid = rawGame.uuid;
-      playableGame.commandLine = rawGame.commandLine;
-      playableGame.source = rawGame.source;
-      if (playableGame.source === GameSource.STEAM && this.steamUserId)
-        playableGame.timePlayed = getSteamGamePlayTime(playableGame.details.steamId);
-      else
-        playableGame.timePlayed = parseInt(rawGame.timePlayed);
-      logger.info('PlayableGamesCrawler', `Playable game ${playableGame.name} (${playableGame.uuid}) found.`);
-      return playableGame;
-    }));
-    return new GamesCollection(playableGames.filter((playableGame: PlayableGame) => playableGame));
-  }
-}
-
 export async function getPlayableGames(steamConfig?: any) {
-  const steamUserId: string = steamConfig && steamConfig.userId ? steamConfig.userId : undefined;
-  try {
-    return await new PlayableGamesCrawler(steamUserId).search();
-  }
-  catch (error) {
-    throw error;
-  }
+  const steamUserId: string | undefined = steamConfig && steamConfig.userId ? steamConfig.userId : undefined;
+  const gamesDirectory: string = getEnvFolder('games');
+  const configFileName: string = 'config.json';
+  const files: string[] = await fs.readdir(gamesDirectory);
+
+  if (!files.length)
+    return new GamesCollection<PlayableGame>();
+  const playableGames: PlayableGame[] = await Promise.all(files.map(async (gameUuid: string) => {
+    const configFilePath: any = path.resolve(gamesDirectory, gameUuid, configFileName);
+    if (!await fs.pathExists(configFilePath))
+      return null;
+    const rawGame = await fs.readJson(configFilePath);
+    const playableGame: PlayableGame = new PlayableGame(rawGame.name, rawGame.details);
+    playableGame.uuid = rawGame.uuid;
+    playableGame.commandLine = rawGame.commandLine;
+    playableGame.source = rawGame.source;
+    if (playableGame.source === GameSource.STEAM && steamUserId)
+      playableGame.timePlayed = getSteamGamePlayTime(playableGame.details.steamId);
+    else
+      playableGame.timePlayed = parseInt(rawGame.timePlayed);
+    logger.info('PlayableGamesCrawler', `Playable game ${playableGame.name} (${playableGame.uuid}) found.`);
+    return playableGame;
+  }));
+  return new GamesCollection(playableGames.filter((playableGame: PlayableGame) => playableGame));
 }

@@ -6,27 +6,27 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
-import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
-class EmulatedCrawler extends PotentialGamesCrawler {
-  private folderDatas: any[];
+class EmulatedCrawler {
+  private playableGames: PlayableGame[];
+  private folders: any[];
+  private emulatedConfig: any;
 
-  public setPlayableGames(playableGames?: PlayableGame[]): this {
-    super.setPlayableGames(playableGames);
-    this.folderDatas = [];
-    return this;
+  public constructor(playableGames?: PlayableGame[]) {
+    this.playableGames = playableGames || [];
+    this.folders = [];
   }
 
-  public async search(moduleConfig: any) {
-    super.search(moduleConfig);
-    logger.info('EmulatedCrawler', `Searching roms folders in ${this.moduleConfig.romsFolder}.`);
-    const aliveEmulators: any[] = this.moduleConfig.aliveEmulators.map((aliveEmulator: any) => ({
-      ...this.moduleConfig.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0],
+  public async search(emulatedConfig: any) {
+    this.emulatedConfig = emulatedConfig;
+    logger.info('EmulatedCrawler', `Searching roms folders in ${this.emulatedConfig.romsFolder}.`);
+    const aliveEmulators: any[] = this.emulatedConfig.aliveEmulators.map((aliveEmulator: any) => ({
+      ...this.emulatedConfig.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0],
       ...aliveEmulator
     }));
-    const folders: string[] = await glob(`${this.moduleConfig.romsFolder}/*`);
-    this.folderDatas = folders.map((folder: string) => ({
-      ...this.moduleConfig.platforms.filter((platform: any) => platform.folder.toUpperCase() === path.basename(folder).toUpperCase())[0],
+    const folders: string[] = await glob(`${this.emulatedConfig.romsFolder}/*`);
+    this.folders = folders.map((folder: string) => ({
+      ...this.emulatedConfig.platforms.filter((platform: any) => platform.folder.toUpperCase() === path.basename(folder).toUpperCase())[0],
       folder
     })).filter((platform: any) => platform.id).map((platform: any) => {
       return ({
@@ -43,7 +43,7 @@ class EmulatedCrawler extends PotentialGamesCrawler {
   }
 
   private async analyzeFolders() {
-    const potentialGames: any[] = await Promise.all(this.folderDatas.map(async ({ folder: romFolder, emulator: romEmulator }: any) => {
+    const potentialGames: any[] = await Promise.all(this.folders.map(async ({ folder: romFolder, emulator: romEmulator }: any) => {
       logger.info('EmulatedCrawler', `Parsing roms in ${romFolder} with ${romEmulator.name} glob (${romEmulator.glob}).`);
       const roms: string[] = await glob(`${romFolder}/${romEmulator.glob}`);
       const romInfos: any[] = roms.map((romPath: string) => {
@@ -74,11 +74,9 @@ class EmulatedCrawler extends PotentialGamesCrawler {
   }
 }
 
-const emulatedGamesCrawler: EmulatedCrawler = new EmulatedCrawler();
-
 export async function searchEmulatedGames(emulatedConfig: any, playableGames?: PlayableGame[]): Promise<any> {
   try {
-    return await emulatedGamesCrawler.setPlayableGames(playableGames).search(emulatedConfig);
+    return await new EmulatedCrawler(playableGames).search(emulatedConfig);
   }
   catch (error) {
     throw error;

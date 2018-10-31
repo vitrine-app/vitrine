@@ -9,16 +9,17 @@ import { steamKey } from '../../modules/keysProvider';
 import { parseAcf } from '../api/AcfParser';
 import { logger } from '../Logger';
 import { steamAppIdsCacher } from '../SteamAppIdsCacher';
-import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
-class SteamCrawler extends PotentialGamesCrawler {
+class SteamCrawler {
+  private readonly manifestRegEx: string;
+  private readonly steamBinary: string;
   private client: SteamWeb;
-  private manifestRegEx: string;
+  private playableGames: PlayableGame[];
   private apiEndPoint: string;
-  private steamBinary: string;
+  private steamConfig: any;
 
-  public setPlayableGames(playableGames?: PlayableGame[]): this {
-    super.setPlayableGames(playableGames);
+  public constructor(playableGames?: PlayableGame[]) {
+    this.playableGames = playableGames || [];
     this.client = new SteamWeb({
       apiKey: steamKey(),
       format: 'json'
@@ -26,17 +27,16 @@ class SteamCrawler extends PotentialGamesCrawler {
     this.manifestRegEx = 'appmanifest_*.acf';
     this.apiEndPoint = 'https://store.steampowered.com/api/appdetails/';
     this.steamBinary = process.platform === 'win32' ? 'steam.exe' : 'steam.sh';
-    return this;
   }
 
-  public async search(moduleConfig: any) {
-    super.search(moduleConfig);
+  public async search(steamConfig: any) {
+    this.steamConfig = steamConfig;
 
-    const games: any[] = await Promise.all(this.moduleConfig.gamesFolders.map((folder: string) => this.processGames(folder)));
+    const games: any[] = await Promise.all(this.steamConfig.gamesFolders.map((folder: string) => this.processGames(folder)));
     const potentialGames: PotentialGame[] = [].concat(...games);
     return new GamesCollection([
       ...potentialGames,
-      ...(this.moduleConfig.searchCloud ? await this.searchUninstalledGames(potentialGames) : [])
+      ...(this.steamConfig.searchCloud ? await this.searchUninstalledGames(potentialGames) : [])
     ]);
   }
 
@@ -63,8 +63,8 @@ class SteamCrawler extends PotentialGamesCrawler {
         const potentialGame: PotentialGame = new PotentialGame(gameManifest.name);
         potentialGame.source = GameSource.STEAM;
         potentialGame.commandLine = [
-          path.resolve(this.moduleConfig.installFolder, this.steamBinary),
-          this.moduleConfig.launchCommand.replace('%id', gameManifest.appid)
+          path.resolve(this.steamConfig.installFolder, this.steamBinary),
+          this.steamConfig.launchCommand.replace('%id', gameManifest.appid)
         ];
         potentialGame.details.steamId = parseInt(gameManifest.appid);
         logger.info('SteamCrawler', `Adding ${gameManifest.name} to potential Steam games.`);
@@ -79,7 +79,7 @@ class SteamCrawler extends PotentialGamesCrawler {
 
   private async searchUninstalledGames(potentialGames: PotentialGame[]) {
     try {
-      const { response }: any = await this.client.getOwnedGames({ steamid: this.moduleConfig.userId });
+      const { response }: any = await this.client.getOwnedGames({ steamid: this.steamConfig.userId });
       const appIds: number[] = response.games.map(({ appid: appId }: any) => appId);
       const appDatas: any[] = (await steamAppIdsCacher.cache(appIds)).filter((appData: any) => {
         const found: boolean = this.playableGames.filter((playableGame: any) =>
@@ -93,8 +93,8 @@ class SteamCrawler extends PotentialGamesCrawler {
         const potentialGame: PotentialGame = new PotentialGame(appData.name);
         potentialGame.source = GameSource.STEAM;
         potentialGame.commandLine = [
-          path.resolve(this.moduleConfig.installFolder, this.steamBinary),
-          this.moduleConfig.launchCommand.replace('%id', appData.appId)
+          path.resolve(this.steamConfig.installFolder, this.steamBinary),
+          this.steamConfig.launchCommand.replace('%id', appData.appId)
         ];
         potentialGame.details.steamId = parseInt(appData.appId);
         logger.info('SteamCrawler', `Adding ${appData.name} to potential Steam games as non-installed.`);
@@ -108,11 +108,9 @@ class SteamCrawler extends PotentialGamesCrawler {
   }
 }
 
-const steamCrawler: SteamCrawler = new SteamCrawler();
-
 export async function searchSteamGames(steamConfig: any, playableGames?: PlayableGame[]) {
   try {
-    return await steamCrawler.setPlayableGames(playableGames).search(steamConfig);
+    return await new SteamCrawler(playableGames).search(steamConfig);
   }
   catch (error) {
     throw error;

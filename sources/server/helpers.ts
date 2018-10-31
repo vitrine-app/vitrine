@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 
+import { getEnvFolder, uuidV5 } from '../models/env';
 import { logger } from './Logger';
 
 function downloadFile(file: string, options: any): Promise<any> {
@@ -78,4 +79,11 @@ export function isAlreadyStored(imageSrcPath: string, imageDestPath: string): bo
 
 export function spatStr(str: string) {
   return str.replace(/ /g, '').replace(/([-:])/g, '|');
+}
+
+export function gameDirExists(name: string): boolean {
+  const gameUuid: string = uuidV5(name);
+  const gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
+  const configFilePath: string = path.resolve(gameDirectory, 'config.json');
+  return fs.pathExistsSync(configFilePath);
 }

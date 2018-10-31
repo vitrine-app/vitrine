@@ -2,10 +2,9 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { GamesCollection } from '../../models/GamesCollection';
-import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
+import { gameDirExists } from '../helpers';
 import { logger } from '../Logger';
-import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
 interface BattleNetGame {
   tag: string;
@@ -13,18 +12,14 @@ interface BattleNetGame {
   path?: string;
 }
 
-class BattleNetCrawler extends PotentialGamesCrawler {
+class BattleNetCrawler {
+  private moduleConfig: any;
   private rootInstallPath: string;
 
-  public setPlayableGames(playableGames?: PlayableGame[]): this {
-    super.setPlayableGames(playableGames);
-    return this;
-  }
+  public async search(battleNetConfig: any) {
+    this.moduleConfig = battleNetConfig;
 
-  public async search(moduleConfig: any) {
-    super.search(moduleConfig);
-
-    const configFilePath: string = path.resolve(moduleConfig.configFilePath.replace('%appdata%', process.env.APPDATA));
+    const configFilePath: string = path.resolve(battleNetConfig.configFilePath.replace('%appdata%', process.env.APPDATA));
     logger.info('BattleNetCrawler', `Reading Battle.net config file ${configFilePath}.`);
     try {
       const battleNetConfig: any = await fs.readJson(configFilePath);
@@ -34,7 +29,7 @@ class BattleNetCrawler extends PotentialGamesCrawler {
         .filter((gamesTag: string) => gamesTag !== 'battle_net' && battleNetConfig.Games[gamesTag].Resumable);
       const gamesData: BattleNetGame[] = gameTags.map((gameTag: string) =>
         this.moduleConfig.gamesData.filter((battleNetGame: BattleNetGame) => battleNetGame.tag === gameTag)[0]
-      ).filter((gameData: any) => !this.gameDirExists(gameData.name));
+      ).filter((gameData: any) => !gameDirExists(gameData.name));
 
       if (!gamesData.length) {
         logger.info('BattleNetCrawler', 'No Battle.net games found.');
@@ -60,11 +55,9 @@ class BattleNetCrawler extends PotentialGamesCrawler {
   }
 }
 
-const battleNetCrawler: BattleNetCrawler = new BattleNetCrawler();
-
-export async function searchBattleNetGames(battleNetConfig: any, playableGames?: PlayableGame[]) {
+export async function searchBattleNetGames(battleNetConfig: any) {
   try {
-    return await battleNetCrawler.setPlayableGames(playableGames).search(battleNetConfig);
+    return await new BattleNetCrawler().search(battleNetConfig);
   }
   catch (error) {
     throw error;

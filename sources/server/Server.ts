@@ -296,8 +296,7 @@ export class Server {
     const games: GamesCollection<PotentialGame> = await searchBattleNetGames({
         ...this.modulesConfig.battleNet,
         ...this.vitrineConfig.battleNet
-      },
-      this.playableGames.getGamesFromSource(GameSource.BATTLE_NET));
+      });
     logger.info('Server', 'Adding potential Battle.net games to potential games list.');
     this.potentialGames.addGames(games.getGames());
   }
