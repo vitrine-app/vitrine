@@ -41,6 +41,6 @@ module.exports = {
       }
     ]
   },
-  mode: (production) ? ('production') : ('development'),
-  devtool: (production) ? ('source-map') : ('cheap-module-source-map')
+  mode: production ? 'production' : 'development',
+  devtool: production ? 'source-map' : 'cheap-module-source-map'
 };

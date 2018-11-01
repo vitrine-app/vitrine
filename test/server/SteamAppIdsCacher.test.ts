@@ -11,8 +11,8 @@ function testSteamAppIdsCacher(prod?: boolean) {
     const steamAppData: any = { [steamAppKey]: 'Portal'};
 
     before(async () => {
-      process.env.NODE_ENV = (prod) ? ('prod') : ('dev');
-      process.env.TEST_PROD = (prod) ? ('true') : ('false');
+      process.env.NODE_ENV = prod ? 'prod' : 'dev';
+      process.env.TEST_PROD = prod ? 'true' : 'false';
       steamAppIdsCacher = new SteamAppIdsCacher();
       cacheFilePath = path.resolve(getEnvFolder('config'), 'cache', 'steam_app_ids.json');
     });
