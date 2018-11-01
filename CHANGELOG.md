@@ -1,5 +1,9 @@
 # Vitrine Changelog
 
+## 0.10.0 (01/11/2018)
+- feat: add option to add every potential games at once
+- fix: progress shows download percentage on Vitrine upgrade
+
 ## 0.9.6 (21/10/2018)
 - fix: ACF parser case-sensitivity [#100](https://github.com/paul-roman/vitrine/pull/100)
 - fix: environment deploy [#98](https://github.com/paul-roman/vitrine/pull/98)
