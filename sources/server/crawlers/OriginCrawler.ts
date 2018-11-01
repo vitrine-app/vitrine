@@ -7,7 +7,6 @@ import { PlayableGame } from '../../models/PlayableGame';
 import { GameSource, PotentialGame } from '../../models/PotentialGame';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
-import { PotentialGamesCrawler } from './PotentialGamesCrawler';
 
 function getRegistryKeys(regKey: any): Promise<Winreg.Registry[]> {
   return new Promise((resolve, reject) => {
@@ -31,25 +30,26 @@ function getKeyValue(key: Winreg.Registry): Promise<Winreg.RegistryItem[]> {
   });
 }
 
-class OriginCrawler extends PotentialGamesCrawler {
+class OriginCrawler {
+  private playableGames: PlayableGame[];
   private regDetails: any[];
   private gamesFolder: string;
+  private originConfig: any;
 
-  public setPlayableGames(playableGames?: PlayableGame[]): this {
-    super.setPlayableGames(playableGames);
+  public constructor(playableGames?: PlayableGame[]) {
+    this.playableGames = playableGames || [];
     this.regDetails = [];
-    return this;
   }
 
-  public async search(moduleConfig: any) {
-    super.search(moduleConfig);
+  public async search(originConfig: any) {
+    this.originConfig = originConfig;
 
-    this.gamesFolder = path.resolve(this.moduleConfig.installFolder);
+    this.gamesFolder = path.resolve(this.originConfig.installFolder);
     const regKey = new Registry({
-      hive: Registry[this.moduleConfig.regHive],
-      key: this.moduleConfig.regKey
+      hive: Registry[this.originConfig.regHive],
+      key: this.originConfig.regKey
     });
-    logger.info('OriginCrawler', `Parsing registry key ${this.moduleConfig.regKey}.`);
+    logger.info('OriginCrawler', `Parsing registry key ${this.originConfig.regKey}.`);
     const items: Winreg.Registry[] = await getRegistryKeys(regKey);
     this.regDetails = await Promise.all(items.map(async (key: Winreg.Registry) => {
       const values: Winreg.RegistryItem[] = await getKeyValue(key);
@@ -99,11 +99,9 @@ class OriginCrawler extends PotentialGamesCrawler {
   }
 }
 
-const originCrawler: OriginCrawler = new OriginCrawler();
-
 export async function searchOriginGames(originConfig: any, playableGames?: PlayableGame[]) {
   try {
-    return await originCrawler.setPlayableGames(playableGames).search(originConfig);
+    return await new OriginCrawler(playableGames).search(originConfig);
   }
   catch (error) {
     throw error;

@@ -30,7 +30,7 @@ export function addPlayableGames(unsortedGames: PlayableGame[]): Action {
     type: ActionType.ADD_PLAYABLE_GAMES,
     payload: {
       playableGames,
-      selectedGame: (unsortedGames.length) ? ((unsortedGames.length > 1) ? (playableGames[0]) : (unsortedGames[0])) : (null),
+      selectedGame: unsortedGames.length ? (unsortedGames.length > 1 ? playableGames[0] : unsortedGames[0]) : null,
       potentialGameToAdd: null
     }
   };
@@ -54,6 +54,24 @@ export function removePlayableGame(gameUuid: string): Action {
     type: ActionType.REMOVE_PLAYABLE_GAME,
     payload: {
       gameUuid
+    }
+  };
+}
+
+export function setPotentialGames(potentialGames: PotentialGame[]): Action {
+  return {
+    type: ActionType.SET_POTENTIAL_GAMES,
+    payload: {
+      potentialGames
+    }
+  };
+}
+
+export function setPlayableGames(playableGames: PlayableGame[]): Action {
+  return {
+    type: ActionType.SET_PLAYABLE_GAMES,
+    payload: {
+      playableGames
     }
   };
 }

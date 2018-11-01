@@ -1,6 +1,5 @@
 import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
-import { ProgressInfo } from 'builder-util-runtime';
 import { rgba } from 'css-verbose';
 import * as React from 'react';
 import { Header } from 'semantic-ui-react';
@@ -12,7 +11,8 @@ import * as vitrineIcon from '../../resources/images/vitrine.ico';
 
 interface State {
   displayedInfo: string;
-  updateDownloadProgress: number;
+  updateDownload: boolean;
+  downloadProgress: number;
 }
 
 export class VitrineLoader extends React.Component<{}, State> {
@@ -23,14 +23,19 @@ export class VitrineLoader extends React.Component<{}, State> {
 
     this.state = {
       displayedInfo: 'Loading...',
-      updateDownloadProgress: null
+      updateDownload: false,
+      downloadProgress: 0
     };
+
+    this.startUpdateDownload = this.startUpdateDownload.bind(this);
+    this.updateProgress = this.updateProgress.bind(this);
+    this.launchClient = this.launchClient.bind(this);
   }
 
   public componentDidMount() {
-    loaderServerListener.listen('update-found', this.startUpdateDownload.bind(this))
-      .listen('update-progress', this.updateProgress.bind(this))
-      .listen('no-update-found', this.launchClient.bind(this));
+    loaderServerListener.listen('update-found', this.startUpdateDownload)
+      .listen('update-progress', this.updateProgress)
+      .listen('no-update-found', this.launchClient);
 
     loaderServerListener.send('ready');
     this.setState({
@@ -42,17 +47,16 @@ export class VitrineLoader extends React.Component<{}, State> {
     this.lastUpdateVersion = lastUpdateVersion;
     this.setState({
       displayedInfo: `Updating to ${this.lastUpdateVersion}...`,
-      updateDownloadProgress: 0
+      updateDownload: true,
+      downloadProgress: 0
     });
   }
 
-  private updateProgress(progress: ProgressInfo) {
-    const updateDownloadProgress: number = Math.round(progress.percent);
-    const displayedInfo: string = (updateDownloadProgress < 100)
-      ? (`Updating to ${this.lastUpdateVersion}... | ${updateDownloadProgress.percents()}`)
-      : ('Restarting...');
+  private updateProgress(downloadProgress: number) {
+    const displayedInfo: string = downloadProgress < 100
+      ? `Updating to ${this.lastUpdateVersion}... | ${downloadProgress.percents()}` : 'Installing...';
     this.setState({
-      updateDownloadProgress,
+      downloadProgress,
       displayedInfo
     });
   }
@@ -77,18 +81,18 @@ export class VitrineLoader extends React.Component<{}, State> {
         </div>
         <span
           className={css(styles.infosSpan)}
-          style={{ display: (this.state.displayedInfo) ? ('inline') : ('none') }}
+          style={{ display: this.state.displayedInfo ? 'inline' : 'none' }}
         >
           {this.state.displayedInfo} <FontAwesomeIcon icon={faCog} spin={true}/>
         </span>
         <div
           className={`progress ${css(styles.downloadBar)}`}
-          style={{ display: (this.state.updateDownloadProgress) ? ('block') : ('none') }}
+          style={{ display: this.state.updateDownload ? 'block' : 'none' }}
         >
           <div
             className={`progress-bar active ${css(styles.downloadBarProgress)}`}
             role='progressbar'
-            style={{ width: (this.state.updateDownloadProgress) ? (this.state.updateDownloadProgress.percents()) : (0..percents()) }}
+            style={{ width: this.state.downloadProgress ? this.state.downloadProgress.percents() : 0..percents() }}
           />
         </div>
       </div>
@@ -133,7 +137,6 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     fontVariant: 'small-caps'
   },
   infosSpan: {
-    fontStyle: 'italic',
     opacity: 0.4,
     fontSize: 17
   },
@@ -146,6 +149,9 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     backgroundColor: '#4A453F'
   },
   downloadBarProgress: {
-    backgroundColor: '#736E67'
+    backgroundColor: rgba(199, 120, 63, 0.5),
+    height: 100..percents(),
+    borderRadius: 3,
+    transition: `width ${0.2}s ease-out`
   }
 });

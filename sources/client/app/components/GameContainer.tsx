@@ -62,7 +62,7 @@ export class GameContainer extends VitrineComponent<Props, State> {
                 <FontAwesomeIcon icon={faPlay} size={'sm'}/> <FormattedMessage id={'actions.playGame'}/>
               </Button>
               <span className={css(styles.gameTimePlayed)}>
-                {(this.props.selectedGame.timePlayed) ? (formatTimePlayed(this.props.selectedGame.timePlayed, this.props.intl.formatMessage)) : ('')}
+                {this.props.selectedGame.timePlayed ? formatTimePlayed(this.props.selectedGame.timePlayed, this.props.intl.formatMessage) : ''}
               </span>
             </div>
             <div className={css(styles.gameInfosRegion)}>

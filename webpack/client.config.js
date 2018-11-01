@@ -35,8 +35,8 @@ const clientConfig = {
       }
     ]
   },
-  mode: (production) ? ('production') : ('development'),
-  devtool: (production) ? ('source-map') : ('cheap-module-source-map')
+  mode: production ? 'production' : 'development',
+  devtool: production ? 'source-map' : 'cheap-module-source-map'
 };
 
 const moduleExports = [
@@ -70,4 +70,4 @@ const moduleExports = [
   },
 ];
 
-module.exports = (!process.env.NO_LOADER) ? (moduleExports) : (moduleExports[0]);
+module.exports = !process.env.NO_LOADER ? moduleExports : moduleExports[0];

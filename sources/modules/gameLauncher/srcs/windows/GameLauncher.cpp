@@ -11,7 +11,7 @@ static void monitorGameStart(uv_work_t *request) {
   shellInfo.lpVerb = nullptr;
   shellInfo.lpFile = worker->commandLine.c_str();
   shellInfo.lpParameters = worker->args.c_str();
-  shellInfo.lpDirectory = (worker->workingDirectory.length() > 0) ? (worker->workingDirectory.c_str()) : (nullptr);
+  shellInfo.lpDirectory = worker->workingDirectory.length() > 0 ? worker->workingDirectory.c_str() : nullptr;
   shellInfo.nShow = SW_SHOW;
   shellInfo.hInstApp = nullptr;
 

@@ -20,11 +20,11 @@ export class ErrorsWrapper extends React.Component<{}, State> {
     };
   }
 
-  private quitApplication() {
+  private static quitApplication() {
     serverListener.send('quit-application', false);
   }
 
-  private relaunchApplication() {
+  private static relaunchApplication() {
     serverListener.send('quit-application', true);
   }
 
@@ -54,13 +54,13 @@ export class ErrorsWrapper extends React.Component<{}, State> {
           <Modal.Actions>
             <Button
               secondary={true}
-              onClick={this.quitApplication}
+              onClick={ErrorsWrapper.quitApplication}
             >
               <FormattedMessage id={'actions.quit'}/>
             </Button>
             <Button
               secondary={true}
-              onClick={this.relaunchApplication}
+              onClick={ErrorsWrapper.relaunchApplication}
             >
               <FormattedMessage id={'actions.relaunch'}/>
             </Button>

@@ -15,7 +15,7 @@ export const MinimizeSvg: React.StatelessComponent<Props> = ({ hovered }: Props)
       height={1}
       x={1}
       y={6}
-      fill={(hovered) ? ('#A6A29F') : ('#676360')}
+      fill={hovered ? '#A6A29F' : '#676360'}
     />
   </svg>
 );

@@ -22,8 +22,8 @@ export function getEnvFolder(folder: string, nonProd?: boolean): string {
   if (isTesting() && !isProduction())
     return path.resolve(folder);
   const appDataPath: string = path.resolve(getAppDataFolder(), 'data', folder);
-  const computedPath: string = (isProduction()) ?
-    (((folder === 'games' || folder === 'config') && !nonProd) ? (appDataPath) : (`../../${folder}`)) : (`../${folder}`);
+  const computedPath: string = isProduction() ?
+    ((folder === 'games' || folder === 'config') && !nonProd ? appDataPath : `../../${folder}`) : `../${folder}`;
   return path.resolve(__dirname, computedPath);
 }
 

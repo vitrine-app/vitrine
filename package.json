@@ -1,6 +1,6 @@
 {
   "name": "vitrine",
-  "version": "0.9.6",
+  "version": "0.10.0",
   "description": "Centralize all of your games within a simple interface.",
   "main": "public/server.js",
   "productName": "Vitrine",
@@ -24,6 +24,7 @@
     "@fortawesome/react-fontawesome": "0.0.17",
     "aphrodite": "2.2.0",
     "axios": "^0.18.0",
+    "chunk": "^0.0.2",
     "compare-versions": "^3.4.0",
     "css-verbose": "^0.3.0",
     "discord-rich-presence": "0.0.7",

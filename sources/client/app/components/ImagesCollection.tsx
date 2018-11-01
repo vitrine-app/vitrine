@@ -89,7 +89,7 @@ export const ImagesCollection = injectIntl(class extends VitrineComponent<Props,
             <img
               key={index}
               src={image}
-              className={css(styles.image) + ((this.state.selectedImage === image) ? (' ' + css(styles.selectedImage)) : (''))}
+              className={css(styles.image) + (this.state.selectedImage === image ? ' ' + css(styles.selectedImage) : '')}
               onClick={this.imageClick.bind(this, image)}
             />
           )}

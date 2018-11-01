@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 
+import { getEnvFolder, uuidV5 } from '../models/env';
 import { logger } from './Logger';
 
 function downloadFile(file: string, options: any): Promise<any> {
@@ -33,27 +34,27 @@ async function deleteOldImages(path: string, except: string) {
   });
 }
 
-async function downloadImage(src: string, dest: string) {
-  if (!src || (src.startsWith('file://') && !await fs.pathExists(src.substring(7)))) {
-    logger.info('downloadImage', `Local source image (${src}) not found.`);
+async function downloadImage(source: string, destination: string) {
+  if (!source || (source.startsWith('file://') && !await fs.pathExists(source.substring(7)))) {
+    logger.info('downloadImage', `Local source image (${source}) not found.`);
     return false;
   }
-  if (src.startsWith('file://')) {
-    src = src.substring(7);
-    if (src === dest)
+  if (source.startsWith('file://')) {
+    source = source.substring(7);
+    if (source === destination)
       return true;
-    logger.info('downloadImage', `Copying local source image (${src}) to ${dest}.`);
-    await fs.copy(src, dest);
-    const fileGlob: string = dest.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
-    await deleteOldImages(fileGlob, dest);
+    logger.info('downloadImage', `Copying local source image (${source}) to ${destination}.`);
+    await fs.copy(source, destination);
+    const fileGlob: string = destination.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
+    await deleteOldImages(fileGlob, destination);
     return true;
   }
   else {
-    logger.info('downloadImage', `Downloading distant source image (${src}) to ${dest}.`);
+    logger.info('downloadImage', `Downloading distant source image (${source}) to ${destination}.`);
     const succeeded: boolean = await Promise.race([
-      downloadFile(src, {
-        directory: path.dirname(dest),
-        filename: path.basename(dest)
+      downloadFile(source, {
+        directory: path.dirname(destination),
+        filename: path.basename(destination)
       }),
       setTimeOut(10000)
     ]);
@@ -65,15 +66,24 @@ export async function downloadGamePictures(gameDetails: any, { backgroundUrl, ba
   const backGroundStored: boolean = await downloadImage(backgroundUrl, backgroundPath);
   const coverStored: boolean = await downloadImage(coverUrl, coverPath);
   return {
-    backgroundScreen: (backGroundStored) ? (backgroundPath) : (gameDetails.backgroundScreen),
-    cover: (coverStored) ? (coverPath) : (gameDetails.cover)
+    backgroundScreen: backGroundStored ? backgroundPath : gameDetails.backgroundScreen,
+    cover: coverStored ? coverPath : gameDetails.cover
   };
 }
 
-export function isAlreadyStored(imageSrcPath: string, imageDestPath: string): boolean {
-  return imageSrcPath === imageDestPath && imageSrcPath.startsWith('file://');
+export function isAlreadyStored(imageSourcePath: string, imageDestinationPath: string): boolean {
+  if (!imageSourcePath)
+    return false;
+  return imageSourcePath === imageDestinationPath && imageSourcePath.startsWith('file://');
 }
 
 export function spatStr(str: string) {
   return str.replace(/ /g, '').replace(/([-:])/g, '|');
+}
+
+export function gameDirExists(name: string): boolean {
+  const gameUuid: string = uuidV5(name);
+  const gameDirectory: string = path.resolve(getEnvFolder('games'), gameUuid);
+  const configFilePath: string = path.resolve(gameDirectory, 'config.json');
+  return fs.pathExistsSync(configFilePath);
 }

@@ -5,12 +5,12 @@
       "conditions": [
         ["OS==\"win\"", {
           "sources": [
-            "windows/GameLauncher.cpp"
+            "srcs/windows/GameLauncher.cpp"
           ]
         }],
         ["OS==\"linux\"", {
           "sources": [
-            "linux/GameLauncher.cpp"
+            "srcs/linux/GameLauncher.cpp"
           ]
         }]
       ]

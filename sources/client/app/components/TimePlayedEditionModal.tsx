@@ -114,7 +114,7 @@ export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
           className={css(styles.modal)}
         >
           <Modal.Header>
-            {(this.props.gameToEdit) ? (this.props.gameToEdit.name) : ('')}
+            {this.props.gameToEdit ? this.props.gameToEdit.name : ''}
           </Modal.Header>
           <Modal.Content>
             <Form>

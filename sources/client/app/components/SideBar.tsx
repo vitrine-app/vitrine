@@ -68,7 +68,6 @@ export class SideBar extends VitrineComponent<Props, {}> {
     ];
 
     this.clickGameHandler = this.clickGameHandler.bind(this);
-    this.taskBarRefreshBtnClickHandler = this.taskBarRefreshBtnClickHandler.bind(this);
     this.potentialGamesButton = this.potentialGamesButton.bind(this);
   }
 
@@ -77,7 +76,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
     this.props.selectGame(selectedGame);
   }
 
-  private taskBarRefreshBtnClickHandler() {
+  private static taskBarRefreshBtnClickHandler() {
     serverListener.send('refresh-potential-games');
   }
 
@@ -108,7 +107,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
                 icon={faSyncAlt}
                 spin={this.props.refreshingGames}
                 tooltip={this.props.intl.formatMessage({ id: 'actions.refresh' })}
-                onClick={this.taskBarRefreshBtnClickHandler}
+                onClick={SideBar.taskBarRefreshBtnClickHandler}
               />
             </Grid.Column>
             <Grid.Column className={css(styles.actionButton)}>
@@ -126,7 +125,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
               <Button
                 primary={true}
                 className={css(styles.addGamesButton)}
-                style={{ visibility: (this.props.potentialGames.size()) ? ('visible') : ('hidden') }}
+                style={{ visibility: this.props.potentialGames.size() ? 'visible' : 'hidden' }}
                 onClick={this.potentialGamesButton}
               >
                 {this.props.potentialGames.size()}
@@ -135,7 +134,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
             <Grid.Column width={6} className={css(styles.sideBarColumn)}>
               <Dropdown
                 className={css(styles.sortDropdown)}
-                style={{ display: (this.props.playableGames.size()) ? ('block') : ('none') }}
+                style={{ display: this.props.playableGames.size() ? 'block' : 'none' }}
               >
                 <Dropdown.Menu>
                   <Dropdown.Header icon='sort numeric ascending' content={this.props.intl.formatMessage({ id: 'sort.sortGames' })}/>
@@ -143,7 +142,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
                     <Dropdown.Item
                       key={index}
                       text={this.props.intl.formatMessage({ id: gamesSortParameter.text })}
-                      icon={(gamesSortParameter.parameter === this.props.gamesSortParameter) ? ('check') : ('')}
+                      icon={gamesSortParameter.parameter === this.props.gamesSortParameter ? 'check' : ''}
                       onClick={this.props.sortGames.bind(null, gamesSortParameter.parameter)}
                     />
                   ))}
@@ -169,7 +168,7 @@ export class SideBar extends VitrineComponent<Props, {}> {
                     id={`sidebar-game:${game.uuid}`}
                     className={
                       css(styles.gamesListLi) +
-                      ((this.props.selectedGame && this.props.selectedGame.uuid === game.uuid) ? (' ' + css(styles.selectedGame)) : (''))
+                      (this.props.selectedGame && this.props.selectedGame.uuid === game.uuid ? ' ' + css(styles.selectedGame) : '')
                     }
                     onClick={this.clickGameHandler}
                     onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
