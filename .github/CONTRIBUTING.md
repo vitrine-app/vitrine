@@ -16,10 +16,12 @@ Vitrine is using custom Node.js native addons, written in C++, which need to be 
 - Visual C++ Build Tools on Windows : you need to download and install [Windows-Build-Tools](https://github.com/felixrieseberg/windows-build-tools)
 - Python 2.7 on Linux
 
+
 Vitrine is using multiple APIs to work (IGDB, Steam, Discord...). This keys are obviously not stored in the public repo, but a ciphered version is present.
 To build Vitrine, you need an environment variable called `VITRINE_KEY`. If you want to work on the project, feel free to [contact me](mailto:paul.roman@epitech.eu) to retrieve the key!
 Then, run `yarn keys:decipher` to build the `keys.hh` file that will contain clear API keys.
 Then just hit with a `yarn run:app` and you're ready to go!
+
 
 ## Writing code
 
