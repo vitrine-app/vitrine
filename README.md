@@ -1,27 +1,24 @@
 <p align="center">
-  <img src="https://paul-roman.github.io/vitrine/img/vitrine-banner.png" alt="Vitrine"/>
+  <img src="public/img/vitrine.png" alt="Vitrine"/>
 </p>
 
 <h3 align="center">Centralize all of your games within a simple interface.</h3>
 
 <p align="center">
-  <a href="https://github.com/paul-roman/vitrine/releases">
-    <img alt="GitHub (pre-)release" src="https://img.shields.io/github/release/paul-roman/vitrine/all.svg?style=flat-square">
+  <a href="https://github.com/vitrine-app/vitrine/releases">
+    <img alt="GitHub (pre-)release" src="https://img.shields.io/github/release/vitrine-app/vitrine/all.svg?style=flat-square">
   </a>
-  <a href="https://github.com/paul-roman/vitrine/blob/master/LICENSE.md">
-    <img alt="license" src="https://img.shields.io/github/license/paul-roman/vitrine.svg?style=flat-square">
+  <a href="https://github.com/vitrine-app/vitrine/blob/master/LICENSE.md">
+    <img alt="license" src="https://img.shields.io/github/license/vitrine-app/vitrine.svg?style=flat-square">
   </a>
-  <a href="https://travis-ci.org/paul-roman/vitrine">
-    <img alt="TravisCI" src="https://img.shields.io/travis/paul-roman/vitrine/master.svg?style=flat-square&logo=travis">
+  <a href="https://travis-ci.org/vitrine-app/vitrine">
+    <img alt="TravisCI" src="https://img.shields.io/travis/vitrine-app/vitrine/master.svg?style=flat-square&logo=travis">
   </a>
-  <a href="https://ci.appveyor.com/project/paul-roman/vitrine">
-    <img alt="AppVeyor" src="https://img.shields.io/appveyor/ci/paul-roman/vitrine/master.svg?style=flat-square&logo=appveyor">
+  <a href="https://ci.appveyor.com/project/paul-roman/vitrine-8x6h6">
+    <img alt="AppVeyor" src="https://img.shields.io/appveyor/ci/paul-roman/vitrine-8x6h6/master.svg?style=flat-square&logo=appveyor">
   </a>
   <a href="https://palantir.github.io/tslint">
     <img alt="code style: TSLint" src="https://img.shields.io/badge/code%20style-tslint-ff69b4.svg?style=flat-square">
-  </a>
-  <a href="https://github-tools.github.io/github-release-notes">
-    <img alt="Automated Release Notes by gren" src="https://img.shields.io/badge/%F0%9F%A4%96-release%20notes-00B2EE.svg?style=flat-square">
   </a>
   <a href="https://stackshare.io/paul-roman/vitrine">
     <img alt="StackShare" src="https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square">
