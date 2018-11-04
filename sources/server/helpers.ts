@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 
-import { getEnvFolder, uuidV5 } from '../models/env';
+import { getEnvFolder, uuidV5 } from '@models/env';
 import { logger } from './Logger';
 
 function downloadFile(file: string, options: any): Promise<any> {

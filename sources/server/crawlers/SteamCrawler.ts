@@ -2,9 +2,9 @@ import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 import * as SteamWeb from 'steam-web-promise';
 
-import { GamesCollection } from '../../models/GamesCollection';
-import { PlayableGame } from '../../models/PlayableGame';
-import { GameSource, PotentialGame } from '../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame } from '@models/PlayableGame';
+import { GameSource, PotentialGame } from '@models/PotentialGame';
 import { steamKey } from '../../modules/keysProvider';
 import { parseAcf } from '../api/AcfParser';
 import { logger } from '../Logger';

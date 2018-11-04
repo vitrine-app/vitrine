@@ -7,9 +7,9 @@ import { ToastContainer } from 'react-toastify';
 import { Dispatch } from 'redux';
 import { Grid } from 'semantic-ui-react';
 
-import { GamesCollection } from '../../../../models/GamesCollection';
-import { PlayableGame } from '../../../../models/PlayableGame';
-import { PotentialGame } from '../../../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame } from '@models/PlayableGame';
+import { PotentialGame } from '@models/PotentialGame';
 import { formatTimePlayed, notify } from '../../helpers';
 import { GameAddModal } from '../addingGame/GameAddModal';
 import { PotentialGamesAddModal } from '../addingPotentialGames/PotentialGamesAddModal';

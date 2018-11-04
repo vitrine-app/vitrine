@@ -20,7 +20,8 @@
     "baseUrl": "./",
     "typeRoots": [ "node_modules/@types" ],
     "paths": {
-      "react-datetime": [ "sources/client/defs/react-datetime" ]
+      "react-datetime": [ "sources/client/defs/react-datetime" ],
+      "@models/*": [ "./sources/models/*" ]
     }
   },
   "exclude": [

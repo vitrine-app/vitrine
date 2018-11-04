@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Button, Form, Grid, Modal, Transition } from 'semantic-ui-react';
 
-import { PlayableGame } from '../../../../models/PlayableGame';
+import { PlayableGame } from '@models/PlayableGame';
 import { NumberPicker } from '../../ui/NumberPicker';
 import { Action } from '../redux/actions/actionsTypes';
 import { closeTimePlayedEditionModal } from '../redux/actions/modals';

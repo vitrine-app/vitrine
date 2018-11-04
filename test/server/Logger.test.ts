@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getAppDataFolder, isProduction } from '../../sources/models/env';
+import { getAppDataFolder, isProduction } from '@models/env';
 import { Logger } from '../../sources/server/Logger';
 
 function testLogger(prod?: boolean) {

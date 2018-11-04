@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getEnvFolder } from '../models/env';
+import { getEnvFolder } from '@models/env';
 import { logger } from './Logger';
 
 export class SteamAppIdsCacher {

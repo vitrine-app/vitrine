@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Button, Modal, Transition } from 'semantic-ui-react';
 
-import { GamesCollection } from '../../../../models/GamesCollection';
-import { PlayableGame } from '../../../../models/PlayableGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame } from '@models/PlayableGame';
 import { Action } from '../redux/actions/actionsTypes';
 import { launchGame, setGameToEdit } from '../redux/actions/games';
 import { openGameAddModal, openTimePlayedEditionModal } from '../redux/actions/modals';

@@ -1,5 +1,5 @@
-import { PlayableGame, SortParameter } from '../../../../../models/PlayableGame';
-import { PotentialGame } from '../../../../../models/PotentialGame';
+import { PlayableGame, SortParameter } from '@models/PlayableGame';
+import { PotentialGame } from '@models/PotentialGame';
 import { getSortedGamesFromStore } from '../AppState';
 import { Action, ActionType } from './actionsTypes';
 

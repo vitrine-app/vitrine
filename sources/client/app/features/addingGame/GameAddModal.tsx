@@ -8,7 +8,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Button, Form, Grid, Input, TextArea } from 'semantic-ui-react';
 
-import { GameSource, PotentialGame } from '../../../../models/PotentialGame';
+import { PlayableGame } from '@models/PlayableGame';
+import { GameSource, PotentialGame } from '@models/PotentialGame';
 import { notify, openExecutableDialog, openImageDialog } from '../../helpers';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { DatePicker } from '../../ui/DatePicker';
@@ -23,7 +24,6 @@ import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
-import { PlayableGame } from '../../../../models/PlayableGame';
 import { FadingModal } from '../../ui/FadingModal';
 
 interface Props {

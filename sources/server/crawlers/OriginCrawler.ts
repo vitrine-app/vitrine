@@ -2,9 +2,9 @@ import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 import * as Registry from 'winreg';
 
-import { GamesCollection } from '../../models/GamesCollection';
-import { PlayableGame } from '../../models/PlayableGame';
-import { GameSource, PotentialGame } from '../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame } from '@models/PlayableGame';
+import { GameSource, PotentialGame } from '@models/PotentialGame';
 import { spatStr } from '../helpers';
 import { logger } from '../Logger';
 

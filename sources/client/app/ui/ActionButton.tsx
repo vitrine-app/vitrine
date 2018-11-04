@@ -4,7 +4,7 @@ import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 
 import * as ReactTooltip from 'react-tooltip';
-import { randomHashedString } from '../../../models/env';
+import { randomHashedString } from '@models/env';
 import { VitrineComponent } from '../features/VitrineComponent';
 
 interface Props {

@@ -8,9 +8,9 @@ import { Dispatch } from 'redux';
 import { Button, Dropdown, Grid } from 'semantic-ui-react';
 
 import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
-import { GamesCollection } from '../../../../models/GamesCollection';
-import { PlayableGame, SortParameter } from '../../../../models/PlayableGame';
-import { PotentialGame } from '../../../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame, SortParameter } from '@models/PlayableGame';
+import { PotentialGame } from '@models/PotentialGame';
 import { ActionButton } from '../../ui/ActionButton';
 import { Action } from '../redux/actions/actionsTypes';
 import { refreshGames, selectGame, sortGames } from '../redux/actions/games';

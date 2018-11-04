@@ -1,6 +1,6 @@
-import { GamesCollection } from '../../../../../models/GamesCollection';
-import { PlayableGame, SortParameter } from '../../../../../models/PlayableGame';
-import { PotentialGame } from '../../../../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame, SortParameter } from '@models/PlayableGame';
+import { PotentialGame } from '@models/PotentialGame';
 import { Action, ActionType } from '../actions/actionsTypes';
 
 export function refreshingGames(state: boolean = false, action: Action): boolean {

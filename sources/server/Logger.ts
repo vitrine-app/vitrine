@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as moment from 'moment';
 import * as path from 'path';
 
-import { getAppDataFolder, isFakeProd, isProduction } from '../models/env';
+import { getAppDataFolder, isFakeProd, isProduction } from '@models/env';
 
 export class Logger {
   private readonly filePath: string;

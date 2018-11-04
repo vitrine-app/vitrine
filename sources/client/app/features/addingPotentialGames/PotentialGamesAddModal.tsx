@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Button, Grid, Progress } from 'semantic-ui-react';
 
-import { GamesCollection } from '../../../../models/GamesCollection';
-import { PlayableGame } from '../../../../models/PlayableGame';
-import { PotentialGame } from '../../../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame } from '@models/PlayableGame';
+import { PotentialGame } from '@models/PotentialGame';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { FadingModal } from '../../ui/FadingModal';
 import { Action } from '../redux/actions/actionsTypes';

@@ -1,8 +1,8 @@
 import { applyMiddleware, combineReducers, createStore, Store } from 'redux';
 
-import { GamesCollection } from '../../../../models/GamesCollection';
-import { PlayableGame, SortParameter } from '../../../../models/PlayableGame';
-import { PotentialGame } from '../../../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame, SortParameter } from '@models/PlayableGame';
+import { PotentialGame } from '@models/PotentialGame';
 import { reduxLog } from '../../helpers';
 import {
   gamesSortParameter,

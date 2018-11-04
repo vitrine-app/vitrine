@@ -7,7 +7,7 @@ import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Grid } from 'semantic-ui-react';
 
-import { PlayableGame } from '../../../../models/PlayableGame';
+import { PlayableGame } from '@models/PlayableGame';
 import { formatTimePlayed, urlify } from '../../helpers';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { CirclePercentage } from '../../ui/CirclePercentage';
