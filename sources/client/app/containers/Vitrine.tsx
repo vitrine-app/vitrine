@@ -4,12 +4,12 @@ import { Dispatch } from 'redux';
 
 import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
-import { Action } from '../actions/actionsTypes';
-import { addPlayableGames, addPotentialGames, launchGame, removePlayableGame, selectGame, stopGame } from '../actions/games';
-import { closeSettingsModal, openSettingsModal } from '../actions/modals';
-import { setInternetConnection, setLocale, updateSettings } from '../actions/settings';
-import { AppState } from '../AppState';
-import { Vitrine as VitrineComponent } from '../components/Vitrine';
+import { Vitrine as VitrineComponent } from '../features/homescreen/Vitrine';
+import { Action } from '../features/redux/actions/actionsTypes';
+import { addPlayableGames, addPotentialGames, launchGame, removePlayableGame, selectGame, stopGame } from '../features/redux/actions/games';
+import { closeSettingsModal, openSettingsModal } from '../features/redux/actions/modals';
+import { setInternetConnection, setLocale, updateSettings } from '../features/redux/actions/settings';
+import { AppState } from '../features/redux/AppState';
 
 const mapStateToProps = (state: AppState) => ({
   settings: state.settings,

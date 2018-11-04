@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { Action } from '../actions/actionsTypes';
-import { setLocale, setLocales, updateModulesConfig, updateSettings } from '../actions/settings';
-import { AppState } from '../AppState';
-import { App as AppComponent } from '../components/App';
+import { App as AppComponent } from '../App';
+import { Action } from '../features/redux/actions/actionsTypes';
+import { setLocale, setLocales, updateModulesConfig, updateSettings } from '../features/redux/actions/settings';
+import { AppState } from '../features/redux/AppState';
 
 const mapStateToProps = (state: AppState) => ({
   settings: state.settings,

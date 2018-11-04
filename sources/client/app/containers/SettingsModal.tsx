@@ -2,11 +2,11 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { Action } from '../actions/actionsTypes';
-import { closeSettingsModal } from '../actions/modals';
-import { setLocale, updateSettings } from '../actions/settings';
-import { AppState } from '../AppState';
-import { SettingsModal as SettingsModalComponent } from '../components/SettingsModal';
+import { Action } from '../features/redux/actions/actionsTypes';
+import { closeSettingsModal } from '../features/redux/actions/modals';
+import { setLocale, updateSettings } from '../features/redux/actions/settings';
+import { AppState } from '../features/redux/AppState';
+import { SettingsModal as SettingsModalComponent } from '../features/settings/SettingsModal';
 
 const mapStateToProps = (state: AppState) => ({
   settings: state.settings,

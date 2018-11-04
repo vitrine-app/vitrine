@@ -2,10 +2,10 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import { Action } from '../actions/actionsTypes';
-import { closeTimePlayedEditionModal } from '../actions/modals';
-import { AppState } from '../AppState';
-import { TimePlayedEditionModal as TimePlayedEditionModalComponent } from '../components/TimePlayedEditionModal';
+import { TimePlayedEditionModal as TimePlayedEditionModalComponent } from '../features/editingTimePlayed/TimePlayedEditionModal';
+import { Action } from '../features/redux/actions/actionsTypes';
+import { closeTimePlayedEditionModal } from '../features/redux/actions/modals';
+import { AppState } from '../features/redux/AppState';
 
 const mapStateToProps = (state: AppState) => ({
   gameToEdit: state.gameToEdit,

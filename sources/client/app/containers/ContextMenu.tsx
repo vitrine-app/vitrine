@@ -2,11 +2,11 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import { PlayableGame } from '../../../models/PlayableGame';
-import { Action } from '../actions/actionsTypes';
-import { launchGame, setGameToEdit } from '../actions/games';
-import { openGameAddModal, openTimePlayedEditionModal } from '../actions/modals';
-import { AppState } from '../AppState';
-import { ContextMenu as ContextMenuComponent } from '../components/ContextMenu';
+import { ContextMenu as ContextMenuComponent } from '../features/homescreen/ContextMenu';
+import { Action } from '../features/redux/actions/actionsTypes';
+import { launchGame, setGameToEdit } from '../features/redux/actions/games';
+import { openGameAddModal, openTimePlayedEditionModal } from '../features/redux/actions/modals';
+import { AppState } from '../features/redux/AppState';
 
 const mapStateToProps = (state: AppState) => ({
   playableGames: state.playableGames

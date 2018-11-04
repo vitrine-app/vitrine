@@ -1,8 +1,8 @@
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
-import { AppState } from '../AppState';
-import { EmulatorSettingsRow as EmulatorSettingsRowComponent } from '../components/EmulatorSettingsRow';
+import { AppState } from '../features/redux/AppState';
+import { EmulatorSettingsRow as EmulatorSettingsRowComponent } from '../features/settings/EmulatorSettingsRow';
 
 const mapStateToProps = (state: AppState) => ({
   platforms: state.modulesConfig.emulated.platforms,

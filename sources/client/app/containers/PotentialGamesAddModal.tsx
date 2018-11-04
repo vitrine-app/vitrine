@@ -4,11 +4,11 @@ import { Dispatch } from 'redux';
 
 import { PlayableGame } from '../../../models/PlayableGame';
 import { PotentialGame } from '../../../models/PotentialGame';
-import { Action } from '../actions/actionsTypes';
-import { selectGame, setPlayableGames, setPotentialGames, setPotentialGameToAdd } from '../actions/games';
-import { closePotentialGamesAddModal, openGameAddModal } from '../actions/modals';
-import { AppState } from '../AppState';
-import { PotentialGamesAddModal as PotentialGamesAddModalComponent } from '../components/PotentialGamesAddModal';
+import { PotentialGamesAddModal as PotentialGamesAddModalComponent } from '../features/addingPotentialGames/PotentialGamesAddModal';
+import { Action } from '../features/redux/actions/actionsTypes';
+import { selectGame, setPlayableGames, setPotentialGames, setPotentialGameToAdd } from '../features/redux/actions/games';
+import { closePotentialGamesAddModal, openGameAddModal } from '../features/redux/actions/modals';
+import { AppState } from '../features/redux/AppState';
 
 const mapStateToProps = (state: AppState) => ({
   potentialGames: state.potentialGames,

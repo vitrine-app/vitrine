@@ -1,8 +1,8 @@
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
-import { AppState } from '../AppState';
-import { GameContainer as GameContainerComponent } from '../components/GameContainer';
+import { GameContainer as GameContainerComponent } from '../features/homescreen/GameContainer';
+import { AppState } from '../features/redux/AppState';
 
 const mapStateToProps = (state: AppState) => ({
   selectedGame: state.selectedGame

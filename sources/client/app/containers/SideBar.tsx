@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import { PlayableGame, SortParameter } from '../../../models/PlayableGame';
-import { Action } from '../actions/actionsTypes';
-import { refreshGames, selectGame, sortGames } from '../actions/games';
-import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../actions/modals';
-import { AppState } from '../AppState';
-import { SideBar as SideBarComponent } from '../components/SideBar';
+import { SideBar as SideBarComponent } from '../features/homescreen/SideBar';
+import { Action } from '../features/redux/actions/actionsTypes';
+import { refreshGames, selectGame, sortGames } from '../features/redux/actions/games';
+import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../features/redux/actions/modals';
+import { AppState } from '../features/redux/AppState';
 
 const mapStateToProps = (state: AppState) => ({
   potentialGames: state.potentialGames,
