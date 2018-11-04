@@ -3,10 +3,15 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import { shell } from 'electron';
 import * as React from 'react';
-import { FormattedMessage, InjectedIntl } from 'react-intl';
+import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Button, Form, Grid, Input, Modal, Transition } from 'semantic-ui-react';
 
 import { NumberPicker } from '../../ui/NumberPicker';
+import { Action } from '../redux/actions/actionsTypes';
+import { closeIgdbResearchModal, openIgdbResearchModal } from '../redux/actions/modals';
+import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
 
@@ -28,7 +33,7 @@ interface State {
   transitionVisible: boolean;
 }
 
-export class IgdbResearchModal extends VitrineComponent<Props, State> {
+class IgdbResearchModal extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -314,3 +319,20 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     fontSize: 1.3.em()
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  visible: state.igdbResearchModalVisible
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  openIgdbResearchModal() {
+    dispatch(openIgdbResearchModal());
+  },
+  closeIgdbResearchModal() {
+    dispatch(closeIgdbResearchModal());
+  }
+});
+
+const IgdbResearchModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(IgdbResearchModal));
+
+export { IgdbResearchModalContainer as IgdbResearchModal };

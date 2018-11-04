@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { install } from 'source-map-support';
 
-import { App } from './app/containers/App';
+import { App } from './app/App';
 import { vitrineStore } from './app/features/redux/AppState';
 
 import './resources/less/main.less';

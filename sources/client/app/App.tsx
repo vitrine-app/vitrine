@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { IntlProvider } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
-import { Vitrine } from './containers/Vitrine';
 import { ErrorsWrapper } from './features/errors/ErrorsWrapper';
+import { Vitrine } from './features/homescreen/Vitrine';
+import { Action } from './features/redux/actions/actionsTypes';
+import { setLocale, setLocales, updateModulesConfig, updateSettings } from './features/redux/actions/settings';
+import { AppState } from './features/redux/AppState';
 import { serverListener } from './features/serverListener';
 
 interface Props {
@@ -18,7 +23,7 @@ interface State {
   settingsReceived: boolean;
 }
 
-export class App extends React.Component<Props, State> {
+class App extends React.Component<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -57,3 +62,26 @@ export class App extends React.Component<Props, State> {
     ) : null;
   }
 }
+
+const mapStateToProps = (state: AppState) => ({
+  settings: state.settings,
+  locales: state.locales,
+  currentLocale: state.locale
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  updateSettings(settings: any) {
+    dispatch(updateSettings(settings));
+    dispatch(setLocale(settings.lang));
+  },
+  setLocales(locales: any) {
+    dispatch(setLocales(locales));
+  },
+  updateModulesConfig(modulesConfig: any) {
+    dispatch(updateModulesConfig(modulesConfig));
+  }
+});
+
+const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
+
+export { AppContainer as App };

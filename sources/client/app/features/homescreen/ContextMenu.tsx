@@ -3,10 +3,16 @@ import { margin } from 'css-verbose';
 import * as React from 'react';
 import { ContextMenu as ContextMenuDiv, MenuItem } from 'react-contextmenu';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Button, Modal, Transition } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../../models/GamesCollection';
 import { PlayableGame } from '../../../../models/PlayableGame';
+import { Action } from '../redux/actions/actionsTypes';
+import { launchGame, setGameToEdit } from '../redux/actions/games';
+import { openGameAddModal, openTimePlayedEditionModal } from '../redux/actions/modals';
+import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
 
@@ -24,7 +30,7 @@ interface State {
   transitionVisible: boolean;
 }
 
-export class ContextMenu extends VitrineComponent<Props, State> {
+class ContextMenu extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -181,3 +187,26 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     fontSize: 16
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  playableGames: state.playableGames
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  launchGame(launchedGame: PlayableGame) {
+    dispatch(launchGame(launchedGame));
+  },
+  setGameToEdit(gameToEdit: PlayableGame) {
+    dispatch(setGameToEdit(gameToEdit));
+  },
+  openGameAddModal() {
+    dispatch(openGameAddModal());
+  },
+  openTimePlayedEditionModal() {
+    dispatch(openTimePlayedEditionModal());
+  }
+});
+
+const ContextMenuContainer = connect(mapStateToProps, mapDispatchToProps)(ContextMenu);
+
+export { ContextMenuContainer as ContextMenu };

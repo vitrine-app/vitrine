@@ -1,11 +1,16 @@
 import { css, StyleSheet } from 'aphrodite';
 import { margin } from 'css-verbose';
 import * as React from 'react';
-import { FormattedMessage, InjectedIntl } from 'react-intl';
+import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Button, Form, Grid, Modal, Transition } from 'semantic-ui-react';
 
 import { PlayableGame } from '../../../../models/PlayableGame';
 import { NumberPicker } from '../../ui/NumberPicker';
+import { Action } from '../redux/actions/actionsTypes';
+import { closeTimePlayedEditionModal } from '../redux/actions/modals';
+import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
 
@@ -23,7 +28,7 @@ interface State {
   transitionVisible: boolean;
 }
 
-export class TimePlayedEditionModal extends VitrineComponent<Props, State> {
+class TimePlayedEditionModal extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -182,3 +187,18 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     margin: margin(20..rem(), 'auto')
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  gameToEdit: state.gameToEdit,
+  visible: state.timePlayedEditionModalVisible
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  closeTimePlayedEditionModal() {
+    dispatch(closeTimePlayedEditionModal());
+  }
+});
+
+const TimePlayedEditionModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(TimePlayedEditionModal));
+
+export { TimePlayedEditionModalContainer as TimePlayedEditionModal };

@@ -1,23 +1,30 @@
 import { css, StyleSheet } from 'aphrodite';
 import { padding, rgba } from 'css-verbose';
 import * as React from 'react';
-import { InjectedIntl } from 'react-intl';
+import { InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
+import { Dispatch } from 'redux';
 import { Grid } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../../models/GamesCollection';
 import { PlayableGame } from '../../../../models/PlayableGame';
 import { PotentialGame } from '../../../../models/PotentialGame';
-import { GameContainer } from '../../containers/GameContainer';
-import { PotentialGamesAddModal } from '../../containers/PotentialGamesAddModal';
-import { SettingsModal } from '../../containers/SettingsModal';
-import { SideBar } from '../../containers/SideBar';
-import { TimePlayedEditionModal } from '../../containers/TimePlayedEditionModal';
 import { formatTimePlayed, notify } from '../../helpers';
 import { GameAddModal } from '../addingGame/GameAddModal';
+import { PotentialGamesAddModal } from '../addingPotentialGames/PotentialGamesAddModal';
 import { index } from '../controlsHandler';
+import { TimePlayedEditionModal } from '../editingTimePlayed/TimePlayedEditionModal';
+import { Action } from '../redux/actions/actionsTypes';
+import { addPlayableGames, addPotentialGames, launchGame, removePlayableGame, selectGame, stopGame } from '../redux/actions/games';
+import { closeSettingsModal, openSettingsModal } from '../redux/actions/modals';
+import { setInternetConnection, setLocale, updateSettings } from '../redux/actions/settings';
+import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
+import { SettingsModal } from '../settings/SettingsModal';
 import { VitrineComponent } from '../VitrineComponent';
+import { GameContainer } from './GameContainer';
+import { SideBar } from './SideBar';
 import { TaskBar } from './TaskBar';
 
 interface Props {
@@ -48,7 +55,7 @@ interface State {
   gameWillBeEdited: boolean;
 }
 
-export class Vitrine extends VitrineComponent<Props, State> {
+class Vitrine extends VitrineComponent<Props, State> {
   public constructor(props: any) {
     super(props);
 
@@ -201,3 +208,53 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     borderRadius: 2
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  settings: state.settings,
+  playableGames: state.playableGames,
+  selectedGame: state.selectedGame,
+  launchedGame: state.launchedGame,
+  gameAddModalVisible: state.gameAddModalVisible,
+  igdbResearchModalVisible: state.igdbResearchModalVisible,
+  timePlayedEditionModalVisible: state.timePlayedEditionModalVisible,
+  potentialGamesAddModalVisible: state.potentialGamesAddModalVisible,
+  settingsModalVisible: state.settingsModalVisible
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  updateSettings(settings: any) {
+    dispatch(updateSettings(settings));
+    dispatch(setLocale(settings.lang));
+  },
+  addPotentialGames(potentialGames: PotentialGame[]) {
+    dispatch(addPotentialGames(potentialGames));
+  },
+  addPlayableGames(playableGames: PlayableGame[]) {
+    dispatch(addPlayableGames(playableGames));
+  },
+  removePlayableGame(gameUuid: string) {
+    dispatch(removePlayableGame(gameUuid));
+  },
+  launchGame(launchedGame: PlayableGame) {
+    dispatch(launchGame(launchedGame));
+  },
+  stopGame(playedGame: PlayableGame) {
+    dispatch(stopGame(playedGame));
+  },
+  selectGame(selectedGame: PlayableGame) {
+    dispatch(selectGame(selectedGame));
+  },
+  openSettingsModal() {
+    dispatch(openSettingsModal());
+  },
+  closeSettingsModal() {
+    dispatch(closeSettingsModal());
+  },
+  setInternetConnection(internetConnection: boolean) {
+    dispatch(setInternetConnection(internetConnection));
+  }
+});
+
+const VitrineContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(Vitrine));
+
+export { VitrineContainer as Vitrine };

@@ -2,7 +2,9 @@ import { css, StyleSheet } from 'aphrodite';
 import * as chunk from 'chunk';
 import { margin, padding } from 'css-verbose';
 import * as React from 'react';
-import { FormattedMessage, InjectedIntl } from 'react-intl';
+import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Button, Grid, Progress } from 'semantic-ui-react';
 
 import { GamesCollection } from '../../../../models/GamesCollection';
@@ -10,6 +12,10 @@ import { PlayableGame } from '../../../../models/PlayableGame';
 import { PotentialGame } from '../../../../models/PotentialGame';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { FadingModal } from '../../ui/FadingModal';
+import { Action } from '../redux/actions/actionsTypes';
+import { selectGame, setPlayableGames, setPotentialGames, setPotentialGameToAdd } from '../redux/actions/games';
+import { closePotentialGamesAddModal, openGameAddModal } from '../redux/actions/modals';
+import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
 
@@ -36,7 +42,7 @@ interface State {
   addedGamesNb?: number;
 }
 
-export class PotentialGamesAddModal extends VitrineComponent<Props, State> {
+class PotentialGamesAddModal extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -182,3 +188,34 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     backgroundColor: lessVars.primaryColor
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  potentialGames: state.potentialGames,
+  playableGames: state.playableGames,
+  visible: state.potentialGamesAddModalVisible
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  setPotentialGames(potentialGames: PotentialGame[]) {
+    dispatch(setPotentialGames(potentialGames));
+  },
+  setPlayableGames(playableGames: PlayableGame[]) {
+    dispatch(setPlayableGames(playableGames));
+  },
+  selectGame(playableGame: PlayableGame) {
+    dispatch(selectGame(playableGame));
+  },
+  setPotentialGameToAdd(potentialGame: PotentialGame) {
+    dispatch(setPotentialGameToAdd(potentialGame));
+  },
+  openGameAddModal() {
+    dispatch(openGameAddModal());
+  },
+  closePotentialGamesAddModal() {
+    dispatch(closePotentialGamesAddModal());
+  }
+});
+
+const PotentialGamesAddModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(PotentialGamesAddModal));
+
+export { PotentialGamesAddModalContainer as PotentialGamesAddModal };

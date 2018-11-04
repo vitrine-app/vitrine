@@ -9,7 +9,6 @@ import { Dispatch } from 'redux';
 import { Button, Form, Grid, Input, TextArea } from 'semantic-ui-react';
 
 import { GameSource, PotentialGame } from '../../../../models/PotentialGame';
-import { IgdbResearchModal } from '../../containers/IgdbResearchModal';
 import { notify, openExecutableDialog, openImageDialog } from '../../helpers';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { DatePicker } from '../../ui/DatePicker';
@@ -19,6 +18,7 @@ import { Action } from '../redux/actions/actionsTypes';
 import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit, setPotentialGameToAdd } from '../redux/actions/games';
 import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal } from '../redux/actions/modals';
 import { AppState } from '../redux/AppState';
+import { IgdbResearchModal } from '../researchGame/IgdbResearchModal';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
 

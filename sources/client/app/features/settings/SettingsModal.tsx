@@ -2,14 +2,20 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
-import { FormattedMessage, InjectedIntl } from 'react-intl';
+import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Button, Checkbox, Form, Grid, Input, Tab, Table } from 'semantic-ui-react';
 
-import { EmulatorSettingsRow } from '../../containers/EmulatorSettingsRow';
 import { openDirectory } from '../../helpers';
 import { FadingModal } from '../../ui/FadingModal';
+import { Action } from '../redux/actions/actionsTypes';
+import { closeSettingsModal } from '../redux/actions/modals';
+import { setLocale, updateSettings } from '../redux/actions/settings';
+import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
+import { EmulatorSettingsRow } from './EmulatorSettingsRow';
 import { GamesModule } from './GamesModule';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
@@ -48,7 +54,7 @@ interface State {
   emulatorsError: string;
 }
 
-export class SettingsModal extends VitrineComponent<Props, State> {
+class SettingsModal extends VitrineComponent<Props, State> {
   private readonly emptyState: State;
 
   public constructor(props: Props) {
@@ -543,3 +549,25 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     float: 'right'
   },
 });
+
+const mapStateToProps = (state: AppState) => ({
+  settings: state.settings,
+  locales: state.locales,
+  currentLocale: state.locale,
+  emulators: state.modulesConfig.emulated.emulators,
+  visible: state.settingsModalVisible
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  updateSettings(settings: any) {
+    dispatch(updateSettings(settings));
+    dispatch(setLocale(settings.lang));
+  },
+  closeSettingsModal() {
+    dispatch(closeSettingsModal());
+  }
+});
+
+const SettingsModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(SettingsModal));
+
+export { SettingsModalContainer as SettingsModal };

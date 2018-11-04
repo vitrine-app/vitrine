@@ -2,17 +2,23 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { ContextMenuTrigger } from 'react-contextmenu';
-import { InjectedIntl } from 'react-intl';
+import { InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Button, Dropdown, Grid } from 'semantic-ui-react';
 
 import { faCogs, faPlus, faSyncAlt } from '@fortawesome/fontawesome-free-solid';
 import { GamesCollection } from '../../../../models/GamesCollection';
 import { PlayableGame, SortParameter } from '../../../../models/PlayableGame';
 import { PotentialGame } from '../../../../models/PotentialGame';
-import { ContextMenu } from '../../containers/ContextMenu';
 import { ActionButton } from '../../ui/ActionButton';
+import { Action } from '../redux/actions/actionsTypes';
+import { refreshGames, selectGame, sortGames } from '../redux/actions/games';
+import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../redux/actions/modals';
+import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
+import { ContextMenu } from './ContextMenu';
 
 interface Props {
   potentialGames: GamesCollection<PotentialGame>;
@@ -30,7 +36,7 @@ interface Props {
   launchGame: (gameUuid: string) => void;
 }
 
-export class SideBar extends VitrineComponent<Props, {}> {
+class SideBar extends VitrineComponent<Props, {}> {
   private readonly gamesSortParameters: any[];
 
   public constructor(props: Props) {
@@ -249,3 +255,36 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     transition: `${250}ms`
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  potentialGames: state.potentialGames,
+  playableGames: state.playableGames,
+  selectedGame: state.selectedGame,
+  refreshingGames: state.refreshingGames,
+  gamesSortParameter: state.gamesSortParameter
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  selectGame(selectedGame: PlayableGame) {
+    dispatch(selectGame(selectedGame));
+  },
+  refreshGames() {
+    dispatch(refreshGames());
+  },
+  sortGames(gamesSortParameter: SortParameter) {
+    dispatch(sortGames(gamesSortParameter));
+  },
+  openGameAddModal() {
+    dispatch(openGameAddModal());
+  },
+  openPotentialGamesAddModal() {
+    dispatch(openPotentialGamesAddModal());
+  },
+  openSettingsModal() {
+    dispatch(openSettingsModal());
+  }
+});
+
+const SideBarContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(SideBar));
+
+export { SideBarContainer as SideBar };

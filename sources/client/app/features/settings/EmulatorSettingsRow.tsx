@@ -2,10 +2,12 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import { rgba } from 'css-verbose';
 import * as React from 'react';
-import { InjectedIntl } from 'react-intl';
+import { InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { Button, Checkbox, Input, Table } from 'semantic-ui-react';
 
 import { openExecutableDialog } from '../../helpers';
+import { AppState } from '../redux/AppState';
 import { VitrineComponent } from '../VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
@@ -24,7 +26,7 @@ interface State {
   command?: string;
 }
 
-export class EmulatorSettingsRow extends VitrineComponent<Props, State> {
+class EmulatorSettingsRow extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -147,3 +149,13 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     fontFamily: 'Inconsolata'
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  platforms: state.modulesConfig.emulated.platforms,
+});
+
+const mapDispatchToProps = () => ({});
+
+const EmulatorSettingsRowContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(EmulatorSettingsRow));
+
+export { EmulatorSettingsRowContainer as EmulatorSettingsRow };

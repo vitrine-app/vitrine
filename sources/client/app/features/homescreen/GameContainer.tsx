@@ -3,13 +3,15 @@ import { css, StyleSheet } from 'aphrodite';
 import { border, margin, padding, rgba } from 'css-verbose';
 import * as moment from 'moment';
 import * as React from 'react';
-import { FormattedMessage, InjectedIntl } from 'react-intl';
+import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { Button, Grid } from 'semantic-ui-react';
 
 import { PlayableGame } from '../../../../models/PlayableGame';
 import { formatTimePlayed, urlify } from '../../helpers';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { CirclePercentage } from '../../ui/CirclePercentage';
+import { AppState } from '../redux/AppState';
 import { VitrineComponent } from '../VitrineComponent';
 
 import { faPlay } from '@fortawesome/fontawesome-free-solid';
@@ -25,7 +27,7 @@ interface State {
   backgroundImage: string;
 }
 
-export class GameContainer extends VitrineComponent<Props, State> {
+class GameContainer extends VitrineComponent<Props, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -249,3 +251,13 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     lineHeight: 1.6
   }
 });
+
+const mapStateToProps = (state: AppState) => ({
+  selectedGame: state.selectedGame
+});
+
+const mapDispatchToProps = () => ({});
+
+const GameContainerContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(GameContainer));
+
+export { GameContainerContainer as GameContainer };
