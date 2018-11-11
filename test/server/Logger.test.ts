@@ -6,7 +6,6 @@ import { Logger } from '../../sources/server/Logger';
 
 function testLogger(prod?: boolean) {
   process.env.NODE_ENV = prod ? 'prod' : 'dev';
-  process.env.TEST_PROD = prod ? 'true' : 'false';
 
   return () => {
     let logger: Logger;

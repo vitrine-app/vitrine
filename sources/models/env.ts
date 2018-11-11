@@ -6,10 +6,6 @@ export function isProduction(): boolean {
   return process.env.ELECTRON_ENV !== 'dev';
 }
 
-export function isFakeProd(): boolean {
-  return process.env.TEST_PROD === 'true';
-}
-
 export function isTesting(): boolean {
   return process.env.TESTING === 'true';
 }
