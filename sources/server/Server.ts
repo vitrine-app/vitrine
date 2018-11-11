@@ -6,10 +6,10 @@ import * as moment from 'moment';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 
-import { getEnvFolder, isProduction, randomHashedString } from '../models/env';
-import { GamesCollection } from '../models/GamesCollection';
-import { PlayableGame} from '../models/PlayableGame';
-import { GameSource, PotentialGame } from '../models/PotentialGame';
+import { getEnvFolder, isProduction, randomHashedString } from '@models/env';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame} from '@models/PlayableGame';
+import { GameSource, PotentialGame } from '@models/PotentialGame';
 import { fillFirstIgdbResult, fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
 import { findSteamData } from './api/SteamDataFinder';
 import { getSteamGamePlayTime, getSteamGamesPlayTimes } from './api/SteamPlayTimeWrapper';

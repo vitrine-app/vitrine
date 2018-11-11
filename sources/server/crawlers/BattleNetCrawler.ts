@@ -1,8 +1,8 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { GamesCollection } from '../../models/GamesCollection';
-import { GameSource, PotentialGame } from '../../models/PotentialGame';
+import { GamesCollection } from '@models/GamesCollection';
+import { GameSource, PotentialGame } from '@models/PotentialGame';
 import { gameDirExists } from '../helpers';
 import { logger } from '../Logger';
 

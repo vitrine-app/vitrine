@@ -1,10 +1,10 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getEnvFolder } from '../../models/env';
-import { GamesCollection } from '../../models/GamesCollection';
-import { PlayableGame } from '../../models/PlayableGame';
-import { GameSource } from '../../models/PotentialGame';
+import { getEnvFolder } from '@models/env';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame } from '@models/PlayableGame';
+import { GameSource } from '@models/PotentialGame';
 import { getSteamGamePlayTime } from '../api/SteamPlayTimeWrapper';
 import { logger } from '../Logger';
 

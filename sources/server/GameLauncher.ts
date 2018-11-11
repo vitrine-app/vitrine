@@ -1,8 +1,8 @@
 import * as discordRichPresence from 'discord-rich-presence';
 import * as path from 'path';
 
-import { PlayableGame } from '../models/PlayableGame';
-import { GameSource } from '../models/PotentialGame';
+import { PlayableGame } from '@models/PlayableGame';
+import { GameSource } from '@models/PotentialGame';
 import { GameLauncherOptions, launchGame as nativeLaunchGame } from '../modules/gameLauncher';
 import { discordRpcKey } from '../modules/keysProvider';
 import { monitorSteamApp } from '../modules/steamMonitor';

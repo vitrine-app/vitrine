@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { getEnvFolder } from '../../sources/models/env';
+import { getEnvFolder } from '@models/env';
 import { SteamAppIdsCacher } from '../../sources/server/SteamAppIdsCacher';
 
 function testSteamAppIdsCacher(prod?: boolean) {
@@ -12,7 +12,6 @@ function testSteamAppIdsCacher(prod?: boolean) {
 
     before(async () => {
       process.env.NODE_ENV = prod ? 'prod' : 'dev';
-      process.env.TEST_PROD = prod ? 'true' : 'false';
       steamAppIdsCacher = new SteamAppIdsCacher();
       cacheFilePath = path.resolve(getEnvFolder('config'), 'cache', 'steam_app_ids.json');
     });

@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 
-import { getEnvFolder, isProduction, isTesting } from '../models/env';
+import { getEnvFolder, isProduction, isTesting } from '@models/env';
 import { logger } from './Logger';
 import { Server } from './Server';
 

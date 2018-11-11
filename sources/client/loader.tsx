@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { install } from 'source-map-support';
 
-import { VitrineLoader } from './app/components/VitrineLoader';
+import { VitrineLoader } from './app/features/loader/VitrineLoader';
 
 import './resources/less/main.less';
 

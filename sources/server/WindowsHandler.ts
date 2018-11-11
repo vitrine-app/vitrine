@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import * as path from 'path';
 
-import { isProduction } from '../models/env';
+import { isProduction } from '@models/env';
 import { logger } from './Logger';
 
 export class WindowsHandler {
