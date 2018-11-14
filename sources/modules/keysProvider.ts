@@ -12,3 +12,7 @@ export function steamKey(): string {
 export function discordRpcKey(): string {
   return keysProvider.discordRpcKey();
 }
+
+export function vitrineSecretKey(): string {
+  return keysProvider.vitrineSecretKey();
+}
