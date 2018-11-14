@@ -15,7 +15,7 @@ branches:
   - gh-pages-src
 
 before_script:
-  - yarn keys:decipher
+  - yarn keys:decrypt
   - yarn build:modules-no-electron
   - yarn test
 
