@@ -10,7 +10,8 @@ import { getEnvFolder, isProduction, randomHashedString } from '@models/env';
 import { GamesCollection } from '@models/GamesCollection';
 import { PlayableGame} from '@models/PlayableGame';
 import { GameSource, PotentialGame } from '@models/PotentialGame';
-import { fillFirstIgdbResult, fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
+import { searchIgdbGame } from './api/IgdbWrapper';
+import { fillFirstIgdbResult, fillIgdbGame } from './api/ServerWrapper';
 import { findSteamData } from './api/SteamDataFinder';
 import { getSteamGamePlayTime, getSteamGamesPlayTimes } from './api/SteamPlayTimeWrapper';
 import { searchBattleNetGames } from './crawlers/BattleNetCrawler';
@@ -147,7 +148,9 @@ export class Server {
         const [ executable, ...args ]: string[] = potentialGame.commandLine;
         filledGame.executable = executable;
         filledGame.arguments = args.join(' ');
+        console.log(filledGame);
         const addedGame: PlayableGame = new PlayableGame(filledGame.name, filledGame);
+        console.log(addedGame);
         addedGame.source = potentialGame.source;
         delete filledGame.source;
         delete filledGame.id;
@@ -294,9 +297,9 @@ export class Server {
     if (!this.vitrineConfig.battleNet)
       return;
     const games: GamesCollection<PotentialGame> = await searchBattleNetGames({
-        ...this.modulesConfig.battleNet,
-        ...this.vitrineConfig.battleNet
-      });
+      ...this.modulesConfig.battleNet,
+      ...this.vitrineConfig.battleNet
+    });
     logger.info('Server', 'Adding potential Battle.net games to potential games list.');
     this.potentialGames.addGames(games.getGames());
   }
@@ -316,7 +319,8 @@ export class Server {
   private static async registerGame(game: PlayableGame, gameForm: any, editing: boolean = false) {
     game.commandLine = gameForm.arguments ? [ gameForm.executable, gameForm.arguments ] : [ gameForm.executable ];
     game.details.rating = parseInt(game.details.rating);
-    game.details.genres = game.details.genres.split(', ');
+    if (typeof game.details.genres === 'string')
+      game.details.genres = game.details.genres.split(', ');
     game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
     if (game.source === GameSource.STEAM)
       game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
