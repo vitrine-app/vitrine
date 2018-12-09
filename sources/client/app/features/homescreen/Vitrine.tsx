@@ -24,8 +24,8 @@ import { serverListener } from '../serverListener';
 import { SettingsModal } from '../settings/SettingsModal';
 import { VitrineComponent } from '../VitrineComponent';
 import { GameContainer } from './GameContainer';
+import { InvisibleTaskBar } from './InvisibleTaskBar';
 import { SideBar } from './SideBar';
-import { TaskBar } from './TaskBar';
 
 interface Props {
   settings: any;
@@ -191,7 +191,7 @@ class Vitrine extends VitrineComponent<Props, State> {
   public render(): JSX.Element {
     return (
       <div className={css(styles.vitrineApp)}>
-        <TaskBar />
+        <InvisibleTaskBar />
         <Grid className={css(styles.mainContainer)}>
           <SideBar launchGame={this.launchGame} />
           <GameContainer launchGame={this.launchGame} />
@@ -209,7 +209,7 @@ class Vitrine extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   mainContainer: {
-    height: `calc(${(100).percents()} - ${(22).px()})`,
+    height: (100).percents(),
     margin: 0
   },
   toastNotification: {

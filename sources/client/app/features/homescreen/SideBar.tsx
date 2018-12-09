@@ -237,7 +237,7 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   sideBarWrapper: {
     backgroundColor: '#23211F',
     height: (100).percents(),
-    padding: 0,
+    padding: padding(25, 0, 0, 0),
     width: (15.5).percents()
   },
   sortDropdown: {
