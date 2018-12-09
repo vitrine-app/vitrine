@@ -13,8 +13,10 @@ import { GameSource, PotentialGame } from '@models/PotentialGame';
 import { notify, openExecutableDialog, openImageDialog } from '../../helpers';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { DatePicker } from '../../ui/DatePicker';
+import { FadingModal } from '../../ui/FadingModal';
 import { ImagesCollection } from '../../ui/ImagesCollection';
 import { NumberPicker } from '../../ui/NumberPicker';
+import { SplitBar } from '../../ui/SplitBar';
 import { Action } from '../redux/actions/actionsTypes';
 import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit, setPotentialGameToAdd } from '../redux/actions/games';
 import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal } from '../redux/actions/modals';
@@ -24,7 +26,6 @@ import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
-import { FadingModal } from '../../ui/FadingModal';
 
 interface Props {
   internetConnection: boolean;
@@ -467,7 +468,7 @@ class GameAddModal extends VitrineComponent<Props, State> {
                   </Form.Field>
                 </Grid.Column>
               </Grid>
-              <hr className={css(styles.formHr)} />
+              <SplitBar />
               <Grid>
                 <Grid.Column width={16}>
                   <Form.Field>
@@ -509,7 +510,7 @@ class GameAddModal extends VitrineComponent<Props, State> {
                   </Form.Field>
                 </Grid.Column>
               </Grid>
-              <hr className={css(styles.formHr)} />
+              <SplitBar />
               <Grid>
                 <Grid.Column width={16}>
                   <Form.Field>

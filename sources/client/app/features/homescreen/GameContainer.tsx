@@ -11,6 +11,7 @@ import { PlayableGame } from '@models/PlayableGame';
 import { formatTimePlayed, urlify } from '../../helpers';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { CirclePercentage } from '../../ui/CirclePercentage';
+import { SplitBar } from '../../ui/SplitBar';
 import { AppState } from '../redux/AppState';
 import { VitrineComponent } from '../VitrineComponent';
 
@@ -38,9 +39,7 @@ class GameContainer extends VitrineComponent<Props, State> {
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
     if (!nextProps.selectedGame) {
-      return {
-        backgroundImage: 'none'
-      };
+      return { backgroundImage: 'none' };
     }
 
     let backgroundImage: string;
@@ -49,9 +48,7 @@ class GameContainer extends VitrineComponent<Props, State> {
     } else {
       backgroundImage = 'none';
     }
-    return {
-      backgroundImage
-    };
+    return { backgroundImage };
   }
 
   public render(): JSX.Element {
@@ -120,7 +117,7 @@ class GameContainer extends VitrineComponent<Props, State> {
                   <CirclePercentage percentage={this.props.selectedGame.details.rating} color={lessVars.primaryColor} />
                 </Grid.Column>
               </Grid>
-              <hr className={css(styles.gameCoreHr)} />
+              <SplitBar />
               <p className={css(styles.gameDesc)}>
                 {this.props.selectedGame.details.summary.split('\n').map((section: string, index: number) => (
                   <span key={index}>
@@ -226,13 +223,16 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   gameInfosRegion: {
     backgroundColor: rgba(0, 0, 0, 0.49),
     borderRadius: 3,
-    color: '#E4E4E4',
+    color: rgba(230, 228, 227, 0.85),
     fontSize: (1.2).em(),
     margin: margin(10, 0),
     padding: padding(13, 24)
   },
   gameTimePlayed: {
     marginLeft: 15
+  },
+  noSelectedGame: {
+    padding: 50
   },
   noSelectedGameHr: {
     border: 'none',
