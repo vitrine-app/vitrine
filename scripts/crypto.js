@@ -7,20 +7,20 @@ if (!secret)
 
 async function encrypt() {
   const file = await fs.readFile('./sources/modules/keysProvider/srcs/keys.hh');
-  const { message: { packets } } = await openpgp.encrypt({
+  const { data } = await openpgp.encrypt({
     message: await openpgp.message.fromBinary(file),
     passwords: [ secret ],
-    armor: false
+    armor: true
   });
-  await fs.writeFile('./sources/modules/keysProvider/srcs/keys.hh.gpg', Buffer.from(packets.write()));
+  await fs.writeFile('./sources/modules/keysProvider/srcs/keys.hh.asc', data);
 }
 
 async function decrypt() {
-  const file = await fs.readFile('./sources/modules/keysProvider/srcs/keys.hh.gpg');
+  const file = await fs.readFile('./sources/modules/keysProvider/srcs/keys.hh.asc');
   const { data } = await openpgp.decrypt({
-    message: await openpgp.message.read(file),
+    message: await openpgp.message.readArmored(file.toString()),
     passwords: [ secret ],
-    format: 'binary'
+    format: 'ascii'
   });
   await fs.writeFile('./sources/modules/keysProvider/srcs/keys.hh', Buffer.from(data));
 }
