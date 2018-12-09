@@ -1,6 +1,6 @@
-import { fillIgdbGame, searchIgdbGame } from '../../../sources/server/api/IgdbWrapper';
+import { fillIgdbGame, searchIgdbGame } from '../../../sources/server/api/ServerWrapper';
 
-describe('IgdbWrapper searcher', () => {
+describe('ServerWrapper searcher', () => {
   let gamesArray: any[];
 
   before(async () => {
@@ -20,7 +20,7 @@ describe('IgdbWrapper searcher', () => {
   });
 });
 
-describe('IgdbWrapper filler', () => {
+describe('ServerWrapper filler', () => {
   it('Return a game object', async () => {
     const game = await fillIgdbGame(340);
     game.should.be.a('object');

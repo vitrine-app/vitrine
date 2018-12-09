@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { getEnvFolder } from '@models/env';
 import { PotentialGame } from '@models/PotentialGame';
-import { searchIgdbGame } from './api/IgdbWrapper';
+import { searchIgdbGame } from './api/ServerWrapper';
 import { logger } from './Logger';
 
 export class PotentialGamesCacher {
