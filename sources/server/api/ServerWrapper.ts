@@ -10,16 +10,16 @@ class ServerWrapper {
   private instance: AxiosInstance;
 
   constructor() {
-    this.apiEntryPoint = 'http://localhost';
+    this.apiEntryPoint = 'http://ec2-35-180-138-49.eu-west-3.compute.amazonaws.com';
     this.instance = axios.create({
       baseURL: this.apiEntryPoint
     });
   }
 
   public async getGame(gameId: number, locale?: string) {
-    logger.info('IgdbWrapper', `Connecting to Vitrine API to look for game n°${gameId} in IGDB.`);
+    logger.info('ServerWrapper', `Connecting to Vitrine API to look for game n°${gameId} in IGDB.`);
     try {
-      const { data: { result: game } }: any = await this.instance.get(`/games/${gameId}`, {
+      const { data: { data: game } }: any = await this.instance.get(`/games/${gameId}`, {
         headers: {
           'Authorization': ServerWrapper.generateToken()
         }
@@ -36,9 +36,9 @@ class ServerWrapper {
   }
 
   public async getFirstGame(gameName: string, locale?: string) {
-    logger.info('IgdbWrapper', `Connecting to Vitrine API to look for first game named ${gameName} in IGDB.`);
+    logger.info('ServerWrapper', `Connecting to Vitrine API to look for first game named ${gameName} in IGDB.`);
     try {
-      const { data: { result: game } }: any = await this.instance.get(`/games/research/${gameName}`, {
+      const { data: { data: game } }: any = await this.instance.get(`/games/research/${gameName}`, {
         headers: {
           'Authorization': ServerWrapper.generateToken()
         }
@@ -48,6 +48,21 @@ class ServerWrapper {
         game.summary = text;
       }
       return game;
+    }
+    catch (error) {
+      throw new Error(`Server error: ${error}`);
+    }
+  }
+
+  public async searchGame(gameName: string, listSize?: number) {
+    logger.info('ServerWrapper', `Connecting to Vitrine API to look for ${listSize || 5} games named ${gameName} in IGDB.`);
+    try {
+      const { data: { data: games } }: any = await this.instance.get(`/games/research/${gameName}/${listSize || 5}`, {
+        headers: {
+          'Authorization': ServerWrapper.generateToken()
+        }
+      });
+      return games;
     }
     catch (error) {
       throw new Error(`Server error: ${error}`);
@@ -64,9 +79,13 @@ class ServerWrapper {
 const serverWrapper: ServerWrapper = new ServerWrapper();
 
 export async function fillIgdbGame(gameId: number, locale?: string) {
-  return await serverWrapper.getGame(gameId, locale);
+  return serverWrapper.getGame(gameId, locale);
 }
 
 export async function fillFirstIgdbResult(gameName: string, locale?: string) {
-  return await serverWrapper.getFirstGame(gameName, locale);
+  return serverWrapper.getFirstGame(gameName, locale);
+}
+
+export async function searchIgdbGame(gameName: string, listSize?: number) {
+  return serverWrapper.searchGame(gameName, listSize);
 }

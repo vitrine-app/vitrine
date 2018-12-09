@@ -1,4 +1,4 @@
-import { fillIgdbGame, searchIgdbGame } from '../../../sources/server/api/IgdbWrapper';
+import { fillIgdbGame, searchIgdbGame } from '../../../sources/server/api/ServerWrapper';
 
 describe('IgdbWrapper searcher', () => {
   let gamesArray: any[];
