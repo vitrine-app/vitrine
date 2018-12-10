@@ -26,6 +26,9 @@
 </p>
 
 ## About Vitrine
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d4fb4b563f2c4a7bbb10ff4522341af3)](https://app.codacy.com/app/vitrine-app/vitrine?utm_source=github.com&utm_medium=referral&utm_content=vitrine-app/vitrine&utm_campaign=Badge_Grade_Dashboard)
+
 Vitrine is a modern game library using the Electron framework and the IGDB database to find and display games installed on your computer.
 It can automatically scans your computer folders to retrieve your Steam, Origin and Battle.net games, uses the IGDB database to provide details about your games (developer, publisher, release date, screenshots, ...) and display them in a smooth and simple interface.
 It can also measure the time spend playing a game and can be synchronized to Steam playing times.
