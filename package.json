@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/paul-roman/vitrine.git"
+    "url": "git://github.com/vitrine-app/vitrine.git"
   },
   "engines": {
     "node": ">=10.2"
