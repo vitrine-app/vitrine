@@ -18,10 +18,11 @@ class SteamPlayTimeWrapper {
   public async getAllGamesPlayTimes(steamUserId: string) {
     try {
       logger.info('SteamPlayTimeWrapper', 'Timed games never queried, asking Steam...');
-      const { response: { games } }: any = await this.client.getOwnedGames({ steamid: steamUserId });
+      const {
+        response: { games }
+      }: any = await this.client.getOwnedGames({ steamid: steamUserId });
       this.timedGames = games;
-    }
-    catch (error) {
+    } catch (error) {
       throw new Error('Steam API failed to retrieve playing times for games.');
     }
   }
@@ -29,11 +30,11 @@ class SteamPlayTimeWrapper {
   public getPlayTime(steamId: number) {
     try {
       const timedGame: any[] = this.timedGames.filter((game: any) => game.appid === steamId);
-      if (!timedGame.length)
+      if (!timedGame.length) {
         throw new Error('Your Steam games files are corrupted. Please reinstall your game');
+      }
       return timedGame[0].playtime_forever * 60;
-    }
-    catch (error) {
+    } catch (error) {
       throw new Error(error);
     }
   }

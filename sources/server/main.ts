@@ -7,7 +7,6 @@ install();
 try {
   logger.createLogger();
   new Bootstrapper().launch();
-}
-catch (error) {
+} catch (error) {
   console.error('An uncaught error happened: ', error);
 }

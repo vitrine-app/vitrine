@@ -16,31 +16,33 @@ export class SteamAppIdsCacher {
 
   public async cache(appIds: number[]) {
     logger.info('SteamAppIdsCacher', `Steam apps IDs are about to be cached.`);
-    const appIdsCache: any = await fs.pathExists(this.cacheFilePath) ?
-      await fs.readJson(this.cacheFilePath, { throws: false }) || {} : {};
+    const appIdsCache: any = (await fs.pathExists(this.cacheFilePath)) ? (await fs.readJson(this.cacheFilePath, { throws: false })) || {} : {};
 
     let addedAppsNb: number = 0;
-    const populatedAppIds: any[] = (await Promise.all(appIds.map(async (appId: number) => {
-      if (!appIdsCache[appId]) {
-        try {
-          const { data }: AxiosResponse<any> = await axios.get(`${this.apiEndPoint}?appids=${appId}`);
-          const gameData: any = data[ Object.keys(data)[ 0 ] ].data;
-          if (gameData === undefined || gameData.type !== 'game')
-            return null;
-          appIdsCache[appId] = gameData.name.replace(/[^\x00-\x7F]/g, '');
-          addedAppsNb++;
+    const populatedAppIds: any[] = (await Promise.all(
+      appIds.map(async (appId: number) => {
+        if (!appIdsCache[appId]) {
+          try {
+            const { data }: AxiosResponse<any> = await axios.get(`${this.apiEndPoint}?appids=${appId}`);
+            const gameData: any = data[Object.keys(data)[0]].data;
+            if (gameData === undefined || gameData.type !== 'game') {
+              return null;
+            }
+            appIdsCache[appId] = gameData.name.replace(/[^\x00-\x7F]/g, '');
+            addedAppsNb++;
+          } catch (error) {
+            logger.info('SteamAppIdsCacher', `Request to Steam API for specific game ${appId} failed.`);
+          }
         }
-        catch (error) {
-          logger.info('SteamAppIdsCacher', `Request to Steam API for specific game ${appId} failed.`);
-        }
-      }
-      return {
-        name: appIdsCache[appId],
-        appId
-      };
-    }))).filter((appData: any) => appData !== null);
-    if (addedAppsNb)
+        return {
+          appId,
+          name: appIdsCache[appId]
+        };
+      })
+    )).filter((appData: any) => appData !== null);
+    if (addedAppsNb) {
       await fs.writeJson(this.cacheFilePath, appIdsCache, { spaces: 2 });
+    }
     logger.info('SteamAppIdsCacher', `Steam apps IDs have been cached.`);
     return populatedAppIds;
   }

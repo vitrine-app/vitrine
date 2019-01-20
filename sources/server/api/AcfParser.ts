@@ -12,14 +12,15 @@ class AcfParser {
 
     while (this.c < this.fileContent.length) {
       this.deleteSpaces();
-      if (this.fileContent[this.c] === '}')
+      if (this.fileContent[this.c] === '}') {
         return tree;
-      const name: string = this.readField(true );
+      }
+      const name: string = this.readField(true);
       this.deleteSpaces();
 
-      if (this.fileContent[this.c] === '"')
+      if (this.fileContent[this.c] === '"') {
         tree[name] = this.readField();
-      else if (this.fileContent[this.c] === '{') {
+      } else if (this.fileContent[this.c] === '{') {
         this.c++;
         this.deleteSpaces();
         tree[name] = this.toObject();
@@ -30,8 +31,9 @@ class AcfParser {
   }
 
   private readField(fieldName: boolean = false): string {
-    if (this.fileContent[this.c] !== '"')
+    if (this.fileContent[this.c] !== '"') {
       return null;
+    }
     this.c++;
     let name: string = '';
     while (this.fileContent[this.c] !== '"') {
@@ -39,15 +41,21 @@ class AcfParser {
       this.c++;
     }
     this.c++;
-    if (fieldName)
+    if (fieldName) {
       return name.charAt(0).toLowerCase() + name.slice(1);
+    }
     return name;
   }
 
   private deleteSpaces(): void {
-    while (this.fileContent[this.c] === '\t' || this.fileContent[this.c] === ' '
-    || this.fileContent[this.c] === '\r' || this.fileContent[this.c] === '\n')
+    while (
+      this.fileContent[this.c] === '\t' ||
+      this.fileContent[this.c] === ' ' ||
+      this.fileContent[this.c] === '\r' ||
+      this.fileContent[this.c] === '\n'
+    ) {
       this.c++;
+    }
   }
 }
 
