@@ -25,11 +25,14 @@ export class GamesModule extends VitrineComponent<Props, any> {
   }
 
   private imageClick() {
-    this.setState({
-      clicked: !this.state.clicked
-    }, () => {
-      this.props.clickHandler(this.state.clicked);
-    });
+    this.setState(
+      {
+        clicked: !this.state.clicked
+      },
+      () => {
+        this.props.clickHandler(this.state.clicked);
+      }
+    );
   }
 
   public render(): JSX.Element {
@@ -38,10 +41,7 @@ export class GamesModule extends VitrineComponent<Props, any> {
         <img
           alt={this.props.iconAlt}
           src={this.props.iconFile}
-          className={
-            css(styles.gamesModuleIcon) + ' ' +
-            ((this.state.clicked ? css(styles.clickedGamesModuleIcon) : ''))
-          }
+          className={css(styles.gamesModuleIcon) + ' ' + (this.state.clicked ? css(styles.clickedGamesModuleIcon) : '')}
           onClick={this.imageClick}
         />
         {this.checkErrors()}
@@ -51,22 +51,22 @@ export class GamesModule extends VitrineComponent<Props, any> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  iconWrapper: {
-    margin: margin(0, 'auto'),
-    width: 85..percents()
+  clickedGamesModuleIcon: {
+    filter: `opacity(${0.5}) drop-shadow(${0} ${0} ${0} ${lessVars.primaryColor})`,
+    opacity: 1
   },
   gamesModuleIcon: {
-    opacity: 0.05,
-    width: 150..px(),
-    margin: 15..px(),
-    transition: `${320}ms ease`,
     ':hover': {
-      opacity: 0.14,
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+      opacity: 0.14
+    },
+    margin: (15).px(),
+    opacity: 0.05,
+    transition: `${320}ms ease`,
+    width: (150).px()
   },
-  clickedGamesModuleIcon: {
-    opacity: 1,
-    filter: `opacity(${0.5}) drop-shadow(${0} ${0} ${0} ${lessVars.primaryColor})`
+  iconWrapper: {
+    margin: margin(0, 'auto'),
+    width: (85).percents()
   }
 });

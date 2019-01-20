@@ -2,45 +2,45 @@ import { Action, ActionType } from './actionsTypes';
 
 export function updateSettings(settings: any): Action {
   return {
-    type: ActionType.UPDATE_SETTINGS,
     payload: {
       settings
-    }
+    },
+    type: ActionType.UPDATE_SETTINGS
   };
 }
 
 export function updateModulesConfig(modulesConfig: any): Action {
   return {
-    type: ActionType.UPDATE_MODULES_CONFIG,
     payload: {
       modulesConfig
-    }
+    },
+    type: ActionType.UPDATE_MODULES_CONFIG
   };
 }
 
 export function setLocales(locales: any[]): Action {
   return {
-    type: ActionType.SET_LOCALES,
     payload: {
       locales
-    }
+    },
+    type: ActionType.SET_LOCALES
   };
 }
 
 export function setLocale(locale: string): Action {
   return {
-    type: ActionType.SET_LOCALE,
     payload: {
       locale
-    }
+    },
+    type: ActionType.SET_LOCALE
   };
 }
 
 export function setInternetConnection(internetConnection: boolean): Action {
   return {
-    type: ActionType.SET_INTERNET_CONNECTION,
     payload: {
       internetConnection
-    }
+    },
+    type: ActionType.SET_INTERNET_CONNECTION
   };
 }

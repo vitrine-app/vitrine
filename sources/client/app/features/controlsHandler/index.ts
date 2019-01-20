@@ -40,20 +40,23 @@ class ControlsHandler {
     switch (event.code) {
       case 'ArrowUp': {
         event.preventDefault();
-        if (this.actionCallbacks.up)
+        if (this.actionCallbacks.up) {
           this.actionCallbacks.up();
+        }
         break;
       }
       case 'ArrowDown': {
         event.preventDefault();
-        if (this.actionCallbacks.down)
+        if (this.actionCallbacks.down) {
           this.actionCallbacks.down();
+        }
         break;
       }
       case 'Enter': {
         event.preventDefault();
-        if (this.actionCallbacks.enter)
+        if (this.actionCallbacks.enter) {
           this.actionCallbacks.enter();
+        }
         break;
       }
     }
@@ -61,20 +64,25 @@ class ControlsHandler {
 
   private registerGamepadActions() {
     this.gamepadListener.on('gamepad:axis', (event: ListenerEvent) => {
-      if (!this.currentWindow.isFocused())
+      if (!this.currentWindow.isFocused()) {
         return;
+      }
       if (event.axis === 1) {
-        if (event.value < -0.98 && this.actionCallbacks.up)
+        if (event.value < -0.98 && this.actionCallbacks.up) {
           this.actionCallbacks.up();
-        if (event.value > 0.96 && this.actionCallbacks.down)
+        }
+        if (event.value > 0.96 && this.actionCallbacks.down) {
           this.actionCallbacks.down();
+        }
       }
     });
     this.gamepadListener.on('gamepad:button:0', (event: ListenerEvent) => {
-      if (!this.currentWindow.isFocused())
+      if (!this.currentWindow.isFocused()) {
         return;
-      if (event.button.pressed && this.actionCallbacks.enter)
+      }
+      if (event.button.pressed && this.actionCallbacks.enter) {
         this.actionCallbacks.enter();
+      }
     });
   }
 }

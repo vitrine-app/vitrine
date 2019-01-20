@@ -35,8 +35,8 @@ class ContextMenu extends VitrineComponent<Props, State> {
     super(props);
 
     this.state = {
-      toDeleteGame: null,
       confirmVisible: false,
+      toDeleteGame: null,
       transitionVisible: false
     };
 
@@ -71,16 +71,19 @@ class ContextMenu extends VitrineComponent<Props, State> {
   }
 
   private resetModalData() {
-    this.setState({
-      confirmVisible: false
-    }, () => {
-      setTimeout(() => {
-        this.setState({
-          toDeleteGame: null,
-          transitionVisible: false
-        });
-      }, this.modalsTransitionDuration);
-    });
+    this.setState(
+      {
+        confirmVisible: false
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({
+            toDeleteGame: null,
+            transitionVisible: false
+          });
+        }, this.modalsTransitionDuration);
+      }
+    );
   }
 
   private contextAction(target: HTMLElement, action: string) {
@@ -113,10 +116,11 @@ class ContextMenu extends VitrineComponent<Props, State> {
   }
 
   private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.state.confirmVisible)
+    if (startingAnimation === this.state.confirmVisible) {
       this.setState({
         transitionVisible: this.state.confirmVisible
       });
+    }
   }
 
   public render(): JSX.Element {
@@ -124,17 +128,17 @@ class ContextMenu extends VitrineComponent<Props, State> {
       <div>
         <ContextMenuDiv id={'sidebar-games-context-menu'}>
           <MenuItem onClick={this.launchClick}>
-            <FormattedMessage id={'actions.playGame'}/>
+            <FormattedMessage id={'actions.playGame'} />
           </MenuItem>
           <MenuItem onClick={this.editClick}>
-            <FormattedMessage id={'actions.editGame'}/>
+            <FormattedMessage id={'actions.editGame'} />
           </MenuItem>
           <MenuItem onClick={this.editTimeClick}>
-            <FormattedMessage id={'actions.editTimePlayed'}/>
+            <FormattedMessage id={'actions.editTimePlayed'} />
           </MenuItem>
-          <MenuItem divider={true}/>
+          <MenuItem divider={true} />
           <MenuItem onClick={this.deleteClick}>
-            <FormattedMessage id={'actions.deleteGame'}/>
+            <FormattedMessage id={'actions.deleteGame'} />
           </MenuItem>
         </ContextMenuDiv>
         <Transition
@@ -144,32 +148,25 @@ class ContextMenu extends VitrineComponent<Props, State> {
           onComplete={this.animateModal.bind(this, false)}
           visible={this.state.confirmVisible}
         >
-          <Modal
-            open={this.state.transitionVisible}
-            onClose={this.resetModalData}
-            className={css(styles.modal)}
-          >
-            <Modal.Header><FormattedMessage id={'actions.removeGame'}/></Modal.Header>
-            <Modal.Content
-              className={css(styles.modalContent)}
-            >
+          <Modal open={this.state.transitionVisible} onClose={this.resetModalData} className={css(styles.modal)}>
+            <Modal.Header>
+              <FormattedMessage id={'actions.removeGame'} />
+            </Modal.Header>
+            <Modal.Content className={css(styles.modalContent)}>
               <FormattedMessage
                 id={'removeGameText'}
-                values={{ name: <strong>{this.state.toDeleteGame ? this.state.toDeleteGame.name : ''}</strong>, br: <br/> }}
+                values={{
+                  br: <br />,
+                  name: <strong>{this.state.toDeleteGame ? this.state.toDeleteGame.name : ''}</strong>
+                }}
               />
             </Modal.Content>
             <Modal.Actions>
-              <Button
-                secondary={true}
-                onClick={this.resetModalData}
-              >
-                <FormattedMessage id={'actions.cancel'}/>
+              <Button secondary={true} onClick={this.resetModalData}>
+                <FormattedMessage id={'actions.cancel'} />
               </Button>
-              <Button
-                primary={true}
-                onClick={this.removeGame}
-              >
-                <FormattedMessage id={'actions.confirm'}/>
+              <Button primary={true} onClick={this.removeGame}>
+                <FormattedMessage id={'actions.confirm'} />
               </Button>
             </Modal.Actions>
           </Modal>
@@ -181,7 +178,7 @@ class ContextMenu extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   modal: {
-    margin: margin(22..rem(), 'auto')
+    margin: margin((22).rem(), 'auto')
   },
   modalContent: {
     fontSize: 16
@@ -207,6 +204,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const ContextMenuContainer = connect(mapStateToProps, mapDispatchToProps)(ContextMenu);
+const ContextMenuContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ContextMenu);
 
 export { ContextMenuContainer as ContextMenu };

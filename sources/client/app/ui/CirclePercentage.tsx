@@ -30,18 +30,10 @@ export class CirclePercentage extends VitrineComponent<Props, {}> {
           strokeDasharray={`${this.props.percentage}, 100`}
           style={{ stroke: this.props.color }}
         />
-        <text
-          x={9}
-          y={21}
-          className={css(styles.text)}
-        >
+        <text x={9} y={21} className={css(styles.text)}>
           {this.props.percentage}
         </text>
-        <text
-          x={14}
-          y={28}
-          className={css(styles.backgroundText)}
-        >
+        <text x={14} y={28} className={css(styles.backgroundText)}>
           / 100
         </text>
         {this.checkErrors()}
@@ -57,33 +49,33 @@ const progressKeyframe: React.CSSProperties & any = {
 };
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  svg: {
-    display: 'block',
-    height: 110,
-    width: 110,
-    margin: margin(10, 'auto')
-  },
-  circle: {
-    fill: 'none',
-    strokeWidth: 2.8,
-    strokeLinecap: 'round',
-    animationName: progressKeyframe,
-    animation: '500ms ease-out forwards'
-  },
   backgroundCircle: {
-    stroke: rgba(0, 0, 0, 0.3),
-    fill: 'none',
-    strokeWidth: 2.8,
-    strokeLinecap: 'round',
+    animation: '500ms ease-out forwards',
     animationName: progressKeyframe,
-    animation: '500ms ease-out forwards'
-  },
-  text: {
-    fill: lessVars.textColor,
-    fontSize: 13
+    fill: 'none',
+    stroke: rgba(0, 0, 0, 0.3),
+    strokeLinecap: 'round',
+    strokeWidth: 2.8
   },
   backgroundText: {
     fill: rgba(213, 213, 213, 0.4),
     fontSize: 5
+  },
+  circle: {
+    animation: '500ms ease-out forwards',
+    animationName: progressKeyframe,
+    fill: 'none',
+    strokeLinecap: 'round',
+    strokeWidth: 2.8
+  },
+  svg: {
+    display: 'block',
+    height: 110,
+    margin: margin(10, 'auto'),
+    width: 110
+  },
+  text: {
+    fill: lessVars.textColor,
+    fontSize: 13
   }
 });

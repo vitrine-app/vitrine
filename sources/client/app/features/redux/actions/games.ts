@@ -5,20 +5,20 @@ import { Action, ActionType } from './actionsTypes';
 
 export function refreshGames(): Action {
   return {
-    type: ActionType.REFRESH_GAMES,
     payload: {
       refreshingGames: true
-    }
+    },
+    type: ActionType.REFRESH_GAMES
   };
 }
 
 export function addPotentialGames(potentialGames: PotentialGame[]): Action {
   return {
-    type: ActionType.ADD_POTENTIAL_GAMES,
     payload: {
       potentialGames,
       refreshingGames: false
-    }
+    },
+    type: ActionType.ADD_POTENTIAL_GAMES
   };
 }
 
@@ -27,108 +27,110 @@ export function addPlayableGames(unsortedGames: PlayableGame[]): Action {
     playableGames: unsortedGames
   });
   return {
-    type: ActionType.ADD_PLAYABLE_GAMES,
     payload: {
       playableGames,
-      selectedGame: unsortedGames.length ? (unsortedGames.length > 1 ? playableGames[0] : unsortedGames[0]) : null,
-      potentialGameToAdd: null
-    }
+      potentialGameToAdd: null,
+      selectedGame: unsortedGames.length ? (unsortedGames.length > 1 ? playableGames[0] : unsortedGames[0]) : null
+    },
+    type: ActionType.ADD_PLAYABLE_GAMES
   };
 }
 
 export function editPlayableGame(editedGame: PlayableGame): Action {
   const playableGames: PlayableGame[] = getSortedGamesFromStore({ editedGame });
   return {
-    type: ActionType.EDIT_PLAYABLE_GAME,
     payload: {
-      playableGames,
       editedGame,
-      potentialGameToAdd: null,
-      gameToEdit: null
-    }
+      gameToEdit: null,
+      playableGames,
+      potentialGameToAdd: null
+    },
+    type: ActionType.EDIT_PLAYABLE_GAME
   };
 }
 
 export function removePlayableGame(gameUuid: string): Action {
   return {
-    type: ActionType.REMOVE_PLAYABLE_GAME,
     payload: {
       gameUuid
-    }
+    },
+    type: ActionType.REMOVE_PLAYABLE_GAME
   };
 }
 
 export function setPotentialGames(potentialGames: PotentialGame[]): Action {
   return {
-    type: ActionType.SET_POTENTIAL_GAMES,
     payload: {
       potentialGames
-    }
+    },
+    type: ActionType.SET_POTENTIAL_GAMES
   };
 }
 
 export function setPlayableGames(playableGames: PlayableGame[]): Action {
   return {
-    type: ActionType.SET_PLAYABLE_GAMES,
     payload: {
       playableGames
-    }
+    },
+    type: ActionType.SET_PLAYABLE_GAMES
   };
 }
 
 export function launchGame(launchedGame: PlayableGame): Action {
   return {
-    type: ActionType.LAUNCH_GAME,
     payload: {
       launchedGame
-    }
+    },
+    type: ActionType.LAUNCH_GAME
   };
 }
 
 export function stopGame(playedGame: PlayableGame): Action {
   return {
-    type: ActionType.STOP_GAME,
     payload: {
-      playedGame,
-      launchedGame: null
-    }
+      launchedGame: null,
+      playedGame
+    },
+    type: ActionType.STOP_GAME
   };
 }
 
 export function selectGame(selectedGame: PlayableGame): Action {
   return {
-    type: ActionType.SELECT_GAME,
     payload: {
       selectedGame
-    }
+    },
+    type: ActionType.SELECT_GAME
   };
 }
 
 export function setPotentialGameToAdd(potentialGameToAdd: PotentialGame): Action {
   return {
-    type: ActionType.SET_POTENTIAL_GAME_TO_ADD,
     payload: {
       potentialGameToAdd
-    }
+    },
+    type: ActionType.SET_POTENTIAL_GAME_TO_ADD
   };
 }
 
 export function setGameToEdit(gameToEdit: PlayableGame): Action {
   return {
-    type: ActionType.SET_GAME_TO_EDIT,
     payload: {
       gameToEdit
-    }
+    },
+    type: ActionType.SET_GAME_TO_EDIT
   };
 }
 
 export function sortGames(gamesSortParameter: SortParameter): Action {
-  const playableGames: PlayableGame[] = getSortedGamesFromStore({ gamesSortParameter });
+  const playableGames: PlayableGame[] = getSortedGamesFromStore({
+    gamesSortParameter
+  });
   return {
-    type: ActionType.SORT_GAMES,
     payload: {
       gamesSortParameter,
       playableGames
-    }
+    },
+    type: ActionType.SORT_GAMES
   };
 }

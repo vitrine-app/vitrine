@@ -86,10 +86,16 @@ class Vitrine extends VitrineComponent<Props, State> {
     const timeJustPlayed: number = totalTimePlayed - playedGame.timePlayed;
     playedGame.timePlayed = totalTimePlayed;
     this.props.stopGame(playedGame);
-    notify(this.props.intl.formatMessage({ id: 'toasts.stoppingGame' }, {
-      name: playedGame.name,
-      time: formatTimePlayed(timeJustPlayed, this.props.intl.formatMessage)
-    }), true);
+    notify(
+      this.props.intl.formatMessage(
+        { id: 'toasts.stoppingGame' },
+        {
+          name: playedGame.name,
+          time: formatTimePlayed(timeJustPlayed, this.props.intl.formatMessage)
+        }
+      ),
+      true
+    );
   }
 
   private settingsUpdated(settings: any) {
@@ -116,8 +122,8 @@ class Vitrine extends VitrineComponent<Props, State> {
         const selectedGame: PlayableGame = this.props.playableGames.getGame(index + 1);
         this.props.selectGame(selectedGame);
         document.getElementById(`sidebar-game:${selectedGame.uuid}`).scrollIntoView({
-          block: 'nearest',
-          behavior: 'smooth'
+          behavior: 'smooth',
+          block: 'nearest'
         });
       }
     });
@@ -127,15 +133,20 @@ class Vitrine extends VitrineComponent<Props, State> {
         const selectedGame: PlayableGame = this.props.playableGames.getGame(index - 1);
         this.props.selectGame(selectedGame);
         document.getElementById(`sidebar-game:${selectedGame.uuid}`).scrollIntoView({
-          block: 'nearest',
-          behavior: 'smooth'
+          behavior: 'smooth',
+          block: 'nearest'
         });
       }
     });
     index.registerEnterAction(() => {
-      if (!this.props.gameAddModalVisible && !this.props.potentialGamesAddModalVisible
-        && !this.props.settingsModalVisible && !this.props.timePlayedEditionModalVisible)
+      if (
+        !this.props.gameAddModalVisible &&
+        !this.props.potentialGamesAddModalVisible &&
+        !this.props.settingsModalVisible &&
+        !this.props.timePlayedEditionModalVisible
+      ) {
         this.launchGame(this.props.selectedGame.uuid);
+      }
     });
   }
 
@@ -149,12 +160,16 @@ class Vitrine extends VitrineComponent<Props, State> {
 
   public componentDidMount() {
     if (this.props.settings.firstLaunch) {
-      this.setState({
-        firstLaunch: true
-      }, this.props.openSettingsModal.bind(this));
+      this.setState(
+        {
+          firstLaunch: true
+        },
+        this.props.openSettingsModal.bind(this)
+      );
     }
 
-    serverListener.listen('add-playable-games', this.props.addPlayableGames.bind(this))
+    serverListener
+      .listen('add-playable-games', this.props.addPlayableGames.bind(this))
       .listen('remove-playable-game', this.removePlayableGame.bind(this))
       .listen('add-potential-games', this.props.addPotentialGames.bind(this))
       .listen('stop-game', this.stopGame.bind(this))
@@ -176,16 +191,16 @@ class Vitrine extends VitrineComponent<Props, State> {
   public render(): JSX.Element {
     return (
       <div className={css(styles.vitrineApp)}>
-        <TaskBar/>
+        <TaskBar />
         <Grid className={css(styles.mainContainer)}>
-          <SideBar launchGame={this.launchGame}/>
-          <GameContainer launchGame={this.launchGame}/>
+          <SideBar launchGame={this.launchGame} />
+          <GameContainer launchGame={this.launchGame} />
         </Grid>
-        <GameAddModal/>
-        <TimePlayedEditionModal/>
-        <PotentialGamesAddModal/>
-        <SettingsModal firstLaunch={this.state.firstLaunch}/>
-        <ToastContainer toastClassName={styles.toastNotification}/>
+        <GameAddModal />
+        <TimePlayedEditionModal />
+        <PotentialGamesAddModal />
+        <SettingsModal firstLaunch={this.state.firstLaunch} />
+        <ToastContainer toastClassName={styles.toastNotification} />
         {this.checkErrors()}
       </div>
     );
@@ -193,32 +208,32 @@ class Vitrine extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  vitrineApp: {
-    height: 100..percents(),
-    userSelect: 'none',
-    cursor: 'default'
-  },
   mainContainer: {
-    height: `calc(${100..percents()} - ${22..px()})`,
+    height: `calc(${(100).percents()} - ${(22).px()})`,
     margin: 0
   },
   toastNotification: {
+    borderRadius: 2,
     color: rgba(255, 255, 255, 0.72),
-    padding: padding(5, 9, 7, 16),
-    borderRadius: 2
+    padding: padding(5, 9, 7, 16)
+  },
+  vitrineApp: {
+    cursor: 'default',
+    height: (100).percents(),
+    userSelect: 'none'
   }
 });
 
 const mapStateToProps = (state: AppState) => ({
-  settings: state.settings,
-  playableGames: state.playableGames,
-  selectedGame: state.selectedGame,
-  launchedGame: state.launchedGame,
   gameAddModalVisible: state.gameAddModalVisible,
   igdbResearchModalVisible: state.igdbResearchModalVisible,
-  timePlayedEditionModalVisible: state.timePlayedEditionModalVisible,
+  launchedGame: state.launchedGame,
+  playableGames: state.playableGames,
   potentialGamesAddModalVisible: state.potentialGamesAddModalVisible,
-  settingsModalVisible: state.settingsModalVisible
+  selectedGame: state.selectedGame,
+  settings: state.settings,
+  settingsModalVisible: state.settingsModalVisible,
+  timePlayedEditionModalVisible: state.timePlayedEditionModalVisible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -255,6 +270,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const VitrineContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(Vitrine));
+const VitrineContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Vitrine)
+);
 
 export { VitrineContainer as Vitrine };

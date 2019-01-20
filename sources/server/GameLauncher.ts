@@ -22,36 +22,40 @@ class GameLauncher {
     this.game = game;
 
     this.discordClient.updatePresence({
-      state: game.name,
+      instance: true,
       largeImageKey: 'default',
       largeImageText: game.name,
       startTimestamp: Math.round(Date.now() / 1000),
-      instance: true,
+      state: game.name
     });
-    if (this.game.source === GameSource.STEAM)
+    if (this.game.source === GameSource.STEAM) {
       this.launchSteamGame();
-    else
+    } else {
       this.launchStandardGame();
+    }
   }
 
   private launchStandardGame() {
     logger.info('GameLauncher', 'Launching non-Steam game.');
 
-    const [ executable, args ]: string[] = this.game.commandLine;
+    const [executable, args]: string[] = this.game.commandLine;
     const launcherOptions: GameLauncherOptions = {
-      program: executable,
-      cwd: path.parse(executable).dir
+      cwd: path.parse(executable).dir,
+      program: executable
     };
-    if (args)
+    if (args) {
       launcherOptions.args = args;
+    }
 
     logger.info('GameLauncher', `Launching game ${executable} with native module.`);
-    nativeLaunchGame(launcherOptions).then((secondsPlayed: number) => {
-      logger.info('GameLauncher', `Game terminated (played during ${secondsPlayed} seconds).`);
-      this.quitGame(secondsPlayed);
-    }).catch((error: Error) => {
-      this.callback(error, null);
-    });
+    nativeLaunchGame(launcherOptions)
+      .then((secondsPlayed: number) => {
+        logger.info('GameLauncher', `Game terminated (played during ${secondsPlayed} seconds).`);
+        this.quitGame(secondsPlayed);
+      })
+      .catch((error: Error) => {
+        this.callback(error, null);
+      });
   }
 
   private launchSteamGame() {
@@ -61,15 +65,15 @@ class GameLauncher {
     }
     logger.info('GameLauncher', 'Launching Steam game.');
     monitorSteamApp(this.game.details.steamId.toString(), (error: string, secondsPlayed: number) => {
-      if (error)
+      if (error) {
         this.callback(new Error(error), null);
-      else {
+      } else {
         logger.info('GameLauncher', `Game ended (played during ${secondsPlayed} seconds).`);
         this.quitGame(secondsPlayed);
       }
     });
 
-    const [ program, args ]: string[] = this.game.commandLine;
+    const [program, args]: string[] = this.game.commandLine;
     logger.info('GameLauncher', `Launching Steam game (${this.game.details.steamId}) with native module.`);
     nativeLaunchGame({ program, args });
   }
@@ -85,10 +89,11 @@ const gameLauncher: GameLauncher = new GameLauncher();
 export function launchGame(game: PlayableGame): Promise<any> {
   return new Promise((resolve, reject) => {
     gameLauncher.launch(game, (error, minutesPlayed) => {
-      if (error)
+      if (error) {
         reject(error);
-      else
+      } else {
         resolve(minutesPlayed);
+      }
     });
   });
 }

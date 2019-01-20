@@ -40,8 +40,8 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
     this.state = {
       loading: true,
       research: '',
-      resultsNb: 5,
       researches: [],
+      resultsNb: 5,
       selectedResearchId: '',
       transitionVisible: true
     };
@@ -64,11 +64,14 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
   }
 
   private gameDoubleClick(id: number) {
-    this.setState({
-      selectedResearchId: id
-    }, () => {
-      this.igdbFillButton();
-    });
+    this.setState(
+      {
+        selectedResearchId: id
+      },
+      () => {
+        this.igdbFillButton();
+      }
+    );
   }
 
   private researchChange(event: any) {
@@ -84,19 +87,25 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
   }
 
   private igdbSearchButton() {
-    this.setState({
-      loading: true
-    }, () => {
-      serverListener.send('search-igdb-games', this.state.research, this.state.resultsNb);
-    });
+    this.setState(
+      {
+        loading: true
+      },
+      () => {
+        serverListener.send('search-igdb-games', this.state.research, this.state.resultsNb);
+      }
+    );
   }
 
   private igdbFillButton() {
-    this.setState({
-      loading: true
-    }, () => {
-      serverListener.send('fill-igdb-game', this.state.selectedResearchId);
-    });
+    this.setState(
+      {
+        loading: true
+      },
+      () => {
+        serverListener.send('fill-igdb-game', this.state.selectedResearchId);
+      }
+    );
   }
 
   private closeModal() {
@@ -114,21 +123,25 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
   }
 
   private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.props.visible)
+    if (startingAnimation === this.props.visible) {
       this.setState({
         transitionVisible: this.props.visible
       });
+    }
   }
   public componentDidMount() {
     serverListener.listen('send-igdb-searches', (research: string, researches: any[]) => {
-      this.setState({
-        loading: false,
-        selectedResearchId: '',
-        research,
-        researches
-      }, () => {
-        this.props.openIgdbResearchModal();
-      });
+      this.setState(
+        {
+          loading: false,
+          research,
+          researches,
+          selectedResearchId: ''
+        },
+        () => {
+          this.props.openIgdbResearchModal();
+        }
+      );
     });
   }
 
@@ -139,11 +152,15 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
           <Grid>
             <Grid.Column width={10}>
               <Form.Field>
-                <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
+                <label className={css(styles.formLabel)}>
+                  <FormattedMessage id={'game.name'} />
+                </label>
                 <Input
                   name={'name'}
                   size={'large'}
-                  placeholder={this.props.intl.formatMessage({ id: 'game.name' })}
+                  placeholder={this.props.intl.formatMessage({
+                    id: 'game.name'
+                  })}
                   value={this.state.research}
                   onChange={this.researchChange}
                 />
@@ -151,71 +168,57 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
             </Grid.Column>
             <Grid.Column width={3}>
               <Form.Field>
-                <label className={(css(styles.resultsNbLabel))}><FormattedMessage id={'resultsNb'}/></label>
+                <label className={css(styles.resultsNbLabel)}>
+                  <FormattedMessage id={'resultsNb'} />
+                </label>
                 <NumberPicker
                   min={1}
                   max={20}
                   name={'resultsNb'}
                   value={this.state.resultsNb}
-                  placeholder={this.props.intl.formatMessage({ id: 'resultsNb' })}
+                  placeholder={this.props.intl.formatMessage({
+                    id: 'resultsNb'
+                  })}
                   onChange={this.resultsNbChange}
                 />
               </Form.Field>
             </Grid.Column>
             <Grid.Column width={2}>
-              <Button
-                primary={true}
-                onClick={this.igdbSearchButton}
-                className={css(styles.searchBtn)}
-              >
-                <FontAwesomeIcon icon={faSearch}/>
+              <Button primary={true} onClick={this.igdbSearchButton} className={css(styles.searchBtn)}>
+                <FontAwesomeIcon icon={faSearch} />
               </Button>
             </Grid.Column>
           </Grid>
         </Form>
         <div className={css(styles.igdbResearchList)}>
-          {this.state.researches.map((research: any, index: number) =>
+          {this.state.researches.map((research: any, index: number) => (
             <div
               key={index}
-              className={
-                css(styles.igdbResearch) + ' ' +
-                                (this.state.selectedResearchId === research.id ? css(styles.selectedIgdbResearch) : '')
-              }
+              className={css(styles.igdbResearch) + ' ' + (this.state.selectedResearchId === research.id ? css(styles.selectedIgdbResearch) : '')}
               onClick={this.researchClick.bind(this, research.id)}
               onDoubleClick={this.gameDoubleClick.bind(this, research.id)}
             >
               <Grid>
-                <Grid.Column
-                  style={{ width: 20..percents() }}
-                  className={css(styles.igdbResearchImgColumn)}
-                >
-                  <img src={research.cover} className={css(styles.igdbResearchImg)}/>
+                <Grid.Column style={{ width: (20).percents() }} className={css(styles.igdbResearchImgColumn)}>
+                  <img src={research.cover} className={css(styles.igdbResearchImg)} />
                 </Grid.Column>
-                <Grid.Column width={12}>
-                  {research.name}
-                </Grid.Column>
+                <Grid.Column width={12}>{research.name}</Grid.Column>
               </Grid>
             </div>
-          )}
+          ))}
         </div>
         <span className={css(styles.igdbDisclaimer)}>
-          <FormattedMessage id={'igdbDisclaimer'}/>
-          <a
-            className={css(styles.igdbLink)}
-            onClick={IgdbResearchModal.igdbLinkClick}
-          >
+          <FormattedMessage id={'igdbDisclaimer'} />
+          <a className={css(styles.igdbLink)} onClick={IgdbResearchModal.igdbLinkClick}>
             IGDB
-          </a>.
+          </a>
+          .
         </span>
       </Modal.Content>
     ) : (
       <Modal.Content>
         <div className={css(styles.loadingContainer)}>
-          <FontAwesomeIcon
-            icon={faCircleNotch}
-            spin={true}
-            className={css(styles.loadingIcon)}
-          />
+          <FontAwesomeIcon icon={faCircleNotch} spin={true} className={css(styles.loadingIcon)} />
         </div>
       </Modal.Content>
     );
@@ -228,21 +231,14 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
         onComplete={this.animateModal.bind(this, false)}
         visible={this.props.visible}
       >
-        <Modal
-          open={this.state.transitionVisible}
-          onClose={this.closeModal}
-          size={'tiny'}
-          className={css(styles.modal)}
-        >
-          <Modal.Header><FormattedMessage id={'actions.fillWithIgdb'}/></Modal.Header>
+        <Modal open={this.state.transitionVisible} onClose={this.closeModal} size={'tiny'} className={css(styles.modal)}>
+          <Modal.Header>
+            <FormattedMessage id={'actions.fillWithIgdb'} />
+          </Modal.Header>
           {modalContent}
           <Modal.Actions style={{ opacity: !this.state.loading ? 1 : 0 }}>
-            <Button
-              primary={true}
-              disabled={!this.state.selectedResearchId}
-              onClick={this.igdbFillButton}
-            >
-              <FormattedMessage id={'actions.submitNewGame'}/>
+            <Button primary={true} disabled={!this.state.selectedResearchId} onClick={this.igdbFillButton}>
+              <FormattedMessage id={'actions.submitNewGame'} />
             </Button>
           </Modal.Actions>
         </Modal>
@@ -252,9 +248,52 @@ class IgdbResearchModal extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
+  formLabel: {
+    fontSize: (1).em(),
+    fontWeight: 'normal'
+  },
+  igdbDisclaimer: {
+    fontSize: 11,
+    opacity: 0.5,
+    paddingLeft: 10
+  },
+  igdbLink: {
+    cursor: 'pointer'
+  },
+  igdbResearch: {
+    ':hover': {
+      backgroundColor: rgba(247, 210, 174, 0.1)
+    },
+    backgroundColor: '#39342E',
+    borderRadius: 4,
+    margin: margin(7, 0),
+    padding: padding(10, 0),
+    transition: `${50}ms ease`
+  },
+  igdbResearchImg: {
+    borderRadius: 4,
+    height: 120,
+    width: 90
+  },
+  igdbResearchImgColumn: {
+    paddingLeft: (5).percents()
+  },
+  igdbResearchList: {
+    paddingTop: (10).px()
+  },
+  loadingContainer: {
+    height: (100).percents(),
+    paddingBottom: (13).percents(),
+    paddingLeft: (41).percents(),
+    paddingTop: (13).percents()
+  },
+  loadingIcon: {
+    fontSize: 120,
+    opacity: 0.2
+  },
   modal: {
-    margin: margin(9..rem(), 'auto'),
     cursor: 'default',
+    margin: margin((9).rem(), 'auto'),
     userSelect: 'none'
   },
   modalBody: {
@@ -262,61 +301,18 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     overflowX: 'hidden',
     overflowY: 'auto'
   },
-  igdbResearchList: {
-    paddingTop: 10..px()
-  },
-  igdbResearch: {
-    margin: margin(7, 0),
-    padding: padding(10, 0),
-    borderRadius: 4,
-    backgroundColor: '#39342E',
-    transition: `${50}ms ease`,
-    ':hover': {
-      backgroundColor: rgba(247, 210, 174, 0.1)
-    }
-  },
-  selectedIgdbResearch: {
-    boxShadow: `inset ${0} ${0} ${0} ${2..px()} #81705E`,
-    fontWeight: 600
-  },
-  igdbResearchImgColumn: {
-    paddingLeft: 5..percents()
-  },
-  igdbResearchImg: {
-    width: 90,
-    height: 120,
-    borderRadius: 4
-  },
-  igdbDisclaimer: {
-    fontSize: 11,
-    paddingLeft: 10,
-    opacity: 0.5
-  },
-  igdbLink: {
-    cursor: 'pointer'
-  },
-  loadingContainer: {
-    height: 100..percents(),
-    paddingTop: 13..percents(),
-    paddingBottom: 13..percents(),
-    paddingLeft: 41..percents()
-  },
-  loadingIcon: {
-    fontSize: 120,
-    opacity: 0.2
-  },
-  formLabel: {
-    fontWeight: 'normal',
-    fontSize: 1..em()
-  },
   resultsNbLabel: {
     width: 99
   },
   searchBtn: {
-    marginTop: 22,
+    fontSize: (1.3).em(),
     marginLeft: 25,
-    padding: padding(13, 14),
-    fontSize: 1.3.em()
+    marginTop: 22,
+    padding: padding(13, 14)
+  },
+  selectedIgdbResearch: {
+    boxShadow: `inset ${0} ${0} ${0} ${(2).px()} #81705E`,
+    fontWeight: 600
   }
 });
 
@@ -333,6 +329,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const IgdbResearchModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(IgdbResearchModal));
+const IgdbResearchModalContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(IgdbResearchModal)
+);
 
 export { IgdbResearchModalContainer as IgdbResearchModal };

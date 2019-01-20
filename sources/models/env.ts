@@ -11,15 +11,19 @@ export function isTesting(): boolean {
 }
 
 export function getAppDataFolder() {
-  return (process.platform === 'win32') ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.local/share/vitrine`;
+  return process.platform === 'win32' ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.local/share/vitrine`;
 }
 
 export function getEnvFolder(folder: string, nonProd?: boolean): string {
-  if (isTesting() && !isProduction())
+  if (isTesting() && !isProduction()) {
     return path.resolve(folder);
+  }
   const appDataPath: string = path.resolve(getAppDataFolder(), 'data', folder);
-  const computedPath: string = isProduction() ?
-    ((folder === 'games' || folder === 'config') && !nonProd ? appDataPath : `../../${folder}`) : `../${folder}`;
+  const computedPath: string = isProduction()
+    ? (folder === 'games' || folder === 'config') && !nonProd
+      ? appDataPath
+      : `../../${folder}`
+    : `../${folder}`;
   return path.resolve(__dirname, computedPath);
 }
 
@@ -30,5 +34,8 @@ export function uuidV5(name: string): string {
 
 export function randomHashedString(length?: number): string {
   const finalLength: number = length || 8;
-  return crypto.randomBytes(Math.ceil(finalLength / 2)).toString('hex').slice(0, finalLength);
+  return crypto
+    .randomBytes(Math.ceil(finalLength / 2))
+    .toString('hex')
+    .slice(0, finalLength);
 }

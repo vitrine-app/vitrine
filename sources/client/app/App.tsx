@@ -37,26 +37,26 @@ class App extends React.Component<Props, State> {
       this.props.setLocales(locales);
       this.props.updateSettings(settings);
       this.props.updateModulesConfig(modulesConfig);
-      this.setState({
-        settingsReceived: true
-      }, () => {
-        serverListener.send('ready');
-      });
+      this.setState(
+        {
+          settingsReceived: true
+        },
+        () => {
+          serverListener.send('ready');
+        }
+      );
     });
 
     serverListener.send('settings-asked');
   }
 
   public render(): JSX.Element {
-    const locale: any = this.props.locales.find((locale: any) => locale.locale === this.props.currentLocale);
+    const locale: any = this.props.locales.find((currentLocale: any) => currentLocale.locale === this.props.currentLocale);
 
     return this.state.settingsReceived ? (
-      <IntlProvider
-        locale={this.props.currentLocale}
-        messages={locale.messages}
-      >
+      <IntlProvider locale={this.props.currentLocale} messages={locale.messages}>
         <ErrorsWrapper>
-          <Vitrine/>
+          <Vitrine />
         </ErrorsWrapper>
       </IntlProvider>
     ) : null;
@@ -64,9 +64,9 @@ class App extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  settings: state.settings,
+  currentLocale: state.locale,
   locales: state.locales,
-  currentLocale: state.locale
+  settings: state.settings
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -82,6 +82,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
+const AppContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
 
 export { AppContainer as App };

@@ -23,21 +23,19 @@ export class DatePicker extends VitrineComponent<Props, {}> {
   }
 
   private static removeDateButtonClick(props: any, openCalendar: () => void) {
-    if (props.value)
+    if (props.value) {
       props.onChange({
         target: { value: '' }
       });
-    else
+    } else {
       openCalendar();
+    }
   }
 
   private renderInput(props: any, openCalendar: () => void): JSX.Element {
     const removeDateButton: JSX.Element = (
-      <Button
-        secondary={true}
-        onClick={DatePicker.removeDateButtonClick.bind(this, props, openCalendar)}
-      >
-        <FontAwesomeIcon icon={props.value ? faTrash : faCalendarAlt}/>
+      <Button secondary={true} onClick={DatePicker.removeDateButtonClick.bind(this, props, openCalendar)}>
+        <FontAwesomeIcon icon={props.value ? faTrash : faCalendarAlt} />
       </Button>
     );
 
@@ -49,8 +47,8 @@ export class DatePicker extends VitrineComponent<Props, {}> {
           label={removeDateButton}
           labelPosition={'right'}
           style={{
-            width: 83..percents(),
-            cursor: 'text'
+            cursor: 'text',
+            width: (83).percents()
           }}
         />
       </div>

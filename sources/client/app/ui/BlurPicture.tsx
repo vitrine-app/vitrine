@@ -30,18 +30,19 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
     this.pulseDuration = 165;
     const divStyle: any = {
-      fontSize: this.props.fontSize.px(),
-      animationDuration: `${this.pulseDuration}ms`
+      animationDuration: `${this.pulseDuration}ms`,
+      fontSize: this.props.fontSize.px()
     };
-    if (this.props.width)
+    if (this.props.width) {
       divStyle.width = this.props.width;
+    }
     this.state = {
-      iconVisible: false,
-      pulseVisible: true,
       divStyle,
+      iconVisible: false,
       imageStyle: {
         backgroundImage: urlify(this.props.background)
-      }
+      },
+      pulseVisible: true
     };
 
     this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
@@ -51,13 +52,13 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
   private mouseEnterHandler() {
     const imageStyle: any = this.state.imageStyle;
-    imageStyle.filter = `blur(${4..px()})`;
+    imageStyle.filter = `blur(${(4).px()})`;
 
     this.setState({
       iconVisible: true,
       imageStyle: {
         backgroundImage: urlify(this.props.background),
-        filter: `blur(${4..px()})`
+        filter: `blur(${(4).px()})`
       }
     });
   }
@@ -94,11 +95,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
   public render(): JSX.Element {
     return (
-      <Transition
-        visible={this.state.pulseVisible}
-        animation={'pulse'}
-        duration={this.pulseDuration}
-      >
+      <Transition visible={this.state.pulseVisible} animation={'pulse'} duration={this.pulseDuration}>
         <div
           className={css(styles.container)}
           onMouseEnter={this.mouseEnterHandler}
@@ -106,16 +103,9 @@ export class BlurPicture extends VitrineComponent<Props, State> {
           onClick={this.clickHandler}
           style={this.state.divStyle}
         >
-          <div className={css(styles.picture)} style={{ ...this.state.imageStyle }}/>
-          <Transition
-            visible={this.state.iconVisible}
-            animation={'scale'}
-            duration={75}
-          >
-            <FontAwesomeIcon
-              icon={this.props.faIcon}
-              className={css(styles.icon)}
-            />
+          <div className={css(styles.picture)} style={{ ...this.state.imageStyle }} />
+          <Transition visible={this.state.iconVisible} animation={'scale'} duration={75}>
+            <FontAwesomeIcon icon={this.props.faIcon} className={css(styles.icon)} />
           </Transition>
           {this.checkErrors()}
         </div>
@@ -126,27 +116,27 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   container: {
-    width: 100..percents(),
-    height: 100..percents(),
+    borderRadius: 4,
+    color: '#F1F1F1',
+    height: (100).percents(),
     overflow: 'hidden',
     position: 'relative',
-    color: '#F1F1F1',
-    borderRadius: 4
-  },
-  picture: {
-    width: 100..percents(),
-    height: 100..percents(),
-    cursor: 'pointer',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: `${100..percents()} ${100..percents()}`,
-    transition: `${75}ms filter linear`,
-    boxShadow: `${0} ${0} ${0} ${2..px()} ${rgba(255, 255, 255, 0.12)} inset`
+    width: (100).percents()
   },
   icon: {
-    position: 'absolute',
     color: rgba(255, 255, 255, 0.6),
-    top: 40..percents(),
-    left: 40..percents(),
-    cursor: 'pointer'
+    cursor: 'pointer',
+    left: (40).percents(),
+    position: 'absolute',
+    top: (40).percents()
+  },
+  picture: {
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: `${(100).percents()} ${(100).percents()}`,
+    boxShadow: `${0} ${0} ${0} ${(2).px()} ${rgba(255, 255, 255, 0.12)} inset`,
+    cursor: 'pointer',
+    height: (100).percents(),
+    transition: `${75}ms filter linear`,
+    width: (100).percents()
   }
 });

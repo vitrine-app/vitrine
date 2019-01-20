@@ -22,10 +22,11 @@ export class TaskBar extends VitrineComponent<{}, {}> {
   }
 
   private maximizeBtnClickHandler() {
-    if (this.currentWindow.isMaximized())
+    if (this.currentWindow.isMaximized()) {
       this.currentWindow.unmaximize();
-    else
+    } else {
       this.currentWindow.maximize();
+    }
   }
 
   private closeBtnClickHandler() {
@@ -37,19 +38,9 @@ export class TaskBar extends VitrineComponent<{}, {}> {
       <div className={css(styles.taskBar)}>
         <span className={css(styles.title)}>Vitrine</span>
         <div className={css(styles.windowControlBtnGroup)}>
-          <WindowControlIcon
-            icon={WindowControl.MinimizeIcon}
-            onClick={this.minimizeBtnClickHandler}
-          />
-          <WindowControlIcon
-            icon={WindowControl.MaximizeIcon}
-            onClick={this.maximizeBtnClickHandler}
-          />
-          <WindowControlIcon
-            icon={WindowControl.CloseIcon}
-            redBackground={true}
-            onClick={this.closeBtnClickHandler}
-          />
+          <WindowControlIcon icon={WindowControl.MinimizeIcon} onClick={this.minimizeBtnClickHandler} />
+          <WindowControlIcon icon={WindowControl.MaximizeIcon} onClick={this.maximizeBtnClickHandler} />
+          <WindowControlIcon icon={WindowControl.CloseIcon} redBackground={true} onClick={this.closeBtnClickHandler} />
         </div>
         {this.checkErrors()}
       </div>
@@ -59,19 +50,19 @@ export class TaskBar extends VitrineComponent<{}, {}> {
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   taskBar: {
-    height: 22,
+    '-webkitAppRegion': 'drag',
     backgroundColor: '#23211F',
-    textAlign: 'center',
-    '-webkitAppRegion': 'drag'
+    height: 22,
+    textAlign: 'center'
   },
   title: {
     fontSize: 15,
     opacity: 0.6
   },
   windowControlBtnGroup: {
+    '-webkitAppRegion': 'no-drag',
     position: 'absolute',
-    top: 0,
     right: 0,
-    '-webkitAppRegion': 'no-drag'
+    top: 0
   }
 });

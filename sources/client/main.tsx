@@ -10,12 +10,12 @@ import './resources/less/main.less';
 
 install();
 const appRoot: HTMLElement = document.createElement('div');
-appRoot.style.setProperty('height', 100..percents());
+appRoot.style.setProperty('height', (100).percents());
 document.body.appendChild(appRoot);
 
 render(
   <Provider store={vitrineStore}>
-    <App/>
+    <App />
   </Provider>,
   appRoot
 );

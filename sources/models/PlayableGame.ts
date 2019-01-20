@@ -11,7 +11,7 @@ export enum SortParameter {
   RATING = 'rating',
   SERIES = 'series',
   DEVELOPER = 'developer',
-  PUBLISHER = 'publisher',
+  PUBLISHER = 'publisher'
 }
 
 export class PlayableGame extends PotentialGame {

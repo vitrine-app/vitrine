@@ -61,21 +61,21 @@ class SettingsModal extends VitrineComponent<Props, State> {
     super(props);
 
     this.emptyState = {
-      langs: this.props.locales,
-      lang: this.props.currentLocale,
-      steamEnabled: !!(this.props.settings && this.props.settings.steam),
-      originEnabled: !!(this.props.settings && this.props.settings.origin),
+      aliveEmulators: this.props.settings.emulated ? this.props.settings.emulated.aliveEmulators : [],
       battleNetEnabled: !!(this.props.settings && this.props.settings.battleNet),
       emulatedEnabled: !!(this.props.settings && this.props.settings.emulated),
-      steamPath: this.props.settings && this.props.settings.steam ? this.props.settings.steam.installFolder : '',
-      steamSearchCloud: this.props.settings && this.props.settings.steam ? this.props.settings.steam.searchCloud : true,
-      originPath: this.props.settings && this.props.settings.origin ? this.props.settings.origin.installFolder : '',
-      emulatedPath: this.props.settings.emulated ? this.props.settings.emulated.romsFolder : '',
-      steamError: false,
-      originError: false,
       emulatedError: false,
-      aliveEmulators: this.props.settings.emulated ? this.props.settings.emulated.aliveEmulators : [],
-      emulatorsError: ''
+      emulatedPath: this.props.settings.emulated ? this.props.settings.emulated.romsFolder : '',
+      emulatorsError: '',
+      lang: this.props.currentLocale,
+      langs: this.props.locales,
+      originEnabled: !!(this.props.settings && this.props.settings.origin),
+      originError: false,
+      originPath: this.props.settings && this.props.settings.origin ? this.props.settings.origin.installFolder : '',
+      steamEnabled: !!(this.props.settings && this.props.settings.steam),
+      steamError: false,
+      steamPath: this.props.settings && this.props.settings.steam ? this.props.settings.steam.installFolder : '',
+      steamSearchCloud: this.props.settings && this.props.settings.steam ? this.props.settings.steam.searchCloud : true
     };
     this.state = this.emptyState;
 
@@ -95,8 +95,9 @@ class SettingsModal extends VitrineComponent<Props, State> {
 
   private closeModal() {
     console.log(':c', this.props.firstLaunch);
-    if (this.props.firstLaunch)
+    if (this.props.firstLaunch) {
       return;
+    }
     this.props.closeSettingsModal();
     this.setState(this.emptyState);
   }
@@ -179,15 +180,14 @@ class SettingsModal extends VitrineComponent<Props, State> {
     let aliveEmulators: any[] = this.state.aliveEmulators;
     if (emulatorConfig.path !== undefined) {
       const found: boolean = this.state.aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id === emulatorConfig.id).length > 0;
-      if (!found)
+      if (!found) {
         aliveEmulators.push(emulatorConfig);
-      else
-        aliveEmulators = aliveEmulators.map((aliveEmulator: any) =>
-          aliveEmulator.id !== emulatorConfig.i ? aliveEmulator : emulatorConfig
-        );
-    }
-    else
+      } else {
+        aliveEmulators = aliveEmulators.map((aliveEmulator: any) => (aliveEmulator.id !== emulatorConfig.i ? aliveEmulator : emulatorConfig));
+      }
+    } else {
       aliveEmulators = aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id !== emulatorConfig.id);
+    }
     this.setState({
       aliveEmulators
     });
@@ -207,8 +207,7 @@ class SettingsModal extends VitrineComponent<Props, State> {
         this.setState({
           steamError: false
         });
-      }
-      else {
+      } else {
         sendable = false;
         this.setState({
           steamError: true
@@ -223,41 +222,43 @@ class SettingsModal extends VitrineComponent<Props, State> {
         this.setState({
           originError: false
         });
-      }
-      else {
+      } else {
         sendable = false;
         this.setState({
           originError: true
         });
       }
     }
-    if (this.state.battleNetEnabled)
+    if (this.state.battleNetEnabled) {
       settingsForm.battleNet = {};
+    }
     if (this.state.emulatedEnabled) {
       if (this.state.emulatedPath) {
         settingsForm.emulated = {
-          romsFolder: this.state.emulatedPath,
-          aliveEmulators: this.state.aliveEmulators
+          aliveEmulators: this.state.aliveEmulators,
+          romsFolder: this.state.emulatedPath
         };
         this.setState({
           emulatedError: false
         });
-      }
-      else {
+      } else {
         sendable = false;
         this.setState({
           emulatedError: true
         });
       }
     }
-    const emulatorsError: string = this.state.aliveEmulators.map((aliveEmulator: any) => {
-      if (!aliveEmulator.path || (aliveEmulator.command !== undefined && !aliveEmulator.command)) {
-        sendable = false;
-        const emulatorName: string = this.props.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0].name;
-        return this.props.intl.formatMessage({ id: 'emulator.configError' }, { emulator: emulatorName });
-      }
-      return;
-    }).filter((error: string) => error).join(' ');
+    const emulatorsError: string = this.state.aliveEmulators
+      .map((aliveEmulator: any) => {
+        if (!aliveEmulator.path || (aliveEmulator.command !== undefined && !aliveEmulator.command)) {
+          sendable = false;
+          const emulatorName: string = this.props.emulators.filter((emulator: any) => emulator.id === aliveEmulator.id)[0].name;
+          return this.props.intl.formatMessage({ id: 'emulator.configError' }, { emulator: emulatorName });
+        }
+        return;
+      })
+      .filter((error: string) => error)
+      .join(' ');
     this.setState({
       emulatorsError
     });
@@ -271,20 +272,10 @@ class SettingsModal extends VitrineComponent<Props, State> {
       <Tab.Pane className={css(styles.settingsPane)}>
         <Grid>
           <Grid.Column width={4}>
-            <GamesModule
-              clicked={this.state.steamEnabled}
-              iconFile={steamIcon}
-              iconAlt={'Steam'}
-              clickHandler={this.steamIconClick}
-            />
+            <GamesModule clicked={this.state.steamEnabled} iconFile={steamIcon} iconAlt={'Steam'} clickHandler={this.steamIconClick} />
           </Grid.Column>
           <Grid.Column width={4}>
-            <GamesModule
-              clicked={this.state.originEnabled}
-              iconFile={originIcon}
-              iconAlt={'Origin'}
-              clickHandler={this.originIconClick}
-            />
+            <GamesModule clicked={this.state.originEnabled} iconFile={originIcon} iconAlt={'Origin'} clickHandler={this.originIconClick} />
           </Grid.Column>
           <Grid.Column width={4}>
             <GamesModule
@@ -295,110 +286,117 @@ class SettingsModal extends VitrineComponent<Props, State> {
             />
           </Grid.Column>
           <Grid.Column width={4}>
-            <GamesModule
-              clicked={this.state.emulatedEnabled}
-              iconFile={emulatedIcon}
-              iconAlt={'Origin'}
-              clickHandler={this.emulatedIconClick}
-            />
+            <GamesModule clicked={this.state.emulatedEnabled} iconFile={emulatedIcon} iconAlt={'Origin'} clickHandler={this.emulatedIconClick} />
           </Grid.Column>
         </Grid>
         <Form>
           <div style={{ display: this.state.steamEnabled ? 'block' : 'none' }}>
-            <hr className={css(styles.formHr)}/>
-            <h3><FormattedMessage id={'settings.steamConfig'}/></h3>
+            <hr className={css(styles.formHr)} />
+            <h3>
+              <FormattedMessage id={'settings.steamConfig'} />
+            </h3>
             <Form.Field error={this.state.steamError}>
-              <label><FormattedMessage id={'settings.steamPath'}/></label>
+              <label>
+                <FormattedMessage id={'settings.steamPath'} />
+              </label>
               <Input
                 label={
-                  <Button
-                    secondary={true}
-                    onClick={this.steamPathButton}
-                  >
-                    <FontAwesomeIcon icon={faFolderOpen}/>
+                  <Button secondary={true} onClick={this.steamPathButton}>
+                    <FontAwesomeIcon icon={faFolderOpen} />
                   </Button>
                 }
                 labelPosition={'right'}
                 name={'steam'}
                 size={'large'}
-                placeholder={this.props.intl.formatMessage({ id: 'settings.steamPath' })}
+                placeholder={this.props.intl.formatMessage({
+                  id: 'settings.steamPath'
+                })}
                 value={this.state.steamPath}
                 onClick={this.steamPathButton}
                 readOnly={true}
               />
-              <span
-                className={css(styles.modulesError)}
-                style={{ display: this.state.steamError ? 'inline' : 'none' }}
-              >
-                <FormattedMessage id={'settings.pathError'}/>
+              <span className={css(styles.modulesError)} style={{ display: this.state.steamError ? 'inline' : 'none' }}>
+                <FormattedMessage id={'settings.pathError'} />
               </span>
             </Form.Field>
             <Form.Field>
               <Checkbox
                 checked={this.state.steamSearchCloud}
                 onChange={this.steamSearchCloudCheckbox}
-                label={this.props.intl.formatMessage({ id: 'settings.steamSearchCloud' })}
+                label={this.props.intl.formatMessage({
+                  id: 'settings.steamSearchCloud'
+                })}
                 toggle={true}
               />
             </Form.Field>
           </div>
           <div style={{ display: this.state.originEnabled ? 'block' : 'none' }}>
-            <hr className={css(styles.formHr)}/>
-            <h3><FormattedMessage id={'settings.originConfig'}/></h3>
+            <hr className={css(styles.formHr)} />
+            <h3>
+              <FormattedMessage id={'settings.originConfig'} />
+            </h3>
             <Form.Field error={this.state.originError}>
-              <label><FormattedMessage id={'settings.originGamesPath'}/></label>
+              <label>
+                <FormattedMessage id={'settings.originGamesPath'} />
+              </label>
               <Input
                 label={
-                  <Button
-                    secondary={true}
-                    onClick={this.originPathButton}
-                  >
-                    <FontAwesomeIcon icon={faFolderOpen}/>
+                  <Button secondary={true} onClick={this.originPathButton}>
+                    <FontAwesomeIcon icon={faFolderOpen} />
                   </Button>
                 }
                 labelPosition={'right'}
                 name={'origin'}
                 size={'large'}
-                placeholder={this.props.intl.formatMessage({ id: 'settings.originGamesPath' })}
+                placeholder={this.props.intl.formatMessage({
+                  id: 'settings.originGamesPath'
+                })}
                 value={this.state.originPath}
                 onClick={this.originPathButton}
                 readOnly={true}
               />
               <span
                 className={css(styles.modulesError)}
-                style={{ display: this.state.originError ? 'inline-block' : 'none' }}
+                style={{
+                  display: this.state.originError ? 'inline-block' : 'none'
+                }}
               >
-                <FormattedMessage id={'settings.pathError'}/>
+                <FormattedMessage id={'settings.pathError'} />
               </span>
             </Form.Field>
           </div>
           <div style={{ display: this.state.emulatedEnabled ? 'block' : 'none' }}>
-            <hr className={css(styles.formHr)}/>
-            <h3><FormattedMessage id={'settings.emulatedConfig'}/></h3>
+            <hr className={css(styles.formHr)} />
+            <h3>
+              <FormattedMessage id={'settings.emulatedConfig'} />
+            </h3>
             <Form.Field error={this.state.emulatedError}>
-              <label><FormattedMessage id={'settings.emulatedGamesPath'}/></label>
+              <label>
+                <FormattedMessage id={'settings.emulatedGamesPath'} />
+              </label>
               <Input
                 label={
-                  <Button
-                    secondary={true}
-                    onClick={this.emulatedPathButton}
-                  >
-                    <FontAwesomeIcon icon={faFolderOpen}/>
+                  <Button secondary={true} onClick={this.emulatedPathButton}>
+                    <FontAwesomeIcon icon={faFolderOpen} />
                   </Button>
                 }
                 labelPosition={'right'}
                 name={'emulated'}
                 size={'large'}
-                placeholder={this.props.intl.formatMessage({ id: 'settings.emulatedGamesPath' })}
+                placeholder={this.props.intl.formatMessage({
+                  id: 'settings.emulatedGamesPath'
+                })}
                 value={this.state.emulatedPath}
                 onClick={this.emulatedPathButton}
                 readOnly={true}
               />
               <span
                 className={css(styles.modulesError)}
-                style={{ display: this.state.emulatedError ? 'inline-block' : 'none' }}
+                style={{
+                  display: this.state.emulatedError ? 'inline-block' : 'none'
+                }}
               >
-                <FormattedMessage id={'settings.pathError'}/>
+                <FormattedMessage id={'settings.pathError'} />
               </span>
             </Form.Field>
           </div>
@@ -412,27 +410,41 @@ class SettingsModal extends VitrineComponent<Props, State> {
         <Table celled={true}>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width={3}><FormattedMessage id={'emulator.name'}/></Table.HeaderCell>
-              <Table.HeaderCell width={3}><FormattedMessage id={'emulator.platforms'}/></Table.HeaderCell>
-              <Table.HeaderCell width={2}><FormattedMessage id={'emulator.active'}/></Table.HeaderCell>
-              <Table.HeaderCell width={4}><FormattedMessage id={'emulator.path'}/></Table.HeaderCell>
-              <Table.HeaderCell width={4}><FormattedMessage id={'emulator.command'}/></Table.HeaderCell>
+              <Table.HeaderCell width={3}>
+                <FormattedMessage id={'emulator.name'} />
+              </Table.HeaderCell>
+              <Table.HeaderCell width={3}>
+                <FormattedMessage id={'emulator.platforms'} />
+              </Table.HeaderCell>
+              <Table.HeaderCell width={2}>
+                <FormattedMessage id={'emulator.active'} />
+              </Table.HeaderCell>
+              <Table.HeaderCell width={4}>
+                <FormattedMessage id={'emulator.path'} />
+              </Table.HeaderCell>
+              <Table.HeaderCell width={4}>
+                <FormattedMessage id={'emulator.command'} />
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {this.props.emulators.map((emulator: any, index: number) =>
+            {this.props.emulators.map((emulator: any, index: number) => (
               <EmulatorSettingsRow
                 key={index}
                 emulatorData={emulator}
-                emulator={this.props.settings.emulated ? this.props.settings.emulated.aliveEmulators.filter(
-                  (aliveEmulator: any) => aliveEmulator.id === emulator.id
-                )[0] : null}
+                emulator={
+                  this.props.settings.emulated
+                    ? this.props.settings.emulated.aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id === emulator.id)[0]
+                    : null
+                }
                 onChange={this.emulatorConfigChange}
               />
-            )}
+            ))}
           </Table.Body>
         </Table>
-        <p className={css(styles.emulatorsCommandLineInstruction)}><FormattedMessage id={'emulator.commandLineInstruction'}/></p>
+        <p className={css(styles.emulatorsCommandLineInstruction)}>
+          <FormattedMessage id={'emulator.commandLineInstruction'} />
+        </p>
       </Tab.Pane>
     );
 
@@ -446,8 +458,8 @@ class SettingsModal extends VitrineComponent<Props, State> {
           className={css(styles.langSelect)}
           options={this.state.langs.map((locale: any, index: number) => ({
             key: index,
-            value: locale.locale,
-            text: locale.messages.language
+            text: locale.messages.language,
+            value: locale.locale
           }))}
         />
       </Tab.Pane>
@@ -458,46 +470,55 @@ class SettingsModal extends VitrineComponent<Props, State> {
           <React.Fragment>
             <Button
               secondary={true}
-              style={{ display: !this.props.firstLaunch ? 'inline-block' : 'none' }}
+              style={{
+                display: !this.props.firstLaunch ? 'inline-block' : 'none'
+              }}
               onClick={this.closeModal}
             >
-              <FormattedMessage id={'actions.cancel'}/>
+              <FormattedMessage id={'actions.cancel'} />
             </Button>
-            <Button
-              primary={true}
-              onClick={this.submitButton}
-            >
-              <FormattedMessage id={'actions.confirm'}/>
+            <Button primary={true} onClick={this.submitButton}>
+              <FormattedMessage id={'actions.confirm'} />
             </Button>
           </React.Fragment>
         }
         onClose={this.closeModal}
         title={this.props.intl.formatMessage({ id: 'settings.settings' })}
         size={'large'}
-        style={{ margin: margin(5..rem(), 'auto'), width: 70..vw() }}
+        style={{ margin: margin((5).rem(), 'auto'), width: (70).vw() }}
         visible={this.props.visible}
       >
         <div style={{ display: this.props.firstLaunch ? 'block' : 'none' }}>
-          <h1><FormattedMessage id={'welcomeMessage'}/></h1>
-          <p><FormattedMessage id={'wizardText'}/></p>
+          <h1>
+            <FormattedMessage id={'welcomeMessage'} />
+          </h1>
+          <p>
+            <FormattedMessage id={'wizardText'} />
+          </p>
         </div>
         <Tab
           menu={{
             fluid: true,
-            vertical: true,
-            tabular: true
+            tabular: true,
+            vertical: true
           }}
           panes={[
             {
-              menuItem: this.props.intl.formatMessage({ id: 'settings.modules' }),
+              menuItem: this.props.intl.formatMessage({
+                id: 'settings.modules'
+              }),
               render: () => modulesSettings
             },
             {
-              menuItem: this.props.intl.formatMessage({ id: 'settings.emulators' }),
+              menuItem: this.props.intl.formatMessage({
+                id: 'settings.emulators'
+              }),
               render: () => emulatorsSettings
             },
             {
-              menuItem: this.props.intl.formatMessage({ id: 'settings.locale' }),
+              menuItem: this.props.intl.formatMessage({
+                id: 'settings.locale'
+              }),
               render: () => langsSettings
             }
           ]}
@@ -509,19 +530,16 @@ class SettingsModal extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  modal: {
-    margin: margin(5..rem(), 'auto'),
-    width: 70..vw(),
-    cursor: 'default',
-    userSelect: 'none'
+  emulatorsCommandLineInstruction: {
+    float: 'right',
+    fontSize: 14,
+    marginBottom: 10,
+    opacity: 0.5,
+    paddingLeft: 10
   },
-  modalHeader: {
-    border: 'none'
-  },
-  settingsPane: {
-    height: 64..vh(),
-    overflowY: 'auto',
-    border: 'none'
+  emulatorsError: {
+    color: '#A94442',
+    marginTop: 15
   },
   formHr: {
     border: 'none',
@@ -530,31 +548,34 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   },
   langSelect: {
     padding: padding(20, 0, 100),
-    width: 100..percents()
+    width: (100).percents()
+  },
+  modal: {
+    cursor: 'default',
+    margin: margin((5).rem(), 'auto'),
+    userSelect: 'none',
+    width: (70).vw()
+  },
+  modalHeader: {
+    border: 'none'
   },
   modulesError: {
     color: '#A94442',
     fontWeight: 600,
     marginTop: 5
   },
-  emulatorsError: {
-    color: '#A94442',
-    marginTop: 15
-  },
-  emulatorsCommandLineInstruction: {
-    fontSize: 14,
-    marginBottom: 10,
-    paddingLeft: 10,
-    opacity: 0.5,
-    float: 'right'
-  },
+  settingsPane: {
+    border: 'none',
+    height: (64).vh(),
+    overflowY: 'auto'
+  }
 });
 
 const mapStateToProps = (state: AppState) => ({
-  settings: state.settings,
-  locales: state.locales,
   currentLocale: state.locale,
   emulators: state.modulesConfig.emulated.emulators,
+  locales: state.locales,
+  settings: state.settings,
   visible: state.settingsModalVisible
 });
 
@@ -568,6 +589,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const SettingsModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(SettingsModal));
+const SettingsModalContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SettingsModal)
+);
 
 export { SettingsModalContainer as SettingsModal };

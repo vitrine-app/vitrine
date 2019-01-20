@@ -49,11 +49,11 @@ export class WindowControlIcon extends React.Component<Props, State> {
   private iconRender(): JSX.Element {
     switch (this.props.icon) {
       case WindowControl.MinimizeIcon:
-        return <MinimizeSvg hovered={this.state.hovered}/>;
+        return <MinimizeSvg hovered={this.state.hovered} />;
       case WindowControl.MaximizeIcon:
-        return <MaximizeSvg hovered={this.state.hovered}/>;
+        return <MaximizeSvg hovered={this.state.hovered} />;
       case WindowControl.CloseIcon:
-        return <CloseSvg hovered={this.state.hovered}/>;
+        return <CloseSvg hovered={this.state.hovered} />;
     }
   }
 
@@ -74,22 +74,22 @@ export class WindowControlIcon extends React.Component<Props, State> {
 const styles: React.CSSProperties & any = StyleSheet.create({
   icon: {
     backgroundColor: rgba(0, 0, 255, 0),
-    width: 40,
+    cursor: 'pointer',
+    display: 'inline-block',
     height: 22,
     paddingTop: 2,
     textAlign: 'center',
-    cursor: 'pointer',
-    display: 'inline-block',
-    transition: `${70}ms ease`
-  },
-  regularIcon: {
-    ':hover': {
-      backgroundColor: rgba(255, 255, 255, 0.06)
-    }
+    transition: `${70}ms ease`,
+    width: 40
   },
   redIcon: {
     ':hover': {
       backgroundColor: rgba(138, 48, 48, 1)
+    }
+  },
+  regularIcon: {
+    ':hover': {
+      backgroundColor: rgba(255, 255, 255, 0.06)
     }
   }
 });

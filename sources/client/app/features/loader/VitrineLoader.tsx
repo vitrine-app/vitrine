@@ -23,8 +23,8 @@ export class VitrineLoader extends React.Component<{}, State> {
 
     this.state = {
       displayedInfo: 'Loading...',
-      updateDownload: false,
-      downloadProgress: 0
+      downloadProgress: 0,
+      updateDownload: false
     };
 
     this.startUpdateDownload = this.startUpdateDownload.bind(this);
@@ -33,7 +33,8 @@ export class VitrineLoader extends React.Component<{}, State> {
   }
 
   public componentDidMount() {
-    loaderServerListener.listen('update-found', this.startUpdateDownload)
+    loaderServerListener
+      .listen('update-found', this.startUpdateDownload)
       .listen('update-progress', this.updateProgress)
       .listen('no-update-found', this.launchClient);
 
@@ -47,52 +48,50 @@ export class VitrineLoader extends React.Component<{}, State> {
     this.lastUpdateVersion = lastUpdateVersion;
     this.setState({
       displayedInfo: `Updating to ${this.lastUpdateVersion}...`,
-      updateDownload: true,
-      downloadProgress: 0
+      downloadProgress: 0,
+      updateDownload: true
     });
   }
 
   private updateProgress(downloadProgress: number) {
-    const displayedInfo: string = downloadProgress < 100
-      ? `Updating to ${this.lastUpdateVersion}... | ${downloadProgress.percents()}` : 'Installing...';
+    const displayedInfo: string =
+      downloadProgress < 100 ? `Updating to ${this.lastUpdateVersion}... | ${downloadProgress.percents()}` : 'Installing...';
     this.setState({
-      downloadProgress,
-      displayedInfo
+      displayedInfo,
+      downloadProgress
     });
   }
 
   private launchClient() {
-    this.setState({
-      displayedInfo: 'Launching...'
-    }, () => {
-      loaderServerListener.send('launch-client');
-    });
+    this.setState(
+      {
+        displayedInfo: 'Launching...'
+      },
+      () => {
+        loaderServerListener.send('launch-client');
+      }
+    );
   }
 
   public render(): JSX.Element {
     return (
       <div className={css(styles.loader)}>
-        <Header as={'h1'} className={css(styles.titleSpan)}>Vitrine</Header>
+        <Header as={'h1'} className={css(styles.titleSpan)}>
+          Vitrine
+        </Header>
         <div className={css(styles.loaderDiv)}>
-          <img
-            src={vitrineIcon}
-            className={css(styles.loaderIcon)}
-          />
+          <img src={vitrineIcon} className={css(styles.loaderIcon)} />
         </div>
-        <span
-          className={css(styles.infosSpan)}
-          style={{ display: this.state.displayedInfo ? 'inline' : 'none' }}
-        >
-          {this.state.displayedInfo} <FontAwesomeIcon icon={faCog} spin={true}/>
+        <span className={css(styles.infosSpan)} style={{ display: this.state.displayedInfo ? 'inline' : 'none' }}>
+          {this.state.displayedInfo} <FontAwesomeIcon icon={faCog} spin={true} />
         </span>
-        <div
-          className={`progress ${css(styles.downloadBar)}`}
-          style={{ display: this.state.updateDownload ? 'block' : 'none' }}
-        >
+        <div className={`progress ${css(styles.downloadBar)}`} style={{ display: this.state.updateDownload ? 'block' : 'none' }}>
           <div
             className={`progress-bar active ${css(styles.downloadBarProgress)}`}
-            role='progressbar'
-            style={{ width: this.state.downloadProgress ? this.state.downloadProgress.percents() : 0..percents() }}
+            role="progressbar"
+            style={{
+              width: this.state.downloadProgress ? this.state.downloadProgress.percents() : (0).percents()
+            }}
           />
         </div>
       </div>
@@ -102,56 +101,56 @@ export class VitrineLoader extends React.Component<{}, State> {
 
 const pulseKeyframes: React.CSSProperties & any = {
   to: {
-    boxShadow: `${0} ${0} ${0} ${45..px()} ${rgba(117, 76, 46, 0)}`
+    boxShadow: `${0} ${0} ${0} ${(45).px()} ${rgba(117, 76, 46, 0)}`
   }
 };
 
 const styles: React.CSSProperties & any = StyleSheet.create({
+  downloadBar: {
+    backgroundColor: '#4A453F',
+    borderRadius: 3,
+    height: 8,
+    marginLeft: (27).percents(),
+    marginTop: 6,
+    width: (46).percents()
+  },
+  downloadBarProgress: {
+    backgroundColor: rgba(199, 120, 63, 0.5),
+    borderRadius: 3,
+    height: (100).percents(),
+    transition: `width ${0.2}s ease-out`
+  },
+  infosSpan: {
+    fontSize: 17,
+    opacity: 0.4
+  },
   loader: {
-    'textAlign': 'center',
-    'padding': 7,
-    'userSelect': 'none',
-    'cursor': 'default',
-    '-webkitAppRegion': 'no-drag'
+    '-webkitAppRegion': 'no-drag',
+    cursor: 'default',
+    padding: 7,
+    textAlign: 'center',
+    userSelect: 'none'
   },
   loaderDiv: {
     margin: 4
   },
   loaderIcon: {
-    width: 125,
-    margin: 14,
-    borderRadius: 100,
-    boxShadow: `${0} ${0} ${0} ${0} ${rgba(117, 76, 46, 0.8)}`,
-    animationName: [ pulseKeyframes ],
+    '-webkitUserDrag': 'none',
     animationDuration: `${1.5}s`,
     animationIterationCount: 'infinite',
+    animationName: [pulseKeyframes],
     animationTimingFunction: `cubic-bezier(${0.66}, ${0}, ${0}, ${1})`,
+    borderRadius: 100,
+    boxShadow: `${0} ${0} ${0} ${0} ${rgba(117, 76, 46, 0.8)}`,
+    margin: 14,
     userSelect: 'none',
-    '-webkitUserDrag': 'none'
+    width: 125
   },
   titleSpan: {
-    marginTop: 15,
     fontSize: 40,
+    fontVariant: 'small-caps',
+    marginTop: 15,
     opacity: 0.4,
-    textTransform: 'capitalize',
-    fontVariant: 'small-caps'
-  },
-  infosSpan: {
-    opacity: 0.4,
-    fontSize: 17
-  },
-  downloadBar: {
-    width: 46..percents(),
-    height: 8,
-    marginLeft: 27..percents(),
-    marginTop: 6,
-    borderRadius: 3,
-    backgroundColor: '#4A453F'
-  },
-  downloadBarProgress: {
-    backgroundColor: rgba(199, 120, 63, 0.5),
-    height: 100..percents(),
-    borderRadius: 3,
-    transition: `width ${0.2}s ease-out`
+    textTransform: 'capitalize'
   }
 });
