@@ -6,7 +6,7 @@ export class GamesCollection<T extends object> {
   private games: T[];
 
   public constructor(games?: T[]) {
-    this.games = games ? [ ...games ] : [];
+    this.games = games ? [...games] : [];
     this.idKey = 'uuid';
     this.sourceKey = 'source';
   }
@@ -32,8 +32,9 @@ export class GamesCollection<T extends object> {
   }
 
   public getGame(gameUuid: string | number): T {
-    if (typeof gameUuid === 'string')
+    if (typeof gameUuid === 'string') {
       return this.games.filter((game: T) => game[this.idKey] === gameUuid)[0];
+    }
     return this.games[gameUuid];
   }
 
@@ -43,10 +44,7 @@ export class GamesCollection<T extends object> {
   }
 
   public addGames(games: T[]): this {
-    this.games = this.removeDuplicates([
-      ...this.games,
-      ...games
-    ]);
+    this.games = this.removeDuplicates([...this.games, ...games]);
     return this;
   }
 
@@ -71,12 +69,14 @@ export class GamesCollection<T extends object> {
   }
 
   public alphaSort() {
-    this.games.sort((gameA: T, gameB: T): number => {
-      return (gameA as any).name > (gameB as any).name ? 1 : -1;
-    });
+    this.games.sort(
+      (gameA: T, gameB: T): number => {
+        return (gameA as any).name > (gameB as any).name ? 1 : -1;
+      }
+    );
   }
 
   private removeDuplicates(array: T[]) {
-    return array.filter((value: T, index: number, array: T[]) => array.indexOf(value) === index);
+    return array.filter((value: T, index: number, originalArray: T[]) => originalArray.indexOf(value) === index);
   }
 }
