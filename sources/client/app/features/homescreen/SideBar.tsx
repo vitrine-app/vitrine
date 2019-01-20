@@ -102,11 +102,7 @@ class SideBar extends VitrineComponent<Props, {}> {
         <Grid.Column width={10} className={css(styles.sideBarColumn)}>
           <Grid className={css(styles.sideBarGrid)}>
             <Grid.Column className={css(styles.actionButton)}>
-              <ActionButton
-                icon={faPlus}
-                tooltip={this.props.intl.formatMessage({ id: 'actions.addGame' })}
-                onClick={this.props.openGameAddModal}
-              />
+              <ActionButton icon={faPlus} tooltip={this.props.intl.formatMessage({ id: 'actions.addGame' })} onClick={this.props.openGameAddModal} />
             </Grid.Column>
             <Grid.Column className={css(styles.actionButton)}>
               <ActionButton
@@ -138,12 +134,9 @@ class SideBar extends VitrineComponent<Props, {}> {
               </Button>
             </Grid.Column>
             <Grid.Column width={6} className={css(styles.sideBarColumn)}>
-              <Dropdown
-                className={css(styles.sortDropdown)}
-                style={{ display: this.props.playableGames.size() ? 'block' : 'none' }}
-              >
+              <Dropdown className={css(styles.sortDropdown)} style={{ display: this.props.playableGames.size() ? 'block' : 'none' }}>
                 <Dropdown.Menu>
-                  <Dropdown.Header icon='sort numeric ascending' content={this.props.intl.formatMessage({ id: 'sort.sortGames' })}/>
+                  <Dropdown.Header icon="sort numeric ascending" content={this.props.intl.formatMessage({ id: 'sort.sortGames' })} />
                   {this.gamesSortParameters.map((gamesSortParameter: any, index: number) => (
                     <Dropdown.Item
                       key={index}
@@ -166,85 +159,53 @@ class SideBar extends VitrineComponent<Props, {}> {
         <div className={css(styles.sideBarContent)}>
           <ul className={css(styles.gamesListUl)}>
             {this.props.playableGames.map((game: PlayableGame, index: number) => (
-                <ContextMenuTrigger
-                  id='sidebar-games-context-menu'
-                  key={index}
+              <ContextMenuTrigger id="sidebar-games-context-menu" key={index}>
+                <li
+                  id={`sidebar-game:${game.uuid}`}
+                  className={
+                    css(styles.gamesListLi) +
+                    (this.props.selectedGame && this.props.selectedGame.uuid === game.uuid ? ' ' + css(styles.selectedGame) : '')
+                  }
+                  onClick={this.clickGameHandler}
+                  onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
                 >
-                  <li
-                    id={`sidebar-game:${game.uuid}`}
-                    className={
-                      css(styles.gamesListLi) +
-                      (this.props.selectedGame && this.props.selectedGame.uuid === game.uuid ? ' ' + css(styles.selectedGame) : '')
-                    }
-                    onClick={this.clickGameHandler}
-                    onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
-                  >
-                    {game.name}
-                  </li>
-                </ContextMenuTrigger>
-              )
-            )}
+                  {game.name}
+                </li>
+              </ContextMenuTrigger>
+            ))}
           </ul>
         </div>
-        <ContextMenu/>
+        <ContextMenu />
       </Grid.Column>
     );
   }
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  sideBarWrapper: {
-    padding: 0,
-    width: 15.5.percents(),
-    height: 100..percents(),
-    backgroundColor: '#23211F'
-  },
-  sideBarMenu: {
-    width: 100..percents(),
-    margin: 0,
-    height: 45
-  },
-  sideBarColumn: {
-    padding: 0
-  },
-  sideBarGrid: {
-    width: 100..percents(),
-    height: 100..percents(),
-    margin: 0
-  },
   actionButton: {
     padding: 0,
-    width: 33.25.percents()
+    width: (33.25).percents()
   },
   addGamesButton: {
-    margin: margin(5..percents(), 16..percents())
-  },
-  sortDropdown: {
-    marginTop: 30..percents()
-  },
-  sideBarContent: {
-    height: `calc(${100..percents()} - ${45..px()})`,
-    overflowX: 'hidden',
-    overflowY: 'auto',
-    backgroundColor: '#292724'
-  },
-  gamesListUl: {
-    height: 100..percents(),
-    listStyleType: 'none',
-    padding: padding(0),
-    margin: margin(0)
+    margin: margin((5).percents(), (16).percents())
   },
   gamesListLi: {
-    display: 'block',
-    fontSize: 15,
-    color: '#A5A5A5',
-    padding: padding(10, 20, 10),
-    cursor: 'pointer',
     ':hover': {
       backgroundColor: rgba(150, 136, 116, 0.13),
       color: '#AFACA7',
       transition: `${66}ms`
-    }
+    },
+    color: '#A5A5A5',
+    cursor: 'pointer',
+    display: 'block',
+    fontSize: 15,
+    padding: padding(10, 20, 10)
+  },
+  gamesListUl: {
+    height: (100).percents(),
+    listStyleType: 'none',
+    margin: margin(0),
+    padding: padding(0)
   },
   selectedGame: {
     backgroundColor: rgba(175, 153, 124, 0.14),
@@ -253,15 +214,43 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 10,
     transition: `${250}ms`
+  },
+  sideBarColumn: {
+    padding: 0
+  },
+  sideBarContent: {
+    backgroundColor: '#292724',
+    height: `calc(${(100).percents()} - ${(45).px()})`,
+    overflowX: 'hidden',
+    overflowY: 'auto'
+  },
+  sideBarGrid: {
+    height: (100).percents(),
+    margin: 0,
+    width: (100).percents()
+  },
+  sideBarMenu: {
+    height: 45,
+    margin: 0,
+    width: (100).percents()
+  },
+  sideBarWrapper: {
+    backgroundColor: '#23211F',
+    height: (100).percents(),
+    padding: 0,
+    width: (15.5).percents()
+  },
+  sortDropdown: {
+    marginTop: (30).percents()
   }
 });
 
 const mapStateToProps = (state: AppState) => ({
-  potentialGames: state.potentialGames,
+  gamesSortParameter: state.gamesSortParameter,
   playableGames: state.playableGames,
-  selectedGame: state.selectedGame,
+  potentialGames: state.potentialGames,
   refreshingGames: state.refreshingGames,
-  gamesSortParameter: state.gamesSortParameter
+  selectedGame: state.selectedGame
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -285,6 +274,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const SideBarContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(SideBar));
+const SideBarContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SideBar)
+);
 
 export { SideBarContainer as SideBar };

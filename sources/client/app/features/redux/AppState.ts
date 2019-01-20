@@ -44,80 +44,95 @@ export interface AppState {
   settingsModalVisible: boolean;
 }
 
-export const vitrineStore: Store<any> = createStore(combineReducers({
-  settings,
-  modulesConfig,
-  locales,
-  locale,
-  internetConnection,
-  potentialGames,
-  playableGames,
-  selectedGame,
-  launchedGame,
-  refreshingGames,
-  potentialGameToAdd,
-  gameToEdit,
-  gamesSortParameter,
-  gameAddModalVisible,
-  igdbResearchModalVisible,
-  timePlayedEditionModalVisible,
-  potentialGamesAddModalVisible,
-  settingsModalVisible
-}), {
-  settings: null,
-  modulesConfig: null,
-  locales: [],
-  locale: 'en',
-  internetConnection: true,
-  potentialGames: new GamesCollection<PotentialGame>(),
-  playableGames: new GamesCollection<PlayableGame>(),
-  selectedGame: null,
-  launchedGame: null,
-  refreshingGames: false,
-  potentialGameToAdd: null,
-  gameToEdit: null,
-  gamesSortParameter: SortParameter.NAME,
-  gameAddModalVisible: false,
-  igdbResearchModalVisible: false,
-  timePlayedEditionModalVisible: false,
-  potentialGamesAddModalVisible: false,
-  settingsModalVisible: false
-}, applyMiddleware(reduxLog));
+export const vitrineStore: Store<any> = createStore(
+  combineReducers({
+    gameAddModalVisible,
+    gameToEdit,
+    gamesSortParameter,
+    igdbResearchModalVisible,
+    internetConnection,
+    launchedGame,
+    locale,
+    locales,
+    modulesConfig,
+    playableGames,
+    potentialGameToAdd,
+    potentialGames,
+    potentialGamesAddModalVisible,
+    refreshingGames,
+    selectedGame,
+    settings,
+    settingsModalVisible,
+    timePlayedEditionModalVisible
+  }),
+  {
+    gameAddModalVisible: false,
+    gameToEdit: null,
+    gamesSortParameter: SortParameter.NAME,
+    igdbResearchModalVisible: false,
+    internetConnection: true,
+    launchedGame: null,
+    locale: 'en',
+    locales: [],
+    modulesConfig: null,
+    playableGames: new GamesCollection<PlayableGame>(),
+    potentialGameToAdd: null,
+    potentialGames: new GamesCollection<PotentialGame>(),
+    potentialGamesAddModalVisible: false,
+    refreshingGames: false,
+    selectedGame: null,
+    settings: null,
+    settingsModalVisible: false,
+    timePlayedEditionModalVisible: false
+  },
+  applyMiddleware(reduxLog)
+);
 
 export function getSortedGamesFromStore(dispatchedData: any): PlayableGame[] {
   const { playableGames, editedGame, gamesSortParameter }: any = dispatchedData;
   const sortedGames: GamesCollection<PlayableGame> = new GamesCollection();
 
-  if (playableGames && playableGames.length > 1)
+  if (playableGames && playableGames.length > 1) {
     sortedGames.addGames(playableGames);
-  else
+  } else {
     sortedGames.addGames(vitrineStore.getState().playableGames.getGames());
+  }
 
-  if (playableGames && playableGames.length === 1)
+  if (playableGames && playableGames.length === 1) {
     sortedGames.addGame(playableGames[0]);
-  if (editedGame)
+  }
+  if (editedGame) {
     sortedGames.editGame(editedGame);
+  }
 
   const sortParameter = gamesSortParameter || vitrineStore.getState().gamesSortParameter;
   switch (sortParameter) {
-    case (SortParameter.NAME): {
-      return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
-        return gameA.name > gameB.name ? 1 : -1;
-      }));
+    case SortParameter.NAME: {
+      return sortedGames.getGames().sort(
+        (gameA: PlayableGame, gameB: PlayableGame): number => {
+          return gameA.name > gameB.name ? 1 : -1;
+        }
+      );
     }
-    case (SortParameter.TIME_PLAYED): {
-      return (sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
-        return gameA.timePlayed < gameB.timePlayed ? 1 : -1;
-      }));
+    case SortParameter.TIME_PLAYED: {
+      return sortedGames.getGames().sort(
+        (gameA: PlayableGame, gameB: PlayableGame): number => {
+          return gameA.timePlayed < gameB.timePlayed ? 1 : -1;
+        }
+      );
     }
     default:
-      return sortedGames.getGames().sort((gameA: PlayableGame, gameB: PlayableGame): number => {
-        if (!gameA.details[sortParameter])
-          return 1;
-        if (!gameB.details[sortParameter])
-          return -1;
-        const result: number = sortParameter !== SortParameter.RATING && sortParameter !== SortParameter.RELEASE_DATE ? 1 : -1;
-        return gameA.details[sortParameter] > gameB.details[sortParameter] ? result : -result;
-      });
+      return sortedGames.getGames().sort(
+        (gameA: PlayableGame, gameB: PlayableGame): number => {
+          if (!gameA.details[sortParameter]) {
+            return 1;
+          }
+          if (!gameB.details[sortParameter]) {
+            return -1;
+          }
+          const result: number = sortParameter !== SortParameter.RATING && sortParameter !== SortParameter.RELEASE_DATE ? 1 : -1;
+          return gameA.details[sortParameter] > gameB.details[sortParameter] ? result : -result;
+        }
+      );
   }
 }

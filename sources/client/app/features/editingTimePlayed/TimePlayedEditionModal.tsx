@@ -49,7 +49,7 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 
   private closeModal() {
     this.props.closeTimePlayedEditionModal();
-    setTimeout( () => {
+    setTimeout(() => {
       this.setState({
         hours: 0,
         minutes: 0,
@@ -84,19 +84,21 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
   }
 
   private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.props.visible)
+    if (startingAnimation === this.props.visible) {
       this.setState({
         transitionVisible: this.props.visible
       });
+    }
   }
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
-    if (!nextProps.gameToEdit || !nextProps.visible)
+    if (!nextProps.gameToEdit || !nextProps.visible) {
       return null;
+    }
     const timePlayed: number = nextProps.gameToEdit.timePlayed;
     const hours: number = Math.floor(timePlayed / 3600);
-    const minutes: number = Math.floor((timePlayed - (hours * 3600)) / 60);
-    const seconds: number = timePlayed - (hours * 3600) - (minutes * 60);
+    const minutes: number = Math.floor((timePlayed - hours * 3600) / 60);
+    const seconds: number = timePlayed - hours * 3600 - minutes * 60;
     return {
       hours,
       minutes,
@@ -113,20 +115,16 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
         onComplete={this.animateModal.bind(this, false)}
         visible={this.props.visible}
       >
-        <Modal
-          open={this.state.transitionVisible}
-          onClose={this.closeModal}
-          className={css(styles.modal)}
-        >
-          <Modal.Header>
-            {this.props.gameToEdit ? this.props.gameToEdit.name : ''}
-          </Modal.Header>
+        <Modal open={this.state.transitionVisible} onClose={this.closeModal} className={css(styles.modal)}>
+          <Modal.Header>{this.props.gameToEdit ? this.props.gameToEdit.name : ''}</Modal.Header>
           <Modal.Content>
             <Form>
               <Grid>
                 <Grid.Column width={5}>
                   <Form.Field>
-                    <label><FormattedMessage id={'time.hoursPlur'}/></label>
+                    <label>
+                      <FormattedMessage id={'time.hoursPlur'} />
+                    </label>
                     <NumberPicker
                       min={0}
                       max={Infinity}
@@ -139,7 +137,9 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
                 </Grid.Column>
                 <Grid.Column width={5}>
                   <Form.Field>
-                    <label><FormattedMessage id={'time.minutesPlur'}/></label>
+                    <label>
+                      <FormattedMessage id={'time.minutesPlur'} />
+                    </label>
                     <NumberPicker
                       min={0}
                       max={60}
@@ -152,7 +152,9 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
                 </Grid.Column>
                 <Grid.Column width={5}>
                   <Form.Field>
-                    <label><FormattedMessage id={'time.secondsPlur'}/></label>
+                    <label>
+                      <FormattedMessage id={'time.secondsPlur'} />
+                    </label>
                     <NumberPicker
                       min={0}
                       max={60}
@@ -167,11 +169,8 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
             </Form>
           </Modal.Content>
           <Modal.Actions>
-            <Button
-              primary={true}
-              onClick={this.submitButton}
-            >
-              <FormattedMessage id={'actions.confirm'}/>
+            <Button primary={true} onClick={this.submitButton}>
+              <FormattedMessage id={'actions.confirm'} />
             </Button>
           </Modal.Actions>
           {this.checkErrors()}
@@ -183,8 +182,8 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   modal: {
-    width: 300,
-    margin: margin(20..rem(), 'auto')
+    margin: margin((20).rem(), 'auto'),
+    width: 300
   }
 });
 
@@ -199,6 +198,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const TimePlayedEditionModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(TimePlayedEditionModal));
+const TimePlayedEditionModalContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(TimePlayedEditionModal)
+);
 
 export { TimePlayedEditionModalContainer as TimePlayedEditionModal };

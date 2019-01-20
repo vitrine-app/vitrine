@@ -2,90 +2,90 @@ import { Action, ActionType } from './actionsTypes';
 
 export function openGameAddModal(): Action {
   return {
-    type: ActionType.OPEN_GAME_ADD_MODAL,
     payload: {
       GameAddModalVisible: true
-    }
+    },
+    type: ActionType.OPEN_GAME_ADD_MODAL
   };
 }
 
 export function closeGameAddModal(): Action {
   return {
-    type: ActionType.CLOSE_GAME_ADD_MODAL,
     payload: {
       GameAddModalVisible: false
-    }
+    },
+    type: ActionType.CLOSE_GAME_ADD_MODAL
   };
 }
 
 export function openIgdbResearchModal(): Action {
   return {
-    type: ActionType.OPEN_IGDB_RESEARCH_MODAL,
     payload: {
       igdbResearchModalVisible: true
-    }
+    },
+    type: ActionType.OPEN_IGDB_RESEARCH_MODAL
   };
 }
 
 export function closeIgdbResearchModal(): Action {
   return {
-    type: ActionType.CLOSE_IGDB_RESEARCH_MODAL,
     payload: {
       igdbResearchModalVisible: false
-    }
+    },
+    type: ActionType.CLOSE_IGDB_RESEARCH_MODAL
   };
 }
 
 export function openTimePlayedEditionModal(): Action {
   return {
-    type: ActionType.OPEN_TIME_PLAYED_EDITION_MODAL,
     payload: {
       timePlayedEditionModalVisible: true
-    }
+    },
+    type: ActionType.OPEN_TIME_PLAYED_EDITION_MODAL
   };
 }
 
 export function closeTimePlayedEditionModal(): Action {
   return {
-    type: ActionType.CLOSE_TIME_PLAYED_EDITION_MODAL,
     payload: {
       timePlayedEditionModalVisible: false
-    }
+    },
+    type: ActionType.CLOSE_TIME_PLAYED_EDITION_MODAL
   };
 }
 
 export function openPotentialGamesAddModal(): Action {
   return {
-    type: ActionType.OPEN_POTENTIAL_GAMES_ADD_MODAL,
     payload: {
       potentialGamesAddModalVisible: true
-    }
+    },
+    type: ActionType.OPEN_POTENTIAL_GAMES_ADD_MODAL
   };
 }
 
 export function closePotentialGamesAddModal(): Action {
   return {
-    type: ActionType.CLOSE_POTENTIAL_GAMES_ADD_MODAL,
     payload: {
       potentialGamesAddModalVisible: false
-    }
+    },
+    type: ActionType.CLOSE_POTENTIAL_GAMES_ADD_MODAL
   };
 }
 
 export function openSettingsModal(): Action {
   return {
-    type: ActionType.OPEN_SETTINGS_MODAL,
     payload: {
       settingsModalVisible: true
-    }
+    },
+    type: ActionType.OPEN_SETTINGS_MODAL
   };
 }
 
 export function closeSettingsModal(): Action {
   return {
-    type: ActionType.CLOSE_SETTINGS_MODAL,
     payload: {
       settingsModalVisible: false
-    }
+    },
+    type: ActionType.CLOSE_SETTINGS_MODAL
   };
 }

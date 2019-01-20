@@ -38,51 +38,66 @@ export class NumberPicker extends VitrineComponent<Props, State> {
     let newVal: number;
     const currentVal: number = parseInt(this.state.value as string);
 
-    if (isNaN(currentVal) || currentVal < this.props.min)
+    if (isNaN(currentVal) || currentVal < this.props.min) {
       newVal = this.props.min;
-    else if (currentVal >= this.props.max)
+    } else if (currentVal >= this.props.max) {
       newVal = this.props.max;
-    else
+    } else {
       newVal = currentVal + 1;
+    }
 
-    this.setState({
-      value: newVal
-    }, () => {
-      if (this.props.onChange)
-        this.props.onChange(parseInt(this.state.value as string));
-    });
+    this.setState(
+      {
+        value: newVal
+      },
+      () => {
+        if (this.props.onChange) {
+          this.props.onChange(parseInt(this.state.value as string));
+        }
+      }
+    );
   }
 
   private decreaseCounterHandler() {
     let newVal: number;
     const currentVal: number = parseInt(this.state.value as string);
 
-    if (isNaN(currentVal) || currentVal <= this.props.min)
+    if (isNaN(currentVal) || currentVal <= this.props.min) {
       newVal = this.props.min;
-    else if (currentVal > this.props.max)
+    } else if (currentVal > this.props.max) {
       newVal = this.props.max;
-    else
+    } else {
       newVal = currentVal - 1;
+    }
 
-    this.setState({
-      value: newVal
-    }, () => {
-      if (this.props.onChange)
-        this.props.onChange(parseInt(this.state.value as string));
-    });
+    this.setState(
+      {
+        value: newVal
+      },
+      () => {
+        if (this.props.onChange) {
+          this.props.onChange(parseInt(this.state.value as string));
+        }
+      }
+    );
   }
 
   private inputChangeHandler(event) {
     let value: number = parseInt(event.target.value);
-    if (isNaN(value))
+    if (isNaN(value)) {
       value = this.props.min;
+    }
 
-    this.setState({
-      value
-    }, () => {
-      if (this.props.onChange)
-        this.props.onChange(this.state.value as number);
-    });
+    this.setState(
+      {
+        value
+      },
+      () => {
+        if (this.props.onChange) {
+          this.props.onChange(this.state.value as number);
+        }
+      }
+    );
   }
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
@@ -94,19 +109,11 @@ export class NumberPicker extends VitrineComponent<Props, State> {
   public render(): JSX.Element {
     const controlButtons: JSX.Element = (
       <div className={css(styles.verticalBtnDiv)}>
-        <Button
-          secondary={true}
-          className={css(styles.verticalBtn, styles.firstVerticalBtn)}
-          onClick={this.increaseCounterHandler}
-        >
-          <FontAwesomeIcon icon={faCaretUp}/>
+        <Button secondary={true} className={css(styles.verticalBtn, styles.firstVerticalBtn)} onClick={this.increaseCounterHandler}>
+          <FontAwesomeIcon icon={faCaretUp} />
         </Button>
-        <Button
-          secondary={true}
-          className={css(styles.verticalBtn, styles.lastVerticalBtn)}
-          onClick={this.decreaseCounterHandler}
-        >
-          <FontAwesomeIcon icon={faCaretDown}/>
+        <Button secondary={true} className={css(styles.verticalBtn, styles.lastVerticalBtn)} onClick={this.decreaseCounterHandler}>
+          <FontAwesomeIcon icon={faCaretDown} />
         </Button>
       </div>
     );
@@ -131,24 +138,24 @@ export class NumberPicker extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  spinnerInput: {
-    textAlign: 'right'
-  },
-  verticalBtnDiv: {
-    padding: 0
-  },
-  verticalBtn: {
-    display: 'block',
-    width: 25,
-    height: 22,
-    padding: padding(3, 8, 8, 8),
-    marginLeft: -1,
-    borderRadius: 0
-  },
   firstVerticalBtn: {
     borderTopRightRadius: 4
   },
   lastVerticalBtn: {
     borderBottomRightRadius: 4
+  },
+  spinnerInput: {
+    textAlign: 'right'
+  },
+  verticalBtn: {
+    borderRadius: 0,
+    display: 'block',
+    height: 22,
+    marginLeft: -1,
+    padding: padding(3, 8, 8, 8),
+    width: 25
+  },
+  verticalBtnDiv: {
+    padding: 0
   }
 });

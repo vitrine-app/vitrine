@@ -4,10 +4,7 @@ class ServerListener {
   public constructor(private emitterName: string, private receiverName: string) {}
 
   public send(channelName, ...args) {
-    const sentArgs: any[] = [
-      `${this.emitterName}.${channelName}`,
-      ...args
-    ];
+    const sentArgs: any[] = [`${this.emitterName}.${channelName}`, ...args];
     ipcRenderer.send.apply(ipcRenderer, sentArgs);
   }
 

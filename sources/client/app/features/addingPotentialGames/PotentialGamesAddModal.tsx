@@ -47,8 +47,8 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
     super(props);
 
     this.state = {
-      transitionVisible: true,
-      addAllGames: false
+      addAllGames: false,
+      transitionVisible: true
     };
 
     this.gameCoverClick = this.gameCoverClick.bind(this);
@@ -64,12 +64,12 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
   public updateAddAllGamesStatus(playableGames: PlayableGame[], potentialGames: PotentialGame[]) {
     this.props.setPotentialGames(potentialGames);
     this.props.setPlayableGames(playableGames);
-    if (this.state.addedGamesNb + 1 === this.state.potentialGamesNb)
+    if (this.state.addedGamesNb + 1 === this.state.potentialGamesNb) {
       this.setState({ addAllGames: false }, () => {
         this.props.closePotentialGamesAddModal();
         this.props.selectGame(this.props.playableGames.getGame(0));
       });
-    else {
+    } else {
       this.setState((prevState: State) => ({
         addedGamesNb: prevState.addedGamesNb + 1
       }));
@@ -83,17 +83,18 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
   }
 
   private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.props.visible)
+    if (startingAnimation === this.props.visible) {
       this.setState({
         transitionVisible: this.props.visible
       });
+    }
   }
 
   private addAllGamesClick() {
     this.setState({
       addAllGames: true,
-      potentialGamesNb: this.props.potentialGames.size(),
-      addedGamesNb: 0
+      addedGamesNb: 0,
+      potentialGamesNb: this.props.potentialGames.size()
     });
     serverListener.send('add-all-games');
   }
@@ -102,9 +103,9 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
     const potentialGamesRows: PotentialGame[][] = chunk(this.props.potentialGames.getGames(), 6);
     const potentialGamesGrid: JSX.Element = (
       <Grid columns={6}>
-        {potentialGamesRows.map((potentialGamesRow: PotentialGame[], index: number) =>
+        {potentialGamesRows.map((potentialGamesRow: PotentialGame[], index: number) => (
           <Grid.Row className={css(styles.gamesRow)} key={index}>
-            {potentialGamesRow.map((potentialGame: PotentialGame, index: number) =>
+            {potentialGamesRow.map((potentialGame: PotentialGame, index: number) => (
               <Grid.Column key={index}>
                 <div className={css(styles.coverWrapper)}>
                   <BlurPicture
@@ -114,27 +115,21 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
                     fontSize={55}
                   />
                 </div>
-                <p className={css(styles.potentialGameName)}>
-                  {potentialGame.name}
-                </p>
+                <p className={css(styles.potentialGameName)}>{potentialGame.name}</p>
               </Grid.Column>
-            )}
+            ))}
           </Grid.Row>
-        )}
+        ))}
       </Grid>
     );
     const firstGameName: string = this.props.potentialGames.size() ? this.props.potentialGames.getGame(0).name : '';
     const allGamesProgressBar = (
       <React.Fragment>
-        <p><FormattedMessage id={'allGamesDisclaimer'}/></p>
-        <Progress
-          active={true}
-          color={'orange'}
-          size={'small'}
-          total={this.state.potentialGamesNb}
-          value={this.state.addedGamesNb}
-        >
-          <FormattedMessage id={'actions.gameBeingAdded'} values={{ name: firstGameName }}/>
+        <p>
+          <FormattedMessage id={'allGamesDisclaimer'} />
+        </p>
+        <Progress active={true} color={'orange'} size={'small'} total={this.state.potentialGamesNb} value={this.state.addedGamesNb}>
+          <FormattedMessage id={'actions.gameBeingAdded'} values={{ name: firstGameName }} />
         </Progress>
       </React.Fragment>
     );
@@ -142,18 +137,19 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
       <FadingModal
         onClose={this.props.closePotentialGamesAddModal}
         size={this.state.addAllGames ? 'mini' : 'large'}
-        style={{ margin: margin(1..rem(), 'auto') }}
-        title={this.state.addAllGames ? this.props.intl.formatMessage({ id: 'actions.addAllPotentialGames' }) : {
-          title: this.props.intl.formatMessage({ id: 'actions.addGames' }),
-          rightElement:
-            <Button
-              primary={true}
-              className={css(styles.addAllGamesButton)}
-              onClick={this.addAllGamesClick}
-            >
-              <FormattedMessage id={'actions.addAllPotentialGames'}/>
-            </Button>
-        }}
+        style={{ margin: margin((1).rem(), 'auto') }}
+        title={
+          this.state.addAllGames
+            ? this.props.intl.formatMessage({ id: 'actions.addAllPotentialGames' })
+            : {
+                rightElement: (
+                  <Button primary={true} className={css(styles.addAllGamesButton)} onClick={this.addAllGamesClick}>
+                    <FormattedMessage id={'actions.addAllPotentialGames'} />
+                  </Button>
+                ),
+                title: this.props.intl.formatMessage({ id: 'actions.addGames' })
+              }
+        }
         visible={this.props.visible}
       >
         {this.state.addAllGames ? allGamesProgressBar : potentialGamesGrid}
@@ -163,11 +159,6 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  modal: {
-    margin: margin(3..rem(), 'auto'),
-    cursor: 'default',
-    userSelect: 'none'
-  },
   addAllGamesButton: {
     float: 'right'
   },
@@ -176,9 +167,14 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     padding: padding(0, 10)
   },
   gamesRow: {
-    textAlign: 'center',
+    paddingBottom: 20,
     paddingTop: 20,
-    paddingBottom: 20
+    textAlign: 'center'
+  },
+  modal: {
+    cursor: 'default',
+    margin: margin((3).rem(), 'auto'),
+    userSelect: 'none'
   },
   potentialGameName: {
     fontSize: 17,
@@ -190,8 +186,8 @@ const styles: React.CSSProperties & any = StyleSheet.create({
 });
 
 const mapStateToProps = (state: AppState) => ({
-  potentialGames: state.potentialGames,
   playableGames: state.playableGames,
+  potentialGames: state.potentialGames,
   visible: state.potentialGamesAddModalVisible
 });
 
@@ -216,6 +212,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const PotentialGamesAddModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(PotentialGamesAddModal));
+const PotentialGamesAddModalContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PotentialGamesAddModal)
+);
 
 export { PotentialGamesAddModalContainer as PotentialGamesAddModal };

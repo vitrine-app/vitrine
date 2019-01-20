@@ -32,8 +32,8 @@ class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 
     this.state = {
       active: !!this.props.emulator,
-      path: this.props.emulator ? this.props.emulator.path : this.props.emulatorData.pat,
-      command: this.props.emulator ? this.props.emulator.command || this.props.emulatorData.command : this.props.emulatorData.command
+      command: this.props.emulator ? this.props.emulator.command || this.props.emulatorData.command : this.props.emulatorData.command,
+      path: this.props.emulator ? this.props.emulator.path : this.props.emulatorData.pat
     };
 
     this.activeCheckBox = this.activeCheckBox.bind(this);
@@ -42,72 +42,73 @@ class EmulatorSettingsRow extends VitrineComponent<Props, State> {
   }
 
   private activeCheckBox(event: any, data: any) {
-    this.setState({
-      active: data.checked
-    }, () => {
-      this.props.onChange(this.getEmulatorFromState());
-    });
+    this.setState(
+      {
+        active: data.checked
+      },
+      () => {
+        this.props.onChange(this.getEmulatorFromState());
+      }
+    );
   }
 
   private programButton() {
     const path: string = openExecutableDialog(this.props.intl.formatMessage);
-    if (!path)
+    if (!path) {
       return;
-    this.setState({
-      path
-    }, () => {
-      this.props.onChange(this.getEmulatorFromState());
-    });
+    }
+    this.setState(
+      {
+        path
+      },
+      () => {
+        this.props.onChange(this.getEmulatorFromState());
+      }
+    );
   }
 
   private commandLineChange(event: any) {
-    this.setState({
-      command: event.target.value
-    }, () => {
-      this.props.onChange(this.getEmulatorFromState());
-    });
+    this.setState(
+      {
+        command: event.target.value
+      },
+      () => {
+        this.props.onChange(this.getEmulatorFromState());
+      }
+    );
   }
 
   private getEmulatorFromState(): any {
     const emulator: any = { id: this.props.emulatorData.id };
-    if (this.state.active)
+    if (this.state.active) {
       emulator.path = this.state.path || null;
-    else
+    } else {
       return emulator;
-    if (this.state.command !== this.props.emulatorData.command)
+    }
+    if (this.state.command !== this.props.emulatorData.command) {
       emulator.command = this.state.command;
+    }
     return emulator;
   }
 
   public render(): JSX.Element {
-    const platforms: string[] = this.props.emulatorData.platforms.map((platformId: any) =>
-      this.props.platforms.filter((platform: any) => platform.id === platformId)[0].name
+    const platforms: string[] = this.props.emulatorData.platforms.map(
+      (platformId: any) => this.props.platforms.filter((platform: any) => platform.id === platformId)[0].name
     );
     return (
-      <Table.Row
-        className={`${css(styles.emulatorTr)} ${!this.state.active ? css(styles.inactiveTr) : ''}`}
-      >
+      <Table.Row className={`${css(styles.emulatorTr)} ${!this.state.active ? css(styles.inactiveTr) : ''}`}>
         <Table.Cell>
           <strong>{this.props.emulatorData.name}</strong>
         </Table.Cell>
+        <Table.Cell>{platforms.join(', ')}</Table.Cell>
         <Table.Cell>
-          {platforms.join(', ')}
-        </Table.Cell>
-        <Table.Cell>
-          <Checkbox
-            checked={this.state.active}
-            onChange={this.activeCheckBox}
-          />
+          <Checkbox checked={this.state.active} onChange={this.activeCheckBox} />
         </Table.Cell>
         <Table.Cell>
           <Input
             label={
-              <Button
-                secondary={true}
-                onClick={this.programButton}
-                disabled={!this.state.active}
-              >
-                <FontAwesomeIcon icon={faFolderOpen}/>
+              <Button secondary={true} onClick={this.programButton} disabled={!this.state.active}>
+                <FontAwesomeIcon icon={faFolderOpen} />
               </Button>
             }
             labelPosition={'right'}
@@ -134,28 +135,33 @@ class EmulatorSettingsRow extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
+  commandInput: {
+    fontFamily: 'Inconsolata'
+  },
   emulatorTr: {
     transition: `${150}ms ease`
   },
-  inactiveTr: {
-    color: rgba(119, 119, 119, 0.75),
-    backgroundColor: rgba(56, 56, 56, 0.45)
-  },
   inactiveInput: {
-    color: rgba(202, 202, 202, 0.35),
-    backgroundColor: '#2d2b28'
+    backgroundColor: '#2d2b28',
+    color: rgba(202, 202, 202, 0.35)
   },
-  commandInput: {
-    fontFamily: 'Inconsolata'
+  inactiveTr: {
+    backgroundColor: rgba(56, 56, 56, 0.45),
+    color: rgba(119, 119, 119, 0.75)
   }
 });
 
 const mapStateToProps = (state: AppState) => ({
-  platforms: state.modulesConfig.emulated.platforms,
+  platforms: state.modulesConfig.emulated.platforms
 });
 
 const mapDispatchToProps = () => ({});
 
-const EmulatorSettingsRowContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(EmulatorSettingsRow));
+const EmulatorSettingsRowContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EmulatorSettingsRow)
+);
 
 export { EmulatorSettingsRowContainer as EmulatorSettingsRow };

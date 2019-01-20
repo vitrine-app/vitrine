@@ -1,69 +1,71 @@
 @import 'theme/globals/site.variables';
 
 .react-contextmenu {
-	min-width: 160px;
-	padding: 0;
-	margin: 2px 0 0;
-	font-size: 14px;
-	color: @textColor;
-	text-align: left;
-	background-color: @pageBackground;
-	border: 1px solid #3C3936;
-	border-radius: 4px;
-	outline: none;
-	opacity: 0;
-	pointer-events: none;
-	z-index: 3;
+  min-width: 160px;
+  padding: 0;
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: @textColor;
+  text-align: left;
+  background-color: @pageBackground;
+  border: 1px solid #3c3936;
+  border-radius: 4px;
+  outline: none;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
 
-	&.react-contextmenu--visible {
-		opacity: 1;
-		pointer-events: auto;
-	}
+  &.react-contextmenu--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .react-contextmenu-item {
-	padding: 3px 20px;
-	font-weight: 400;
-	line-height: 1.5;
-	color: #A5A5A5;
-	text-align: inherit;
-	white-space: nowrap;
-	background: 0 0;
-	border: 0;
-	cursor: pointer;
+  padding: 3px 20px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #a5a5a5;
+  text-align: inherit;
+  white-space: nowrap;
+  background: 0 0;
+  border: 0;
+  cursor: pointer;
 
-	&:focus {
-		outline: none;
-	}
-	&.react-contextmenu-item--active, &.react-contextmenu-item--selected {
-		color: @textColor;
-		background-color: #3E372E;
-		border-color: #3E372E;
-		border-radius: 0.25rem;
-		text-decoration: none;
-	}
-	&.react-contextmenu-item--disabled,	&.react-contextmenu-item--disabled:hover {
-		color: #878A8C;
-		background-color: transparent;
-		border-color: rgba(0, 0, 0, 0.15);
-	}
-	&.react-contextmenu-submenu {
-		padding: 0;
-	}
+  &:focus {
+    outline: none;
+  }
+  &.react-contextmenu-item--active,
+  &.react-contextmenu-item--selected {
+    color: @textColor;
+    background-color: #3e372e;
+    border-color: #3e372e;
+    border-radius: 0.25rem;
+    text-decoration: none;
+  }
+  &.react-contextmenu-item--disabled,
+  &.react-contextmenu-item--disabled:hover {
+    color: #878a8c;
+    background-color: transparent;
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+  &.react-contextmenu-submenu {
+    padding: 0;
+  }
 }
 
 .react-contextmenu-item--divider {
-	border-bottom: 1px solid #3C3936;
-	cursor: inherit;
+  border-bottom: 1px solid #3c3936;
+  cursor: inherit;
 
-	&:hover {
-		background-color: transparent;
-		border-color: rgba(0, 0, 0, 0.15);
-	}
-	&.react-contextmenu-submenu > .react-contextmenu-item:after {
-		content: "▶";
-		display: inline-block;
-		position: absolute;
-		right: 7px;
-	}
+  &:hover {
+    background-color: transparent;
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+  &.react-contextmenu-submenu > .react-contextmenu-item:after {
+    content: '▶';
+    display: inline-block;
+    position: absolute;
+    right: 7px;
+  }
 }

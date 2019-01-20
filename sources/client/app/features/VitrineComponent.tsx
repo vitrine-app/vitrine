@@ -21,8 +21,9 @@ export abstract class VitrineComponent<P, S> extends React.Component<P, S & Stat
   }
 
   protected checkErrors() {
-    if (this.state.error)
+    if (this.state.error) {
       throw this.state.error;
+    }
   }
 
   public render(): React.ReactNode {

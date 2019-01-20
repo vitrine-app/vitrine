@@ -2,8 +2,8 @@ import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
-
 import * as ReactTooltip from 'react-tooltip';
+
 import { randomHashedString } from '@models/env';
 import { VitrineComponent } from '../features/VitrineComponent';
 
@@ -52,11 +52,7 @@ export class ActionButton extends VitrineComponent<Props, State> {
 
   public render(): JSX.Element {
     const icon: JSX.Element = (
-      <FontAwesomeIcon
-        icon={this.props.icon}
-        className={`${css(styles.icon)} ${this.state.iconClassName}`}
-        spin={this.props.spin}
-      />
+      <FontAwesomeIcon icon={this.props.icon} className={`${css(styles.icon)} ${this.state.iconClassName}`} spin={this.props.spin} />
     );
     const button: JSX.Element = (
       <div
@@ -75,62 +71,58 @@ export class ActionButton extends VitrineComponent<Props, State> {
       <div className={`${css(styles.buttonWrapper)} ${this.props.className || ''}`}>
         {button}
         {this.props.tooltip ? (
-          <ReactTooltip
-            className={css(styles.tooltip)}
-            id={this.id}
-            effect={'solid'}
-            place={'bottom'}
-            delayShow={500}
-          >
+          <ReactTooltip className={css(styles.tooltip)} id={this.id} effect={'solid'} place={'bottom'} delayShow={500}>
             <span>{this.props.tooltip}</span>
           </ReactTooltip>
-        ) : ''}
+        ) : (
+          ''
+        )}
       </div>
     );
   }
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  buttonWrapper: {
-    display: 'inline-block',
-    width: 100..percents(),
-    height: 100..percents()
-  },
   button: {
-    display: 'inline-block',
-    width: 84..percents(),
-    height: 88..percents(),
-    margin: margin(4..percents(), 8..percents()),
-    padding: padding(8..percents(), 14..percents()),
+    '-webkitAppRegion': 'no-drag',
     borderRadius: 3,
     cursor: 'pointer',
+    display: 'inline-block',
+    height: (88).percents(),
+    margin: margin((4).percents(), (8).percents()),
+    padding: padding((8).percents(), (14).percents()),
     transition: `${100}ms ease`,
-    '-webkitAppRegion': 'no-drag'
-  },
-  buttonStandard: {
-    backgroundColor: rgba(0, 0, 0, 0),
+    width: (84).percents()
   },
   buttonHover: {
-    backgroundColor: rgba(0, 0, 0, 0.3),
+    backgroundColor: rgba(0, 0, 0, 0.3)
+  },
+  buttonStandard: {
+    backgroundColor: rgba(0, 0, 0, 0)
+  },
+  buttonWrapper: {
+    display: 'inline-block',
+    height: (100).percents(),
+    width: (100).percents()
   },
   icon: {
-    width: 100..percents(),
-    margin: margin(0, 'auto'),
     fontSize: 30,
+    margin: margin(0, 'auto'),
     textAlign: 'center',
-    transition: `${100}ms ease`
-  },
-  iconStandard: {
-    color: '#635F5F',
+    transition: `${100}ms ease`,
+    width: (100).percents()
   },
   iconHover: {
     color: '#908578'
   },
+  iconStandard: {
+    color: '#635F5F'
+  },
   tooltip: {
-    color: '#D4D4D4',
-    backgroundColor: rgba(0, 0, 0, 0.85),
     ':after': {
       borderBottomColor: rgba(0, 0, 0, 0.85)
-    }
+    },
+    backgroundColor: rgba(0, 0, 0, 0.85),
+    color: '#D4D4D4'
   }
 });

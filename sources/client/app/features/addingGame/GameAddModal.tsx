@@ -75,27 +75,27 @@ class GameAddModal extends VitrineComponent<Props, State> {
     super(props);
 
     this.emptyState = {
+      editing: false,
       gameData: {
-        name: '',
-        series: '',
+        arguments: '',
+        backgroundScreen: '',
+        cover: '',
         date: '',
         developer: '',
-        publisher: '',
-        genres: '',
-        rating: undefined,
-        summary: '',
         executable: '',
-        arguments: '',
-        cover: '',
-        backgroundScreen: '',
+        genres: '',
+        name: '',
         potentialBackgrounds: [],
-        source: GameSource.LOCAL
+        publisher: '',
+        rating: undefined,
+        series: '',
+        source: GameSource.LOCAL,
+        summary: ''
       },
-      editing: false,
-      modalVisible: this.props.visible,
+      igdbButtonLoading: false,
       igdbFilled: false,
-      submitButtonLoading: false,
-      igdbButtonLoading: false
+      modalVisible: this.props.visible,
+      submitButtonLoading: false
     };
     this.state = { ...this.emptyState };
 
@@ -114,20 +114,20 @@ class GameAddModal extends VitrineComponent<Props, State> {
     this.setState({
       gameData: {
         ...this.state.gameData,
-        name: gameInfos.name,
-        series: gameInfos.series || '',
+        backgroundScreen: gameInfos.screenshots.length ? gameInfos.screenshots[0] : '',
+        cover: gameInfos.cover,
         date: gameInfos.releaseDate ? moment(gameInfos.releaseDate).format('DD/MM/YYYY') : '',
         developer: gameInfos.developer || '',
-        publisher: gameInfos.publisher || '',
         genres: gameInfos.genres.length ? gameInfos.genres.join(', ') : '',
-        rating: gameInfos.rating || '',
-        summary: gameInfos.summary || '',
-        cover: gameInfos.cover,
+        name: gameInfos.name,
         potentialBackgrounds: gameInfos.screenshots || [],
-        backgroundScreen: gameInfos.screenshots.length ? gameInfos.screenshots[0] : ''
+        publisher: gameInfos.publisher || '',
+        rating: gameInfos.rating || '',
+        series: gameInfos.series || '',
+        summary: gameInfos.summary || ''
       },
-      igdbFilled: true,
-      igdbButtonLoading: false
+      igdbButtonLoading: false,
+      igdbFilled: true
     });
     this.props.closeIgdbResearchModal();
   }
@@ -143,12 +143,15 @@ class GameAddModal extends VitrineComponent<Props, State> {
 
   private editPlayableGame(game: PlayableGame) {
     this.props.editPlayableGame(game);
-    if (game.uuid === this.props.selectedGame.uuid)
+    if (game.uuid === this.props.selectedGame.uuid) {
       this.props.selectGame(game);
-    if (this.props.igdbResearchModalVisible)
+    }
+    if (this.props.igdbResearchModalVisible) {
       this.props.closeTimePlayedEditionModal();
-    if (this.props.visible)
+    }
+    if (this.props.visible) {
       this.closeModal();
+    }
     notify(this.props.intl.formatMessage({ id: 'toasts.editingGame' }, { name: game.name }), true);
     this.setState({
       submitButtonLoading: false
@@ -157,7 +160,7 @@ class GameAddModal extends VitrineComponent<Props, State> {
 
   private closeModal() {
     this.props.closeGameAddModal();
-    setTimeout( () => {
+    setTimeout(() => {
       this.props.setPotentialGameToAdd(null);
       this.props.setGameToEdit(null);
       this.setState({ ...this.emptyState });
@@ -166,13 +169,14 @@ class GameAddModal extends VitrineComponent<Props, State> {
 
   private gameCoverClickHandler() {
     const cover: string = openImageDialog(this.props.intl.formatMessage);
-    if (cover)
+    if (cover) {
       this.setState({
         gameData: {
           ...this.state.gameData,
           cover
         }
       });
+    }
   }
 
   private inputChangeHandler(event: any) {
@@ -207,8 +211,9 @@ class GameAddModal extends VitrineComponent<Props, State> {
 
   private executableButton() {
     const executable: string = openExecutableDialog(this.props.intl.formatMessage);
-    if (!executable)
+    if (!executable) {
       return;
+    }
     this.setState({
       gameData: {
         ...this.state.gameData,
@@ -236,22 +241,26 @@ class GameAddModal extends VitrineComponent<Props, State> {
   private submitButton() {
     const gameInfos: any = { ...this.state.gameData };
     delete gameInfos.potentialBackgrounds;
-    if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://'))
+    if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://')) {
       gameInfos.cover = `file://${gameInfos.cover}`;
-    if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://'))
+    }
+    if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://')) {
       gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
+    }
 
     this.setState({
       submitButtonLoading: true
     });
-    if (this.state.editing)
+    if (this.state.editing) {
       serverListener.send('edit-game', this.props.gameToEdit.uuid, gameInfos);
-    else
+    } else {
       serverListener.send('add-game', gameInfos);
+    }
   }
 
   public componentDidMount() {
-    serverListener.listen('send-igdb-game', this.fillIgdbGame.bind(this))
+    serverListener
+      .listen('send-igdb-game', this.fillIgdbGame.bind(this))
       .listen('add-playable-game', this.addPlayableGame.bind(this))
       .listen('edit-playable-game', this.editPlayableGame.bind(this));
   }
@@ -263,36 +272,37 @@ class GameAddModal extends VitrineComponent<Props, State> {
     if (nextProps.gameToEdit) {
       gameToHandle = nextProps.gameToEdit;
       editing = true;
-    }
-    else if (nextProps.potentialGameToAdd) {
+    } else if (nextProps.potentialGameToAdd) {
       gameToHandle = nextProps.potentialGameToAdd;
       editing = false;
-    }
-    else
+    } else {
       return null;
+    }
 
-    const [ executable, args ]: string[] = gameToHandle.commandLine.length > 1 ? gameToHandle.commandLine : [gameToHandle.commandLine[0], ''];
-    return !prevState.igdbFilled ? {
-      gameData: {
-        name: gameToHandle.name,
-        cover: gameToHandle.details.cover,
-        source: gameToHandle.source,
-        executable,
-        arguments: args,
-        series: gameToHandle.details.series || '',
-        date: gameToHandle.details.releaseDate ? moment(gameToHandle.details.releaseDate).format('DD/MM/YYYY') : '',
-        developer: gameToHandle.details.developer || '',
-        publisher: gameToHandle.details.publisher || '',
-        genres: gameToHandle.details.genres ? gameToHandle.details.genres.join(', ') : '',
-        rating: gameToHandle.details.rating || '',
-        summary: gameToHandle.details.summary || '',
-        potentialBackgrounds: gameToHandle.details.backgroundScreen ? [gameToHandle.details.backgroundScreen] : [],
-        backgroundScreen: gameToHandle.details.backgroundScreen || '',
-      },
-      editing
-    } : {
-      igdbFilled: false
-    };
+    const [executable, args]: string[] = gameToHandle.commandLine.length > 1 ? gameToHandle.commandLine : [gameToHandle.commandLine[0], ''];
+    return !prevState.igdbFilled
+      ? {
+          editing,
+          gameData: {
+            arguments: args,
+            backgroundScreen: gameToHandle.details.backgroundScreen || '',
+            cover: gameToHandle.details.cover,
+            date: gameToHandle.details.releaseDate ? moment(gameToHandle.details.releaseDate).format('DD/MM/YYYY') : '',
+            developer: gameToHandle.details.developer || '',
+            executable,
+            genres: gameToHandle.details.genres ? gameToHandle.details.genres.join(', ') : '',
+            name: gameToHandle.name,
+            potentialBackgrounds: gameToHandle.details.backgroundScreen ? [gameToHandle.details.backgroundScreen] : [],
+            publisher: gameToHandle.details.publisher || '',
+            rating: gameToHandle.details.rating || '',
+            series: gameToHandle.details.series || '',
+            source: gameToHandle.source,
+            summary: gameToHandle.details.summary || ''
+          }
+        }
+      : {
+          igdbFilled: false
+        };
   }
 
   public render(): JSX.Element {
@@ -306,7 +316,7 @@ class GameAddModal extends VitrineComponent<Props, State> {
               loading={this.state.igdbButtonLoading}
               onClick={this.searchIgdbButton}
             >
-              <FormattedMessage id={'actions.fillWithIgdb'}/>
+              <FormattedMessage id={'actions.fillWithIgdb'} />
             </Button>
             <Button
               primary={true}
@@ -314,7 +324,7 @@ class GameAddModal extends VitrineComponent<Props, State> {
               loading={this.state.submitButtonLoading}
               onClick={this.submitButton}
             >
-              <FormattedMessage id={this.state.editing ? 'actions.editGame' : 'actions.submitNewGame'}/>
+              <FormattedMessage id={this.state.editing ? 'actions.editGame' : 'actions.submitNewGame'} />
             </Button>
           </React.Fragment>
         }
@@ -325,21 +335,20 @@ class GameAddModal extends VitrineComponent<Props, State> {
       >
         <Grid>
           <Grid.Column width={3}>
-            <label className={css(styles.formLabel)}><FormattedMessage id={'game.cover'}/></label>
+            <label className={css(styles.formLabel)}>
+              <FormattedMessage id={'game.cover'} />
+            </label>
             <div className={css(styles.coverWrapper)}>
-              <BlurPicture
-                faIcon={faFolderOpen}
-                fontSize={55}
-                background={this.state.gameData.cover}
-                clickHandler={this.gameCoverClickHandler}
-              />
+              <BlurPicture faIcon={faFolderOpen} fontSize={55} background={this.state.gameData.cover} clickHandler={this.gameCoverClickHandler} />
             </div>
           </Grid.Column>
-          <Grid.Column width={1}/>
+          <Grid.Column width={1} />
           <Grid.Column width={12}>
             <Form>
               <Form.Field>
-                <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
+                <label className={css(styles.formLabel)}>
+                  <FormattedMessage id={'game.name'} />
+                </label>
                 <Input
                   name={'name'}
                   size={'large'}
@@ -351,7 +360,9 @@ class GameAddModal extends VitrineComponent<Props, State> {
               <Grid>
                 <Grid.Column width={11}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.name'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.name'} />
+                    </label>
                     <Input
                       name={'series'}
                       size={'large'}
@@ -363,15 +374,17 @@ class GameAddModal extends VitrineComponent<Props, State> {
                 </Grid.Column>
                 <Grid.Column width={5}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.releaseDate'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.releaseDate'} />
+                    </label>
                     <DatePicker
                       value={this.state.gameData.date}
                       dateFormat={'DD/MM/YYYY'}
                       onChange={this.dateChangeHandler}
                       inputProps={{
-                        size: 'large',
                         placeholder: this.props.intl.formatMessage({ id: 'game.releaseDate' }),
-                        readOnly: true
+                        readOnly: true,
+                        size: 'large'
                       }}
                     />
                   </Form.Field>
@@ -380,11 +393,13 @@ class GameAddModal extends VitrineComponent<Props, State> {
               <Grid>
                 <Grid.Column width={8}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.developer'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.developer'} />
+                    </label>
                     <Input
                       name={'developer'}
                       size={'large'}
-                      placeholder={this.props.intl.formatMessage({ id:  'game.developer' })}
+                      placeholder={this.props.intl.formatMessage({ id: 'game.developer' })}
                       value={this.state.gameData.developer}
                       onChange={this.inputChangeHandler}
                     />
@@ -392,7 +407,9 @@ class GameAddModal extends VitrineComponent<Props, State> {
                 </Grid.Column>
                 <Grid.Column width={8}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.publisher'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.publisher'} />
+                    </label>
                     <Input
                       name={'publisher'}
                       size={'large'}
@@ -404,9 +421,11 @@ class GameAddModal extends VitrineComponent<Props, State> {
                 </Grid.Column>
               </Grid>
               <Grid>
-                <Grid.Column style={{ width: 84.5.percents() }}>
+                <Grid.Column style={{ width: (84.5).percents() }}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.genres'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.genres'} />
+                    </label>
                     <Input
                       name={'genres'}
                       size={'large'}
@@ -418,7 +437,9 @@ class GameAddModal extends VitrineComponent<Props, State> {
                 </Grid.Column>
                 <Grid.Column width={2}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.rating'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.rating'} />
+                    </label>
                     <NumberPicker
                       min={1}
                       max={100}
@@ -433,7 +454,9 @@ class GameAddModal extends VitrineComponent<Props, State> {
               <Grid>
                 <Grid.Column width={16}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.summary'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.summary'} />
+                    </label>
                     <TextArea
                       name={'summary'}
                       className={css(styles.formTextArea)}
@@ -444,18 +467,17 @@ class GameAddModal extends VitrineComponent<Props, State> {
                   </Form.Field>
                 </Grid.Column>
               </Grid>
-              <hr className={css(styles.formHr)}/>
+              <hr className={css(styles.formHr)} />
               <Grid>
                 <Grid.Column width={16}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.executable'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.executable'} />
+                    </label>
                     <Input
                       label={
-                        <Button
-                          secondary={true}
-                          onClick={this.executableButton.bind(this)}
-                        >
-                          <FontAwesomeIcon icon={faFolderOpen}/>
+                        <Button secondary={true} onClick={this.executableButton.bind(this)}>
+                          <FontAwesomeIcon icon={faFolderOpen} />
                         </Button>
                       }
                       labelPosition={'right'}
@@ -472,7 +494,9 @@ class GameAddModal extends VitrineComponent<Props, State> {
               <Grid>
                 <Grid.Column width={16}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.lineArguments'}/></label>
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.lineArguments'} />
+                    </label>
                     <div className={'ui large input'}>
                       <input
                         name={'arguments'}
@@ -485,40 +509,24 @@ class GameAddModal extends VitrineComponent<Props, State> {
                   </Form.Field>
                 </Grid.Column>
               </Grid>
-              <hr className={css(styles.formHr)}/>
+              <hr className={css(styles.formHr)} />
               <Grid>
                 <Grid.Column width={16}>
                   <Form.Field>
-                    <label className={css(styles.formLabel)}><FormattedMessage id={'game.backgroundImage'}/></label>
-                    <ImagesCollection
-                      images={this.state.gameData.potentialBackgrounds}
-                      onChange={this.changeBackgroundHandler}
-                    />
+                    <label className={css(styles.formLabel)}>
+                      <FormattedMessage id={'game.backgroundImage'} />
+                    </label>
+                    <ImagesCollection images={this.state.gameData.potentialBackgrounds} onChange={this.changeBackgroundHandler} />
                   </Form.Field>
                 </Grid.Column>
               </Grid>
-              <input
-                name={'cover'}
-                value={this.state.gameData.cover}
-                onChange={this.inputChangeHandler}
-                hidden={true}
-              />
-              <input
-                name={'background'}
-                value={this.state.gameData.backgroundScreen}
-                onChange={this.inputChangeHandler}
-                hidden={true}
-              />
-              <input
-                name={'source'}
-                value={this.state.gameData.source}
-                onChange={this.inputChangeHandler}
-                hidden={true}
-              />
+              <input name={'cover'} value={this.state.gameData.cover} onChange={this.inputChangeHandler} hidden={true} />
+              <input name={'background'} value={this.state.gameData.backgroundScreen} onChange={this.inputChangeHandler} hidden={true} />
+              <input name={'source'} value={this.state.gameData.source} onChange={this.inputChangeHandler} hidden={true} />
             </Form>
           </Grid.Column>
         </Grid>
-        <IgdbResearchModal/>
+        <IgdbResearchModal />
         {this.checkErrors()}
       </FadingModal>
     );
@@ -526,15 +534,6 @@ class GameAddModal extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  modal: {
-    margin: margin(1..rem(), 'auto'),
-    cursor: 'default',
-    userSelect: 'none'
-  },
-  modalBody: {
-    maxHeight: 82..vh(),
-    overflowY: 'auto'
-  },
   coverWrapper: {
     height: 270,
     paddingTop: 3
@@ -544,28 +543,37 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     borderTop: border(1, 'solid', rgba(238, 238, 238, 0.15)),
     margin: margin(30, 0, 16)
   },
-  formTextArea: {
-    resize: 'none',
-    height: 7..em(),
-    fontSize: 1.14285714.em(),
-    lineHeight: 1.4
-  },
   formLabel: {
-    fontWeight: 'normal',
-    fontSize: 1..em()
+    fontSize: (1).em(),
+    fontWeight: 'normal'
+  },
+  formTextArea: {
+    fontSize: (1.14285714).em(),
+    height: (7).em(),
+    lineHeight: 1.4,
+    resize: 'none'
   },
   lineArgumentsInput: {
     fontFamily: 'Inconsolata'
+  },
+  modal: {
+    cursor: 'default',
+    margin: margin((1).rem(), 'auto'),
+    userSelect: 'none'
+  },
+  modalBody: {
+    maxHeight: (82).vh(),
+    overflowY: 'auto'
   }
 });
 
 const mapStateToProps = (state: AppState) => ({
-  internetConnection: state.internetConnection,
-  selectedGame: state.selectedGame,
-  potentialGameToAdd: state.potentialGameToAdd,
   gameToEdit: state.gameToEdit,
-  visible: state.gameAddModalVisible,
-  igdbResearchModalVisible: state.igdbResearchModalVisible
+  igdbResearchModalVisible: state.igdbResearchModalVisible,
+  internetConnection: state.internetConnection,
+  potentialGameToAdd: state.potentialGameToAdd,
+  selectedGame: state.selectedGame,
+  visible: state.gameAddModalVisible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -595,6 +603,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   }
 });
 
-const GameAddModalContainer = injectIntl(connect(mapStateToProps, mapDispatchToProps)(GameAddModal));
+const GameAddModalContainer = injectIntl(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(GameAddModal)
+);
 
 export { GameAddModalContainer as GameAddModal };

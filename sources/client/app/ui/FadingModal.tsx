@@ -29,22 +29,29 @@ export class FadingModal extends VitrineComponent<Props, State> {
   }
 
   private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.props.visible)
+    if (startingAnimation === this.props.visible) {
       this.setState({
         transitionVisible: this.props.visible
       });
+    }
   }
 
   private closeModal() {
-    this.setState({
-      transitionVisible: false
-    }, () => {
-      setTimeout(() => {
-        this.setState({
-          transitionVisible: false
-        }, this.props.onClose);
-      }, this.modalsTransitionDuration);
-    });
+    this.setState(
+      {
+        transitionVisible: false
+      },
+      () => {
+        setTimeout(() => {
+          this.setState(
+            {
+              transitionVisible: false
+            },
+            this.props.onClose
+          );
+        }, this.modalsTransitionDuration);
+      }
+    );
   }
 
   public render(): JSX.Element {
@@ -64,13 +71,16 @@ export class FadingModal extends VitrineComponent<Props, State> {
           style={this.props.style}
         >
           <Modal.Header>
-            {typeof this.props.title === 'string' ?
-              this.props.title :
+            {typeof this.props.title === 'string' ? (
+              this.props.title
+            ) : (
               <Grid>
                 <Grid.Column width={8}>{this.props.title.title}</Grid.Column>
-                <Grid.Column floated={'right'} width={8}>{this.props.title.rightElement}</Grid.Column>
+                <Grid.Column floated={'right'} width={8}>
+                  {this.props.title.rightElement}
+                </Grid.Column>
               </Grid>
-            }
+            )}
           </Modal.Header>
           <Modal.Content className={css(styles.modalContent)}>{this.props.children}</Modal.Content>
           {this.props.actions && <Modal.Actions>{this.props.actions}</Modal.Actions>}
@@ -83,11 +93,11 @@ export class FadingModal extends VitrineComponent<Props, State> {
 const styles = StyleSheet.create({
   modal: {
     cursor: 'default',
-    userSelect: 'none',
-    transition: 'width 0.3s ease'
+    transition: 'width 0.3s ease',
+    userSelect: 'none'
   },
   modalContent: {
-    maxHeight: 83..vh(),
+    maxHeight: (83).vh(),
     overflowY: 'auto'
   }
 });
