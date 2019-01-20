@@ -3,28 +3,22 @@
   "extends": [
     "tslint:recommended",
     "tslint-eslint-rules",
-    "tslint-react"
+    "tslint-react",
+    "tslint-config-prettier"
   ],
   "rules": {
+    "no-multi-spaces": true,
     "interface-name": false,
     "one-line": false,
     "trailing-comma": false,
-    "object-literal-sort-keys": false,
     "no-console": false,
-    "triple-equals": [ true, "allow-null-check", "allow-undefined-check" ],
+    "no-shadowed-variable": false,
+    "triple-equals": [ true, "allow-undefined-check" ],
     "radix": false,
     "no-namespace": false,
-    "no-shadowed-variable": false,
     "member-ordering": false,
-    "object-literal-key-quotes": [ "as-needed" ],
+    "object-literal-key-quotes": [ true, "as-needed" ],
     "jsx-curly-spacing": "never",
-    "jsx-equals-spacing": "never",
-    "jsx-no-multiline-js": false,
-    "quotemark": [ true, "single", "jsx-single" ],
-    "indent": [ true, "spaces", 2 ],
-    "max-line-length": [ true, 150 ],
-    "semicolon": [ true ],
-    "curly": false,
-    "no-multi-spaces": true
+    "jsx-equals-spacing": "never"
   }
 }

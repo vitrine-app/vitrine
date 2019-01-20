@@ -94,6 +94,7 @@
     "nyc": "^13.0.1",
     "openpgp": "^4.2.1",
     "parallel-webpack": "^2.3.0",
+    "prettier": "^1.15.3",
     "semantic-ui-less": "^2.2.14",
     "shelljs": "0.8.2",
     "source-map-support": "^0.5.9",
@@ -102,6 +103,7 @@
     "ts-node": "7.0.1",
     "tsconfig-paths": "^3.7.0",
     "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.17.0",
     "tslint-eslint-rules": "^5.1.0",
     "tslint-react": "^3.5.1",
     "tweetnacl": "^1.0.0",
@@ -131,6 +133,7 @@
     "lint:app": "tslint sources/**/*.ts*",
     "lint:server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
     "lint:client": "tslint sources/client/**/*.ts*",
+    "lint:prettier": "prettier --write sources/**/*.ts*",
     "watch:client": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js --watch",
     "keys:encrypt": "node scripts/crypto encrypt",
     "keys:decrypt": "node scripts/crypto decrypt",
@@ -160,7 +163,7 @@
   },
   "husky": {
     "hooks": {
-      "precommit": "tslint --fix sources/**/*.ts*"
+      "precommit": "tslint --fix sources/**/*.ts* && yarn lint:prettier"
     }
   }
 }
