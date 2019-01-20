@@ -15,6 +15,7 @@ interface Props {
   locales: any[];
   currentLocale: string;
   updateSettings: (settings: any) => void;
+  setLocale: (locale: string) => void;
   setLocales: (locales: any) => void;
   updateModulesConfig: (modulesConfig: any) => void;
 }
@@ -36,6 +37,8 @@ class App extends React.Component<Props, State> {
     serverListener.listen('init-settings', (settings: any, modulesConfig: any, locales: any[]) => {
       this.props.setLocales(locales);
       this.props.updateSettings(settings);
+      const currentLocale: any = locales.find(locale => locale.locale === navigator.language);
+      this.props.setLocale(settings.lang || currentLocale ? currentLocale.locale : 'en');
       this.props.updateModulesConfig(modulesConfig);
       this.setState(
         {
@@ -70,16 +73,19 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-  updateSettings(settings: any) {
-    dispatch(updateSettings(settings));
-    dispatch(setLocale(settings.lang));
-  },
   setLocales(locales: any) {
     dispatch(setLocales(locales));
   },
+  setLocale(locale: string) {
+    dispatch(setLocale(locale));
+  },
   updateModulesConfig(modulesConfig: any) {
     dispatch(updateModulesConfig(modulesConfig));
-  }
+  },
+  updateSettings(settings: any) {
+    dispatch(updateSettings(settings));
+    dispatch(setLocale(settings.lang || 'mdr'));
+  },
 });
 
 const AppContainer = connect(

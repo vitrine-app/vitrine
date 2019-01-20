@@ -126,7 +126,7 @@
     "build:client-no-loader": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js",
     "build:modules": "node scripts/build_modules.js",
     "build:modules-no-electron": "cross-env NO_ELECTRON=true node scripts/build_modules.js",
-    "run:app": "yarn lint:app && yarn build:app && electron .",
+    "run:app": "yarn lint:app && yarn build:app && yarn start",
     "run:server": "yarn lint:server && yarn build:server && yarn start",
     "run:client": "yarn lint:client && yarn build:client && yarn start",
     "run:client-no-loader": "yarn lint:client && yarn build:client-no-loader && yarn start",
