@@ -3,11 +3,7 @@
   "name": "Vitrine",
   "description": "Vitrine is a modern game library allowing you to display and organize your games, wherever they come from. It currently works with Steam, and other games on your PC you can browse. Vitrine also helps you sorting your games with a lot of details, and the time spent on the game.<br>Why would'nt you give it a try ? The only thing you got to do is to add a game or to game for Vitrine to scan your Steam ones!",
   "welcomeMessage": "Welcome to Vitrine!",
-  "developer": "Developer:",
-  "publisher": "Publisher:",
-  "genres": "Genres:",
-  "releaseDate": "Release date:",
-  "timePlayed": "Time played:",
+  "zeroTimePlayed": "None",
   "actions": {
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -30,6 +26,7 @@
   "loading": "Loading...",
   "allGamesDisclaimer": "This operation may take a while.",
   "game": {
+    "timePlayed": "Time played",
     "cover": "Game cover",
     "name": "Game name",
     "series": "Games series",

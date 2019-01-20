@@ -124,7 +124,7 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     width: (100).percents()
   },
   icon: {
-    color: rgba(255, 255, 255, 0.6),
+    color: rgba(255, 255, 255, 0.4),
     cursor: 'pointer',
     left: (40).percents(),
     position: 'absolute',
