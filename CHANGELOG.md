@@ -1,5 +1,8 @@
 # Vitrine Changelog
 
+## 0.10.1 (17/02/2019)
+- fix: Vitrine no longer launches forever at first startup
+
 ## 0.10.0 (01/11/2018)
 - feat: add option to add every potential games at once
 - fix: progress shows download percentage on Vitrine upgrade
