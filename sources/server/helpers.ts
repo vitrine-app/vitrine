@@ -3,53 +3,57 @@ import * as fs from 'fs-extra';
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 
-import { getEnvFolder, uuidV5 } from '../models/env';
+import { getEnvFolder, uuidV5 } from '@models/env';
 import { logger } from './Logger';
 
 function downloadFile(file: string, options: any): Promise<any> {
   return new Promise((resolve, reject) => {
     downloadFileCb(file, options, (error: Error) => {
-      if (error)
+      if (error) {
         reject(error);
-      else
+      } else {
         resolve(true);
+      }
     });
   });
 }
 
 function setTimeOut(ms: number): Promise<any> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve();
     }, ms);
   });
 }
 
-async function deleteOldImages(path: string, except: string) {
-  const files: string[] = await glob(path);
-  if (!files.length)
+async function deleteOldImages(imagePath: string, except: string) {
+  const files: string[] = await glob(imagePath);
+  if (!files.length) {
     return;
-  files.filter((file: string) => file !== except.replace(/\\/g, '/')).forEach(async (file: string) => {
-    await fs.remove(file);
-  });
+  }
+  files
+    .filter((file: string) => file !== except.replace(/\\/g, '/'))
+    .forEach(async (file: string) => {
+      await fs.remove(file);
+    });
 }
 
 async function downloadImage(source: string, destination: string) {
-  if (!source || (source.startsWith('file://') && !await fs.pathExists(source.substring(7)))) {
+  if (!source || (source.startsWith('file://') && !(await fs.pathExists(source.substring(7))))) {
     logger.info('downloadImage', `Local source image (${source}) not found.`);
     return false;
   }
   if (source.startsWith('file://')) {
     source = source.substring(7);
-    if (source === destination)
+    if (source === destination) {
       return true;
+    }
     logger.info('downloadImage', `Copying local source image (${source}) to ${destination}.`);
     await fs.copy(source, destination);
     const fileGlob: string = destination.replace(/(\w+)\.(\w+)\.(\w+)/g, '$1.*.$3');
     await deleteOldImages(fileGlob, destination);
     return true;
-  }
-  else {
+  } else {
     logger.info('downloadImage', `Downloading distant source image (${source}) to ${destination}.`);
     const succeeded: boolean = await Promise.race([
       downloadFile(source, {
@@ -72,8 +76,9 @@ export async function downloadGamePictures(gameDetails: any, { backgroundUrl, ba
 }
 
 export function isAlreadyStored(imageSourcePath: string, imageDestinationPath: string): boolean {
-  if (!imageSourcePath)
+  if (!imageSourcePath) {
     return false;
+  }
   return imageSourcePath === imageDestinationPath && imageSourcePath.startsWith('file://');
 }
 

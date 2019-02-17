@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron';
 import * as path from 'path';
 
-import { isProduction } from '../models/env';
+import { isProduction } from '@models/env';
 import { logger } from './Logger';
 
 export class WindowsHandler {
@@ -23,12 +23,12 @@ export class WindowsHandler {
   private createLoaderWindow() {
     logger.info('WindowsHandler', 'Creating loader window.');
     this.loaderWindow = new BrowserWindow({
-      title: 'Vitrine',
-      height: 300,
-      width: 500,
-      icon: this.iconPath,
       frame: false,
-      resizable: false
+      height: 300,
+      icon: this.iconPath,
+      resizable: false,
+      title: 'Vitrine',
+      width: 500
     });
     this.loaderWindow.loadURL(this.loaderEntryPoint);
     logger.info('WindowsHandler', 'Loader window created.');
@@ -38,14 +38,14 @@ export class WindowsHandler {
     if (!app.requestSingleInstanceLock()) {
       this.quitApplication();
       return;
-    }
-    else {
+    } else {
       app.on('second-instance', this.restoreAndFocus.bind(this));
     }
-    if (app.isReady())
+    if (app.isReady()) {
       this.createLoaderWindow();
-    else
+    } else {
       app.on('ready', this.createLoaderWindow.bind(this));
+    }
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') {
         this.quitApplication();
@@ -67,29 +67,30 @@ export class WindowsHandler {
   public createClientWindow() {
     logger.info('WindowsHandler', 'Creating main client window.');
     this.clientWindow = new BrowserWindow({
-      title: 'Vitrine',
-      minWidth: 1450,
-      minHeight: 700,
-      icon: this.iconPath,
-      show: false,
       frame: false,
-      width: 1650,
-      height: 900
+      height: 900,
+      icon: this.iconPath,
+      minHeight: 700,
+      minWidth: 1450,
+      show: false,
+      title: 'Vitrine',
+      width: 1650
     });
     this.clientWindow.setMenu(null);
     this.clientWindow.maximize();
     this.clientWindow.loadURL(this.clientEntryPoint);
     this.clientWindow.hide();
-    if (!isProduction())
+    if (!isProduction()) {
       this.clientWindow.webContents.openDevTools();
+    }
 
     this.clientWindow.on('close', (event: Event) => {
       if (!this.appQuit) {
         event.preventDefault();
         this.clientWindow.hide();
-      }
-      else
+      } else {
         delete this.clientWindow;
+      }
     });
     logger.info('WindowsHandler', 'Main client window created.');
   }
@@ -98,29 +99,24 @@ export class WindowsHandler {
     if (mustRelaunch) {
       logger.info('WindowsHandler', 'Relaunching Vitrine.');
       app.relaunch();
-    }
-    else
+    } else {
       logger.info('WindowsHandler', 'Quitting Vitrine.');
+    }
 
     this.appQuit = true;
-    if (this.tray)
+    if (this.tray) {
       this.tray.destroy();
+    }
     app.quit();
   }
 
   public sendToLoader(channelName, ...args) {
-    const sentArgs: any[] = [
-      `loaderServer.${channelName}`,
-      ...args
-    ];
+    const sentArgs: any[] = [`loaderServer.${channelName}`, ...args];
     this.loaderWindow.webContents.send.apply(this.loaderWindow.webContents, sentArgs);
   }
 
   public sendToClient(channelName, ...args) {
-    const sentArgs: any[] = [
-      `server.${channelName}`,
-      ...args
-    ];
+    const sentArgs: any[] = [`server.${channelName}`, ...args];
     this.clientWindow.webContents.send.apply(this.clientWindow.webContents, sentArgs);
   }
 
@@ -144,26 +140,29 @@ export class WindowsHandler {
     this.tray = new Tray(this.iconPath);
     this.tray.setTitle('Vitrine');
     this.tray.setToolTip('Vitrine');
-    this.tray.setContextMenu(Menu.buildFromTemplate([
-      {
-        label: 'Show',
-        type: 'normal',
-        click: this.restoreAndFocus.bind(this)
-      },
-      {
-        label: 'Quit',
-        type: 'normal',
-        click: this.quitApplication.bind(this, false)
-      }
-    ]));
+    this.tray.setContextMenu(
+      Menu.buildFromTemplate([
+        {
+          click: this.restoreAndFocus.bind(this),
+          label: 'Show',
+          type: 'normal'
+        },
+        {
+          click: this.quitApplication.bind(this, false),
+          label: 'Quit',
+          type: 'normal'
+        }
+      ])
+    );
     this.tray.on('double-click', this.restoreAndFocus.bind(this));
   }
 
   private restoreAndFocus() {
     if (this.clientWindow) {
       this.clientWindow.show();
-      if (this.clientWindow.isMinimized())
+      if (this.clientWindow.isMinimized()) {
         this.clientWindow.restore();
+      }
       this.clientWindow.focus();
     }
   }

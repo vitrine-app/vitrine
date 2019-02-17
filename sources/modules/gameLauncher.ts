@@ -10,10 +10,11 @@ export interface GameLauncherOptions {
 export function launchGame(file: GameLauncherOptions): Promise<number> {
   return new Promise((resolve, reject) => {
     steamMonitor.launchGame(file, (error: string, secondsPlayed: number) => {
-      if (error)
+      if (error) {
         reject(new Error(error));
-      else
+      } else {
         resolve(secondsPlayed);
+      }
     });
   });
 }

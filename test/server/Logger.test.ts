@@ -1,12 +1,11 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { getAppDataFolder, isProduction } from '../../sources/models/env';
+import { getAppDataFolder, isProduction } from '@models/env';
 import { Logger } from '../../sources/server/Logger';
 
 function testLogger(prod?: boolean) {
   process.env.NODE_ENV = prod ? 'prod' : 'dev';
-  process.env.TEST_PROD = prod ? 'true' : 'false';
 
   return () => {
     let logger: Logger;

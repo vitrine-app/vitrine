@@ -2,6 +2,10 @@ const path = require('path');
 
 const production = process.env.NODE_ENV === 'prod';
 
+function sourcePath(folder) {
+  return path.join(__dirname, `../sources/${folder}`);
+}
+
 module.exports = {
   entry: './sources/server/main.ts',
   output: {
@@ -13,7 +17,10 @@ module.exports = {
     __filename: false
   },
   resolve: {
-    extensions: [ '.ts', '.js', '.json', '.node' ]
+    extensions: [ '.ts', '.js', '.json', '.node' ],
+    alias: {
+      '@models': sourcePath('models')
+    }
   },
   target: 'electron-main',
   module: {

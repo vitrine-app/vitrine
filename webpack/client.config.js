@@ -3,6 +3,10 @@ const HtmlPlugin = require('html-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'prod';
 
+function sourcePath(folder) {
+  return path.join(__dirname, `../sources/${folder}`);
+}
+
 const clientConfig = {
   node: {
     __dirname: false,
@@ -11,7 +15,8 @@ const clientConfig = {
   resolve: {
     extensions: [ '.ts', '.tsx', '.js' ],
     alias: {
-      '../../theme.config$': path.join(__dirname, '../sources/client/resources/less/theme.config.less')
+      '../../theme.config$': sourcePath('client/resources/less/theme.config.less'),
+      '@models': sourcePath('models')
     }
   },
   target: 'electron-renderer',

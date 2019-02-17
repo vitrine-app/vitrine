@@ -1,4 +1,4 @@
-import { randomHashedString, uuidV5 } from '../../sources/models/env';
+import { randomHashedString, uuidV5 } from '@models/env';
 
 describe('helpers functions', () => {
   describe('uuidV5()', () => {

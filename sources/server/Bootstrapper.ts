@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
 
-import { getEnvFolder, isProduction, isTesting } from '../models/env';
+import { getEnvFolder, isProduction, isTesting } from '@models/env';
 import { logger } from './Logger';
 import { Server } from './Server';
 
@@ -26,8 +26,9 @@ export class Bootstrapper {
   }
 
   public async launch() {
-    if (isProduction() && !await fs.pathExists(this.vitrineConfigFilePath))
+    if (isProduction() && !(await fs.pathExists(this.vitrineConfigFilePath))) {
       await fs.copy(getEnvFolder('config', true), this.configFolderPath);
+    }
 
     await Promise.all([
       fs.ensureDir(this.configFolderPath),
@@ -40,33 +41,31 @@ export class Bootstrapper {
   }
 
   private async loadConfig() {
-    const [ modulesConfig, vitrineConfig ]: any[] = await Promise.all([
+    const [modulesConfig, vitrineConfig]: any[] = await Promise.all([
       fs.readJson(path.resolve(this.configFolderPath, this.modulesConfigFileName)),
       fs.readJson(this.vitrineConfigFilePath, { throws: false })
     ]);
     return {
-      vitrineConfig: vitrineConfig || { firstLaunch: true },
-      modulesConfig
+      modulesConfig,
+      vitrineConfig: vitrineConfig || { firstLaunch: true }
     };
   }
 
   private async loadLocales() {
     const langFilesFolder: string = getEnvFolder('config/lang');
     const langFilesPaths = await glob(`${langFilesFolder}/*`);
-    return await Promise.all(langFilesPaths.map(async (langFilePath: string) => ({
-      locale: path.basename(langFilePath, '.json'),
-      messages: flatten(await fs.readJson(langFilePath))
-    })));
+    return await Promise.all(
+      langFilesPaths.map(async (langFilePath: string) => ({
+        locale: path.basename(langFilePath, '.json'),
+        messages: flatten(await fs.readJson(langFilePath))
+      }))
+    );
   }
 
   private async runServer() {
     logger.info('Bootstrapper', 'Running server.');
-    const [ config, locales ]: any = await Promise.all([ this.loadConfig(), this.loadLocales() ]);
-    this.serverInstance = new Server(
-      config,
-      locales,
-      this.vitrineConfigFilePath
-    );
+    const [config, locales]: any = await Promise.all([this.loadConfig(), this.loadLocales()]);
+    this.serverInstance = new Server(config, locales, this.vitrineConfigFilePath);
     this.serverInstance.run();
   }
 

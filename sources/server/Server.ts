@@ -6,11 +6,11 @@ import * as moment from 'moment';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 
-import { getEnvFolder, isProduction, randomHashedString } from '../models/env';
-import { GamesCollection } from '../models/GamesCollection';
-import { PlayableGame} from '../models/PlayableGame';
-import { GameSource, PotentialGame } from '../models/PotentialGame';
-import { fillFirstIgdbResult, fillIgdbGame, searchIgdbGame } from './api/IgdbWrapper';
+import { getEnvFolder, isProduction, randomHashedString } from '@models/env';
+import { GamesCollection } from '@models/GamesCollection';
+import { PlayableGame } from '@models/PlayableGame';
+import { GameSource, PotentialGame } from '@models/PotentialGame';
+import { fillFirstIgdbResult, fillIgdbGame, searchIgdbGame } from './api/ServerWrapper';
 import { findSteamData } from './api/SteamDataFinder';
 import { getSteamGamePlayTime, getSteamGamesPlayTimes } from './api/SteamPlayTimeWrapper';
 import { searchBattleNetGames } from './crawlers/BattleNetCrawler';
@@ -33,7 +33,7 @@ export class Server {
   private gameLaunched: boolean;
 
   public constructor(config: any, private locales: any[], private vitrineConfigFilePath: string) {
-    ({ vitrineConfig: this.vitrineConfig, modulesConfig: this.modulesConfig } = config);
+    ({ modulesConfig: this.modulesConfig, vitrineConfig: this.vitrineConfig } = config);
     this.windowsHandler = new WindowsHandler();
     this.gameLaunched = false;
     this.registerEvents();
@@ -44,10 +44,12 @@ export class Server {
   }
 
   public registerEvents() {
-    this.windowsHandler.listenToLoader('ready', this.loaderReady.bind(this))
+    this.windowsHandler
+      .listenToLoader('ready', this.loaderReady.bind(this))
       .listenToLoader('launch-client', this.windowsHandler.createClientWindow.bind(this.windowsHandler));
 
-    this.windowsHandler.listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
+    this.windowsHandler
+      .listenToClient('settings-asked', this.clientSettingsAsked.bind(this))
       .listenToClient('ready', this.windowsHandler.clientReady.bind(this.windowsHandler))
       .listenToClient('quit-application', this.quitApplication.bind(this))
       .listenToClient('fill-igdb-game', this.fillIgdbGame.bind(this))
@@ -80,13 +82,11 @@ export class Server {
       if (compareVersion(lastUpdate.updateInfo.version, autoUpdater.currentVersion) === 1) {
         logger.info('Server', `Update ${lastUpdate.updateInfo.version} found.`);
         this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
-      }
-      else {
+      } else {
         logger.info('Server', 'No updates found.');
         this.windowsHandler.sendToLoader('no-update-found');
       }
-    }
-    catch (error) {
+    } catch (error) {
       logger.info('Server', 'Internet is offline, aborting updates checking.');
       this.windowsHandler.sendToLoader('no-update-found');
     }
@@ -102,20 +102,22 @@ export class Server {
       try {
         if (this.vitrineConfig.steam) {
           const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
-          this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
+          this.vitrineConfig.steam = {
+            ...this.vitrineConfig.steam,
+            ...steamConfig
+          };
           await getSteamGamesPlayTimes(this.vitrineConfig.steam.userId);
         }
         this.playableGames = await getPlayableGames(this.vitrineConfig.steam);
         logger.info('Server', 'Sending playable games to client.');
         this.windowsHandler.sendToClient('add-playable-games', this.playableGames.getGames());
         this.findPotentialGames();
-      }
-      catch (error) {
+      } catch (error) {
         this.throwServerError(error);
       }
-    }
-    else
+    } else {
       logger.info('Server', 'Vitrine first launch.');
+    }
   }
 
   public quitApplication(mustRelaunch?: boolean) {
@@ -125,8 +127,7 @@ export class Server {
   public async fillIgdbGame(gameId: number) {
     try {
       this.windowsHandler.sendToClient('send-igdb-game', await fillIgdbGame(gameId, this.vitrineConfig.lang));
-    }
-    catch (error) {
+    } catch (error) {
       this.throwServerError(error);
     }
   }
@@ -134,36 +135,38 @@ export class Server {
   public async searchIgdbGames(gameName: string, resultsNb?: number) {
     try {
       this.windowsHandler.sendToClient('send-igdb-searches', gameName, await searchIgdbGame(gameName, resultsNb));
-    }
-    catch (error) {
+    } catch (error) {
       this.throwServerError(error);
     }
   }
 
   public async addAllPotentialGames() {
     try {
-      await Promise.all([ ...this.potentialGames.getGames() ].map(async (potentialGame: PotentialGame) => {
-        const filledGame: any = await fillFirstIgdbResult(potentialGame.name, this.vitrineConfig.lang);
-        const [ executable, ...args ]: string[] = potentialGame.commandLine;
-        filledGame.executable = executable;
-        filledGame.arguments = args.join(' ');
-        const addedGame: PlayableGame = new PlayableGame(filledGame.name, filledGame);
-        addedGame.source = potentialGame.source;
-        delete filledGame.source;
-        delete filledGame.id;
-        const game: PlayableGame = await Server.registerGame(addedGame, filledGame);
-        logger.info('Server', `Outputting game config file for ${game.name}.`);
-        const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
-        await fs.outputJson(configFilePath, game, { spaces: 2 });
-        logger.info('Server', `Added game ${game.name} sent to client.`);
-        this.playableGames.addGame(game);
-        this.playableGames.alphaSort();
-        this.potentialGames.removeGame(game.uuid);
-        this.potentialGames.alphaSort();
-        this.windowsHandler.sendToClient('update-add-all-games-status', this.playableGames.getGames(), this.potentialGames.getGames());
-      }));
-    }
-    catch (error) {
+      await Promise.all(
+        [...this.potentialGames.getGames()].map(async (potentialGame: PotentialGame) => {
+          const filledGame: any = await fillFirstIgdbResult(potentialGame.name, this.vitrineConfig.lang);
+          const [executable, ...args]: string[] = potentialGame.commandLine;
+          filledGame.executable = executable;
+          filledGame.arguments = args.join(' ');
+          console.log(filledGame);
+          const addedGame: PlayableGame = new PlayableGame(filledGame.name, filledGame);
+          console.log(addedGame);
+          addedGame.source = potentialGame.source;
+          delete filledGame.source;
+          delete filledGame.id;
+          const game: PlayableGame = await Server.registerGame(addedGame, filledGame);
+          logger.info('Server', `Outputting game config file for ${game.name}.`);
+          const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
+          await fs.outputJson(configFilePath, game, { spaces: 2 });
+          logger.info('Server', `Added game ${game.name} sent to client.`);
+          this.playableGames.addGame(game);
+          this.playableGames.alphaSort();
+          this.potentialGames.removeGame(game.uuid);
+          this.potentialGames.alphaSort();
+          this.windowsHandler.sendToClient('update-add-all-games-status', this.playableGames.getGames(), this.potentialGames.getGames());
+        })
+      );
+    } catch (error) {
       this.throwServerError(error);
     }
   }
@@ -210,8 +213,7 @@ export class Server {
       await launchingGame.addPlayTime(secondsPlayed);
       logger.info('Server', `Adding time played ${secondsPlayed} to ${launchingGame.name} (${launchingGame.uuid}).`);
       this.windowsHandler.sendToClient('stop-game', gameUuid, launchingGame.timePlayed);
-    }
-    catch (error) {
+    } catch (error) {
       this.gameLaunched = false;
       this.throwServerError(error);
     }
@@ -231,7 +233,8 @@ export class Server {
     logger.info('Server', 'Beginning to search potential games.');
     this.windowsHandler.sendToClient('potential-games-search-begin');
     this.potentialGames.clear();
-    await Promise.all([ // TODO: return PotentialGames[] and refactor crawlers
+    await Promise.all([
+      // TODO: return PotentialGames[] and refactor crawlers
       this.searchSteamGames(),
       this.searchOriginGames(),
       this.searchBattleNetGames(),
@@ -247,91 +250,109 @@ export class Server {
     logger.info('Server', 'Updating global settings.');
     const config: any = { ...settingsForm };
     let firstTimeSteam: boolean = false;
-    if (settingsForm.steam && !this.modulesConfig.steam.userId)
+    if (settingsForm.steam && !this.modulesConfig.steam.userId) {
       firstTimeSteam = true;
+    }
     try {
       await fs.outputJson(this.vitrineConfigFilePath, config, { spaces: 2 });
       logger.info('Server', 'Settings outputted to vitrine_config.json.');
       this.vitrineConfig = config;
       if (firstTimeSteam) {
         const steamConfig: any = await findSteamData(this.vitrineConfig.steam);
-        this.vitrineConfig.steam = { ...this.vitrineConfig.steam, ...steamConfig };
+        this.vitrineConfig.steam = {
+          ...this.vitrineConfig.steam,
+          ...steamConfig
+        };
         await getSteamGamesPlayTimes(this.vitrineConfig.steam.userId);
       }
       this.windowsHandler.sendToClient('settings-updated', this.vitrineConfig);
       this.findPotentialGames();
-    }
-    catch (error) {
+    } catch (error) {
       this.throwServerError(error);
     }
   }
 
   private async searchSteamGames() {
-    if (!this.vitrineConfig.steam)
+    if (!this.vitrineConfig.steam) {
       return;
-    const games: GamesCollection<PotentialGame> = await searchSteamGames({
+    }
+    const games: GamesCollection<PotentialGame> = await searchSteamGames(
+      {
         ...this.modulesConfig.steam,
         ...this.vitrineConfig.steam
       },
-      this.playableGames.getGamesFromSource(GameSource.STEAM));
+      this.playableGames.getGamesFromSource(GameSource.STEAM)
+    );
     logger.info('Server', 'Adding potential Steam games to potential games list.');
     this.potentialGames.addGames(games.getGames());
   }
 
   private async searchOriginGames() {
-    if (!this.vitrineConfig.origin)
+    if (!this.vitrineConfig.origin) {
       return;
-    const games: GamesCollection<PotentialGame> = await searchOriginGames({
+    }
+    const games: GamesCollection<PotentialGame> = await searchOriginGames(
+      {
         ...this.modulesConfig.origin,
         ...this.vitrineConfig.origin
       },
-      this.playableGames.getGamesFromSource(GameSource.ORIGIN));
+      this.playableGames.getGamesFromSource(GameSource.ORIGIN)
+    );
     logger.info('Server', 'Adding potential Origin games to potential games list.');
     this.potentialGames.addGames(games.getGames());
   }
 
   private async searchBattleNetGames() {
-    if (!this.vitrineConfig.battleNet)
+    if (!this.vitrineConfig.battleNet) {
       return;
+    }
     const games: GamesCollection<PotentialGame> = await searchBattleNetGames({
-        ...this.modulesConfig.battleNet,
-        ...this.vitrineConfig.battleNet
-      });
+      ...this.modulesConfig.battleNet,
+      ...this.vitrineConfig.battleNet
+    });
     logger.info('Server', 'Adding potential Battle.net games to potential games list.');
     this.potentialGames.addGames(games.getGames());
   }
 
   private async searchEmulatedGames() {
-    if (!this.vitrineConfig.emulated)
+    if (!this.vitrineConfig.emulated) {
       return;
-    const games: GamesCollection<PotentialGame> = await searchEmulatedGames({
+    }
+    const games: GamesCollection<PotentialGame> = await searchEmulatedGames(
+      {
         ...this.modulesConfig.emulated,
         ...this.vitrineConfig.emulated
       },
-      this.playableGames.getGamesFromSource(GameSource.EMULATED));
+      this.playableGames.getGamesFromSource(GameSource.EMULATED)
+    );
     logger.info('Server', 'Adding potential emulated games to potential games list.');
     this.potentialGames.addGames(games.getGames());
   }
 
   private static async registerGame(game: PlayableGame, gameForm: any, editing: boolean = false) {
-    game.commandLine = gameForm.arguments ? [ gameForm.executable, gameForm.arguments ] : [ gameForm.executable ];
+    game.commandLine = gameForm.arguments ? [gameForm.executable, gameForm.arguments] : [gameForm.executable];
     game.details.rating = parseInt(game.details.rating);
-    game.details.genres = game.details.genres.split(', ');
+    if (typeof game.details.genres === 'string') {
+      game.details.genres = game.details.genres.split(', ');
+    }
     game.details.releaseDate = moment(game.details.date, 'DD/MM/YYYY').unix() * 1000;
-    if (game.source === GameSource.STEAM)
+    if (game.source === GameSource.STEAM) {
       game.details.steamId = parseInt(game.commandLine[1].match(/\d+/g)[0]);
+    }
     delete game.details.name;
     delete game.details.date;
     delete game.details.executable;
     delete game.details.arguments;
-    if (!editing && game.source === GameSource.STEAM)
+    if (!editing && game.source === GameSource.STEAM) {
       game.timePlayed = getSteamGamePlayTime(game.details.steamId);
+    }
 
     logger.info('Server', `Game form data for ${game.name} being formatted.`);
     const gameDirectory: string = path.resolve(getEnvFolder('games'), game.uuid);
     const configFilePath: string = path.resolve(gameDirectory, 'config.json');
-    if (!editing && await fs.pathExists(configFilePath))
+    if (!editing && (await fs.pathExists(configFilePath))) {
       return;
+    }
     await fs.ensureDir(gameDirectory);
 
     if (!isAlreadyStored(game.details.backgroundScreen, gameForm.backgroundScreen) || !isAlreadyStored(game.details.cover, gameForm.cover)) {
@@ -340,35 +361,43 @@ export class Server {
       const coverPath: string = path.resolve(gameDirectory, `cover.${gameHash}.jpg`);
       logger.info('Server', `Creating hashed versions for background picture and cover for ${game.name}.`);
 
-      const backgroundUrl: string = editing ? gameForm.backgroundScreen
-        : (game.details.backgroundScreen ? game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge') : null);
+      const backgroundUrl: string = editing
+        ? gameForm.backgroundScreen
+        : game.details.backgroundScreen
+        ? game.details.backgroundScreen.replace('t_screenshot_med', 't_screenshot_huge')
+        : null;
       const coverUrl: string = editing ? gameForm.cover : game.details.cover;
-      const images: any = await downloadGamePictures(game.details, { backgroundUrl, backgroundPath, coverUrl, coverPath });
+      const images: any = await downloadGamePictures(game.details, {
+        backgroundPath,
+        backgroundUrl,
+        coverPath,
+        coverUrl
+      });
       delete game.details.screenshots;
       delete game.details.background;
       game.details = { ...game.details, ...images };
-    }
-    else
+    } else {
       logger.info('Server', `Background picture and cover for ${game.name} already stored.`);
+    }
     return game;
   }
 
   private async sendRegisteredGame(game: PlayableGame, editing: boolean = false) {
     logger.info('Server', `Outputting game config file for ${game.name}.`);
     const configFilePath: string = path.resolve(path.resolve(getEnvFolder('games'), game.uuid), 'config.json');
-    await fs.outputJson(configFilePath, game , { spaces: 2 });
+    await fs.outputJson(configFilePath, game, { spaces: 2 });
     if (!editing) {
       logger.info('Server', `Added game ${game.name} sent to client.`);
       this.playableGames.addGame(game);
       this.windowsHandler.sendToClient('add-playable-game', game);
-    }
-    else {
+    } else {
       logger.info('Server', `Edited game ${game.name} sent to client.`);
       this.playableGames.editGame(game);
       this.windowsHandler.sendToClient('edit-playable-game', game);
     }
-    if (!editing && game.source !== GameSource.LOCAL)
+    if (!editing && game.source !== GameSource.LOCAL) {
       this.findPotentialGames();
+    }
   }
 
   private throwServerError(error: Error) {

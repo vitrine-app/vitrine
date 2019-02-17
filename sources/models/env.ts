@@ -6,24 +6,24 @@ export function isProduction(): boolean {
   return process.env.ELECTRON_ENV !== 'dev';
 }
 
-export function isFakeProd(): boolean {
-  return process.env.TEST_PROD === 'true';
-}
-
 export function isTesting(): boolean {
   return process.env.TESTING === 'true';
 }
 
 export function getAppDataFolder() {
-  return (process.platform === 'win32') ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.local/share/vitrine`;
+  return process.platform === 'win32' ? `${process.env.APPDATA}/vitrine` : `${process.env.HOME}/.local/share/vitrine`;
 }
 
 export function getEnvFolder(folder: string, nonProd?: boolean): string {
-  if (isTesting() && !isProduction())
+  if (isTesting() && !isProduction()) {
     return path.resolve(folder);
+  }
   const appDataPath: string = path.resolve(getAppDataFolder(), 'data', folder);
-  const computedPath: string = isProduction() ?
-    ((folder === 'games' || folder === 'config') && !nonProd ? appDataPath : `../../${folder}`) : `../${folder}`;
+  const computedPath: string = isProduction()
+    ? (folder === 'games' || folder === 'config') && !nonProd
+      ? appDataPath
+      : `../../${folder}`
+    : `../${folder}`;
   return path.resolve(__dirname, computedPath);
 }
 
@@ -34,5 +34,8 @@ export function uuidV5(name: string): string {
 
 export function randomHashedString(length?: number): string {
   const finalLength: number = length || 8;
-  return crypto.randomBytes(Math.ceil(finalLength / 2)).toString('hex').slice(0, finalLength);
+  return crypto
+    .randomBytes(Math.ceil(finalLength / 2))
+    .toString('hex')
+    .slice(0, finalLength);
 }
