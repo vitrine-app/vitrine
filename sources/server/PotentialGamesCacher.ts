@@ -3,7 +3,7 @@ import * as path from 'path';
 
 import { getEnvFolder } from '@models/env';
 import { PotentialGame } from '@models/PotentialGame';
-import { searchIgdbGame } from './api/ServerWrapper';
+import { searchGame, searchSteamGame } from './api/igdbWrapper';
 import { logger } from './Logger';
 
 export class PotentialGamesCacher {
@@ -23,7 +23,14 @@ export class PotentialGamesCacher {
     const populatedPotentialGames: PotentialGame[] = await Promise.all(
       potentialGames.map(async (potentialGame: PotentialGame) => {
         if (!potentialGamesCache[potentialGame.uuid]) {
-          const [{ cover }]: any[] = await searchIgdbGame(potentialGame.name, 1);
+          let cover: string;
+          if (potentialGame.details && potentialGame.details.steamId) {
+            const { cover: gameCover } = await searchSteamGame(potentialGame.details.steamId);
+            cover = gameCover;
+          } else {
+            const [{ cover: gameCover }]: any[] = await searchGame(potentialGame.name, 1);
+            cover = gameCover;
+          }
           potentialGamesCache[potentialGame.uuid] = {
             cover,
             name: potentialGame.name
