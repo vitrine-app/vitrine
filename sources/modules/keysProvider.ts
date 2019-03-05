@@ -1,14 +1,17 @@
+const isOnCi = process.env.APPVEYOR_REPO_BRANCH || process.env.TRAVIS_BRANCH;
+
 /* tslint:disable:no-var-requires */
-const keysProvider = require('../../modules/keysProvider');
+const keysProvider = isOnCi ? null : require('../../modules/keysProvider');
+
 
 export function steamKey(): string {
-  return keysProvider.steamKey();
+  return isOnCi ? process.env.STEAM_KEY : keysProvider.steamKey();
 }
 
 export function discordRpcKey(): string {
-  return keysProvider.discordRpcKey();
+  return isOnCi ? process.env.DISCORD_RPC_KEY : keysProvider.discordRpcKey();
 }
 
-export function vitrineSecretKey(): string {
-  return keysProvider.vitrineSecretKey();
+export function igdbKey(): string {
+  return isOnCi ? process.env.IGDB_KEY : keysProvider.igdbKey();
 }

@@ -1,10 +1,10 @@
-import { fillIgdbGame, searchIgdbGame } from '../../../sources/server/api/ServerWrapper';
+import { getGameById, searchGame } from '../../../sources/server/api/igdbWrapper';
 
 describe('ServerWrapper searcher', () => {
   let gamesArray: any[];
 
   before(async () => {
-    gamesArray = await searchIgdbGame('Super Mario Galaxy', 2);
+    gamesArray = await searchGame('Super Mario Galaxy', 2);
   });
 
   it('Return a 2 games length array', () => {
@@ -22,7 +22,7 @@ describe('ServerWrapper searcher', () => {
 
 describe('ServerWrapper filler', () => {
   it('Return a game object', async () => {
-    const game = await fillIgdbGame(340);
+    const game = await getGameById(340);
     game.should.be.a('object');
     game.should.have.property('name');
     game.should.have.property('summary');

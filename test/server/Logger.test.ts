@@ -24,7 +24,7 @@ function testLogger(prod?: boolean) {
     it('Append a line after logging', async () => {
       logger.info('Logger.test', 'This is a unit test.');
       const logContent = await fs.readFile(logFilePath);
-      (logContent.toString().split('\n').length).should.equal(3);
+      (logContent.toString().split('\n').length).should.equal(6);
     });
 
     after(async () => {
