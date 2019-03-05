@@ -105,6 +105,7 @@
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.17.0",
     "tslint-eslint-rules": "^5.1.0",
+    "tslint-plugin-prettier": "^2.0.1",
     "tslint-react": "^3.5.1",
     "tweetnacl": "^1.0.0",
     "tweetnacl-util": "^0.15.0",
@@ -133,7 +134,6 @@
     "lint:app": "tslint sources/**/*.ts*",
     "lint:server": "tslint sources/server/**/*.ts sources/models/**/*.ts",
     "lint:client": "tslint sources/client/**/*.ts*",
-    "lint:prettier": "prettier --write sources/**/*.ts*",
     "watch:client": "cross-env NO_LOADER=true parallel-webpack --progress --config=webpack/client.config.js --watch",
     "keys:encrypt": "node scripts/crypto encrypt",
     "keys:decrypt": "node scripts/crypto decrypt",
@@ -163,7 +163,7 @@
   },
   "husky": {
     "hooks": {
-      "precommit": "tslint --fix sources/**/*.ts* && yarn lint:prettier"
+      "precommit": "tslint --fix sources/**/*.ts*"
     }
   }
 }

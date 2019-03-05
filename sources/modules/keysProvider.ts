@@ -3,7 +3,6 @@ const isOnCi = process.env.APPVEYOR_REPO_BRANCH || process.env.TRAVIS_BRANCH;
 /* tslint:disable:no-var-requires */
 const keysProvider = isOnCi ? null : require('../../modules/keysProvider');
 
-
 export function steamKey(): string {
   return isOnCi ? process.env.STEAM_KEY : keysProvider.steamKey();
 }
