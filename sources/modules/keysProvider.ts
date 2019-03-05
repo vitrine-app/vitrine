@@ -12,3 +12,7 @@ export function discordRpcKey(): string {
 export function vitrineSecretKey(): string {
   return keysProvider.vitrineSecretKey();
 }
+
+export function igdbKey(): string {
+  return keysProvider.igdbKey();
+}
