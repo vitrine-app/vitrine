@@ -6,7 +6,9 @@
     "tslint-react",
     "tslint-config-prettier"
   ],
+  "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
+    "prettier": true,
     "no-multi-spaces": true,
     "interface-name": false,
     "trailing-comma": false,
