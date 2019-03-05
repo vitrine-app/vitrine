@@ -133,6 +133,7 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
         </Progress>
       </React.Fragment>
     );
+    // TODO: re-implement feature to add every game at once
     return (
       <FadingModal
         onClose={this.props.closePotentialGamesAddModal}
@@ -141,14 +142,7 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
         title={
           this.state.addAllGames
             ? this.props.intl.formatMessage({ id: 'actions.addAllPotentialGames' })
-            : {
-                rightElement: (
-                  <Button primary={true} className={css(styles.addAllGamesButton)} onClick={this.addAllGamesClick}>
-                    <FormattedMessage id={'actions.addAllPotentialGames'} />
-                  </Button>
-                ),
-                title: this.props.intl.formatMessage({ id: 'actions.addGames' })
-              }
+            : this.props.intl.formatMessage({ id: 'actions.addGames' })
         }
         visible={this.props.visible}
       >
