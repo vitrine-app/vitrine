@@ -73,6 +73,7 @@
     "@types/source-map-support": "^0.4.1",
     "@types/uuid": "^3.4.3",
     "@types/winreg": "^1.2.30",
+    "aes-cross": "^1.0.9",
     "asar": "^0.14.3",
     "base64-inline-loader": "^1.1.1",
     "chai": "^4.1.2",

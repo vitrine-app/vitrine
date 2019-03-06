@@ -1,28 +1,20 @@
 const fs = require('fs-extra');
-const openpgp = require('openpgp');
+const aes = require('aes-cross');
 
-const secret = process.env.VITRINE_KEY;
-if (!secret)
+if (!process.env.VITRINE_KEY)
   throw new Error('VITRINE_KEY is missing.');
+const secret = Buffer.from(process.env.VITRINE_KEY, 'utf8');
 
 async function encrypt() {
   const file = await fs.readFile('./sources/modules/keysProvider/srcs/keys.hh');
-  const { data } = await openpgp.encrypt({
-    message: await openpgp.message.fromBinary(file),
-    passwords: [ secret ],
-    armor: true
-  });
-  await fs.writeFile('./sources/modules/keysProvider/srcs/keys.hh.asc', data);
+  const encrypted = aes.encText(file.toString(), secret);
+  await fs.writeFile('./sources/modules/keysProvider/srcs/keys.asc', encrypted);
 }
 
 async function decrypt() {
-  const file = await fs.readFile('./sources/modules/keysProvider/srcs/keys.hh.asc');
-  const { data } = await openpgp.decrypt({
-    message: await openpgp.message.readArmored(file.toString()),
-    passwords: [ secret ],
-    format: 'ascii'
-  });
-  await fs.writeFile('./sources/modules/keysProvider/srcs/keys.hh', Buffer.from(data));
+  const file = await fs.readFile('./sources/modules/keysProvider/srcs/keys.asc');
+  const decrypted = aes.decText(file.toString(), secret);
+  await fs.writeFile('./sources/modules/keysProvider/srcs/keys.hh', decrypted);
 }
 
 switch (process.argv[2]) {
