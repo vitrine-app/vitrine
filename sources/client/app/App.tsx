@@ -85,7 +85,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   updateSettings(settings: any) {
     dispatch(updateSettings(settings));
     dispatch(setLocale(settings.lang || 'mdr'));
-  },
+  }
 });
 
 const AppContainer = connect(
