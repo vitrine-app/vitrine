@@ -1,5 +1,8 @@
 # Vitrine Changelog
 
+## 0.11.0 (06/03/2019)
+- fix: Vitrine now uses the new IGDB 3000 API
+
 ## 0.10.1 (17/02/2019)
 - fix: Vitrine no longer launches forever at first startup
 
