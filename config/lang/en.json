@@ -31,6 +31,7 @@
     "name": "Game name",
     "series": "Games series",
     "releaseDate": "Release date",
+    "unknownReleaseDate": "Unknown",
     "developer": "Developer",
     "publisher": "Publisher",
     "genres": "Genres",

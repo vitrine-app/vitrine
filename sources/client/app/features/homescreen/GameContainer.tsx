@@ -9,15 +9,17 @@ import { Button, Grid } from 'semantic-ui-react';
 
 import { PlayableGame } from '@models/PlayableGame';
 import { formatTimePlayed, urlify } from '../../helpers';
+import { GameInfosBreaker, GameInfosPanel } from '../../ui/atoms/GameInfosPanel';
+import { SectionTitle } from '../../ui/atoms/SectionTitle';
 import { BlurPicture } from '../../ui/BlurPicture';
 import { CirclePercentage } from '../../ui/CirclePercentage';
+import { GameInformation } from '../../ui/molecules/GameInformation';
+import { GenresList } from '../../ui/molecules/GenresList';
 import { SplitBar } from '../../ui/SplitBar';
 import { AppState } from '../redux/AppState';
 import { VitrineComponent } from '../VitrineComponent';
-import { GameInformation } from './GameInformation';
 
 import { faAlignLeft, faCalendar, faGamepad, faPlay, faStopwatch, faTerminal, faUserTie } from '@fortawesome/fontawesome-free-solid';
-import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../../resources/less/theme/globals/site.variables';
 
 interface Props {
   selectedGame: PlayableGame;
@@ -63,7 +65,7 @@ class GameContainer extends VitrineComponent<Props, State> {
               <FontAwesomeIcon className={css(styles.icon)} icon={faPlay} size={'sm'} />
               <FormattedMessage id={'actions.playGame'} />
             </Button>
-            <div className={css(styles.gameInfosArea)} style={{ display: 'flex' }}>
+            <GameInfosPanel isFlex={true}>
               <div style={{ flex: 8 }}>
                 <GameInformation
                   icon={faStopwatch}
@@ -82,51 +84,51 @@ class GameContainer extends VitrineComponent<Props, State> {
                 />
               </div>
               <div style={{ flex: 2 }}>
-                <CirclePercentage color={lessVars.primaryColor} percentage={this.props.selectedGame.details.rating} />
+                <CirclePercentage percentage={this.props.selectedGame.details.rating} />
               </div>
-            </div>
+            </GameInfosPanel>
+            <GameInfosBreaker />
             <div className={css(styles.specificInfos)}>
-              <div className={css(styles.gameInfosLeftArea)}>
-                <div className={css(styles.gameInfosArea, styles.gameInfosLeftAreaPanel)}>
-                  <FontAwesomeIcon className={css(styles.icon)} icon={faGamepad} size={'lg'} />
-                  <span className={css(styles.titleSection)} />
+              <div style={{ flex: 2 }}>
+                <GameInfosPanel leftSide={true}>
                   <GameInformation
                     icon={faCalendar}
+                    isSmall={true}
                     title={this.props.intl.formatMessage({ id: 'game.releaseDate' })}
-                    value={moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')}
+                    value={
+                      this.props.selectedGame.details.releaseDate
+                        ? moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')
+                        : this.props.intl.formatMessage({ id: 'game.unknownReleaseDate' })
+                    }
                   />
-                </div>
-                {!!this.props.selectedGame.details.genres.length && (
-                  <div className={css(styles.gameInfosArea, styles.gameInfosLeftAreaPanel)}>
-                    <FontAwesomeIcon className={css(styles.icon)} icon={faGamepad} size={'lg'} />
-                    <span className={css(styles.titleSection)}>
-                      <FormattedMessage id={'game.genres'} />
-                    </span>
-                    <ul className={css(styles.genresList)}>
-                      {this.props.selectedGame.details.genres.map((genre: string, index: number) => (
-                        <li className={css(styles.gameGenre)} key={index}>
-                          <FormattedMessage id={`genresNames.${genre}`} />
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                  {!!this.props.selectedGame.details.genres.length && (
+                    <React.Fragment>
+                      <FontAwesomeIcon className={css(styles.icon)} icon={faGamepad} size={'lg'} />
+                      <SectionTitle>
+                        <FormattedMessage id={'game.genres'} />
+                      </SectionTitle>
+                      <GenresList formatMessage={this.props.intl.formatMessage} genres={this.props.selectedGame.details.genres} />
+                    </React.Fragment>
+                  )}
+                </GameInfosPanel>
               </div>
-              <div className={css(styles.gameInfosArea, styles.gameInfosRightArea)}>
-                <FontAwesomeIcon className={css(styles.icon)} icon={faAlignLeft} size={'lg'} />
-                <span className={css(styles.titleSection)}>
-                  <FormattedMessage id={'game.summary'} />
-                </span>
-                <div className={css(styles.gameDescription)}>
-                  {this.props.selectedGame.details.summary
-                    .split('\n')
-                    .filter((section: string) => section && !/^\s+$/.test(section))
-                    .map((section: string, index: number) => (
-                      <p className={css(styles.gameDescriptionParagraph)} key={index}>
-                        {section}
-                      </p>
-                    ))}
-                </div>
+              <div style={{ flex: 3 }}>
+                <GameInfosPanel rightSide={true}>
+                  <FontAwesomeIcon className={css(styles.icon)} icon={faAlignLeft} size={'lg'} />
+                  <SectionTitle>
+                    <FormattedMessage id={'game.summary'} />
+                  </SectionTitle>
+                  <div className={css(styles.gameDescription)}>
+                    {this.props.selectedGame.details.summary
+                      .split('\n')
+                      .filter((section: string) => section && !/^\s+$/.test(section))
+                      .map((section: string, index: number) => (
+                        <p className={css(styles.gameDescriptionParagraph)} key={index}>
+                          {section}
+                        </p>
+                      ))}
+                  </div>
+                </GameInfosPanel>
               </div>
             </div>
           </Grid.Column>
@@ -194,41 +196,18 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   },
   gameDescription: {
     borderRadius: 3,
-    lineHeight: 1.5,
-    margin: margin(15, 0, 10, 0),
-    maxHeight: 210,
+    height: 328,
+    margin: margin(20, 0, 10),
+    maxHeight: 328,
     minHeight: 160,
     overflowY: 'auto'
   },
   gameDescriptionParagraph: {
-    lineHeight: 1.6
-  },
-  gameGenre: {
-    padding: padding(4, 0)
+    lineHeight: 1.8
   },
   gameHeader: {
     height: (100).percents(),
     marginTop: 40
-  },
-  gameInfosArea: {
-    backgroundColor: rgba(0, 0, 0, 0.5),
-    borderRadius: 3,
-    color: rgba(230, 228, 227, 0.85),
-    fontSize: (1.2).em(),
-    margin: margin(5, 0),
-    padding: padding(13, 24)
-  },
-  gameInfosLeftArea: {
-    flex: 2
-  },
-  gameInfosLeftAreaPanel: {
-    marginBottom: 0,
-    marginRight: 5,
-    marginTop: 10
-  },
-  gameInfosRightArea: {
-    flex: 3,
-    marginLeft: 5
   },
   gamePanel: {
     height: (100).percents(),
@@ -239,10 +218,6 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     color: rgba(255, 255, 255, 0.66),
     fontSize: 37,
     fontWeight: 400
-  },
-  genresList: {
-    listStyleType: 'none',
-    padding: padding(0, 0, 0, 7)
   },
   icon: {
     margin: margin(0, 15, 0, 0)
@@ -286,11 +261,6 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   specificInfos: {
     alignItems: 'flex-start',
     display: 'flex'
-  },
-  titleSection: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    textTransform: 'uppercase'
   }
 });
 
