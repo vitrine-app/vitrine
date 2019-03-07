@@ -12,6 +12,7 @@
 @primaryColor: #C7783F;
 @secondaryColor: #6C5A46;
 @orange: @primaryColor;
+@primaryTransparent: rgba(249, 168, 111, 0.40);
 
 @lightPrimaryColor: lighten(@primaryColor, 10%);
 @lightSecondaryColor: lighten(@secondaryColor, 10%);
