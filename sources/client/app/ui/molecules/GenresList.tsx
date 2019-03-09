@@ -1,5 +1,5 @@
 import { css, StyleSheet } from 'aphrodite';
-import { padding } from 'css-verbose';
+import { border, rgba } from 'css-verbose';
 import * as React from 'react';
 
 interface Props {
@@ -8,21 +8,26 @@ interface Props {
 }
 
 export const GenresList: React.StatelessComponent<Props> = ({ formatMessage, genres }) => (
-  <ul className={css(styles.genresList)}>
+  <div className={css(styles.genresList)}>
     {genres.map((genre: string, index: number) => (
-      <li className={css(styles.gameGenre)} key={index}>
+      <span className={css(styles.genre)} key={index}>
         {formatMessage({ id: `genresNames.${genre}` })}
-      </li>
+      </span>
     ))}
-  </ul>
+  </div>
 );
 
 const styles = StyleSheet.create({
-  gameGenre: {
-    padding: padding(4, 0)
+  genre: {
+    backgroundColor: rgba(249, 241, 237, 0.07),
+    border: border(1, 'solid', rgba(255, 255, 255, 0.37)),
+    borderRadius: 4,
+    display: 'inline-block',
+    margin: 3,
+    opacity: 0.8,
+    padding: 5
   },
   genresList: {
-    listStyleType: 'none',
-    padding: padding(0, 0, 0, 7)
+    paddingTop: 10
   }
 });
