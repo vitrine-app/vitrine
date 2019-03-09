@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as Datetime from 'react-datetime';
 import { Button, Input } from 'semantic-ui-react';
 
-import { VitrineComponent } from '../features/VitrineComponent';
+import { VitrineComponent } from '../../features/VitrineComponent';
 
 import { faCalendarAlt, faTrash } from '@fortawesome/fontawesome-free-solid';
 
@@ -15,7 +15,7 @@ interface Props {
   inputProps?: any;
 }
 
-export class DatePicker extends VitrineComponent<Props, {}> {
+export class DatePicker extends VitrineComponent<Props & any, {}> {
   public constructor() {
     super();
 
@@ -46,8 +46,10 @@ export class DatePicker extends VitrineComponent<Props, {}> {
           {...this.props.inputProps}
           label={removeDateButton}
           labelPosition={'right'}
+          size={'small'}
           style={{
             cursor: 'text',
+            fontSize: 14,
             width: (83).percents()
           }}
         />
