@@ -1,5 +1,8 @@
 # Vitrine Changelog
 
+## 0.11.1 (09/03/2019)
+- fix: IGDB dates are now corrects
+
 ## 0.11.0 (06/03/2019)
 - fix: Vitrine now uses the new IGDB 3000 API
 

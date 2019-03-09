@@ -103,7 +103,7 @@ async function getReleaseDate(releaseDateId: number) {
     .fields('date')
     .where(`id = ${releaseDateId}`)
     .request(`${baseUrl}/release_dates`);
-  return releaseDate.date;
+  return releaseDate.date * 1000;
 }
 
 async function getSeries(collectionId: number) {
