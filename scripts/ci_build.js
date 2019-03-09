@@ -6,7 +6,7 @@ if (!branch)
   throw new Error('Branch is not defined. Check your CI configuration.');
 
 console.log(`====== Current branch: ${branch} ======`);
-if (branch === 'stable' || branch.startsWith('release/')) {
+if (branch === 'stable' || branch.startsWith('release/') || branch.startsWith('hotfix/')) {
   console.log('Deployment path.');
   exec('yarn build:modules');
   exec('yarn dist:ci');
