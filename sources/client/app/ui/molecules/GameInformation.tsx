@@ -3,7 +3,7 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin } from 'css-verbose';
 import * as React from 'react';
 
-import { SectionTitle } from '../atoms/SectionTitle';
+import { SectionTitle } from '../atoms';
 
 interface Props {
   icon: FontAwesomeIcon.IconDefinition;

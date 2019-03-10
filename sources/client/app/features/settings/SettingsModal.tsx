@@ -8,8 +8,8 @@ import { Dispatch } from 'redux';
 import { Button, Checkbox, Form, Grid, Input, Tab, Table } from 'semantic-ui-react';
 
 import { openDirectory } from '../../helpers';
+import { SplitBar } from '../../ui/atoms';
 import { FadingModal } from '../../ui/FadingModal';
-import { SplitBar } from '../../ui/SplitBar';
 import { Action } from '../redux/actions/actionsTypes';
 import { closeSettingsModal } from '../redux/actions/modals';
 import { setLocale, updateSettings } from '../redux/actions/settings';

@@ -9,13 +9,9 @@ import { Button, Grid } from 'semantic-ui-react';
 
 import { PlayableGame } from '@models/PlayableGame';
 import { formatTimePlayed, urlify } from '../../helpers';
-import { GameInfosBreaker, GameInfosPanel } from '../../ui/atoms/GameInfosPanel';
-import { SectionTitle } from '../../ui/atoms/SectionTitle';
-import { BlurPicture } from '../../ui/BlurPicture';
+import { GameInfosBreaker, GameInfosPanel, SectionTitle, SplitBar } from '../../ui/atoms';
 import { CirclePercentage } from '../../ui/CirclePercentage';
-import { GameInformation } from '../../ui/molecules/GameInformation';
-import { GenresList } from '../../ui/molecules/GenresList';
-import { SplitBar } from '../../ui/SplitBar';
+import { BlurPicture, GameInformation, GenresList } from '../../ui/molecules';
 import { AppState } from '../redux/AppState';
 import { VitrineComponent } from '../VitrineComponent';
 
@@ -137,7 +133,7 @@ class GameContainer extends VitrineComponent<Props, State> {
               faIcon={faPlay}
               fontSize={125}
               background={this.props.selectedGame.details.cover}
-              clickHandler={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
+              onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
             />
           </Grid.Column>
           <Grid.Column width={1} />

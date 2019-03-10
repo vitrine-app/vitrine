@@ -4,15 +4,15 @@ import { rgba } from 'css-verbose';
 import * as React from 'react';
 import { Transition } from 'semantic-ui-react';
 
-import { VitrineComponent } from '../features/VitrineComponent';
-import { urlify } from '../helpers';
+import { VitrineComponent } from '../../features/VitrineComponent';
+import { urlify } from '../../helpers';
 
 interface Props {
   width?: string;
   fontSize: number;
   background: string;
   faIcon: FontAwesomeIcon.IconDefinition;
-  clickHandler: () => void;
+  onClick: () => void;
 }
 
 interface State {
@@ -47,7 +47,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
 
     this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
     this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
-    this.clickHandler = this.clickHandler.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   private mouseEnterHandler() {
@@ -76,12 +76,12 @@ export class BlurPicture extends VitrineComponent<Props, State> {
     });
   }
 
-  private clickHandler() {
+  private onClick() {
     this.setState({
       pulseVisible: !this.state.pulseVisible
     });
 
-    this.props.clickHandler();
+    this.props.onClick();
   }
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
@@ -100,7 +100,7 @@ export class BlurPicture extends VitrineComponent<Props, State> {
           className={css(styles.container)}
           onMouseEnter={this.mouseEnterHandler}
           onMouseLeave={this.mouseLeaveHandler}
-          onClick={this.clickHandler}
+          onClick={this.onClick}
           style={this.state.divStyle}
         >
           <div className={css(styles.picture)} style={{ ...this.state.imageStyle }} />
@@ -124,11 +124,14 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     width: (100).percents()
   },
   icon: {
+    bottom: 0,
     color: rgba(255, 255, 255, 0.4),
     cursor: 'pointer',
-    left: (40).percents(),
+    left: 0,
+    margin: 'auto',
     position: 'absolute',
-    top: (40).percents()
+    right: 0,
+    top: 0
   },
   picture: {
     backgroundRepeat: 'no-repeat',

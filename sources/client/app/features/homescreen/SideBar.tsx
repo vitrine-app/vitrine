@@ -1,7 +1,6 @@
 import { css, StyleSheet } from 'aphrodite';
-import { margin, padding, rgba } from 'css-verbose';
+import { margin, padding } from 'css-verbose';
 import * as React from 'react';
-import { ContextMenuTrigger } from 'react-contextmenu';
 import { InjectedIntl, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -12,7 +11,7 @@ import { GamesCollection } from '@models/GamesCollection';
 import { PlayableGame, SortParameter } from '@models/PlayableGame';
 import { PotentialGame } from '@models/PotentialGame';
 import { ActionButton } from '../../ui/ActionButton';
-import { SideBarGameRow } from '../../ui/molecules/SideBarGameRow';
+import { SideBarGameRow } from '../../ui/molecules';
 import { Action } from '../redux/actions/actionsTypes';
 import { refreshGames, selectGame, sortGames } from '../redux/actions/games';
 import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../redux/actions/modals';

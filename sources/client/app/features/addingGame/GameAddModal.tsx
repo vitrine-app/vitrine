@@ -11,13 +11,8 @@ import { Button, Form, Grid } from 'semantic-ui-react';
 import { PlayableGame } from '@models/PlayableGame';
 import { GameSource, PotentialGame } from '@models/PotentialGame';
 import { notify, openExecutableDialog, openImageDialog } from '../../helpers';
-import { BlurPicture } from '../../ui/BlurPicture';
 import { FadingModal } from '../../ui/FadingModal';
-import { DateField } from '../../ui/molecules/DateField';
-import { ImagesPickerField } from '../../ui/molecules/ImagesPickerField';
-import { NumberField } from '../../ui/molecules/NumberField';
-import { TextAreaField } from '../../ui/molecules/TextAreaField';
-import { TextField } from '../../ui/molecules/TextField';
+import { BlurPicture, DateField, ImagesPickerField, NumberField, TextAreaField, TextField } from '../../ui/molecules';
 import { Action } from '../redux/actions/actionsTypes';
 import { addPlayableGames, editPlayableGame, selectGame, setGameToEdit, setPotentialGameToAdd } from '../redux/actions/games';
 import { closeGameAddModal, closeIgdbResearchModal, closeTimePlayedEditionModal } from '../redux/actions/modals';
@@ -338,7 +333,7 @@ class GameAddModal extends VitrineComponent<Props, State> {
               <FormattedMessage id={'game.cover'} />
             </label>
             <div className={css(styles.coverWrapper)}>
-              <BlurPicture faIcon={faFolderOpen} fontSize={55} background={this.state.gameData.cover} clickHandler={this.gameCoverClickHandler} />
+              <BlurPicture faIcon={faFolderOpen} fontSize={55} background={this.state.gameData.cover} onClick={this.gameCoverClickHandler} />
             </div>
           </Grid.Column>
           <Grid.Column width={1} />
