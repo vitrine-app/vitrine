@@ -9,11 +9,13 @@ import { VitrineComponent } from '../features/VitrineComponent';
 import { faCaretDown, faCaretUp } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
+  inputProps: any;
   min: number;
   max: number;
   name: string;
   placeholder: string;
   value: number;
+  size: string | any;
   onChange?: (value: number) => void;
 }
 
@@ -21,7 +23,7 @@ interface State {
   value: string | React.ReactText;
 }
 
-export class NumberPicker extends VitrineComponent<Props, State> {
+export class NumberPicker extends VitrineComponent<Props & any, State> {
   public constructor(props: Props) {
     super(props);
 
@@ -121,10 +123,11 @@ export class NumberPicker extends VitrineComponent<Props, State> {
     return (
       <div>
         <Input
+          {...this.props.inputProps}
           label={controlButtons}
           labelPosition={'right'}
           type={'text'}
-          size={'large'}
+          size={this.props.size}
           className={css(styles.spinnerInput)}
           name={this.props.name}
           placeholder={this.props.placeholder}
@@ -150,7 +153,7 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   verticalBtn: {
     borderRadius: 0,
     display: 'block',
-    height: 22,
+    height: 19,
     marginLeft: -1,
     padding: padding(3, 8, 8, 8),
     width: 25

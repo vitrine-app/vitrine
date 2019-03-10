@@ -5,13 +5,13 @@ import * as React from 'react';
 import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Button, Grid, Progress } from 'semantic-ui-react';
+import { Grid, Progress } from 'semantic-ui-react';
 
 import { GamesCollection } from '@models/GamesCollection';
 import { PlayableGame } from '@models/PlayableGame';
 import { PotentialGame } from '@models/PotentialGame';
-import { BlurPicture } from '../../ui/BlurPicture';
 import { FadingModal } from '../../ui/FadingModal';
+import { BlurPicture } from '../../ui/molecules';
 import { Action } from '../redux/actions/actionsTypes';
 import { selectGame, setPlayableGames, setPotentialGames, setPotentialGameToAdd } from '../redux/actions/games';
 import { closePotentialGamesAddModal, openGameAddModal } from '../redux/actions/modals';
@@ -110,7 +110,7 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
                 <div className={css(styles.coverWrapper)}>
                   <BlurPicture
                     background={potentialGame.details.cover}
-                    clickHandler={this.gameCoverClick.bind(null, potentialGame)}
+                    onClick={this.gameCoverClick.bind(null, potentialGame)}
                     faIcon={faPlusCircle}
                     fontSize={55}
                   />

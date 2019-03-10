@@ -1,11 +1,12 @@
 import { css, StyleSheet } from 'aphrodite';
+import { rgba } from 'css-verbose';
 import { BrowserWindow, remote } from 'electron';
 import * as React from 'react';
 
 import { WindowControl, WindowControlIcon } from '../../ui/WindowControlIcon';
 import { VitrineComponent } from '../VitrineComponent';
 
-export class TaskBar extends VitrineComponent<{}, {}> {
+export class InvisibleTaskBar extends VitrineComponent<{}, {}> {
   private currentWindow: BrowserWindow;
 
   public constructor() {
@@ -36,7 +37,6 @@ export class TaskBar extends VitrineComponent<{}, {}> {
   public render(): JSX.Element {
     return (
       <div className={css(styles.taskBar)}>
-        <span className={css(styles.title)}>Vitrine</span>
         <div className={css(styles.windowControlBtnGroup)}>
           <WindowControlIcon icon={WindowControl.MinimizeIcon} onClick={this.minimizeBtnClickHandler} />
           <WindowControlIcon icon={WindowControl.MaximizeIcon} onClick={this.maximizeBtnClickHandler} />
@@ -51,13 +51,11 @@ export class TaskBar extends VitrineComponent<{}, {}> {
 const styles: React.CSSProperties & any = StyleSheet.create({
   taskBar: {
     '-webkitAppRegion': 'drag',
-    backgroundColor: '#23211F',
-    height: 22,
-    textAlign: 'center'
-  },
-  title: {
-    fontSize: 15,
-    opacity: 0.6
+    backgroundColor: rgba(0, 0, 0, 0),
+    height: 30,
+    position: 'absolute',
+    width: (100).vw(),
+    zIndex: 1
   },
   windowControlBtnGroup: {
     '-webkitAppRegion': 'no-drag',

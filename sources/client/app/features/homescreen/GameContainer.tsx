@@ -9,13 +9,13 @@ import { Button, Grid } from 'semantic-ui-react';
 
 import { PlayableGame } from '@models/PlayableGame';
 import { formatTimePlayed, urlify } from '../../helpers';
-import { BlurPicture } from '../../ui/BlurPicture';
+import { GameInfosBreaker, GameInfosPanel, SectionTitle, SplitBar } from '../../ui/atoms';
 import { CirclePercentage } from '../../ui/CirclePercentage';
+import { BlurPicture, GameInformation, GenresList } from '../../ui/molecules';
 import { AppState } from '../redux/AppState';
 import { VitrineComponent } from '../VitrineComponent';
 
-import { faPlay } from '@fortawesome/fontawesome-free-solid';
-import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../../resources/less/theme/globals/site.variables';
+import { faAlignLeft, faCalendar, faGamepad, faPlay, faStopwatch, faTerminal, faUserTie } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
   selectedGame: PlayableGame;
@@ -38,9 +38,7 @@ class GameContainer extends VitrineComponent<Props, State> {
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
     if (!nextProps.selectedGame) {
-      return {
-        backgroundImage: 'none'
-      };
+      return { backgroundImage: 'none' };
     }
 
     let backgroundImage: string;
@@ -49,86 +47,85 @@ class GameContainer extends VitrineComponent<Props, State> {
     } else {
       backgroundImage = 'none';
     }
-    return {
-      backgroundImage
-    };
+    return { backgroundImage };
   }
 
   public render(): JSX.Element {
-    let gameContainer: JSX.Element;
-
-    if (this.props.selectedGame) {
-      gameContainer = (
-        <Grid className={css(styles.gameCore)}>
-          <Grid.Column width={11}>
-            <h1 className={css(styles.gameCoreTitle)}>{this.props.selectedGame.name}</h1>
-            <div className={css(styles.gameInfosRegion)}>
-              <Button onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)} primary={true}>
-                <FontAwesomeIcon icon={faPlay} size={'sm'} /> <FormattedMessage id={'actions.playGame'} />
-              </Button>
-              <span className={css(styles.gameTimePlayed)}>
-                {this.props.selectedGame.timePlayed ? formatTimePlayed(this.props.selectedGame.timePlayed, this.props.intl.formatMessage) : ''}
-              </span>
-            </div>
-            <div className={css(styles.gameInfosRegion)}>
-              <Grid>
-                <Grid.Column width={11}>
-                  <Grid>
-                    <Grid.Column width={5} className={css(styles.developerGridColumn)}>
-                      <strong>
-                        <FormattedMessage id={'game.developer'} />
-                      </strong>
-                    </Grid.Column>
-                    <Grid.Column width={11} className={css(styles.developerGridColumn)}>
-                      {this.props.selectedGame.details.developer}
-                    </Grid.Column>
-                  </Grid>
-                  <Grid>
-                    <Grid.Column width={5} className={css(styles.publisherGridColumn)}>
-                      <strong>
-                        <FormattedMessage id={'game.publisher'} />
-                      </strong>
-                    </Grid.Column>
-                    <Grid.Column width={11} className={css(styles.publisherGridColumn)}>
-                      {this.props.selectedGame.details.publisher}
-                    </Grid.Column>
-                  </Grid>
-                  <Grid>
-                    <Grid.Column width={5} className={css(styles.developerGridColumn)}>
-                      <strong>
-                        <FormattedMessage id={'game.releaseDate'} />
-                      </strong>
-                    </Grid.Column>
-                    <Grid.Column width={11} className={css(styles.developerGridColumn)}>
-                      {moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')}
-                    </Grid.Column>
-                  </Grid>
-                  <Grid>
-                    <Grid.Column width={5} className={css(styles.publisherGridColumn)}>
-                      <strong>
+    const gameContainer: JSX.Element = this.props.selectedGame ? (
+      <div className={css(styles.gamePanel)}>
+        <Grid className={css(styles.gameHeader)}>
+          <Grid.Column width={1} />
+          <Grid.Column width={9}>
+            <h1 className={css(styles.gameTitle)}>{this.props.selectedGame.name}</h1>
+            <Button className={css(styles.playButton)} onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}>
+              <FontAwesomeIcon className={css(styles.icon)} icon={faPlay} size={'sm'} />
+              <FormattedMessage id={'actions.playGame'} />
+            </Button>
+            <GameInfosPanel isFlex={true}>
+              <div style={{ flex: 8 }}>
+                <GameInformation
+                  icon={faStopwatch}
+                  title={this.props.intl.formatMessage({ id: 'game.timePlayed' })}
+                  value={formatTimePlayed(this.props.selectedGame.timePlayed, this.props.intl.formatMessage)}
+                />
+                <GameInformation
+                  icon={faTerminal}
+                  title={this.props.intl.formatMessage({ id: 'game.developer' })}
+                  value={this.props.selectedGame.details.developer}
+                />
+                <GameInformation
+                  icon={faUserTie}
+                  title={this.props.intl.formatMessage({ id: 'game.publisher' })}
+                  value={this.props.selectedGame.details.publisher}
+                />
+              </div>
+              <div style={{ flex: 2 }}>
+                <CirclePercentage percentage={this.props.selectedGame.details.rating} />
+              </div>
+            </GameInfosPanel>
+            <GameInfosBreaker />
+            <div className={css(styles.specificInfos)}>
+              <div style={{ flex: 2 }}>
+                <GameInfosPanel leftSide={true}>
+                  <GameInformation
+                    icon={faCalendar}
+                    isSmall={true}
+                    title={this.props.intl.formatMessage({ id: 'game.releaseDate' })}
+                    value={
+                      this.props.selectedGame.details.releaseDate
+                        ? moment(this.props.selectedGame.details.releaseDate).format('DD/MM/YYYY')
+                        : this.props.intl.formatMessage({ id: 'game.unknownReleaseDate' })
+                    }
+                  />
+                  {!!this.props.selectedGame.details.genres.length && (
+                    <React.Fragment>
+                      <FontAwesomeIcon className={css(styles.icon)} icon={faGamepad} size={'lg'} />
+                      <SectionTitle>
                         <FormattedMessage id={'game.genres'} />
-                      </strong>
-                    </Grid.Column>
-                    <Grid.Column width={11} className={css(styles.publisherGridColumn)}>
-                      {this.props.selectedGame.details.genres
-                        .map((genre: string) => this.props.intl.formatMessage({ id: `genresNames.${genre}` }))
-                        .join(', ')}
-                    </Grid.Column>
-                  </Grid>
-                </Grid.Column>
-                <Grid.Column width={5}>
-                  <CirclePercentage percentage={this.props.selectedGame.details.rating} color={lessVars.primaryColor} />
-                </Grid.Column>
-              </Grid>
-              <hr className={css(styles.gameCoreHr)} />
-              <p className={css(styles.gameDesc)}>
-                {this.props.selectedGame.details.summary.split('\n').map((section: string, index: number) => (
-                  <span key={index}>
-                    {section}
-                    <br />
-                  </span>
-                ))}
-              </p>
+                      </SectionTitle>
+                      <GenresList formatMessage={this.props.intl.formatMessage} genres={this.props.selectedGame.details.genres} />
+                    </React.Fragment>
+                  )}
+                </GameInfosPanel>
+              </div>
+              <div style={{ flex: 3 }}>
+                <GameInfosPanel rightSide={true}>
+                  <FontAwesomeIcon className={css(styles.icon)} icon={faAlignLeft} size={'lg'} />
+                  <SectionTitle>
+                    <FormattedMessage id={'game.summary'} />
+                  </SectionTitle>
+                  <div className={css(styles.gameDescription)}>
+                    {this.props.selectedGame.details.summary
+                      .split('\n')
+                      .filter((section: string) => section && !/^\s+$/.test(section))
+                      .map((section: string, index: number) => (
+                        <p className={css(styles.gameDescriptionParagraph)} key={index}>
+                          {section}
+                        </p>
+                      ))}
+                  </div>
+                </GameInfosPanel>
+              </div>
             </div>
           </Grid.Column>
           <Grid.Column width={5} className={css(styles.gameCover)}>
@@ -136,24 +133,23 @@ class GameContainer extends VitrineComponent<Props, State> {
               faIcon={faPlay}
               fontSize={125}
               background={this.props.selectedGame.details.cover}
-              clickHandler={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
+              onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
             />
           </Grid.Column>
+          <Grid.Column width={1} />
         </Grid>
-      );
-    } else {
-      gameContainer = (
-        <div className={css(styles.noSelectedGame)}>
-          <span className={css(styles.noSelectedGameTitle)}>
-            <FormattedMessage id={'welcomeMessage'} />
-          </span>
-          <hr className={css(styles.noSelectedGameHr)} />
-          <p className={css(styles.noSelectedGameText)}>
-            <FormattedMessage id={'description'} />
-          </p>
-        </div>
-      );
-    }
+      </div>
+    ) : (
+      <div className={css(styles.noSelectedGame)}>
+        <span className={css(styles.noSelectedGameTitle)}>
+          <FormattedMessage id={'welcomeMessage'} />
+        </span>
+        <SplitBar />
+        <p className={css(styles.noSelectedGameText)}>
+          <FormattedMessage id={'description'} />
+        </p>
+      </div>
+    );
 
     return (
       <Grid.Column className={css(styles.gameContainerWrapper)}>
@@ -168,9 +164,6 @@ class GameContainer extends VitrineComponent<Props, State> {
 }
 
 const styles: React.CSSProperties & any = StyleSheet.create({
-  developerGridColumn: {
-    paddingBottom: 5
-  },
   gameBackground: {
     backgroundRepeat: 'no-repeat',
     backgroundSize: `${(100).percents()} ${(100).percents()}`,
@@ -194,45 +187,39 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     padding: 0,
     width: (84.5).percents()
   },
-  gameCore: {
-    height: (100).percents(),
-    margin: 0,
-    padding: padding(50, 25, 50)
-  },
-  gameCoreHr: {
-    border: 'none',
-    borderTop: `solid ${(1).px()} ${rgba(210, 210, 210, 0.15)}`,
-    margin: margin(30, 0),
-    width: (97).percents()
-  },
-  gameCoreTitle: {
-    color: rgba(255, 255, 255, 0.66),
-    fontSize: 33,
-    fontWeight: 400,
-    marginBottom: 40
-  },
   gameCover: {
     height: (75).percents()
   },
-  gameDesc: {
-    backgroundColor: rgba(0, 0, 0, 0.2),
+  gameDescription: {
     borderRadius: 3,
-    lineHeight: 1.5,
-    maxHeight: 210,
+    height: 328,
+    margin: margin(20, 0, 10),
+    maxHeight: 328,
     minHeight: 160,
-    overflowY: 'auto',
-    padding: 20
+    overflowY: 'auto'
   },
-  gameInfosRegion: {
-    backgroundColor: rgba(0, 0, 0, 0.49),
-    borderRadius: 3,
-    color: '#E4E4E4',
-    fontSize: (1.2).em(),
-    margin: margin(10, 0),
-    padding: padding(13, 24)
+  gameDescriptionParagraph: {
+    lineHeight: 1.8
   },
-  gameTimePlayed: {
-    marginLeft: 15
+  gameHeader: {
+    height: (100).percents(),
+    marginTop: 40
+  },
+  gamePanel: {
+    height: (100).percents(),
+    margin: 0,
+    padding: 50
+  },
+  gameTitle: {
+    color: rgba(255, 255, 255, 0.66),
+    fontSize: 37,
+    fontWeight: 400
+  },
+  icon: {
+    margin: margin(0, 15, 0, 0)
+  },
+  noSelectedGame: {
+    padding: 50
   },
   noSelectedGameHr: {
     border: 'none',
@@ -248,8 +235,28 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     fontSize: 30,
     marginTop: 45
   },
-  publisherGridColumn: {
-    paddingTop: 5
+  playButton: {
+    ':active': {
+      backgroundColor: rgba(241, 237, 211, 0.5),
+      color: rgba(255, 255, 255, 0.8),
+      transform: `scale(${1.04})`
+    },
+    ':hover': {
+      backgroundColor: rgba(241, 237, 211, 0.3),
+      color: rgba(255, 255, 255, 0.75)
+    },
+    backgroundColor: rgba(241, 237, 211, 0.2),
+    borderRadius: 2,
+    color: rgba(255, 255, 255, 0.6),
+    fontSize: 16,
+    letterSpacing: 1.3,
+    margin: margin(10, 0),
+    padding: padding(15, 26),
+    textTransform: 'uppercase'
+  },
+  specificInfos: {
+    alignItems: 'flex-start',
+    display: 'flex'
   }
 });
 
@@ -257,12 +264,10 @@ const mapStateToProps = (state: AppState) => ({
   selectedGame: state.selectedGame
 });
 
-const mapDispatchToProps = () => ({});
-
 const GameContainerContainer = injectIntl(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
   )(GameContainer)
 );
 

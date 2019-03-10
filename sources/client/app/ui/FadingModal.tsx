@@ -1,4 +1,5 @@
 import { css, StyleSheet } from 'aphrodite';
+import { padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { Grid, Modal, Transition } from 'semantic-ui-react';
 
@@ -70,12 +71,14 @@ export class FadingModal extends VitrineComponent<Props, State> {
           size={this.props.size || 'small'}
           style={this.props.style}
         >
-          <Modal.Header>
+          <Modal.Header className={css(styles.modalPortion)}>
             {typeof this.props.title === 'string' ? (
-              this.props.title
+              <span className={css(styles.modalTitle)}>{this.props.title}</span>
             ) : (
               <Grid>
-                <Grid.Column width={8}>{this.props.title.title}</Grid.Column>
+                <Grid.Column width={8}>
+                  <span className={css(styles.modalTitle)}>{this.props.title}</span>
+                </Grid.Column>
                 <Grid.Column floated={'right'} width={8}>
                   {this.props.title.rightElement}
                 </Grid.Column>
@@ -83,7 +86,7 @@ export class FadingModal extends VitrineComponent<Props, State> {
             )}
           </Modal.Header>
           <Modal.Content className={css(styles.modalContent)}>{this.props.children}</Modal.Content>
-          {this.props.actions && <Modal.Actions>{this.props.actions}</Modal.Actions>}
+          {this.props.actions && <Modal.Actions className={css(styles.modalPortion)}>{this.props.actions}</Modal.Actions>}
         </Modal>
       </Transition>
     );
@@ -99,5 +102,13 @@ const styles = StyleSheet.create({
   modalContent: {
     maxHeight: (83).vh(),
     overflowY: 'auto'
+  },
+  modalPortion: {
+    border: 'none',
+    padding: padding((0.8).rem(), (1.5).rem())
+  },
+  modalTitle: {
+    color: rgba(230, 228, 227, 0.46),
+    fontSize: 17
   }
 });

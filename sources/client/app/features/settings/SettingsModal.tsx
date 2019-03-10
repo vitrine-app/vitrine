@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 import { Button, Checkbox, Form, Grid, Input, Tab, Table } from 'semantic-ui-react';
 
 import { openDirectory } from '../../helpers';
+import { SplitBar } from '../../ui/atoms';
 import { FadingModal } from '../../ui/FadingModal';
 import { Action } from '../redux/actions/actionsTypes';
 import { closeSettingsModal } from '../redux/actions/modals';
@@ -291,7 +292,7 @@ class SettingsModal extends VitrineComponent<Props, State> {
         </Grid>
         <Form>
           <div style={{ display: this.state.steamEnabled ? 'block' : 'none' }}>
-            <hr className={css(styles.formHr)} />
+            <SplitBar />
             <h3>
               <FormattedMessage id={'settings.steamConfig'} />
             </h3>
@@ -308,9 +309,7 @@ class SettingsModal extends VitrineComponent<Props, State> {
                 labelPosition={'right'}
                 name={'steam'}
                 size={'large'}
-                placeholder={this.props.intl.formatMessage({
-                  id: 'settings.steamPath'
-                })}
+                placeholder={this.props.intl.formatMessage({ id: 'settings.steamPath' })}
                 value={this.state.steamPath}
                 onClick={this.steamPathButton}
                 readOnly={true}
@@ -323,15 +322,13 @@ class SettingsModal extends VitrineComponent<Props, State> {
               <Checkbox
                 checked={this.state.steamSearchCloud}
                 onChange={this.steamSearchCloudCheckbox}
-                label={this.props.intl.formatMessage({
-                  id: 'settings.steamSearchCloud'
-                })}
+                label={this.props.intl.formatMessage({ id: 'settings.steamSearchCloud' })}
                 toggle={true}
               />
             </Form.Field>
           </div>
           <div style={{ display: this.state.originEnabled ? 'block' : 'none' }}>
-            <hr className={css(styles.formHr)} />
+            <SplitBar />
             <h3>
               <FormattedMessage id={'settings.originConfig'} />
             </h3>
@@ -348,25 +345,18 @@ class SettingsModal extends VitrineComponent<Props, State> {
                 labelPosition={'right'}
                 name={'origin'}
                 size={'large'}
-                placeholder={this.props.intl.formatMessage({
-                  id: 'settings.originGamesPath'
-                })}
+                placeholder={this.props.intl.formatMessage({ id: 'settings.originGamesPath' })}
                 value={this.state.originPath}
                 onClick={this.originPathButton}
                 readOnly={true}
               />
-              <span
-                className={css(styles.modulesError)}
-                style={{
-                  display: this.state.originError ? 'inline-block' : 'none'
-                }}
-              >
+              <span className={css(styles.modulesError)} style={{ display: this.state.originError ? 'inline-block' : 'none' }}>
                 <FormattedMessage id={'settings.pathError'} />
               </span>
             </Form.Field>
           </div>
           <div style={{ display: this.state.emulatedEnabled ? 'block' : 'none' }}>
-            <hr className={css(styles.formHr)} />
+            <SplitBar />
             <h3>
               <FormattedMessage id={'settings.emulatedConfig'} />
             </h3>
@@ -383,19 +373,12 @@ class SettingsModal extends VitrineComponent<Props, State> {
                 labelPosition={'right'}
                 name={'emulated'}
                 size={'large'}
-                placeholder={this.props.intl.formatMessage({
-                  id: 'settings.emulatedGamesPath'
-                })}
+                placeholder={this.props.intl.formatMessage({ id: 'settings.emulatedGamesPath' })}
                 value={this.state.emulatedPath}
                 onClick={this.emulatedPathButton}
                 readOnly={true}
               />
-              <span
-                className={css(styles.modulesError)}
-                style={{
-                  display: this.state.emulatedError ? 'inline-block' : 'none'
-                }}
-              >
+              <span className={css(styles.modulesError)} style={{ display: this.state.emulatedError ? 'inline-block' : 'none' }}>
                 <FormattedMessage id={'settings.pathError'} />
               </span>
             </Form.Field>
@@ -468,13 +451,7 @@ class SettingsModal extends VitrineComponent<Props, State> {
       <FadingModal
         actions={
           <React.Fragment>
-            <Button
-              secondary={true}
-              style={{
-                display: !this.props.firstLaunch ? 'inline-block' : 'none'
-              }}
-              onClick={this.closeModal}
-            >
+            <Button secondary={true} style={{ display: !this.props.firstLaunch ? 'inline-block' : 'none' }} onClick={this.closeModal}>
               <FormattedMessage id={'actions.cancel'} />
             </Button>
             <Button primary={true} onClick={this.submitButton}>
@@ -504,21 +481,15 @@ class SettingsModal extends VitrineComponent<Props, State> {
           }}
           panes={[
             {
-              menuItem: this.props.intl.formatMessage({
-                id: 'settings.modules'
-              }),
+              menuItem: this.props.intl.formatMessage({ id: 'settings.modules' }),
               render: () => modulesSettings
             },
             {
-              menuItem: this.props.intl.formatMessage({
-                id: 'settings.emulators'
-              }),
+              menuItem: this.props.intl.formatMessage({ id: 'settings.emulators' }),
               render: () => emulatorsSettings
             },
             {
-              menuItem: this.props.intl.formatMessage({
-                id: 'settings.locale'
-              }),
+              menuItem: this.props.intl.formatMessage({ id: 'settings.locale' }),
               render: () => langsSettings
             }
           ]}

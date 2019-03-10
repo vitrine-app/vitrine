@@ -1,7 +1,6 @@
 import { css, StyleSheet } from 'aphrodite';
-import { margin, padding, rgba } from 'css-verbose';
+import { margin, padding } from 'css-verbose';
 import * as React from 'react';
-import { ContextMenuTrigger } from 'react-contextmenu';
 import { InjectedIntl, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -12,6 +11,7 @@ import { GamesCollection } from '@models/GamesCollection';
 import { PlayableGame, SortParameter } from '@models/PlayableGame';
 import { PotentialGame } from '@models/PotentialGame';
 import { ActionButton } from '../../ui/ActionButton';
+import { SideBarGameRow } from '../../ui/molecules';
 import { Action } from '../redux/actions/actionsTypes';
 import { refreshGames, selectGame, sortGames } from '../redux/actions/games';
 import { openGameAddModal, openPotentialGamesAddModal, openSettingsModal } from '../redux/actions/modals';
@@ -159,19 +159,13 @@ class SideBar extends VitrineComponent<Props, {}> {
         <div className={css(styles.sideBarContent)}>
           <ul className={css(styles.gamesListUl)}>
             {this.props.playableGames.map((game: PlayableGame, index: number) => (
-              <ContextMenuTrigger id="sidebar-games-context-menu" key={index}>
-                <li
-                  id={`sidebar-game:${game.uuid}`}
-                  className={
-                    css(styles.gamesListLi) +
-                    (this.props.selectedGame && this.props.selectedGame.uuid === game.uuid ? ' ' + css(styles.selectedGame) : '')
-                  }
-                  onClick={this.clickGameHandler}
-                  onDoubleClick={this.props.launchGame.bind(null, game.uuid)}
-                >
-                  {game.name}
-                </li>
-              </ContextMenuTrigger>
+              <SideBarGameRow
+                clickGameHandler={this.clickGameHandler}
+                game={game}
+                key={index}
+                launchGame={this.props.launchGame}
+                selectedGame={this.props.selectedGame}
+              />
             ))}
           </ul>
         </div>
@@ -189,31 +183,11 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   addGamesButton: {
     margin: margin((5).percents(), (16).percents())
   },
-  gamesListLi: {
-    ':hover': {
-      backgroundColor: rgba(150, 136, 116, 0.13),
-      color: '#AFACA7',
-      transition: `${66}ms`
-    },
-    color: '#A5A5A5',
-    cursor: 'pointer',
-    display: 'block',
-    fontSize: 15,
-    padding: padding(10, 20, 10)
-  },
   gamesListUl: {
     height: (100).percents(),
     listStyleType: 'none',
     margin: margin(0),
     padding: padding(0)
-  },
-  selectedGame: {
-    backgroundColor: rgba(175, 153, 124, 0.14),
-    color: '#AFACA7',
-    fontWeight: 600,
-    paddingLeft: 30,
-    paddingRight: 10,
-    transition: `${250}ms`
   },
   sideBarColumn: {
     padding: 0
@@ -237,7 +211,7 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   sideBarWrapper: {
     backgroundColor: '#23211F',
     height: (100).percents(),
-    padding: 0,
+    padding: padding(25, 0, 0, 0),
     width: (15.5).percents()
   },
   sortDropdown: {

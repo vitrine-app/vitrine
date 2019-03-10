@@ -22,7 +22,7 @@ interface State {
 }
 
 export const ImagesCollection = injectIntl(
-  class extends VitrineComponent<Props, State> {
+  class extends VitrineComponent<Props & any, State> {
     public constructor(props: Props) {
       super(props);
 
@@ -93,6 +93,7 @@ export const ImagesCollection = injectIntl(
           <div className={css(styles.imagesContainer)}>
             {this.state.images.map((image: string, index: number) => (
               <img
+                alt={`screenshot-${index}`}
                 key={index}
                 src={image}
                 className={css(styles.image) + (this.state.selectedImage === image ? ' ' + css(styles.selectedImage) : '')}

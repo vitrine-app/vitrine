@@ -1,7 +1,7 @@
 /* Fonts */
 @font-face {
-	font-family: 'Whitney';
-	src: url('../../../fonts/Whitney.ttf') format('truetype');
+	font-family: 'Open Sans';
+	src: url('../../../fonts/Open Sans.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }

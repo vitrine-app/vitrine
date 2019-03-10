@@ -76,20 +76,20 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     backgroundColor: rgba(0, 0, 255, 0),
     cursor: 'pointer',
     display: 'inline-block',
-    height: 22,
-    paddingTop: 2,
+    height: 35,
+    paddingTop: 10,
     textAlign: 'center',
     transition: `${70}ms ease`,
-    width: 40
+    width: 45
   },
   redIcon: {
     ':hover': {
-      backgroundColor: rgba(138, 48, 48, 1)
+      backgroundColor: rgba(255, 82, 82, 0.11)
     }
   },
   regularIcon: {
     ':hover': {
-      backgroundColor: rgba(255, 255, 255, 0.06)
+      backgroundColor: rgba(255, 255, 255, 0.03)
     }
   }
 });

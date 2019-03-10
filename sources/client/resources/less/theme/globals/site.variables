@@ -1,16 +1,18 @@
 /* Fonts */
 @importGoogleFonts: false;
-@fontName: 'Whitney';
+@fontName: 'Open Sans';
+@fontSize: 13px;
 
 /* Page */
 @pageBackground: #2F2C28;
-@textColor: #B9B0A2;
+@textColor: rgba(230, 228, 227, 0.85);
 @selectedTextColor: #B9B0A2;
 
 /* Brand Colors */
 @primaryColor: #C7783F;
 @secondaryColor: #6C5A46;
 @orange: @primaryColor;
+@primaryTransparent: rgba(249, 168, 111, 0.40);
 
 @lightPrimaryColor: lighten(@primaryColor, 10%);
 @lightSecondaryColor: lighten(@secondaryColor, 10%);
