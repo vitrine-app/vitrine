@@ -1,5 +1,8 @@
 # Vitrine Changelog
 
+## 0.11.2 (10/03/2019)
+- fix: auto-updates can now be performed without crashing
+
 ## 0.11.1 (09/03/2019)
 - fix: IGDB dates are now corrects
 

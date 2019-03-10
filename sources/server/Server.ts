@@ -79,7 +79,7 @@ export class Server {
     });
     try {
       const lastUpdate: UpdateCheckResult = await autoUpdater.checkForUpdates();
-      if (compareVersion(lastUpdate.updateInfo.version, autoUpdater.currentVersion) === 1) {
+      if (compareVersion(lastUpdate.updateInfo.version, autoUpdater.currentVersion.version) === 1) {
         logger.info('Server', `Update ${lastUpdate.updateInfo.version} found.`);
         this.windowsHandler.sendToLoader('update-found', lastUpdate.updateInfo.version);
       } else {
