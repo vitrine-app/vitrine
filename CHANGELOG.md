@@ -1,5 +1,8 @@
 # Vitrine Changelog
 
+## 0.11.3 (19/03/2019)
+- fix: emulators can now be added without bugs
+
 ## 0.11.2 (10/03/2019)
 - fix: auto-updates can now be performed without crashing
 
