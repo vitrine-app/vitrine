@@ -183,7 +183,7 @@ class SettingsModal extends VitrineComponent<Props, State> {
       if (!found) {
         aliveEmulators.push(emulatorConfig);
       } else {
-        aliveEmulators = aliveEmulators.map((aliveEmulator: any) => (aliveEmulator.id !== emulatorConfig.i ? aliveEmulator : emulatorConfig));
+        aliveEmulators = aliveEmulators.map((aliveEmulator: any) => (aliveEmulator.id !== emulatorConfig.id ? aliveEmulator : emulatorConfig));
       }
     } else {
       aliveEmulators = aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id !== emulatorConfig.id);
