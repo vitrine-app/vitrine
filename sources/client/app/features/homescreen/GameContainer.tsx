@@ -199,7 +199,8 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     overflowY: 'auto'
   },
   gameDescriptionParagraph: {
-    lineHeight: 1.8
+    lineHeight: 1.8,
+    marginRight: 10
   },
   gameHeader: {
     height: (100).percents(),
