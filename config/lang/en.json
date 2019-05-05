@@ -45,7 +45,11 @@
   "executables": "Executables",
   "images": "Images",
   "allFiles": "All files",
-  "crash": "Whoops! The application crashed",
+  "crash": {
+    "title": "Whoops! Vitrine has crashed...",
+    "text": "We are sorry for the inconvenience, feel free to contact us to help us solve this bug.",
+    "details": "Show bug details"
+  },
   "time": {
     "hoursPlur": "hours",
     "hoursSing": "hour",
