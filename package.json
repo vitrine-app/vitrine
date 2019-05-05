@@ -50,8 +50,6 @@
     "redux": "4.0.0",
     "rimraf": "^2.6.2",
     "semantic-ui-react": "0.82.5",
-    "steam-web": "0.7.0",
-    "steam-web-promise": "^0.8.0",
     "uuid": "^3.2.1",
     "winreg": "^1.2.4"
   },
