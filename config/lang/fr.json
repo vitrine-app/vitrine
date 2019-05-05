@@ -45,7 +45,11 @@
   "executables": "Programmes",
   "images": "Images",
   "allFiles": "Tous les fichiers",
-  "crash": "Oups ! L'application a crashée",
+  "crash": {
+    "title": "Oups ! Vitrine a crashé...",
+    "text": "Nous sommes désolés pour la gène occasionnée, n'hésitez pas à nous contacter pour résoudre ce bug.",
+    "details": "Afficher les détails"
+  },
   "time": {
     "hoursPlur": "heures",
     "hoursSing": "heure",
