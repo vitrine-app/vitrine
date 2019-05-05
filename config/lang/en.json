@@ -67,6 +67,7 @@
     "steamSearchCloud": "Search uninstalled Steam games",
     "originConfig": "Origin settings:",
     "originGamesPath": "Origin games path",
+    "emulatedGames": "Emulated games",
     "emulatedConfig": "Emulation settings:",
     "emulatedGamesPath": "Games ROMs path",
     "pathError": "You need to specify a path"

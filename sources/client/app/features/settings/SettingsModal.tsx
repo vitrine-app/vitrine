@@ -235,6 +235,8 @@ class SettingsModal extends VitrineComponent<Props, State> {
     const {
       battleNetEnabled,
       emulatedEnabled,
+      emulatedError,
+      emulatedPath,
       originEnabled,
       originError,
       originPath,
@@ -248,6 +250,9 @@ class SettingsModal extends VitrineComponent<Props, State> {
         <ModulesSettings
           battleNetEnabled={battleNetEnabled}
           emulatedEnabled={emulatedEnabled}
+          emulatedError={emulatedError}
+          emulatedPath={emulatedPath}
+          emulatedPathButtonClick={this.emulatedPathButton}
           formatMessage={formatMessage}
           moduleIconClick={this.moduleIconClick}
           originEnabled={originEnabled}

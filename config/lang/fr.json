@@ -67,6 +67,7 @@
     "steamSearchCloud": "Chercher les jeux Steam non-installés",
     "originConfig": "Paramètres d'Origin :",
     "originGamesPath": "Dossier d'emplacement des jeux Origin",
+    "emulatedGames": "Jeux émulés",
     "emulatedConfig": "Paramètres d'émulation :",
     "emulatedGamesPath": "Dossier d'emplacement des ROMs de jeux",
     "pathError": "Vous devez définir un dossier d'emplacement"

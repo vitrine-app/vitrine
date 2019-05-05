@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ModuleSettings, OriginSettings, SteamSettings } from '../organisms';
+import { EmulatedGamesSettings, ModuleSettings, OriginSettings, SteamSettings } from '../organisms';
 
 import * as battleNetIcon from '../../../resources/images/battle_net_icon.png';
 import * as emulatedIcon from '../../../resources/images/emulated_icon.png';
@@ -10,6 +10,9 @@ import * as steamIcon from '../../../resources/images/steam_icon.png';
 interface Props {
   battleNetEnabled: boolean;
   emulatedEnabled: boolean;
+  emulatedError: boolean;
+  emulatedPath: string;
+  emulatedPathButtonClick: () => void;
   formatMessage: (context: { id: string }) => string;
   moduleIconClick: (moduleName: string) => () => void;
   originEnabled: boolean;
@@ -27,6 +30,9 @@ interface Props {
 export const ModulesSettings: React.StatelessComponent<Props> = ({
   battleNetEnabled,
   emulatedEnabled,
+  emulatedError,
+  emulatedPath,
+  emulatedPathButtonClick,
   formatMessage,
   moduleIconClick,
   originEnabled,
@@ -61,5 +67,14 @@ export const ModulesSettings: React.StatelessComponent<Props> = ({
       name={'Battle.net'}
       toggleModule={moduleIconClick('battleNet')}
     />
+    <ModuleSettings
+      color={'#234a34'}
+      enabled={emulatedEnabled}
+      icon={emulatedIcon}
+      name={formatMessage({ id: 'settings.emulatedGames' })}
+      toggleModule={moduleIconClick('emulated')}
+    >
+      <EmulatedGamesSettings error={emulatedError} formatMessage={formatMessage} path={emulatedPath} pathButtonClick={emulatedPathButtonClick} />
+    </ModuleSettings>
   </React.Fragment>
 );

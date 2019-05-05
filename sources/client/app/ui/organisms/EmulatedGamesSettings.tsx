@@ -12,10 +12,10 @@ interface Props {
   pathButtonClick: () => void;
 }
 
-export const OriginSettings: React.StatelessComponent<Props> = ({ error, formatMessage, path, pathButtonClick }: Props) => (
+export const EmulatedGamesSettings: React.StatelessComponent<Props> = ({ error, formatMessage, path, pathButtonClick }: Props) => (
   <React.Fragment>
     <Form.Field error={error}>
-      <PathOption buttonClick={pathButtonClick} name={formatMessage({ id: 'settings.originGamesPath' })} path={path} valueName={'origin'} />
+      <PathOption buttonClick={pathButtonClick} name={formatMessage({ id: 'settings.emulatedGamesPath' })} path={path} valueName={'emulated'} />
       {error && (
         <ErrorMessage>
           <FormattedMessage id={'settings.pathError'} />
