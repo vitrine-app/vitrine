@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { ModuleSettings, OriginSettings, SteamSettings } from '../organisms';
 
-import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 import * as battleNetIcon from '../../../resources/images/battle_net_icon.png';
 import * as emulatedIcon from '../../../resources/images/emulated_icon.png';
 import * as originIcon from '../../../resources/images/origin_icon.png';
@@ -55,5 +54,12 @@ export const ModulesSettings: React.StatelessComponent<Props> = ({
     <ModuleSettings color={'#903b22'} enabled={originEnabled} icon={originIcon} name={'Origin'} toggleModule={moduleIconClick('origin')}>
       <OriginSettings error={originError} formatMessage={formatMessage} path={originPath} pathButtonClick={originPathButtonClick} />
     </ModuleSettings>
+    <ModuleSettings
+      color={'#2978b9'}
+      enabled={battleNetEnabled}
+      icon={battleNetIcon}
+      name={'Battle.net'}
+      toggleModule={moduleIconClick('battleNet')}
+    />
   </React.Fragment>
 );
