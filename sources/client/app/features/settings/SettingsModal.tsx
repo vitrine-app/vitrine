@@ -1,13 +1,11 @@
-import * as FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { css, StyleSheet } from 'aphrodite';
 import * as React from 'react';
 import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Button, Checkbox, Form, Grid, Input, Tab } from 'semantic-ui-react';
+import { Button, Tab } from 'semantic-ui-react';
 
 import { openDirectory } from '../../helpers';
-import { SplitBar } from '../../ui/atoms';
 import { EmulatorsSettings, LocaleSettings, ModulesSettings } from '../../ui/ecosystems';
 import { FadingModal } from '../../ui/FadingModal';
 import { Action } from '../redux/actions/actionsTypes';
@@ -16,8 +14,6 @@ import { setLocale, updateSettings } from '../redux/actions/settings';
 import { AppState } from '../redux/AppState';
 import { serverListener } from '../serverListener';
 import { VitrineComponent } from '../VitrineComponent';
-
-import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
 interface Props {
   settings: any;
@@ -94,14 +90,11 @@ class SettingsModal extends VitrineComponent<Props, State> {
   }
 
   private moduleIconClick(moduleName: string) {
-    return (checked: boolean) => {
-      if ((checked && !this.state[`${moduleName}Enabled`]) || (!checked && this.state[`${moduleName}Enabled`])) {
-        // @ts-ignore
-        this.setState({
-          [`${moduleName}Enabled`]: !this.state[`${moduleName}Enabled`],
-          [`${moduleName}Error`]: false
-        });
-      }
+    return () => {
+      // @ts-ignore
+      this.setState(({ [`${moduleName}Enabled`]: moduleEnabled }: State) => ({
+        [`${moduleName}Enabled`]: !moduleEnabled
+      }));
     };
   }
 
@@ -114,10 +107,10 @@ class SettingsModal extends VitrineComponent<Props, State> {
     }
   }
 
-  private steamSearchCloudCheckbox(event: any, { checked: steamSearchCloud }: any) {
-    this.setState({
-      steamSearchCloud
-    });
+  private steamSearchCloudCheckbox() {
+    this.setState(({ steamSearchCloud }: State) => ({
+      steamSearchCloud: !steamSearchCloud
+    }));
   }
 
   private originPathButton() {
@@ -236,16 +229,26 @@ class SettingsModal extends VitrineComponent<Props, State> {
   }
 
   public render(): JSX.Element {
+    const {
+      intl: { formatMessage }
+    } = this.props;
+    const { steamError, steamPath, steamSearchCloud } = this.state;
     const modulesSettings: JSX.Element = (
       <Tab.Pane className={css(styles.settingsPane)}>
         <ModulesSettings
           battleNetEnabled={this.state.battleNetEnabled}
           emulatedEnabled={this.state.emulatedEnabled}
+          formatMessage={formatMessage}
           moduleIconClick={this.moduleIconClick}
           originEnabled={this.state.originEnabled}
           steamEnabled={this.state.steamEnabled}
+          steamError={steamError}
+          steamPath={steamPath}
+          steamPathButtonClick={this.steamPathButton}
+          steamSearchCloud={steamSearchCloud}
+          steamSearchCloudCheckbox={this.steamSearchCloudCheckbox}
         />
-        <Form>
+        {/*<Form>
           <div style={{ display: this.state.steamEnabled ? 'block' : 'none' }}>
             <SplitBar />
             <h3>
@@ -338,7 +341,7 @@ class SettingsModal extends VitrineComponent<Props, State> {
               </span>
             </Form.Field>
           </div>
-        </Form>
+        </Form>*/}
       </Tab.Pane>
     );
     return (
