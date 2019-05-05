@@ -1,5 +1,5 @@
 import { css, StyleSheet } from 'aphrodite';
-import { margin, padding, rgb, rgba } from 'css-verbose';
+import { margin, padding, rgba } from 'css-verbose';
 import * as React from 'react';
 import { Checkbox } from 'semantic-ui-react';
 
