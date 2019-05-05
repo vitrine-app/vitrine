@@ -2,7 +2,7 @@ import { css, StyleSheet } from 'aphrodite';
 import { margin } from 'css-verbose';
 import * as React from 'react';
 
-import { VitrineComponent } from '../VitrineComponent';
+import { VitrineComponent } from '../../features/VitrineComponent';
 
 import * as lessVars from 'less-vars-loader?camelCase&resolveVariables!../../../resources/less/theme/globals/site.variables';
 

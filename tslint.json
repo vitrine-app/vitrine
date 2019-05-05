@@ -9,6 +9,7 @@
   "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
     "prettier": true,
+    "linebreak-style": [true, "LF"],
     "no-multi-spaces": true,
     "interface-name": false,
     "trailing-comma": false,

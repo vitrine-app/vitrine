@@ -6,9 +6,8 @@ import { InjectedIntl, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Checkbox, Input, Table } from 'semantic-ui-react';
 
+import { AppState } from '../../features/redux/AppState';
 import { openExecutableDialog } from '../../helpers';
-import { AppState } from '../redux/AppState';
-import { VitrineComponent } from '../VitrineComponent';
 
 import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
 
@@ -26,7 +25,7 @@ interface State {
   command?: string;
 }
 
-class EmulatorSettingsRow extends VitrineComponent<Props, State> {
+class EmulatorSettingsRow extends React.Component<Props, State> {
   public constructor(props: Props) {
     super(props);
 
