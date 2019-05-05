@@ -50,18 +50,13 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
       addAllGames: false,
       transitionVisible: true
     };
-
-    this.gameCoverClick = this.gameCoverClick.bind(this);
-    this.animateModal = this.animateModal.bind(this);
-    this.addAllGamesClick = this.addAllGamesClick.bind(this);
-    this.updateAddAllGamesStatus = this.updateAddAllGamesStatus.bind(this);
   }
 
   public componentDidMount() {
     serverListener.listen('update-add-all-games-status', this.updateAddAllGamesStatus);
   }
 
-  public updateAddAllGamesStatus(playableGames: PlayableGame[], potentialGames: PotentialGame[]) {
+  public updateAddAllGamesStatus = (playableGames: PlayableGame[], potentialGames: PotentialGame[]) => {
     this.props.setPotentialGames(potentialGames);
     this.props.setPlayableGames(playableGames);
     if (this.state.addedGamesNb + 1 === this.state.potentialGamesNb) {
@@ -74,32 +69,32 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
         addedGamesNb: prevState.addedGamesNb + 1
       }));
     }
-  }
+  };
 
-  private gameCoverClick(potentialGame: PotentialGame) {
+  private gameCoverClick = (potentialGame: PotentialGame) => {
     return () => {
       this.props.setPotentialGameToAdd(potentialGame);
       this.props.closePotentialGamesAddModal();
       this.props.openGameAddModal();
     };
-  }
+  };
 
-  private animateModal(startingAnimation: boolean) {
+  private animateModal = (startingAnimation: boolean) => {
     if (startingAnimation === this.props.visible) {
       this.setState({
         transitionVisible: this.props.visible
       });
     }
-  }
+  };
 
-  private addAllGamesClick() {
+  private addAllGamesClick = () => {
     this.setState({
       addAllGames: true,
       addedGamesNb: 0,
       potentialGamesNb: this.props.potentialGames.size()
     });
     serverListener.send('add-all-games');
-  }
+  };
 
   public render(): JSX.Element {
     const potentialGamesRows: PotentialGame[][] = chunk(this.props.potentialGames.getGames(), 6);

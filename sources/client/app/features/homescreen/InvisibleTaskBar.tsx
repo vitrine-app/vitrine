@@ -12,27 +12,23 @@ export class InvisibleTaskBar extends VitrineComponent<{}, {}> {
   public constructor() {
     super();
     this.currentWindow = remote.getCurrentWindow();
-
-    this.minimizeBtnClickHandler = this.minimizeBtnClickHandler.bind(this);
-    this.maximizeBtnClickHandler = this.maximizeBtnClickHandler.bind(this);
-    this.closeBtnClickHandler = this.closeBtnClickHandler.bind(this);
   }
 
-  private minimizeBtnClickHandler() {
+  private minimizeBtnClickHandler = () => {
     this.currentWindow.minimize();
-  }
+  };
 
-  private maximizeBtnClickHandler() {
+  private maximizeBtnClickHandler = () => {
     if (this.currentWindow.isMaximized()) {
       this.currentWindow.unmaximize();
     } else {
       this.currentWindow.maximize();
     }
-  }
+  };
 
-  private closeBtnClickHandler() {
+  private closeBtnClickHandler = () => {
     this.currentWindow.close();
-  }
+  };
 
   public render(): JSX.Element {
     return (

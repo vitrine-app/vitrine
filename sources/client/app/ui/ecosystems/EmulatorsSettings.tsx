@@ -13,7 +13,7 @@ interface Props {
   onChange: (emulatorConfig: any) => void;
 }
 
-const EmulatorsSettings: React.StatelessComponent<Props> = ({ emulated, emulators, error, onChange }) => (
+const EmulatorsSettings: React.StatelessComponent<Props> = ({ emulated, emulators, error, onChange }: Props) => (
   <React.Fragment>
     <p className={css(styles.emulatorsError)}>{error}</p>
     <Table celled={true}>

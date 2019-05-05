@@ -7,7 +7,7 @@ interface Props {
   genres: string[];
 }
 
-export const GenresList: React.StatelessComponent<Props> = ({ formatMessage, genres }) => (
+export const GenresList: React.StatelessComponent<Props> = ({ formatMessage, genres }: Props) => (
   <div className={css(styles.genresList)}>
     {genres.map((genre: string, index: number) => (
       <span className={css(styles.genre)} key={index}>

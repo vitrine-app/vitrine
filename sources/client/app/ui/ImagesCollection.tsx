@@ -31,12 +31,22 @@ export const ImagesCollection = injectIntl(
         images: this.props.images || [],
         selectedImage: ''
       };
-
-      this.imageClick = this.imageClick.bind(this);
-      this.addImageButton = this.addImageButton.bind(this);
     }
 
-    private addImageButton() {
+    public static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+      let images: string[] = [];
+      let selectedImage: string = '';
+      if (nextProps.images.length) {
+        images = nextProps.images;
+        selectedImage = prevState.selectedImage || nextProps.images[0];
+      }
+      return {
+        images,
+        selectedImage
+      };
+    }
+
+    private addImageButton = () => {
       const newImage: string = openImageDialog(this.props.intl.formatMessage);
       if (!newImage) {
         return;
@@ -58,9 +68,9 @@ export const ImagesCollection = injectIntl(
           this.props.onChange(this.state.selectedImage);
         }
       );
-    }
+    };
 
-    private imageClick(image: string) {
+    private imageClick = (image: string) => () => {
       this.setState(
         {
           selectedImage: image
@@ -69,20 +79,7 @@ export const ImagesCollection = injectIntl(
           this.props.onChange(this.state.selectedImage);
         }
       );
-    }
-
-    public static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
-      let images: string[] = [];
-      let selectedImage: string = '';
-      if (nextProps.images.length) {
-        images = nextProps.images;
-        selectedImage = prevState.selectedImage || nextProps.images[0];
-      }
-      return {
-        images,
-        selectedImage
-      };
-    }
+    };
 
     public render(): JSX.Element {
       return (
@@ -96,8 +93,8 @@ export const ImagesCollection = injectIntl(
                 alt={`screenshot-${index}`}
                 key={index}
                 src={image}
-                className={css(styles.image) + (this.state.selectedImage === image ? ' ' + css(styles.selectedImage) : '')}
-                onClick={this.imageClick.bind(this, image)}
+                className={`${css(styles.image)}${this.state.selectedImage === image ? ' ' + css(styles.selectedImage) : ''}`}
+                onClick={this.imageClick(image)}
               />
             ))}
           </div>

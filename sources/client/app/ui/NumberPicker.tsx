@@ -30,13 +30,15 @@ export class NumberPicker extends VitrineComponent<Props & any, State> {
     this.state = {
       value: this.props.value !== undefined ? this.props.value : ''
     };
-
-    this.increaseCounterHandler = this.increaseCounterHandler.bind(this);
-    this.decreaseCounterHandler = this.decreaseCounterHandler.bind(this);
-    this.inputChangeHandler = this.inputChangeHandler.bind(this);
   }
 
-  private increaseCounterHandler() {
+  public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
+    return {
+      value: nextProps.value !== undefined ? nextProps.value : ''
+    };
+  }
+
+  private increaseCounterHandler = () => {
     let newVal: number;
     const currentVal: number = parseInt(this.state.value as string);
 
@@ -58,9 +60,9 @@ export class NumberPicker extends VitrineComponent<Props & any, State> {
         }
       }
     );
-  }
+  };
 
-  private decreaseCounterHandler() {
+  private decreaseCounterHandler = () => {
     let newVal: number;
     const currentVal: number = parseInt(this.state.value as string);
 
@@ -82,9 +84,9 @@ export class NumberPicker extends VitrineComponent<Props & any, State> {
         }
       }
     );
-  }
+  };
 
-  private inputChangeHandler(event) {
+  private inputChangeHandler = event => {
     let value: number = parseInt(event.target.value);
     if (isNaN(value)) {
       value = this.props.min;
@@ -100,13 +102,7 @@ export class NumberPicker extends VitrineComponent<Props & any, State> {
         }
       }
     );
-  }
-
-  public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
-    return {
-      value: nextProps.value !== undefined ? nextProps.value : ''
-    };
-  }
+  };
 
   public render(): JSX.Element {
     const controlButtons: JSX.Element = (

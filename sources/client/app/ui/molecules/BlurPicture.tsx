@@ -44,44 +44,6 @@ export class BlurPicture extends VitrineComponent<Props, State> {
       },
       pulseVisible: true
     };
-
-    this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
-    this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
-    this.onClick = this.onClick.bind(this);
-  }
-
-  private mouseEnterHandler() {
-    const imageStyle: any = this.state.imageStyle;
-    imageStyle.filter = `blur(${(4).px()})`;
-
-    this.setState({
-      iconVisible: true,
-      imageStyle: {
-        backgroundImage: urlify(this.props.background),
-        filter: `blur(${(4).px()})`
-      }
-    });
-  }
-
-  private mouseLeaveHandler() {
-    const imageStyle: any = this.state.imageStyle;
-    imageStyle.filter = '';
-
-    this.setState({
-      iconVisible: false,
-      imageStyle: {
-        backgroundImage: urlify(this.props.background),
-        filter: ''
-      }
-    });
-  }
-
-  private onClick() {
-    this.setState({
-      pulseVisible: !this.state.pulseVisible
-    });
-
-    this.props.onClick();
   }
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
@@ -92,6 +54,40 @@ export class BlurPicture extends VitrineComponent<Props, State> {
       }
     };
   }
+
+  private mouseEnterHandler = () => {
+    const imageStyle: any = this.state.imageStyle;
+    imageStyle.filter = `blur(${(4).px()})`;
+
+    this.setState({
+      iconVisible: true,
+      imageStyle: {
+        backgroundImage: urlify(this.props.background),
+        filter: `blur(${(4).px()})`
+      }
+    });
+  };
+
+  private mouseLeaveHandler = () => {
+    const imageStyle: any = this.state.imageStyle;
+    imageStyle.filter = '';
+
+    this.setState({
+      iconVisible: false,
+      imageStyle: {
+        backgroundImage: urlify(this.props.background),
+        filter: ''
+      }
+    });
+  };
+
+  private onClick = () => {
+    this.setState({
+      pulseVisible: !this.state.pulseVisible
+    });
+
+    this.props.onClick();
+  };
 
   public render(): JSX.Element {
     return (

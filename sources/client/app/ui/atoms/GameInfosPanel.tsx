@@ -9,7 +9,7 @@ interface Props {
   rightSide?: boolean;
 }
 
-export const GameInfosPanel: React.StatelessComponent<Props> = ({ children, isFlex, leftSide, rightSide }) => (
+export const GameInfosPanel: React.StatelessComponent<Props> = ({ children, isFlex, leftSide, rightSide }: Props) => (
   <div
     className={css(styles.panel)}
     style={{
@@ -22,7 +22,7 @@ export const GameInfosPanel: React.StatelessComponent<Props> = ({ children, isFl
   </div>
 );
 
-export const GameInfosBreaker = () => <div className={css(styles.breaker)} />;
+export const GameInfosBreaker: React.StatelessComponent<{}> = () => <div className={css(styles.breaker)} />;
 
 const styles = StyleSheet.create({
   breaker: {

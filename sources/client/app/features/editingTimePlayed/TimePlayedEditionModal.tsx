@@ -38,57 +38,6 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
       seconds: 0,
       transitionVisible: true
     };
-
-    this.closeModal = this.closeModal.bind(this);
-    this.setHours = this.setHours.bind(this);
-    this.setMinutes = this.setMinutes.bind(this);
-    this.setSeconds = this.setSeconds.bind(this);
-    this.submitButton = this.submitButton.bind(this);
-    this.animateModal = this.animateModal.bind(this);
-  }
-
-  private closeModal() {
-    this.props.closeTimePlayedEditionModal();
-    setTimeout(() => {
-      this.setState({
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        transitionVisible: false
-      });
-    }, this.modalsTransitionDuration);
-  }
-
-  private setHours(hours: number) {
-    this.setState({
-      hours
-    });
-  }
-
-  private setMinutes(minutes: number) {
-    this.setState({
-      minutes
-    });
-  }
-
-  private setSeconds(seconds: number) {
-    this.setState({
-      seconds
-    });
-  }
-
-  private submitButton() {
-    const timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
-    serverListener.send('edit-game-time-played', this.props.gameToEdit.uuid, timePlayed);
-    this.closeModal();
-  }
-
-  private animateModal(startingAnimation: boolean) {
-    if (startingAnimation === this.props.visible) {
-      this.setState({
-        transitionVisible: this.props.visible
-      });
-    }
   }
 
   public static getDerivedStateFromProps(nextProps: Props): Partial<State> {
@@ -106,13 +55,57 @@ class TimePlayedEditionModal extends VitrineComponent<Props, State> {
     };
   }
 
+  private closeModal = () => {
+    this.props.closeTimePlayedEditionModal();
+    setTimeout(() => {
+      this.setState({
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        transitionVisible: false
+      });
+    }, this.modalsTransitionDuration);
+  };
+
+  private setHours = (hours: number) => {
+    this.setState({
+      hours
+    });
+  };
+
+  private setMinutes = (minutes: number) => {
+    this.setState({
+      minutes
+    });
+  };
+
+  private setSeconds = (seconds: number) => {
+    this.setState({
+      seconds
+    });
+  };
+
+  private submitButton = () => {
+    const timePlayed: number = this.state.hours * 3600 + this.state.minutes * 60 + this.state.seconds;
+    serverListener.send('edit-game-time-played', this.props.gameToEdit.uuid, timePlayed);
+    this.closeModal();
+  };
+
+  private animateModal = (startingAnimation: boolean) => () => {
+    if (startingAnimation === this.props.visible) {
+      this.setState({
+        transitionVisible: this.props.visible
+      });
+    }
+  };
+
   public render(): JSX.Element {
     return (
       <Transition
         animation={'fade down'}
         duration={this.modalsTransitionDuration}
-        onStart={this.animateModal.bind(this, true)}
-        onComplete={this.animateModal.bind(this, false)}
+        onStart={this.animateModal(true)}
+        onComplete={this.animateModal(false)}
         visible={this.props.visible}
       >
         <Modal open={this.state.transitionVisible} onClose={this.closeModal} className={css(styles.modal)}>

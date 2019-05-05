@@ -25,19 +25,17 @@ export class FadingModal extends VitrineComponent<Props, State> {
     this.state = {
       transitionVisible: true
     };
-
-    this.closeModal = this.closeModal.bind(this);
   }
 
-  private animateModal(startingAnimation: boolean) {
+  private animateModal = (startingAnimation: boolean) => () => {
     if (startingAnimation === this.props.visible) {
       this.setState({
         transitionVisible: this.props.visible
       });
     }
-  }
+  };
 
-  private closeModal() {
+  private closeModal = () => {
     this.setState(
       {
         transitionVisible: false
@@ -53,15 +51,15 @@ export class FadingModal extends VitrineComponent<Props, State> {
         }, this.modalsTransitionDuration);
       }
     );
-  }
+  };
 
   public render(): JSX.Element {
     return (
       <Transition
         animation={'fade down'}
         duration={this.modalsTransitionDuration}
-        onStart={this.animateModal.bind(this, true)}
-        onComplete={this.animateModal.bind(this, false)}
+        onStart={this.animateModal(true)}
+        onComplete={this.animateModal(false)}
         visible={this.props.visible}
       >
         <Modal

@@ -6,7 +6,7 @@ interface Props {
   style?: any;
 }
 
-export const SectionTitle: React.StatelessComponent<Props> = ({ children, style }) => (
+export const SectionTitle: React.StatelessComponent<Props> = ({ children, style }: Props) => (
   <span className={css(styles.title)} style={style || {}}>
     {children}
   </span>

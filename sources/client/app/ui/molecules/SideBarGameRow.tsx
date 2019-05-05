@@ -8,17 +8,17 @@ import { ContextMenuTrigger } from 'react-contextmenu';
 interface Props {
   clickGameHandler: (event: any) => void;
   game: PlayableGame;
-  launchGame: (gameUuid: string) => void;
+  launchGame: (gameUuid: string) => () => void;
   selectedGame: PlayableGame;
 }
 
-export const SideBarGameRow: React.StatelessComponent<Props> = ({ clickGameHandler, game, launchGame, selectedGame }) => (
+export const SideBarGameRow: React.StatelessComponent<Props> = ({ clickGameHandler, game, launchGame, selectedGame }: Props) => (
   <ContextMenuTrigger id="sidebar-games-context-menu">
     <li
       id={`sidebar-game:${game.uuid}`}
       className={`${css(styles.gameRow)}${selectedGame && selectedGame.uuid === game.uuid ? ' ' + css(styles.selectedGameRow) : ''}`}
       onClick={clickGameHandler}
-      onDoubleClick={launchGame.bind(null, game.uuid)}
+      onDoubleClick={launchGame(game.uuid)}
     >
       {game.name}
     </li>

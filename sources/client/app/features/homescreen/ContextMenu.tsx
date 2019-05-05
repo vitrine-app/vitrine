@@ -39,38 +39,14 @@ class ContextMenu extends VitrineComponent<Props, State> {
       toDeleteGame: null,
       transitionVisible: false
     };
-
-    this.removeGame = this.removeGame.bind(this);
-    this.resetModalData = this.resetModalData.bind(this);
-    this.launchClick = this.launchClick.bind(this);
-    this.editClick = this.editClick.bind(this);
-    this.editTimeClick = this.editTimeClick.bind(this);
-    this.deleteClick = this.deleteClick.bind(this);
-    this.animateModal = this.animateModal.bind(this);
   }
 
-  private launchClick(event: any, data: any, target: HTMLElement) {
-    this.contextAction(target, 'launch');
-  }
-
-  private editClick(event: any, data: any, target: HTMLElement) {
-    this.contextAction(target, 'edit');
-  }
-
-  private editTimeClick(event: any, data: any, target: HTMLElement) {
-    this.contextAction(target, 'editTime');
-  }
-
-  private deleteClick(event: any, data: any, target: HTMLElement) {
-    this.contextAction(target, 'delete');
-  }
-
-  private removeGame() {
+  private removeGame = () => {
     serverListener.send('remove-game', this.state.toDeleteGame.uuid);
     this.resetModalData();
-  }
+  };
 
-  private resetModalData() {
+  private resetModalData = () => {
     this.setState(
       {
         confirmVisible: false
@@ -84,9 +60,9 @@ class ContextMenu extends VitrineComponent<Props, State> {
         }, this.modalsTransitionDuration);
       }
     );
-  }
+  };
 
-  private contextAction(target: HTMLElement, action: string) {
+  private contextAction = (action: string) => (event: any, data: any, target: HTMLElement) => {
     const gameUuid: string = target.children[0].id.replace('sidebar-game:', '');
     const game: PlayableGame = this.props.playableGames.getGame(gameUuid);
 
@@ -113,39 +89,39 @@ class ContextMenu extends VitrineComponent<Props, State> {
         break;
       }
     }
-  }
+  };
 
-  private animateModal(startingAnimation: boolean) {
+  private animateModal = (startingAnimation: boolean) => () => {
     if (startingAnimation === this.state.confirmVisible) {
       this.setState({
         transitionVisible: this.state.confirmVisible
       });
     }
-  }
+  };
 
   public render(): JSX.Element {
     return (
       <div>
         <ContextMenuDiv id={'sidebar-games-context-menu'}>
-          <MenuItem onClick={this.launchClick}>
+          <MenuItem onClick={this.contextAction('launch')}>
             <FormattedMessage id={'actions.playGame'} />
           </MenuItem>
-          <MenuItem onClick={this.editClick}>
+          <MenuItem onClick={this.contextAction('edit')}>
             <FormattedMessage id={'actions.editGame'} />
           </MenuItem>
-          <MenuItem onClick={this.editTimeClick}>
+          <MenuItem onClick={this.contextAction('editTime')}>
             <FormattedMessage id={'actions.editTimePlayed'} />
           </MenuItem>
           <MenuItem divider={true} />
-          <MenuItem onClick={this.deleteClick}>
+          <MenuItem onClick={this.contextAction('delete')}>
             <FormattedMessage id={'actions.deleteGame'} />
           </MenuItem>
         </ContextMenuDiv>
         <Transition
           animation={'fade down'}
           duration={this.modalsTransitionDuration}
-          onStart={this.animateModal.bind(this, true)}
-          onComplete={this.animateModal.bind(this, false)}
+          onStart={this.animateModal(true)}
+          onComplete={this.animateModal(false)}
           visible={this.state.confirmVisible}
         >
           <Modal open={this.state.transitionVisible} onClose={this.resetModalData} className={css(styles.modal)}>
