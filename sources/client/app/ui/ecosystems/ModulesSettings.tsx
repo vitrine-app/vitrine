@@ -71,7 +71,7 @@ export const ModulesSettings: React.StatelessComponent<Props> = ({
       color={'#234a34'}
       enabled={emulatedEnabled}
       icon={emulatedIcon}
-      name={formatMessage({ id: 'settings.emulatedGames' })}
+      name={formatMessage({ id: 'settings.emulated.title' })}
       toggleModule={moduleIconClick('emulated')}
     >
       <EmulatedGamesSettings error={emulatedError} formatMessage={formatMessage} path={emulatedPath} pathButtonClick={emulatedPathButtonClick} />

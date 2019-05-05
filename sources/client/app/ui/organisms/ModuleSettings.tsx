@@ -14,10 +14,10 @@ interface Props {
 
 export const ModuleSettings: React.StatelessComponent<Props> = ({ children, color: backgroundColor, enabled, icon, name, toggleModule }: Props) => (
   <div className={css(styles.moduleArea)} style={{ backgroundColor }}>
-    <div className={css(styles.moduleHeader)}>
+    <div className={css(styles.moduleHeader)} onClick={toggleModule}>
       <img alt={name} className={css(styles.moduleIcon)} src={icon} />
       <span className={css(styles.moduleName)}>{name}</span>
-      <Checkbox checked={enabled} className={css(styles.moduleToggle)} onChange={toggleModule} toggle={true} />
+      <Checkbox checked={enabled} className={css(styles.moduleToggle)} toggle={true} />
     </div>
     {children && enabled && <div className={css(styles.moduleContent)}>{children}</div>}
   </div>
@@ -36,6 +36,7 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   },
   moduleHeader: {
     alignItems: 'center',
+    cursor: 'pointer',
     display: 'flex',
     padding: padding(16, 20)
   },

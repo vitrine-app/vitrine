@@ -62,15 +62,22 @@
     "modules": "Modules",
     "emulators": "Emulators",
     "locale": "Language",
-    "steamConfig": "Steam settings:",
-    "steamPath": "Steam path",
-    "steamSearchCloud": "Search uninstalled Steam games",
-    "originConfig": "Origin settings:",
-    "originGamesPath": "Origin games path",
-    "emulatedGames": "Emulated games",
-    "emulatedConfig": "Emulation settings:",
-    "emulatedGamesPath": "Games ROMs path",
-    "pathError": "You need to specify a path"
+    "pathError": "You need to specify a path",
+    "steam": {
+      "cloudSearchDescription": "Vitrine will search games which are linked to your Steam account but aren't installed on your computer.",
+      "path": "Steam path",
+      "searchCloud": "Search uninstalled Steam games",
+      "config": "Steam settings:"
+    },
+    "origin": {
+      "gamesPath": "Origin games path",
+      "config": "Origin settings:"
+    },
+    "emulated": {
+      "title": "Emulated games",
+      "gamesPath": "Games ROMs path",
+      "config": "Emulation settings:"
+    }
   },
   "igdbDisclaimer": "This feature is powered by ",
   "emulator": {

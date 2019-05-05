@@ -24,13 +24,18 @@ export const SteamSettings: React.StatelessComponent<Props> = ({
 }: Props) => (
   <React.Fragment>
     <Form.Field error={error}>
-      <PathOption buttonClick={pathButtonClick} name={formatMessage({ id: 'settings.steamPath' })} path={path} valueName={'steam'} />
+      <PathOption buttonClick={pathButtonClick} name={formatMessage({ id: 'settings.steam.path' })} path={path} valueName={'steam'} />
       {error && (
         <ErrorMessage>
           <FormattedMessage id={'settings.pathError'} />
         </ErrorMessage>
       )}
     </Form.Field>
-    <ToggleOption active={searchCloud} name={formatMessage({ id: 'settings.steamSearchCloud' })} toggle={searchCloudCheckbox} />
+    <ToggleOption
+      active={searchCloud}
+      description={formatMessage({ id: 'settings.steam.cloudSearchDescription' })}
+      name={formatMessage({ id: 'settings.steam.searchCloud' })}
+      toggle={searchCloudCheckbox}
+    />
   </React.Fragment>
 );

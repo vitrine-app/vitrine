@@ -15,7 +15,7 @@ interface Props {
 export const OriginSettings: React.StatelessComponent<Props> = ({ error, formatMessage, path, pathButtonClick }: Props) => (
   <React.Fragment>
     <Form.Field error={error}>
-      <PathOption buttonClick={pathButtonClick} name={formatMessage({ id: 'settings.originGamesPath' })} path={path} valueName={'origin'} />
+      <PathOption buttonClick={pathButtonClick} name={formatMessage({ id: 'settings.origin.gamesPath' })} path={path} valueName={'origin'} />
       {error && (
         <ErrorMessage>
           <FormattedMessage id={'settings.pathError'} />

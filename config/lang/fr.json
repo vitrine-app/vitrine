@@ -62,15 +62,22 @@
     "modules": "Modules",
     "emulators": "Emulateurs",
     "locale": "Langue",
-    "steamConfig": "Paramètres de Steam :",
-    "steamPath": "Dossier d'emplacement de Steam",
-    "steamSearchCloud": "Chercher les jeux Steam non-installés",
-    "originConfig": "Paramètres d'Origin :",
-    "originGamesPath": "Dossier d'emplacement des jeux Origin",
-    "emulatedGames": "Jeux émulés",
-    "emulatedConfig": "Paramètres d'émulation :",
-    "emulatedGamesPath": "Dossier d'emplacement des ROMs de jeux",
-    "pathError": "Vous devez définir un dossier d'emplacement"
+    "pathError": "Vous devez définir un dossier d'emplacement",
+    "steam": {
+      "cloudSearchDescription": "Vitrine cherchera les jeux liés à votre compte Steam mais qui ne sont pas installés sur votre ordinateur.",
+      "path": "Dossier d'emplacement de Steam",
+      "searchCloud": "Chercher les jeux Steam non-installés",
+      "config": "Paramètres de Steam :"
+    },
+    "origin": {
+      "gamesPath": "Dossier d'emplacement des jeux Origin",
+      "config": "Paramètres d'Origin :"
+    },
+    "emulated": {
+      "title": "Jeux émulés",
+      "gamesPath": "Dossier d'emplacement des ROMs de jeux",
+      "config": "Paramètres d'émulation :"
+    }
   },
   "igdbDisclaimer": "Cette fonctionalité est disponible grâce à ",
   "emulator": {
