@@ -77,9 +77,11 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
   }
 
   private gameCoverClick(potentialGame: PotentialGame) {
-    this.props.setPotentialGameToAdd(potentialGame);
-    this.props.closePotentialGamesAddModal();
-    this.props.openGameAddModal();
+    return () => {
+      this.props.setPotentialGameToAdd(potentialGame);
+      this.props.closePotentialGamesAddModal();
+      this.props.openGameAddModal();
+    };
   }
 
   private animateModal(startingAnimation: boolean) {
@@ -110,7 +112,7 @@ class PotentialGamesAddModal extends VitrineComponent<Props, State> {
                 <div className={css(styles.coverWrapper)}>
                   <BlurPicture
                     background={potentialGame.details.cover}
-                    onClick={this.gameCoverClick.bind(null, potentialGame)}
+                    onClick={this.gameCoverClick(potentialGame)}
                     faIcon={faPlusCircle}
                     fontSize={55}
                   />
@@ -171,7 +173,7 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     userSelect: 'none'
   },
   potentialGameName: {
-    fontSize: 17,
+    fontSize: 14,
     marginTop: 6
   },
   progressBar: {
