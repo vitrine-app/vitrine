@@ -110,7 +110,7 @@ export function getSortedGamesFromStore(dispatchedData: any): PlayableGame[] {
     case SortParameter.NAME: {
       return sortedGames.getGames().sort(
         (gameA: PlayableGame, gameB: PlayableGame): number => {
-          return gameA.name > gameB.name ? 1 : -1;
+          return gameA.name.replace(/[T|t]he/g, '').trim() > gameB.name.replace(/[T|t]he/g, '').trim() ? 1 : -1;
         }
       );
     }
