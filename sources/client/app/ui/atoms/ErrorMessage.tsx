@@ -5,7 +5,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const ErrorMessage: React.StatelessComponent<Props> = ({ children }: Props) => <span className={css(styles.moduleContent)}>{children}</span>;
+export const ErrorMessage: React.StatelessComponent<Props> = ({ children }: Props) => <span className={css(styles.modulesError)}>{children}</span>;
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   modulesError: {

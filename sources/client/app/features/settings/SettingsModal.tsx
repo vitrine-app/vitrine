@@ -232,16 +232,29 @@ class SettingsModal extends VitrineComponent<Props, State> {
     const {
       intl: { formatMessage }
     } = this.props;
-    const { steamError, steamPath, steamSearchCloud } = this.state;
+    const {
+      battleNetEnabled,
+      emulatedEnabled,
+      originEnabled,
+      originError,
+      originPath,
+      steamEnabled,
+      steamError,
+      steamPath,
+      steamSearchCloud
+    } = this.state;
     const modulesSettings: JSX.Element = (
       <Tab.Pane className={css(styles.settingsPane)}>
         <ModulesSettings
-          battleNetEnabled={this.state.battleNetEnabled}
-          emulatedEnabled={this.state.emulatedEnabled}
+          battleNetEnabled={battleNetEnabled}
+          emulatedEnabled={emulatedEnabled}
           formatMessage={formatMessage}
           moduleIconClick={this.moduleIconClick}
-          originEnabled={this.state.originEnabled}
-          steamEnabled={this.state.steamEnabled}
+          originEnabled={originEnabled}
+          originError={originError}
+          originPath={originPath}
+          originPathButtonClick={this.originPathButton}
+          steamEnabled={steamEnabled}
           steamError={steamError}
           steamPath={steamPath}
           steamPathButtonClick={this.steamPathButton}
@@ -249,70 +262,6 @@ class SettingsModal extends VitrineComponent<Props, State> {
           steamSearchCloudCheckbox={this.steamSearchCloudCheckbox}
         />
         {/*<Form>
-          <div style={{ display: this.state.steamEnabled ? 'block' : 'none' }}>
-            <SplitBar />
-            <h3>
-              <FormattedMessage id={'settings.steamConfig'} />
-            </h3>
-            <Form.Field error={this.state.steamError}>
-              <label>
-                <FormattedMessage id={'settings.steamPath'} />
-              </label>
-              <Input
-                label={
-                  <Button secondary={true} onClick={this.steamPathButton}>
-                    <FontAwesomeIcon icon={faFolderOpen} />
-                  </Button>
-                }
-                labelPosition={'right'}
-                name={'steam'}
-                size={'large'}
-                placeholder={this.props.intl.formatMessage({ id: 'settings.steamPath' })}
-                value={this.state.steamPath}
-                onClick={this.steamPathButton}
-                readOnly={true}
-              />
-              <span className={css(styles.modulesError)} style={{ display: this.state.steamError ? 'inline' : 'none' }}>
-                <FormattedMessage id={'settings.pathError'} />
-              </span>
-            </Form.Field>
-            <Form.Field>
-              <Checkbox
-                checked={this.state.steamSearchCloud}
-                onChange={this.steamSearchCloudCheckbox}
-                label={this.props.intl.formatMessage({ id: 'settings.steamSearchCloud' })}
-                toggle={true}
-              />
-            </Form.Field>
-          </div>
-          <div style={{ display: this.state.originEnabled ? 'block' : 'none' }}>
-            <SplitBar />
-            <h3>
-              <FormattedMessage id={'settings.originConfig'} />
-            </h3>
-            <Form.Field error={this.state.originError}>
-              <label>
-                <FormattedMessage id={'settings.originGamesPath'} />
-              </label>
-              <Input
-                label={
-                  <Button secondary={true} onClick={this.originPathButton}>
-                    <FontAwesomeIcon icon={faFolderOpen} />
-                  </Button>
-                }
-                labelPosition={'right'}
-                name={'origin'}
-                size={'large'}
-                placeholder={this.props.intl.formatMessage({ id: 'settings.originGamesPath' })}
-                value={this.state.originPath}
-                onClick={this.originPathButton}
-                readOnly={true}
-              />
-              <span className={css(styles.modulesError)} style={{ display: this.state.originError ? 'inline-block' : 'none' }}>
-                <FormattedMessage id={'settings.pathError'} />
-              </span>
-            </Form.Field>
-          </div>
           <div style={{ display: this.state.emulatedEnabled ? 'block' : 'none' }}>
             <SplitBar />
             <h3>
