@@ -15,7 +15,7 @@ interface Props {
 
 const EmulatorsSettings: React.StatelessComponent<Props> = ({ emulated, emulators, error, onChange }: Props) => (
   <React.Fragment>
-    <p className={css(styles.emulatorsError)}>{error}</p>
+    {error && <p className={css(styles.emulatorsError)}>{error}</p>}
     <Table celled={true}>
       <Table.Header>
         <Table.Row>
