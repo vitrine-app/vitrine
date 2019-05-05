@@ -1,4 +1,5 @@
 import { css, StyleSheet } from 'aphrodite';
+import { padding } from 'css-verbose';
 import * as React from 'react';
 import { FormattedMessage, InjectedIntl, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -323,8 +324,9 @@ const styles: React.CSSProperties & any = StyleSheet.create({
   },
   settingsPane: {
     border: 'none',
-    height: (64).vh(),
-    overflowY: 'auto'
+    height: (70).vh(),
+    overflowY: 'auto',
+    padding: padding(0, 14)
   }
 });
 
