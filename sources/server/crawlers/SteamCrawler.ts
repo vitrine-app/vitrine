@@ -1,31 +1,23 @@
 import { promise as glob } from 'glob-promise';
 import * as path from 'path';
-import * as SteamWeb from 'steam-web-promise';
 
 import { GamesCollection } from '@models/GamesCollection';
 import { PlayableGame } from '@models/PlayableGame';
 import { GameSource, PotentialGame } from '@models/PotentialGame';
-import { steamKey } from '../../modules/keysProvider';
 import { parseAcf } from '../api/AcfParser';
+import { steamApiClient } from '../api/SteamApiClient';
 import { logger } from '../Logger';
 import { steamAppIdsCacher } from '../SteamAppIdsCacher';
 
 class SteamCrawler {
   private readonly manifestRegEx: string;
   private readonly steamBinary: string;
-  private client: SteamWeb;
   private playableGames: PlayableGame[];
-  private apiEndPoint: string;
   private steamConfig: any;
 
   public constructor(playableGames?: PlayableGame[]) {
     this.playableGames = playableGames || [];
-    this.client = new SteamWeb({
-      apiKey: steamKey(),
-      format: 'json'
-    });
     this.manifestRegEx = 'appmanifest_*.acf';
-    this.apiEndPoint = 'https://store.steampowered.com/api/appdetails/';
     this.steamBinary = process.platform === 'win32' ? 'steam.exe' : 'steam.sh';
   }
 
@@ -76,10 +68,8 @@ class SteamCrawler {
 
   private async searchUninstalledGames(potentialGames: PotentialGame[]) {
     try {
-      const { response }: any = await this.client.getOwnedGames({
-        steamid: this.steamConfig.userId
-      });
-      const appIds: number[] = response.games.map(({ appid: appId }: any) => appId);
+      const games: any[] = await steamApiClient.getOwnedGames(this.steamConfig.userId);
+      const appIds: number[] = games.map(({ appid: appId }: any) => appId);
       const appsData: any[] = (await steamAppIdsCacher.cache(appIds)).filter((appData: any) => {
         const found: boolean =
           this.playableGames.filter((playableGame: any) => parseInt(appData.appId) === playableGame.details.steamId).length > 0 ||

@@ -1,27 +1,17 @@
-import * as SteamWeb from 'steam-web-promise';
-
-import { steamKey } from '../../modules/keysProvider';
 import { logger } from '../Logger';
+import { steamApiClient } from './SteamApiClient';
 
 class SteamPlayTimeWrapper {
-  private client: SteamWeb;
   private timedGames: any[];
 
   public constructor() {
-    this.client = new SteamWeb({
-      apiKey: steamKey(),
-      format: 'json'
-    });
     this.timedGames = [];
   }
 
   public async getAllGamesPlayTimes(steamUserId: string) {
     try {
       logger.info('SteamPlayTimeWrapper', 'Timed games never queried, asking Steam...');
-      const {
-        response: { games }
-      }: any = await this.client.getOwnedGames({ steamid: steamUserId });
-      this.timedGames = games;
+      this.timedGames = await steamApiClient.getOwnedGames(steamUserId);
     } catch (error) {
       throw new Error('Steam API failed to retrieve playing times for games.');
     }
