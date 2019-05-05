@@ -27,6 +27,12 @@ class SteamApiClient {
     });
     return games;
   }
+
+  public async getGamesDetails(appId: number) {
+    const apiEndPoint: string = 'https://store.steampowered.com/api/appdetails/';
+    const { data }: AxiosResponse<any> = await axios.get(`${apiEndPoint}?appids=${appId}`);
+    return data;
+  }
 }
 
 export const steamApiClient: SteamApiClient = new SteamApiClient();

@@ -1,17 +1,15 @@
-import axios, { AxiosResponse } from 'axios';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { getEnvFolder } from '@models/env';
+import { steamApiClient } from './api/SteamApiClient';
 import { logger } from './Logger';
 
 export class SteamAppIdsCacher {
   private readonly cacheFilePath: string;
-  private readonly apiEndPoint: string;
 
   public constructor() {
     this.cacheFilePath = path.resolve(getEnvFolder('config'), 'cache', 'steam_app_ids.json');
-    this.apiEndPoint = 'https://store.steampowered.com/api/appdetails/';
   }
 
   public async cache(appIds: number[]) {
@@ -23,7 +21,7 @@ export class SteamAppIdsCacher {
       appIds.map(async (appId: number) => {
         if (!appIdsCache[appId]) {
           try {
-            const { data }: AxiosResponse<any> = await axios.get(`${this.apiEndPoint}?appids=${appId}`);
+            const data: any = await steamApiClient.getGamesDetails(appId);
             const gameData: any = data[Object.keys(data)[0]].data;
             if (gameData === undefined || gameData.type !== 'game') {
               return null;
