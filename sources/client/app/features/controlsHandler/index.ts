@@ -14,29 +14,29 @@ class ControlsHandler {
     this.currentWindow = remote.getCurrentWindow();
     this.gamepadListener = new GamepadListener();
     this.actionCallbacks = {};
-    window.addEventListener('keydown', this.registerKeyboardActions.bind(this));
+    window.addEventListener('keydown', this.registerKeyboardActions);
     this.registerGamepadActions();
     this.gamepadListener.start();
   }
 
-  public unregister() {
-    window.removeEventListener('keydown', this.registerKeyboardActions.bind(this));
+  public unregister = () => {
+    window.removeEventListener('keydown', this.registerKeyboardActions);
     this.gamepadListener.stop();
-  }
+  };
 
-  public registerDownAction(callback: () => void) {
+  public registerDownAction = (callback: () => void) => {
     this.actionCallbacks.down = callback;
-  }
+  };
 
-  public registerUpAction(callback: () => void) {
+  public registerUpAction = (callback: () => void) => {
     this.actionCallbacks.up = callback;
-  }
+  };
 
-  public registerEnterAction(callback: () => void) {
+  public registerEnterAction = (callback: () => void) => {
     this.actionCallbacks.enter = callback;
-  }
+  };
 
-  private registerKeyboardActions(event: KeyboardEvent) {
+  private registerKeyboardActions = (event: KeyboardEvent) => {
     switch (event.code) {
       case 'ArrowUp': {
         event.preventDefault();
@@ -60,9 +60,9 @@ class ControlsHandler {
         break;
       }
     }
-  }
+  };
 
-  private registerGamepadActions() {
+  private registerGamepadActions = () => {
     this.gamepadListener.on('gamepad:axis', (event: ListenerEvent) => {
       if (!this.currentWindow.isFocused()) {
         return;
@@ -84,7 +84,7 @@ class ControlsHandler {
         this.actionCallbacks.enter();
       }
     });
-  }
+  };
 }
 
-export const index: ControlsHandler = new ControlsHandler();
+export const controlsHandler: ControlsHandler = new ControlsHandler();

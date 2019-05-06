@@ -70,58 +70,48 @@ class SettingsModal extends VitrineComponent<Props, State> {
       steamSearchCloud: this.props.settings && this.props.settings.steam ? this.props.settings.steam.searchCloud : true
     };
     this.state = this.emptyState;
-
-    this.closeModal = this.closeModal.bind(this);
-    this.moduleIconClick = this.moduleIconClick.bind(this);
-    this.modulePathButton = this.modulePathButton.bind(this);
-    this.steamSearchCloudCheckbox = this.steamSearchCloudCheckbox.bind(this);
-    this.localeChange = this.localeChange.bind(this);
-    this.emulatorConfigChange = this.emulatorConfigChange.bind(this);
-    this.submitButton = this.submitButton.bind(this);
   }
 
-  private closeModal() {
+  private closeModal = () => {
     if (this.props.firstLaunch) {
       return;
     }
     this.props.closeSettingsModal();
     this.setState(this.emptyState);
-  }
+  };
 
-  private moduleIconClick(moduleName: string) {
+  private moduleIconClick = (moduleName: string) => {
     return () => {
       // @ts-ignore
       this.setState(({ [`${moduleName}Enabled`]: moduleEnabled }: State) => ({
         [`${moduleName}Enabled`]: !moduleEnabled
       }));
     };
-  }
+  };
 
-  private modulePathButton(moduleName: string) {
-    return () => {
-      const modulePath: string = openDirectory();
-      if (modulePath) {
-        // @ts-ignore
-        this.setState({
-          [`${moduleName}Path`]: modulePath
-        });
-      }
-    };
-  }
+  private modulePathButton = (moduleName: string) => () => {
+    const modulePath: string = openDirectory();
+    if (modulePath) {
+      // @ts-ignore
+      this.setState({
+        [`${moduleName}Path`]: modulePath
+      });
+    }
+  };
 
-  private steamSearchCloudCheckbox() {
+  private steamSearchCloudCheckbox = () => {
     this.setState(({ steamSearchCloud }: State) => ({
       steamSearchCloud: !steamSearchCloud
     }));
-  }
+  };
 
-  private localeChange(event: any, data: any) {
+  private localeChange = (event: any, data: any) => {
     this.setState({
       lang: data.value
     });
-  }
+  };
 
-  private emulatorConfigChange(emulatorConfig: any) {
+  private emulatorConfigChange = (emulatorConfig: any) => {
     let aliveEmulators: any[] = this.state.aliveEmulators;
     if (emulatorConfig.path !== undefined) {
       const found: boolean = this.state.aliveEmulators.filter((aliveEmulator: any) => aliveEmulator.id === emulatorConfig.id).length > 0;
@@ -136,9 +126,9 @@ class SettingsModal extends VitrineComponent<Props, State> {
     this.setState({
       aliveEmulators
     });
-  }
+  };
 
-  private submitButton() {
+  private submitButton = () => {
     let sendable: boolean = true;
     const settingsForm: any = {
       lang: this.state.lang
@@ -210,7 +200,7 @@ class SettingsModal extends VitrineComponent<Props, State> {
     if (sendable) {
       serverListener.send('update-settings', settingsForm);
     }
-  }
+  };
 
   public render(): JSX.Element {
     const {

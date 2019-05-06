@@ -25,6 +25,9 @@ export const ModuleSettings: React.StatelessComponent<Props> = ({ children, colo
 
 const styles: React.CSSProperties & any = StyleSheet.create({
   moduleArea: {
+    ':first-child': {
+      margin: 0
+    },
     borderRadius: 4,
     boxShadow: `0 0 2px 0 ${rgba(0, 0, 0, 0.45)}`,
     margin: margin(15, 0)

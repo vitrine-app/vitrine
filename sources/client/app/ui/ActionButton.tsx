@@ -31,24 +31,21 @@ export class ActionButton extends VitrineComponent<Props, State> {
       iconClassName: css(styles.iconStandard)
     };
     this.id = `tooltip_${randomHashedString(6)}`;
-
-    this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
-    this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
   }
 
-  private mouseEnterHandler() {
+  private mouseEnterHandler = () => {
     this.setState({
       buttonClassName: css(styles.buttonHover),
       iconClassName: css(styles.iconHover)
     });
-  }
+  };
 
-  private mouseLeaveHandler() {
+  private mouseLeaveHandler = () => {
     this.setState({
       buttonClassName: css(styles.buttonStandard),
       iconClassName: css(styles.iconStandard)
     });
-  }
+  };
 
   public render(): JSX.Element {
     const icon: JSX.Element = (

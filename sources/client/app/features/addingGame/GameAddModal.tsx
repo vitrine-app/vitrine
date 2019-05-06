@@ -95,168 +95,13 @@ class GameAddModal extends VitrineComponent<Props, State> {
       submitButtonLoading: false
     };
     this.state = { ...this.emptyState };
-
-    this.closeModal = this.closeModal.bind(this);
-    this.changeBackgroundHandler = this.changeBackgroundHandler.bind(this);
-    this.gameCoverClickHandler = this.gameCoverClickHandler.bind(this);
-    this.inputChangeHandler = this.inputChangeHandler.bind(this);
-    this.dateChangeHandler = this.dateChangeHandler.bind(this);
-    this.ratingChangeHandler = this.ratingChangeHandler.bind(this);
-    this.executableButton = this.executableButton.bind(this);
-    this.searchIgdbButton = this.searchIgdbButton.bind(this);
-    this.submitButton = this.submitButton.bind(this);
-  }
-
-  private fillIgdbGame(gameInfos: any) {
-    this.setState({
-      gameData: {
-        ...this.state.gameData,
-        backgroundScreen: gameInfos.screenshots.length ? gameInfos.screenshots[0] : '',
-        cover: gameInfos.cover,
-        date: gameInfos.releaseDate ? moment(gameInfos.releaseDate).format('DD/MM/YYYY') : '',
-        developer: gameInfos.developer || '',
-        genres: gameInfos.genres.length ? gameInfos.genres.join(', ') : '',
-        name: gameInfos.name,
-        potentialBackgrounds: gameInfos.screenshots || [],
-        publisher: gameInfos.publisher || '',
-        rating: gameInfos.rating || '',
-        series: gameInfos.series || '',
-        summary: gameInfos.summary || ''
-      },
-      igdbButtonLoading: false,
-      igdbFilled: true
-    });
-    this.props.closeIgdbResearchModal();
-  }
-
-  private addPlayableGame(game: PlayableGame) {
-    this.props.addPlayableGames([game]);
-    this.closeModal();
-    notify(this.props.intl.formatMessage({ id: 'toasts.addingGame' }, { name: game.name }), true);
-    this.setState({
-      submitButtonLoading: false
-    });
-  }
-
-  private editPlayableGame(game: PlayableGame) {
-    this.props.editPlayableGame(game);
-    if (game.uuid === this.props.selectedGame.uuid) {
-      this.props.selectGame(game);
-    }
-    if (this.props.igdbResearchModalVisible) {
-      this.props.closeTimePlayedEditionModal();
-    }
-    if (this.props.visible) {
-      this.closeModal();
-    }
-    notify(this.props.intl.formatMessage({ id: 'toasts.editingGame' }, { name: game.name }), true);
-    this.setState({
-      submitButtonLoading: false
-    });
-  }
-
-  private closeModal() {
-    this.props.closeGameAddModal();
-    setTimeout(() => {
-      this.props.setPotentialGameToAdd(null);
-      this.props.setGameToEdit(null);
-      this.setState({ ...this.emptyState });
-    }, this.modalsTransitionDuration);
-  }
-
-  private gameCoverClickHandler() {
-    const cover: string = openImageDialog(this.props.intl.formatMessage);
-    if (cover) {
-      this.setState({
-        gameData: {
-          ...this.state.gameData,
-          cover
-        }
-      });
-    }
-  }
-
-  private inputChangeHandler({ target: { name, value } }: any) {
-    this.setState({
-      gameData: {
-        ...this.state.gameData,
-        [name]: value
-      }
-    });
-  }
-
-  private dateChangeHandler(date: moment.Moment | string) {
-    this.setState({
-      gameData: {
-        ...this.state.gameData,
-        date: typeof date === 'string' ? date : date.format('DD/MM/YYYY')
-      }
-    });
-  }
-
-  private ratingChangeHandler(rating: number | any) {
-    this.setState({
-      gameData: {
-        ...this.state.gameData,
-        rating
-      }
-    });
-  }
-
-  private executableButton() {
-    const executable: string = openExecutableDialog(this.props.intl.formatMessage);
-    if (!executable) {
-      return;
-    }
-    this.setState({
-      gameData: {
-        ...this.state.gameData,
-        executable
-      }
-    });
-  }
-
-  private changeBackgroundHandler(backgroundScreen: string) {
-    this.setState({
-      gameData: {
-        ...this.state.gameData,
-        backgroundScreen
-      }
-    });
-  }
-
-  private searchIgdbButton() {
-    this.setState({
-      igdbButtonLoading: true
-    });
-    serverListener.send('search-igdb-games', this.state.gameData.name);
-  }
-
-  private submitButton() {
-    const gameInfos: any = { ...this.state.gameData };
-    delete gameInfos.potentialBackgrounds;
-    if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://')) {
-      gameInfos.cover = `file://${gameInfos.cover}`;
-    }
-    if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://')) {
-      gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
-    }
-
-    this.setState({
-      submitButtonLoading: true
-    });
-    if (this.state.editing) {
-      serverListener.send('edit-game', this.props.gameToEdit.uuid, gameInfos);
-    } else {
-      serverListener.send('add-game', gameInfos);
-    }
   }
 
   public componentDidMount() {
     serverListener
-      .listen('send-igdb-game', this.fillIgdbGame.bind(this))
-      .listen('add-playable-game', this.addPlayableGame.bind(this))
-      .listen('edit-playable-game', this.editPlayableGame.bind(this));
+      .listen('send-igdb-game', this.fillIgdbGame)
+      .listen('add-playable-game', this.addPlayableGame)
+      .listen('edit-playable-game', this.editPlayableGame);
   }
 
   public static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
@@ -298,6 +143,151 @@ class GameAddModal extends VitrineComponent<Props, State> {
           igdbFilled: false
         };
   }
+
+  private fillIgdbGame = (gameInfos: any) => {
+    this.setState({
+      gameData: {
+        ...this.state.gameData,
+        backgroundScreen: gameInfos.screenshots.length ? gameInfos.screenshots[0] : '',
+        cover: gameInfos.cover,
+        date: gameInfos.releaseDate ? moment(gameInfos.releaseDate).format('DD/MM/YYYY') : '',
+        developer: gameInfos.developer || '',
+        genres: gameInfos.genres.length ? gameInfos.genres.join(', ') : '',
+        name: gameInfos.name,
+        potentialBackgrounds: gameInfos.screenshots || [],
+        publisher: gameInfos.publisher || '',
+        rating: gameInfos.rating || '',
+        series: gameInfos.series || '',
+        summary: gameInfos.summary || ''
+      },
+      igdbButtonLoading: false,
+      igdbFilled: true
+    });
+    this.props.closeIgdbResearchModal();
+  };
+
+  private addPlayableGame = (game: PlayableGame) => {
+    this.props.addPlayableGames([game]);
+    this.closeModal();
+    notify(this.props.intl.formatMessage({ id: 'toasts.addingGame' }, { name: game.name }), true);
+    this.setState({
+      submitButtonLoading: false
+    });
+  };
+
+  private editPlayableGame = (game: PlayableGame) => {
+    this.props.editPlayableGame(game);
+    if (game.uuid === this.props.selectedGame.uuid) {
+      this.props.selectGame(game);
+    }
+    if (this.props.igdbResearchModalVisible) {
+      this.props.closeTimePlayedEditionModal();
+    }
+    if (this.props.visible) {
+      this.closeModal();
+    }
+    notify(this.props.intl.formatMessage({ id: 'toasts.editingGame' }, { name: game.name }), true);
+    this.setState({
+      submitButtonLoading: false
+    });
+  };
+
+  private closeModal = () => {
+    this.props.closeGameAddModal();
+    setTimeout(() => {
+      this.props.setPotentialGameToAdd(null);
+      this.props.setGameToEdit(null);
+      this.setState({ ...this.emptyState });
+    }, this.modalsTransitionDuration);
+  };
+
+  private gameCoverClickHandler = () => {
+    const cover: string = openImageDialog(this.props.intl.formatMessage);
+    if (cover) {
+      this.setState({
+        gameData: {
+          ...this.state.gameData,
+          cover
+        }
+      });
+    }
+  };
+
+  private inputChangeHandler = ({ target: { name, value } }: any) => {
+    this.setState({
+      gameData: {
+        ...this.state.gameData,
+        [name]: value
+      }
+    });
+  };
+
+  private dateChangeHandler = (date: moment.Moment | string) => {
+    this.setState({
+      gameData: {
+        ...this.state.gameData,
+        date: typeof date === 'string' ? date : date.format('DD/MM/YYYY')
+      }
+    });
+  };
+
+  private ratingChangeHandler = (rating: number | any) => {
+    this.setState({
+      gameData: {
+        ...this.state.gameData,
+        rating
+      }
+    });
+  };
+
+  private executableButton = () => {
+    const executable: string = openExecutableDialog(this.props.intl.formatMessage);
+    if (!executable) {
+      return;
+    }
+    this.setState({
+      gameData: {
+        ...this.state.gameData,
+        executable
+      }
+    });
+  };
+
+  private changeBackgroundHandler = (backgroundScreen: string) => {
+    this.setState({
+      gameData: {
+        ...this.state.gameData,
+        backgroundScreen
+      }
+    });
+  };
+
+  private searchIgdbButton = () => {
+    this.setState({
+      igdbButtonLoading: true
+    });
+    serverListener.send('search-igdb-games', this.state.gameData.name);
+  };
+
+  private submitButton = () => {
+    const gameInfos: any = { ...this.state.gameData };
+    delete gameInfos.potentialBackgrounds;
+    if (gameInfos.cover && !gameInfos.cover.startsWith('http') && !gameInfos.cover.startsWith('file://')) {
+      gameInfos.cover = `file://${gameInfos.cover}`;
+    }
+    if (gameInfos.backgroundScreen && !gameInfos.backgroundScreen.startsWith('http') && !gameInfos.backgroundScreen.startsWith('file://')) {
+      gameInfos.backgroundScreen = `file://${gameInfos.backgroundScreen}`;
+    }
+
+    this.setState({
+      submitButtonLoading: true
+    });
+    if (this.state.editing) {
+      serverListener.send('edit-game', this.props.gameToEdit.uuid, gameInfos);
+    } else {
+      serverListener.send('add-game', gameInfos);
+    }
+  };
 
   public render(): JSX.Element {
     return (
@@ -423,7 +413,7 @@ class GameAddModal extends VitrineComponent<Props, State> {
                 <Grid.Column width={16}>
                   <TextField
                     inputLabel={
-                      <Button secondary={true} onClick={this.executableButton.bind(this)}>
+                      <Button secondary={true} onClick={this.executableButton}>
                         <FontAwesomeIcon icon={faFolderOpen} />
                       </Button>
                     }

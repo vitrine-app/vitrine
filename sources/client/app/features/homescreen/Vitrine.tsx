@@ -13,7 +13,7 @@ import { PotentialGame } from '@models/PotentialGame';
 import { formatTimePlayed, notify } from '../../helpers';
 import { GameAddModal } from '../addingGame/GameAddModal';
 import { PotentialGamesAddModal } from '../addingPotentialGames/PotentialGamesAddModal';
-import { index } from '../controlsHandler';
+import { controlsHandler } from '../controlsHandler';
 import { TimePlayedEditionModal } from '../editingTimePlayed/TimePlayedEditionModal';
 import { Action } from '../redux/actions/actionsTypes';
 import { addPlayableGames, addPotentialGames, launchGame, removePlayableGame, selectGame, stopGame } from '../redux/actions/games';
@@ -63,25 +63,53 @@ class Vitrine extends VitrineComponent<Props, State> {
       firstLaunch: false,
       gameWillBeEdited: false
     };
-
-    this.launchGame = this.launchGame.bind(this);
   }
 
-  private removePlayableGame(gameUuid: string) {
+  public componentDidMount() {
+    if (this.props.settings.firstLaunch) {
+      this.setState(
+        {
+          firstLaunch: true
+        },
+        this.props.openSettingsModal
+      );
+    }
+
+    serverListener
+      .listen('add-playable-games', this.props.addPlayableGames)
+      .listen('remove-playable-game', this.removePlayableGame)
+      .listen('add-potential-games', this.props.addPotentialGames)
+      .listen('stop-game', this.stopGame)
+      .listen('settings-updated', this.settingsUpdated)
+      .listen('error', this.serverError);
+
+    this.registerActions();
+    serverListener.listen('set-internet-connection', this.handleInternetConnection);
+    window.addEventListener('online', this.handleInternetConnection);
+    window.addEventListener('offline', this.handleInternetConnection);
+  }
+
+  public componentWillUnmount() {
+    controlsHandler.unregister();
+    window.removeEventListener('online', this.handleInternetConnection);
+    window.removeEventListener('offline', this.handleInternetConnection);
+  }
+
+  private removePlayableGame = (gameUuid: string) => {
     const playedGameName: string = this.props.playableGames.getGame(gameUuid).name;
     this.props.removePlayableGame(gameUuid);
     this.props.selectGame(this.props.playableGames.size() ? this.props.playableGames.getGame(0) : null);
     notify(this.props.intl.formatMessage({ id: 'toasts.removingGame' }, { name: playedGameName }), true);
-  }
+  };
 
-  private launchGame(gameUuid: string) {
+  private launchGame = (gameUuid: string) => () => {
     const playedGame: PlayableGame = this.props.playableGames.getGame(gameUuid);
     notify(this.props.intl.formatMessage({ id: 'toasts.launchingGame' }, { name: playedGame.name }), true);
     serverListener.send('launch-game', gameUuid);
     this.props.launchGame(this.props.playableGames.getGame(gameUuid));
-  }
+  };
 
-  private stopGame(gameUuid: string, totalTimePlayed: number) {
+  private stopGame = (gameUuid: string, totalTimePlayed: number) => {
     const playedGame: PlayableGame = { ...this.props.playableGames.getGame(gameUuid) } as PlayableGame;
     const timeJustPlayed: number = totalTimePlayed - playedGame.timePlayed;
     playedGame.timePlayed = totalTimePlayed;
@@ -96,9 +124,9 @@ class Vitrine extends VitrineComponent<Props, State> {
       ),
       true
     );
-  }
+  };
 
-  private settingsUpdated(settings: any) {
+  private settingsUpdated = (settings: any) => {
     this.props.updateSettings(settings);
     this.props.closeSettingsModal();
     if (this.state.firstLaunch) {
@@ -106,17 +134,17 @@ class Vitrine extends VitrineComponent<Props, State> {
         firstLaunch: false
       });
     }
-  }
+  };
 
-  private serverError(errorName: string, errorStack: string) {
+  private serverError = (errorName: string, errorStack: string) => {
     const error: Error = new Error(errorName);
     error.stack = errorStack;
     error.name = errorName;
     this.throwError(error);
-  }
+  };
 
-  private registerActions() {
-    index.registerDownAction(() => {
+  private registerActions = () => {
+    controlsHandler.registerDownAction(() => {
       const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
       if (index < this.props.playableGames.size() - 1) {
         const selectedGame: PlayableGame = this.props.playableGames.getGame(index + 1);
@@ -127,7 +155,7 @@ class Vitrine extends VitrineComponent<Props, State> {
         });
       }
     });
-    index.registerUpAction(() => {
+    controlsHandler.registerUpAction(() => {
       const index: number = this.props.playableGames.getIndex(this.props.selectedGame);
       if (index) {
         const selectedGame: PlayableGame = this.props.playableGames.getGame(index - 1);
@@ -138,55 +166,24 @@ class Vitrine extends VitrineComponent<Props, State> {
         });
       }
     });
-    index.registerEnterAction(() => {
+    controlsHandler.registerEnterAction(() => {
       if (
         !this.props.gameAddModalVisible &&
         !this.props.potentialGamesAddModalVisible &&
         !this.props.settingsModalVisible &&
         !this.props.timePlayedEditionModalVisible
       ) {
-        this.launchGame(this.props.selectedGame.uuid);
+        this.launchGame(this.props.selectedGame.uuid)();
       }
     });
-  }
+  };
 
-  private handleInternetConnection() {
+  private handleInternetConnection = () => {
     this.props.setInternetConnection(window.navigator.onLine);
-
     if (!window.navigator.onLine) {
       notify(this.props.intl.formatMessage({ id: 'toasts.noInternet' }), true, true);
     }
-  }
-
-  public componentDidMount() {
-    if (this.props.settings.firstLaunch) {
-      this.setState(
-        {
-          firstLaunch: true
-        },
-        this.props.openSettingsModal.bind(this)
-      );
-    }
-
-    serverListener
-      .listen('add-playable-games', this.props.addPlayableGames.bind(this))
-      .listen('remove-playable-game', this.removePlayableGame.bind(this))
-      .listen('add-potential-games', this.props.addPotentialGames.bind(this))
-      .listen('stop-game', this.stopGame.bind(this))
-      .listen('settings-updated', this.settingsUpdated.bind(this))
-      .listen('error', this.serverError.bind(this));
-
-    this.registerActions();
-    serverListener.listen('set-internet-connection', this.handleInternetConnection.bind(this));
-    window.addEventListener('online', this.handleInternetConnection.bind(this));
-    window.addEventListener('offline', this.handleInternetConnection.bind(this));
-  }
-
-  public componentWillUnmount() {
-    index.unregister();
-    window.removeEventListener('online', this.handleInternetConnection.bind(this));
-    window.removeEventListener('offline', this.handleInternetConnection.bind(this));
-  }
+  };
 
   public render(): JSX.Element {
     return (

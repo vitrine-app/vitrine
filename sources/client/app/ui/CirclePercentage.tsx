@@ -8,7 +8,7 @@ interface Props {
   percentage: number;
 }
 
-export const CirclePercentage: React.StatelessComponent<Props> = ({ percentage }) => (
+export const CirclePercentage: React.StatelessComponent<Props> = ({ percentage }: Props) => (
   <svg viewBox={'0 0 36 36'} className={css(styles.svg)}>
     <path
       className={css(styles.backgroundCircle)}

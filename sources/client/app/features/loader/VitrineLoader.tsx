@@ -26,10 +26,6 @@ export class VitrineLoader extends React.Component<{}, State> {
       downloadProgress: 0,
       updateDownload: false
     };
-
-    this.startUpdateDownload = this.startUpdateDownload.bind(this);
-    this.updateProgress = this.updateProgress.bind(this);
-    this.launchClient = this.launchClient.bind(this);
   }
 
   public componentDidMount() {
@@ -44,25 +40,25 @@ export class VitrineLoader extends React.Component<{}, State> {
     });
   }
 
-  private startUpdateDownload(lastUpdateVersion: string) {
+  private startUpdateDownload = (lastUpdateVersion: string) => {
     this.lastUpdateVersion = lastUpdateVersion;
     this.setState({
       displayedInfo: `Updating to ${this.lastUpdateVersion}...`,
       downloadProgress: 0,
       updateDownload: true
     });
-  }
+  };
 
-  private updateProgress(downloadProgress: number) {
+  private updateProgress = (downloadProgress: number) => {
     const displayedInfo: string =
       downloadProgress < 100 ? `Updating to ${this.lastUpdateVersion}... | ${downloadProgress.percents()}` : 'Installing...';
     this.setState({
       displayedInfo,
       downloadProgress
     });
-  }
+  };
 
-  private launchClient() {
+  private launchClient = () => {
     this.setState(
       {
         displayedInfo: 'Launching...'
@@ -71,7 +67,7 @@ export class VitrineLoader extends React.Component<{}, State> {
         loaderServerListener.send('launch-client');
       }
     );
-  }
+  };
 
   public render(): JSX.Element {
     return (
@@ -80,7 +76,7 @@ export class VitrineLoader extends React.Component<{}, State> {
           Vitrine
         </Header>
         <div className={css(styles.loaderDiv)}>
-          <img src={vitrineIcon} className={css(styles.loaderIcon)} />
+          <img alt={'Vitrine'} src={vitrineIcon} className={css(styles.loaderIcon)} />
         </div>
         <span className={css(styles.infosSpan)} style={{ display: this.state.displayedInfo ? 'inline' : 'none' }}>
           {this.state.displayedInfo} <FontAwesomeIcon icon={faCog} spin={true} />

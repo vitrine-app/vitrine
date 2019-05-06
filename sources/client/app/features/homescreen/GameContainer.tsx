@@ -19,7 +19,7 @@ import { faAlignLeft, faCalendar, faGamepad, faPlay, faStopwatch, faTerminal, fa
 
 interface Props {
   selectedGame: PlayableGame;
-  launchGame: (gameUuid: string) => void;
+  launchGame: (gameUuid: string) => () => void;
   intl: InjectedIntl;
 }
 
@@ -57,7 +57,7 @@ class GameContainer extends VitrineComponent<Props, State> {
           <Grid.Column width={1} />
           <Grid.Column width={9}>
             <h1 className={css(styles.gameTitle)}>{this.props.selectedGame.name}</h1>
-            <Button className={css(styles.playButton)} onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}>
+            <Button className={css(styles.playButton)} onClick={this.props.launchGame(this.props.selectedGame.uuid)}>
               <FontAwesomeIcon className={css(styles.icon)} icon={faPlay} size={'sm'} />
               <FormattedMessage id={'actions.playGame'} />
             </Button>
@@ -133,7 +133,7 @@ class GameContainer extends VitrineComponent<Props, State> {
               faIcon={faPlay}
               fontSize={125}
               background={this.props.selectedGame.details.cover}
-              onClick={this.props.launchGame.bind(null, this.props.selectedGame.uuid)}
+              onClick={this.props.launchGame(this.props.selectedGame.uuid)}
             />
           </Grid.Column>
           <Grid.Column width={1} />
@@ -199,7 +199,8 @@ const styles: React.CSSProperties & any = StyleSheet.create({
     overflowY: 'auto'
   },
   gameDescriptionParagraph: {
-    lineHeight: 1.8
+    lineHeight: 1.8,
+    marginRight: 10
   },
   gameHeader: {
     height: (100).percents(),

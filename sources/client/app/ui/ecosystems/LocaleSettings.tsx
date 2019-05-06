@@ -9,7 +9,7 @@ interface Props {
   onChange: (event: any, data: any) => void;
 }
 
-export const LocaleSettings: React.StatelessComponent<Props> = ({ locale, locales, onChange }) => (
+export const LocaleSettings: React.StatelessComponent<Props> = ({ locale, locales, onChange }: Props) => (
   <Form.Select
     name={'lang'}
     fluid={true}

@@ -31,19 +31,19 @@ export const ErrorsWrapper = injectIntl(
       };
     }
 
+    public componentDidCatch(error: Error) {
+      this.setState({
+        error,
+        visible: true
+      });
+    }
+
     private static quitApplication() {
       serverListener.send('quit-application', false);
     }
 
     private static relaunchApplication() {
       serverListener.send('quit-application', true);
-    }
-
-    public componentDidCatch(error: Error) {
-      this.setState({
-        error,
-        visible: true
-      });
     }
 
     private toggleDetailsDisplay = () => {

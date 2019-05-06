@@ -16,13 +16,7 @@ interface Props {
 }
 
 export class DatePicker extends VitrineComponent<Props & any, {}> {
-  public constructor() {
-    super();
-
-    this.renderInput = this.renderInput.bind(this);
-  }
-
-  private static removeDateButtonClick(props: any, openCalendar: () => void) {
+  private removeDateButtonClick = (props: any, openCalendar: () => void) => () => {
     if (props.value) {
       props.onChange({
         target: { value: '' }
@@ -30,15 +24,14 @@ export class DatePicker extends VitrineComponent<Props & any, {}> {
     } else {
       openCalendar();
     }
-  }
+  };
 
-  private renderInput(props: any, openCalendar: () => void): JSX.Element {
+  private renderInput = (props: any, openCalendar: () => void) => {
     const removeDateButton: JSX.Element = (
-      <Button secondary={true} onClick={DatePicker.removeDateButtonClick.bind(this, props, openCalendar)}>
+      <Button secondary={true} onClick={this.removeDateButtonClick(props, openCalendar)}>
         <FontAwesomeIcon icon={props.value ? faTrash : faCalendarAlt} />
       </Button>
     );
-
     return (
       <div>
         <Input
@@ -55,7 +48,7 @@ export class DatePicker extends VitrineComponent<Props & any, {}> {
         />
       </div>
     );
-  }
+  };
 
   public render(): JSX.Element {
     return (

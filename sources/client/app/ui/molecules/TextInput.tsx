@@ -7,6 +7,6 @@ interface Props {
   value: string;
 }
 
-export const TextInput: React.StatelessComponent<Props> = ({ name, placeholder, value, ...props }) => (
+export const TextInput: React.StatelessComponent<Props> = ({ name, placeholder, value, ...props }: Props) => (
   <Input name={name} size={'large'} placeholder={placeholder} value={value} {...props} />
 );

@@ -29,24 +29,15 @@ export class WindowControlIcon extends React.Component<Props, State> {
     this.state = {
       hovered: false
     };
-
-    this.mouseEnterHandler = this.mouseEnterHandler.bind(this);
-    this.mouseLeaveHandler = this.mouseLeaveHandler.bind(this);
   }
 
-  private mouseEnterHandler() {
+  private handleMouse = (hovered: boolean) => () => {
     this.setState({
-      hovered: true
+      hovered
     });
-  }
+  };
 
-  private mouseLeaveHandler() {
-    this.setState({
-      hovered: false
-    });
-  }
-
-  private iconRender(): JSX.Element {
+  private iconRender = () => {
     switch (this.props.icon) {
       case WindowControl.MinimizeIcon:
         return <MinimizeSvg hovered={this.state.hovered} />;
@@ -55,13 +46,13 @@ export class WindowControlIcon extends React.Component<Props, State> {
       case WindowControl.CloseIcon:
         return <CloseSvg hovered={this.state.hovered} />;
     }
-  }
+  };
 
   public render(): JSX.Element {
     return (
       <div
-        onMouseEnter={this.mouseEnterHandler}
-        onMouseLeave={this.mouseLeaveHandler}
+        onMouseEnter={this.handleMouse(true)}
+        onMouseLeave={this.handleMouse(false)}
         className={css(styles.icon, this.props.redBackground ? styles.redIcon : styles.regularIcon)}
         onClick={this.props.onClick}
       >

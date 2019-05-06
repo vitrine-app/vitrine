@@ -34,13 +34,9 @@ class EmulatorSettingsRow extends React.Component<Props, State> {
       command: this.props.emulator ? this.props.emulator.command || this.props.emulatorData.command : this.props.emulatorData.command,
       path: this.props.emulator ? this.props.emulator.path : this.props.emulatorData.pat
     };
-
-    this.activeCheckBox = this.activeCheckBox.bind(this);
-    this.programButton = this.programButton.bind(this);
-    this.commandLineChange = this.commandLineChange.bind(this);
   }
 
-  private activeCheckBox(event: any, data: any) {
+  private activeCheckBox = (event: any, data: any) => {
     this.setState(
       {
         active: data.checked
@@ -49,9 +45,9 @@ class EmulatorSettingsRow extends React.Component<Props, State> {
         this.props.onChange(this.getEmulatorFromState());
       }
     );
-  }
+  };
 
-  private programButton() {
+  private programButton = () => {
     const path: string = openExecutableDialog(this.props.intl.formatMessage);
     if (!path) {
       return;
@@ -64,9 +60,9 @@ class EmulatorSettingsRow extends React.Component<Props, State> {
         this.props.onChange(this.getEmulatorFromState());
       }
     );
-  }
+  };
 
-  private commandLineChange(event: any) {
+  private commandLineChange = (event: any) => {
     this.setState(
       {
         command: event.target.value
@@ -75,9 +71,9 @@ class EmulatorSettingsRow extends React.Component<Props, State> {
         this.props.onChange(this.getEmulatorFromState());
       }
     );
-  }
+  };
 
-  private getEmulatorFromState(): any {
+  private getEmulatorFromState = () => {
     const emulator: any = { id: this.props.emulatorData.id };
     if (this.state.active) {
       emulator.path = this.state.path || null;
@@ -88,7 +84,7 @@ class EmulatorSettingsRow extends React.Component<Props, State> {
       emulator.command = this.state.command;
     }
     return emulator;
-  }
+  };
 
   public render(): JSX.Element {
     const platforms: string[] = this.props.emulatorData.platforms.map(

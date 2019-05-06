@@ -20,11 +20,9 @@ export class GamesModule extends VitrineComponent<Props, any> {
     this.state = {
       clicked: this.props.clicked
     };
-
-    this.imageClick = this.imageClick.bind(this);
   }
 
-  private imageClick() {
+  private imageClick = () => {
     this.setState(
       {
         clicked: !this.state.clicked
@@ -33,7 +31,7 @@ export class GamesModule extends VitrineComponent<Props, any> {
         this.props.clickHandler(this.state.clicked);
       }
     );
-  }
+  };
 
   public render(): JSX.Element {
     return (
@@ -41,7 +39,7 @@ export class GamesModule extends VitrineComponent<Props, any> {
         <img
           alt={this.props.iconAlt}
           src={this.props.iconFile}
-          className={css(styles.gamesModuleIcon) + ' ' + (this.state.clicked ? css(styles.clickedGamesModuleIcon) : '')}
+          className={`${css(styles.gamesModuleIcon)}  ${this.state.clicked ? css(styles.clickedGamesModuleIcon) : ''}`}
           onClick={this.imageClick}
         />
         {this.checkErrors()}

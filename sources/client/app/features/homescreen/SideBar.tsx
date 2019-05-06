@@ -33,7 +33,7 @@ interface Props {
   openGameAddModal: () => void;
   openPotentialGamesAddModal: () => void;
   openSettingsModal: () => void;
-  launchGame: (gameUuid: string) => void;
+  launchGame: (gameUuid: string) => () => void;
 }
 
 class SideBar extends VitrineComponent<Props, {}> {
@@ -72,22 +72,6 @@ class SideBar extends VitrineComponent<Props, {}> {
         text: 'sort.byPublisher'
       }
     ];
-
-    this.clickGameHandler = this.clickGameHandler.bind(this);
-    this.potentialGamesButton = this.potentialGamesButton.bind(this);
-  }
-
-  private clickGameHandler(event: any) {
-    const selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('sidebar-game:', ''));
-    this.props.selectGame(selectedGame);
-  }
-
-  private static taskBarRefreshBtnClickHandler() {
-    serverListener.send('refresh-potential-games');
-  }
-
-  private potentialGamesButton() {
-    this.props.openPotentialGamesAddModal();
   }
 
   public componentDidMount() {
@@ -95,6 +79,19 @@ class SideBar extends VitrineComponent<Props, {}> {
       this.props.refreshGames();
     });
   }
+
+  private static taskBarRefreshBtnClickHandler() {
+    serverListener.send('refresh-potential-games');
+  }
+
+  private clickGameHandler = (event: any) => {
+    const selectedGame: PlayableGame = this.props.playableGames.getGame(event.target.id.replace('sidebar-game:', ''));
+    this.props.selectGame(selectedGame);
+  };
+
+  private sortGames = (sortParameter: SortParameter) => () => {
+    this.props.sortGames(sortParameter);
+  };
 
   public render() {
     const sideBarMenu: JSX.Element = (
@@ -128,7 +125,7 @@ class SideBar extends VitrineComponent<Props, {}> {
                 primary={true}
                 className={css(styles.addGamesButton)}
                 style={{ visibility: this.props.potentialGames.size() ? 'visible' : 'hidden' }}
-                onClick={this.potentialGamesButton}
+                onClick={this.props.openPotentialGamesAddModal}
               >
                 {this.props.potentialGames.size()}
               </Button>
@@ -142,7 +139,7 @@ class SideBar extends VitrineComponent<Props, {}> {
                       key={index}
                       text={this.props.intl.formatMessage({ id: gamesSortParameter.text })}
                       icon={gamesSortParameter.parameter === this.props.gamesSortParameter ? 'check' : ''}
-                      onClick={this.props.sortGames.bind(null, gamesSortParameter.parameter)}
+                      onClick={this.sortGames(gamesSortParameter.parameter)}
                     />
                   ))}
                 </Dropdown.Menu>
