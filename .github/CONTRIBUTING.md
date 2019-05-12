@@ -16,12 +16,10 @@ Vitrine is using custom Node.js native addons, written in C++, which need to be 
 - Visual C++ Build Tools on Windows : you need to download and install [Windows-Build-Tools](https://github.com/felixrieseberg/windows-build-tools)
 - Python 2.7 on Linux
 
-
 Vitrine is using multiple APIs to work (IGDB, Steam, Discord...). This keys are obviously not stored in the public repo, but a ciphered version is present.
 To build Vitrine, you need an environment variable called `VITRINE_KEY`. If you want to work on the project, feel free to [contact me](mailto:paul.roman@epitech.eu) to retrieve the key!
 Then, run `yarn keys:decrypt` to build the `keys.hh` file that will contain clear APIs keys.
 Then just hit with a `yarn run:app` and you're ready to go!
-
 
 ## Writing code
 
@@ -29,13 +27,13 @@ Few things on how we code here:
 * We are using [TSLint](https://palantir.github.io/tslint) to format the code, so when you are writing make sure to run `yarn run lint-app` to see if your code is compliant to the style guide.
 * If you don't manually format your code, TSLint will automatically fix it at `precommit`.
 * We use [Mocha](https://mochajs.org) along with [Chai](http://www.chaijs.com) to write tests. For the moment, tests are not fully provided, so feel free to write some for existing pieces of code.
-* We are using [WebStorm](https://www.jetbrains.com/webstorm) as IDE. You're free to use any editor you want, we're are using it because it has extensions for Mocha and TSLint.
+* We are using [WebStorm](https://www.jetbrains.com/webstorm) as IDE. You're free to use any editor you want; we are using it because it has extensions for Mocha and TSLint.
 
 ## Project file structure
 
-Vitrine wasn't build using any boilerplate, so the the file structure is pretty free and tweakable:
+Vitrine isn't built using boilerplate, so the the file structure is free and tweakable:
 - `/config`: used to store config used by Vitrine, copied within build
-  - `/cache`: used to store different chaches used by the application to optimize queries (IGDB data from potential games and Steam app IDs). Shouldn't be edited
+  - `/cache`: used to store different caches used by the application to optimize queries (IGDB data from potential games and Steam app IDs). Shouldn't be edited
   - `/lang`: here are the files for i18n, just regular JSON files with a key value system
   - `/modules_config.json`: static information that aren't supposed to change, like emulators list or Origin registry keys
   - `/vitrine_config.json`: configuration edited directly from the software by the used, persistently stored here
@@ -53,9 +51,9 @@ Vitrine wasn't build using any boilerplate, so the the file structure is pretty 
     - `/defs`: here are located special TypeScript definitions (like the ones used to import custom files in TypeScript) as `.d.ts` files
     - `/resources`: every asset used by the client that is not source code is located here. They will by directly loaded into `client.js` and `loader.js` when transpiling. The `less` folder (hosting the stylesheets used by the client) is structured using `Semantic UI Less`
   - `/models`: pieces of code used both on the client and the server-side
-  - `/modules`: C++ source code for native Node.js modules. Each module folder contains a `build` and a `srcs` folder, a `binding.gyp` (containing informations about module build) and a TypeScript file which should be used to import the module into server source code
+  - `/modules`: C++ source code for native Node.js modules. Each module folder contains a `build` and a `srcs` folder, a `binding.gyp` (containing information about module build) and a TypeScript file which should be used to import the module into server source code
   - `/server`: sources executed in the `main` process of Electron are located here
     - `/api`: the source code here depends on a certain support to work (platform or file format) and should be only used as an interface by the other files (specific implementation hidden)
     - `/crawlers`: the list of the games crawlers is located here
 - `/test`: pretty self-explanatory
-- `/webpack`: here are the different configs used byWebpack to build Vitrine
+- `/webpack`: here are the different configs used by Webpack to build Vitrine
