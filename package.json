@@ -95,7 +95,7 @@
     "parallel-webpack": "^2.3.0",
     "prettier": "^1.15.3",
     "semantic-ui-less": "^2.2.14",
-    "shelljs": "0.8.2",
+    "shelljs": "0.8.5",
     "source-map-support": "^0.5.9",
     "style-loader": "0.23.0",
     "ts-loader": "^5.2.1",
