@@ -31,7 +31,7 @@
     "discord-rich-presence": "0.0.7",
     "download-file": "^0.1.5",
     "electron-updater": "3.1.2",
-    "flat": "^4.1.0",
+    "flat": "^5.0.1",
     "fs-extra": "6.0.0",
     "gamepad-listener": "0.4.0",
     "glob": "^7.1.2",
